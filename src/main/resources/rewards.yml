@@ -1,0 +1,42 @@
+#
+#             TNT Run rewards configuration
+#
+#                    Placeholders list:
+#             %player% - Current player name
+#             %mapname% - Name of map
+#             %arena-id% - Arena Identifier
+#             %players% - Number of players in game
+#
+#        Commands are executed by default BY CONSOLE, use "p:" to preform command by player
+#  You can use chance to execute command adding "chance(NUMBER):" (ex chance(10):) at the beginning of command
+#
+#  Commands examples:
+#    - p:say Hello everyone in %mapname%!     # Player will say "Hello everyone in <map name here>"
+#    - broadcast Game %arena-id% has ended!   # Will broadcast "Game <arena name here> has ended" message
+#    - chance(1):p:say I was very lucky!              # Player has 1% chance to say "I was very lucky!"
+#    - p:chance(99):spawn                             # Player has 99% chance to teleport to spawn
+#       ^ YOU CAN EVEN SWAP CHANCE WITH PLAYER!
+#    - chance(50):eco give %player% 10                # Console has 10% chance to give player 10$
+#
+#    Just add example reward:
+#    - script:player.sendMessage("oh, hi %player%");      # It will send "oh, hi <player name>" to player! 100% plain java!
+#    - script:server.broadcastMessage("hello everyone");  # Broadcasts "hello everyone" to whole server
+#    - script:player.getInventory().addItem(new org.bukkit.inventory.ItemStack(org.bukkit.Material.DIRT));
+#         ^ Gives player dirt item (you must always use direct package names for not provided objects)
+#
+#                               All script provided objects:
+#            player - Player object (API methods https://hub.spigotmc.org/javadocs/spigot/org/bukkit/entity/Player.html)
+#            server - Bukkit server object (API methods https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Server.html)
+
+# Rewards must be enabled via config.yml first!
+rewards:
+  # Commands performed when game is finished
+  endgame:
+    - say %mapname% has ended!
+    - say Ooh and there were playing %players% players
+  # Commands executed when player wins the game
+  win:
+    - say I won the game!
+  # Commands executed when player loses the game
+  lose:
+    - say I lost the game!

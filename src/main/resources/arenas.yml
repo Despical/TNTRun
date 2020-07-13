@@ -1,0 +1,9 @@
+instances:
+  default:
+    lobbylocation: world, -994.000, 4.000, 853.000, 0.000, 0.000
+    Endlocation: world, -994.000, 4.000, 853.000, 0.000, 0.000
+    minimumplayers: 2
+    maximumplayers: 12
+    mapname: default
+    signs: []
+    isdone: false

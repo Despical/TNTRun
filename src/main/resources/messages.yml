@@ -1,0 +1,169 @@
+#    You can translate TNT Run messages here.
+#             Color codes (&) supported.
+#
+#              Use \n to make new line
+#        Some messages like kit and kit items
+#        descriptions dont't support new lines
+# they are wrapped every 40 characters automatically
+#
+#     Some messages support their own placeholders
+#                  like %player%
+
+# TNT Run command messages
+Commands:
+  Did-You-Mean: "&3Did you mean &b/%command%&3?"
+  Are-You-Sure: "&cAre you sure you want to do this action? Type the command again &6within 10 seconds &cto confirm!"
+  Teleported-To-The-Lobby: "&7Teleported to the lobby!"
+  Removed-Game-Instance: "&aSuccessfully removed game instance!"
+  No-Arena-Like-That: "&cNo arena with that ID!"
+  Look-Sign: "&cYou have to look at a sign to perform this command!"
+  Type-Arena-Name: "&cPlease type arena ID!"
+  No-Free-Arenas: "&cThere are no free arenas!"
+  Statistics:
+    Type-Name: "&cPlease type statistic name to view!"
+    Invalid-Name: "&cName of statistic is invalid! Type: games_played, wins, loses, longest_survive and coins"
+    Header: "&8&m-------------------[&6 Top 10 &8&m]-------------------"
+    Format: "&e#%position% %name% - %value% &7%statistic%"
+  Only-By-Player: "&cYou can execute this command only as player!"
+  Not-Playing: "&cYou must play to execute this command!"
+  No-Permission: "&cYou don't have permission to use this command!"
+  Admin-Commands:
+    Teleported-To-Player: "&aTeleported to player!"
+    Player-Not-Found: "&cPlayer not found!"
+    Success-Reload: "&aArenas reloaded!"
+    List-Command:
+      Format: "&aExisting arenas: &7%list%"
+      No-Arenas-Created: "&cThere are no game instances!"
+  Stats-Command:
+    Header: "&l-----[YOUR STATS]-----"
+    Header-Other: "&l-----[STATS FOR %player%]-----"
+    Footer: "&l----------------------"
+    Wins: "&aWins: &e"
+    Loses: "&aLoses: &e"
+    Games-Played: "&aGames played: &e"
+    Coins: "&aCoins: &e"
+    Longest-Survive: "&aLongest survive: &e"
+  
+# In-game scoreboard messages.
+# Please do not use more than 48 chars here! COLOR CODES INCLUDED.
+Scoreboard:
+  Title: "&e&lTNTRun"
+  Content:
+    # Contents of scoreboard for players
+    Playing:
+      - "&7Duration: %formatted_time%"
+      - ""
+      - "&fDouble Jump: &7%double_jumps%/5"
+      - ""
+      - "Players Alive: &a%players%"
+      - ""
+      - "&fCoins Earned: &a%coins_earned%"
+      - ""
+      - "&ewww.despical.com"
+    Waiting:
+      - ""
+      - "&fMap: &a%mapname%"
+      - "&fPlayers: &a%players%/%max_players%"
+      - ""
+      - "&fStarting in &a%formatted_time% &fto"
+      - "&fallow time for"
+      - "&fadditional players"
+      - ""
+      - "&ewww.despical.com"
+    Starting:
+      - ""
+      - "&fMap: &a%mapname%"
+      - "&fPlayers: &a%players%/%max_players%"
+      - ""
+      - "&fStarting in &a%formatted_time% &fto"
+      - "&fallow time for"
+      - "&fadditional players"
+      - ""
+      - "&ewww.despical.com"
+
+# Has usage only when bossbar is enabled in config.yml
+Bossbar:
+  Main-Title: "&a&lTNT Run &f&l- &6&lDespical"
+  Starting-In: "&f&lStarting in: &e&l%time%"
+  Waiting-For-Players: "&4&lWaiting for more players..."
+  In-Game-Info: "&e&lPlaying &f&lTNT RUN &e&lby &b&lDESPICAL"
+  Game-Ended: "&c&lGame has ended! You were playing &b&lTNT Run"
+
+In-Game:
+  #Used in most game messages.
+  Plugin-Prefix: "&8[&6TNTRun&8] "
+  Already-Playing: "&cYou are already queued for a game! You can leave a game with /tr leave."
+  Join-No-Permission: "&cYou don't have &6%permission% &cpermission to join this arena!"
+  Full-Game-No-Permission: "&cYou don't have the permission to join full games!"
+  No-Slots-For-Premium: "&cThis game is already full of premium players! Sorry"
+  You-Are-Spectator: "&cYou're now a spectator! You can fly now!"
+  Only-Command-Ingame-Is-Leave: "&cYou have to leave the game first to perform commands. The only command that works is /tr leave!"
+  # Join cancelled via external plugin that uses TNT Run api.
+  Join-Cancelled-Via-API: "&cYou can't join this game!"
+  Arena-Not-Configured: "&cArena is not configured yet! Contact staff!"
+  Game-Chat-Format: "&7%player%: &f%message%"
+  Spectator:
+    Spectator-Item-Name: "&7Players list"
+    Spectator-Menu-Name: "&8Players list"
+    Target-Player-Score: "&7Score: %score%"
+    Settings-Menu:
+      Item-Name: "&7Spectator settings"
+      Inventory-Name: "&7Spectator settings"
+      Speed-Name: "&aSpeed"
+  Messages:
+    Lobby-Messages:
+      Start-In: "&7The game starts in &b%time%&7 seconds!"
+      Waiting-For-Players: "&7Waiting for players... We need at least &b%minplayers%&7 players to start."
+      Enough-Players-To-Start: "&7We now have enough players. The game is starting soon!"
+      Game-Started: "&7Game started! Don't stop running!"
+      Kicked-For-Premium-Slot: "&c%player% got removed from the game to make a place for premium players!"
+      You-Were-Kicked-For-Premium-Slot: "&cYou got kicked out of the game to make a place for a premium player!"
+    Join: "&b%player%&7 joined the game &8(&7%players%/%maxplayers%&8)&7!"
+    Leave: "&b%player% &7left the game &8(&7%players%/%maxplayers%&8)&7!"
+    Death: "&7%player% &cdied!\n&e%players% players remaining."
+    Earned-Coin: "&e+15 extra coins (Surviving bonus)"
+    Game-End-Messages:
+      Titles:
+        Win: "&fWinner"
+        Lose: ""
+      Subtitles:
+        Win: "&e%winner%"
+        Lose: "&c%winner% &awon the game!"
+      Summary-Message:
+        - "&a&m----------------------------------------------------"
+        - "&e&lTNT Run"
+        - ""
+        - "&f&lWINNER: &f&l%winner%"
+        - ""
+        - "&8&lYOUR SCORE: &7&l%earned_coins%"
+        - "&8&lYOUR SURVIVE TIME: &7&l%formatted_survive_time%"
+        - ""
+        - "&a&m----------------------------------------------------"
+    Admin-Messages:
+      Set-Starting-In-To-0: "&bAn admin set waiting time to 0. The game starts now!"
+      Stopped-Game: "&bAn admin has been force stopped the game by command!"
+
+Signs:
+  Please-Type-Arena-Name: "&cPlease type arena name in second line!"
+  Arena-Doesnt-Exists: "&cArena with that name doesn't exists!"
+  Doesnt-Have-Permission: "&cYou don't have enough permission to break this sign!"
+  Sign-Created: "&aSign created successfully!"
+  Sign-Removed: "&aSign successfully removed!"
+  Game-States:
+    Waiting: "&lWaiting..."
+    Inactive: "&lInactive..."
+    In-Game: "&lIn-game"
+    Starting: "&e&lStarting"
+    Full-Game: "&c&lFULL"
+    Ending: "&lEnding"
+    Restarting: "&c&lRestarting"
+  Lines:
+    - "&4&lTNT Run"
+    - "%state%"
+    - "%mapname%"
+    - "&5[%players%/%maxplayers%]"
+
+Validator:
+  Invalid-Arena-Configuration: "[TNTRun] Arena %arena% has invalid configuration! Missing node: %error%"
+  Instance-Started: "[TNTRun] Arena %arena% instance successfully started!"
+  No-Instances-Created: "[TNTRun] There are no arena instances created in configuration!"

@@ -1,0 +1,96 @@
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
+# +---------------------------------------------------------+ #
+# |           TNT Run by Despical (Version 1.0.0)           | #
+# +---------------------------------------------------------+ #
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+
+# Enable bossbar support?
+Bossbar-Enabled: true
+
+# How many seconds game should take to start.
+Starting-Waiting-Time: 60
+
+# Lobby waiting time set when lobby max players number is reached, used to start game quicker.
+Start-Time-On-Full-Lobby: 15
+
+# How many seconds after the blocks will be removed after the game starts.
+Start-Block-Remove: 5
+
+# How many ticks after the blocks will be removed when players moved on it.
+Block-Remove-Delay: 20
+ 
+# The duration between using double jump again for in-game players.
+Double-Jump-Delay: 4
+
+# Should we hook into bungee cord? (If you wanna use arena per server option)
+# You STILL need to use external addon for HUB server game signs
+# One in the Chamber doesn't offer that addon.
+BungeeActivated: false
+
+# Enable this option when you're using MySQL, otherwise it won't work.
+# Be careful when changing this because there is NO migrator between
+# flat file and MySQL for player stats.
+DatabaseActivated: false
+
+# Enable Inventory Manager for your games? (VERY USEFUL feature for MULTI ARENA)
+# This saves inventory of players and restores it after player leaves arena.
+# Saved elements: max health, health, food, experience, full inventory, armor contents, fire ticks, active potions, gamemode and more
+InventoryManager: true
+
+# Should in-game chat format be enabled?
+# You can edit the formatting in language.yml
+ChatFormat-Enabled: true
+
+# Should we disable all chat related stuff?
+# It will disable the separated chat, for example
+Disable-Separate-Chat: false
+
+# Basic permissions for game, permissions explained here: wiki koycam işte .d
+Basic-Permissions:
+  Full-Games-Permission: "tntrun.fullgames"
+  # <arena> represents arena name (NOT MAP NAME!), for example: 'tntrun.join.TR02'
+  # use 'tntrun.join.*' to enable access to all arenas
+  Join-Permission: "tntrun.join.<arena>"
+
+# Should we enable short commands such as /start and /leave
+Enable-Short-Commands: false
+
+# Should /tr leave command be blocked?
+Disable-Leave-Command: false
+
+# Commands which can be used in game, remove all of them to disable
+Whitelisted-Commands:
+  - me
+  - help
+
+# Enable in game rewards? See rewards.yml for more...
+Rewards-Enabled: false
+
+# Should we block every not TNT Run associated commands in game?
+Block-Commands-In-Game: true
+
+# Should we fire some cool fireworks at location of every player after the game ends?
+Firework-When-Game-Ends: true
+
+# Should players' name tags in game be hidden?
+Nametags-Hidden: false
+
+# Should blocks behind game signs change their color based on game state?
+# They will change color to:
+# - white (waiting for players) stained glass
+# - yellow (starting) stained glass
+# - orange (in game) stained glass
+# - gray (ending) stained glass
+# - black (restarting) stained glass
+# - red (inactive) stained glass
+Signs-Block-States-Enabled: true
+
+Update-Notifier:
+  # Should we check for updates on plugin start/after admin join?
+  # You REALLY should have this true!
+  Enabled: true
+  # Should we inform you when beta version is out?
+  # Also note that BETA IS NOT ALWAYS AS STABLE AS NORMAL RELEASE!
+  Notify-Beta-Versions: true
+
+# No way! You've reached the end! But... where's the dragon!?

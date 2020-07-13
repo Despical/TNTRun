@@ -1,0 +1,27 @@
+name: TNTRun
+main: me.despical.tntrun.Main
+author: Despical
+version: ${project.version}
+api-version: 1.13
+softdepend: [PlaceholderAPI]
+
+commands:
+  TNTRun:
+    description: TNT Run commands
+    aliases: [tr, trun]
+
+permissions:
+  tntrun.admin.*:
+    default: op
+    children:
+      tntrun.updatenotify: true
+      tntrun.admin: true
+      tntrun.admin.create: true
+      tntrun.admin.setup: true
+      tntrun.admin.delete: true
+      tntrun.admin.list: true
+      tntrun.admin.stopgame: true
+      tntrun.admin.forcestart: true
+      tntrun.admin.addsign: true
+      tntrun.admin.sign.create: true
+      tntrun.admin.sign.break: true
