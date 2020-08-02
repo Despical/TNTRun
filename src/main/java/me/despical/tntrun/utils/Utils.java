@@ -1,6 +1,5 @@
 package me.despical.tntrun.utils;
 
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -57,13 +56,5 @@ public class Utils {
 			return false;
 		}
 		return true;
-	}
-
-	public static boolean hasPermission(CommandSender sender, String perm) {
-		if (sender.hasPermission(perm)) {
-			return true;
-		}
-		sender.sendMessage(plugin.getChatManager().getPrefix() + plugin.getChatManager().colorMessage("Commands-No-Permission"));
-		return false;
 	}
 }

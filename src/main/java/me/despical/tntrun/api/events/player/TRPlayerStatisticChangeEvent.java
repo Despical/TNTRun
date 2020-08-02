@@ -17,8 +17,8 @@ import me.despical.tntrun.arena.Arena;
 public class TRPlayerStatisticChangeEvent extends TREvent {
 
 	private static final HandlerList HANDLERS = new HandlerList();
-	private Player player;
-	private StatsStorage.StatisticType statisticType;
+	private final Player player;
+	private final StatsStorage.StatisticType statisticType;
 	private int number;
 
 	public TRPlayerStatisticChangeEvent(Arena eventArena, Player player, StatsStorage.StatisticType statisticType, int number) {

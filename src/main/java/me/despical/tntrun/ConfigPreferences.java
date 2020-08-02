@@ -10,8 +10,8 @@ import java.util.Map;
  */
 public class ConfigPreferences {
 
-	private Main plugin;
-	private Map<Option, Boolean> options = new HashMap<>();
+	private final Main plugin;
+	private final Map<Option, Boolean> options = new HashMap<>();
 
 	public ConfigPreferences(Main plugin) {
 		this.plugin = plugin;
@@ -40,8 +40,8 @@ public class ConfigPreferences {
 		INVENTORY_MANAGER_ENABLED("InventoryManager", true), NAMETAGS_HIDDEN("Nametags-Hidden", false),
 		ENABLE_SHORT_COMMANDS("Enable-Short-Commands", false), DISABLE_SEPARATE_CHAT("Disable-Separate-Chat", false);
 		
-		private String path;
-		private boolean def;
+		private final String path;
+		private final boolean def;
 
 		Option(String path, boolean def) {
 			this.path = path;

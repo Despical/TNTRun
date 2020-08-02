@@ -34,7 +34,7 @@ import me.despical.tntrun.utils.MessageUtils;
  */
 public class StatsStorage {
 
-	private static Main plugin = JavaPlugin.getPlugin(Main.class);
+	private static final Main plugin = JavaPlugin.getPlugin(Main.class);
 
 	/**
 	 * Get all UUID's sorted ascending by Statistic Type
@@ -94,7 +94,7 @@ public class StatsStorage {
 		LONGEST_SURVIVE("longestsurvive", true), LOCAL_SURVIVE("local_survive", false), LOCAL_COINS("local_coins", false),
 		LOCAL_DOUBLE_JUMPS("local_double_jumps", false);
 
-		private String name;
+		private final String name;
 		private boolean persistent;
 
 		StatisticType(String name, boolean persistent) {

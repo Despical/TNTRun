@@ -1,15 +1,13 @@
 package me.despical.tntrun.commands.game;
 
-import java.util.List;
-
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
-
 import me.despical.tntrun.arena.Arena;
 import me.despical.tntrun.arena.ArenaManager;
 import me.despical.tntrun.arena.ArenaRegistry;
 import me.despical.tntrun.commands.SubCommand;
-import me.despical.tntrun.commands.exception.CommandException;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+
+import java.util.List;
 
 /**
  * @author Despical
@@ -18,7 +16,7 @@ import me.despical.tntrun.commands.exception.CommandException;
  */
 public class JoinCommand extends SubCommand {
 
-	public JoinCommand(String name) {
+	public JoinCommand() {
 		super("join");
 	}
 
@@ -33,7 +31,7 @@ public class JoinCommand extends SubCommand {
 	}
 
 	@Override
-	public void execute(CommandSender sender, String label, String[] args) throws CommandException {
+	public void execute(CommandSender sender, String label, String[] args) {
 		if (args.length == 0) {
 			sender.sendMessage(getPlugin().getChatManager().getPrefix() + getPlugin().getChatManager().colorMessage("Commands.Type-Arena-Name"));
 			return;

@@ -15,8 +15,8 @@ import me.despical.tntrun.Main;
  */
 public class SimpleConversationBuilder {
 
-	private static Main plugin = JavaPlugin.getPlugin(Main.class);
-	private ConversationFactory conversationFactory;
+	private static final Main plugin = JavaPlugin.getPlugin(Main.class);
+	private final ConversationFactory conversationFactory;
 
 	public SimpleConversationBuilder() {
 		conversationFactory = new ConversationFactory(plugin)

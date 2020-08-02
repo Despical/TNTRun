@@ -43,7 +43,7 @@ import me.despical.tntrun.utils.Debugger;
  */
 public class ArenaManager {
 
-	private static Main plugin = JavaPlugin.getPlugin(Main.class);
+	private static final Main plugin = JavaPlugin.getPlugin(Main.class);
 
 	private ArenaManager() {}
 
@@ -116,6 +116,7 @@ public class ArenaManager {
 		player.setFoodLevel(20);
 		player.getInventory().setArmorContents(new ItemStack[] { new ItemStack(Material.AIR), new ItemStack(Material.AIR), new ItemStack(Material.AIR), new ItemStack(Material.AIR) });
 		player.getInventory().clear();
+		player.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, Integer.MAX_VALUE, 0, false, false), false);
 		player.setGameMode(GameMode.ADVENTURE);
 		if (arena.getArenaState() == ArenaState.IN_GAME || arena.getArenaState() == ArenaState.ENDING) {
 			arena.teleportToStartLocation(player);
@@ -127,7 +128,6 @@ public class ArenaManager {
 			for (PotionEffect potionEffect : player.getActivePotionEffects()) {
 				player.removePotionEffect(potionEffect.getType());
 			}
-			player.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, Integer.MAX_VALUE, 0, false, false), false);
 			ArenaUtils.hidePlayer(player, arena);
 			user.setSpectator(true);
 			player.setCollidable(false);
@@ -271,11 +271,9 @@ public class ArenaManager {
 			if (arena.getPlayersLeft().get(0).getName().equalsIgnoreCase(player.getName())) {
 				user.addStat(StatsStorage.StatisticType.WINS, 1);
 				player.sendTitle(plugin.getChatManager().colorMessage("In-Game.Messages.Game-End-Messages.Titles.Win"), plugin.getChatManager().colorMessage("In-Game.Messages.Game-End-Messages.Subtitles.Win").replace("%winner%", arena.getPlayersLeft().get(0).getName()), 5, 40, 5);
-				player.sendMessage("win");
 				plugin.getRewardsFactory().performReward(player, Reward.RewardType.WIN);
 			} else if (!(user.isSpectator())) {
 				user.addStat(StatsStorage.StatisticType.LOSES, 1);
-				player.sendMessage("lose");
 				player.sendTitle(plugin.getChatManager().colorMessage("In-Game.Messages.Game-End-Messages.Titles.Lose"), plugin.getChatManager().colorMessage("In-Game.Messages.Game-End-Messages.Subtitles.Lose").replace("%winner%", arena.getPlayersLeft().get(0).getName()), 5, 40, 5);
 				plugin.getRewardsFactory().performReward(player, Reward.RewardType.LOSE);
 			}

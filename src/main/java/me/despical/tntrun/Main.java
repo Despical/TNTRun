@@ -84,7 +84,7 @@ public class Main extends JavaPlugin {
 		if (getConfig().getBoolean("Developer-Mode", false)) {
 			Debugger.deepDebug(true);
 			Debugger.debug(Level.INFO, "Deep debug enabled");
-			for (String listenable : new ArrayList<>(getConfig().getStringList("Listanable-Performances"))) {
+			for (String listenable : new ArrayList<>(getConfig().getStringList("Listenable-Performances"))) {
 				Debugger.monitorPerformance(listenable);
 			}
 		}

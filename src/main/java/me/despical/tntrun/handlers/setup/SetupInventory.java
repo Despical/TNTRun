@@ -24,13 +24,13 @@ import me.despical.tntrun.handlers.setup.components.SpawnComponents;
  */
 public class SetupInventory {
 
-	private static Random random = new Random();
-	private static Main plugin = JavaPlugin.getPlugin(Main.class);
-	private FileConfiguration config = ConfigUtils.getConfig(plugin, "arenas");
-	private Arena arena;
-	private Player player;
+	private static final Random random = new Random();
+	private static final Main plugin = JavaPlugin.getPlugin(Main.class);
+	private final FileConfiguration config = ConfigUtils.getConfig(plugin, "arenas");
+	private final Arena arena;
+	private final Player player;
 	private Gui gui;
-	private SetupUtilities setupUtilities;
+	private final SetupUtilities setupUtilities;
 
 	public SetupInventory(Arena arena, Player player) {
 		this.arena = arena;

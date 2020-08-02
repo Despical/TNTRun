@@ -11,7 +11,6 @@ import me.despical.tntrun.arena.Arena;
 import me.despical.tntrun.arena.ArenaManager;
 import me.despical.tntrun.arena.ArenaRegistry;
 import me.despical.tntrun.commands.SubCommand;
-import me.despical.tntrun.commands.exception.CommandException;
 import me.despical.tntrun.utils.Debugger;
 import me.despical.tntrun.utils.Utils;
 
@@ -22,7 +21,7 @@ import me.despical.tntrun.utils.Utils;
  */
 public class LeaveCommand extends SubCommand {
 
-	public LeaveCommand(String name) {
+	public LeaveCommand() {
 		super("leave");
 	}
 
@@ -37,7 +36,7 @@ public class LeaveCommand extends SubCommand {
 	}
 
 	@Override
-	public void execute(CommandSender sender, String label, String[] args) throws CommandException {
+	public void execute(CommandSender sender, String label, String[] args) {
 		if (!getPlugin().getConfig().getBoolean("Disable-Leave-Command", false)) {
 			Player player = (Player) sender;
 			if (!Utils.checkIsInGameInstance((Player) sender)) {

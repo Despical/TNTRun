@@ -34,9 +34,9 @@ import me.despical.tntrun.utils.Utils;
  */
 public class SpectatorItemEvents implements Listener {
 
-	private Main plugin;
-	private SpectatorSettingsMenu spectatorSettingsMenu;
-	private boolean usesPaperSpigot = Bukkit.getServer().getVersion().contains("Paper");
+	private final Main plugin;
+	private final SpectatorSettingsMenu spectatorSettingsMenu;
+	private final boolean usesPaperSpigot = Bukkit.getServer().getVersion().contains("Paper");
 
 	public SpectatorItemEvents(Main plugin) {
 		this.plugin = plugin;

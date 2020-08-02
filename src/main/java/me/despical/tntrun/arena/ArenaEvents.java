@@ -1,5 +1,6 @@
 package me.despical.tntrun.arena;
 
+import me.despical.tntrun.handlers.rewards.Reward;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
@@ -25,7 +26,7 @@ import me.despical.tntrun.utils.Utils;
 
 public class ArenaEvents implements Listener {
 	
-	private Main plugin;
+	private final Main plugin;
 	
 	public ArenaEvents(Main plugin) {
 		this.plugin = plugin;
@@ -87,6 +88,9 @@ public class ArenaEvents implements Listener {
 		event.getEntity().addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 3 * 20, 0, false, false), false);
 		Player player = event.getEntity();
 		User user = plugin.getUserManager().getUser(player);
+		user.addStat(StatsStorage.StatisticType.LOSES, 1);
+		player.sendTitle(plugin.getChatManager().colorMessage("In-Game.Messages.Game-End-Messages.Titles.Lose"), plugin.getChatManager().colorMessage("In-Game.Messages.Game-End-Messages.Subtitles.Lose").replace("%winner%", arena.getPlayersLeft().get(0).getName()), 5, 40, 5);
+		plugin.getRewardsFactory().performReward(player, Reward.RewardType.LOSE);
 		user.setSpectator(true);
 	    player.setCollidable(false);
 	    player.setGameMode(GameMode.SURVIVAL);

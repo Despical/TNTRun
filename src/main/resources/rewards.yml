@@ -11,11 +11,11 @@
 #  You can use chance to execute command adding "chance(NUMBER):" (ex chance(10):) at the beginning of command
 #
 #  Commands examples:
-#    - p:say Hello everyone in %mapname%!     # Player will say "Hello everyone in <map name here>"
-#    - broadcast Game %arena-id% has ended!   # Will broadcast "Game <arena name here> has ended" message
+#    - p:say Hello everyone in %mapname%!             # Player will say "Hello everyone in <map name here>"
+#    - broadcast Game %arena-id% has ended!           # Will broadcast "Game <arena name here> has ended" message
 #    - chance(1):p:say I was very lucky!              # Player has 1% chance to say "I was very lucky!"
 #    - p:chance(99):spawn                             # Player has 99% chance to teleport to spawn
-#       ^ YOU CAN EVEN SWAP CHANCE WITH PLAYER!
+#       ^ YOU CANt EVEN SWAP CHANCE WITH PLAYER!
 #    - chance(50):eco give %player% 10                # Console has 10% chance to give player 10$
 #
 #    Just add example reward:

@@ -1,9 +1,9 @@
 package me.despical.tntrun.commands;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
@@ -21,11 +21,11 @@ import me.despical.tntrun.arena.ArenaRegistry;
  */
 public class TabCompletion implements TabCompleter {
 
-	public List<String> commands = new ArrayList<>();;
+	public List<String> commands = new ArrayList<>();
 	
 	public TabCompletion(CommandHandler commandHandler) {
 		for (SubCommand command : commandHandler.getSubCommands()) {
-			this.commands.add(command.getName().toLowerCase());
+			this.commands.add(command.getName().toLowerCase(Locale.ENGLISH));
 		}
 	}
 
@@ -45,23 +45,16 @@ public class TabCompletion implements TabCompleter {
 		if (args.length == 2) {
 			if (args[0].equalsIgnoreCase("create") || args[0].equalsIgnoreCase("help") || args[0].equalsIgnoreCase("list") ||
 				args[0].equalsIgnoreCase("reload") || args[0].equalsIgnoreCase("randomjoin") || args[0].equalsIgnoreCase("stop") ||
-				args[0].equalsIgnoreCase("forcestart") || args[0].equalsIgnoreCase("stats")) {
+				args[0].equalsIgnoreCase("forcestart")) {
 				return Collections.emptyList();
 			}
 			if (args[0].equalsIgnoreCase("top")) {
-				List<String> possibilities = new ArrayList<>();
-				for (StatsStorage.StatisticType statistic : StatsStorage.StatisticType.values()) {
-					if (!statistic.isPersistent()) {
-						continue;
-					}
-					possibilities.add(statistic.name().toLowerCase(java.util.Locale.ENGLISH));
-				}
-				return possibilities;
+				return Arrays.stream(StatsStorage.StatisticType.values()).filter(StatsStorage.StatisticType::isPersistent).map(stat -> stat.getName().toLowerCase(Locale.ENGLISH)).collect(Collectors.toList());
 			}
-			List<String> arenas = new ArrayList<>();
-			for (Arena arena : ArenaRegistry.getArenas()) {
-				arenas.add(arena.getId());
+			if (args[0].equalsIgnoreCase("stats")) {
+				return Bukkit.getOnlinePlayers().stream().map(Player::getName).collect(Collectors.toList());
 			}
+			List<String> arenas = ArenaRegistry.getArenas().stream().map(Arena::getId).collect(Collectors.toList());
 			StringUtil.copyPartialMatches(args[1], arenas, completions);
 			Collections.sort(arenas);
 			return arenas;

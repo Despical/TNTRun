@@ -17,8 +17,8 @@ import me.despical.tntrun.Main;
  */
 public class ExceptionLogHandler extends Handler {
 
-	private List<String> blacklistedClasses = Arrays.asList("me.despical.tntrun.user.data.MysqlManager", "me.despical.tntrun.commonsbox.database.MysqlDatabase");
-	private Main plugin;
+	private final List<String> blacklistedClasses = Arrays.asList("me.despical.tntrun.user.data.MysqlManager", "me.despical.tntrun.commonsbox.database.MysqlDatabase");
+	private final Main plugin;
 	
 	public ExceptionLogHandler(Main plugin) {
 		this.plugin = plugin;
@@ -53,7 +53,7 @@ public class ExceptionLogHandler extends Handler {
 		}
 		record.setThrown(null);
 	
-		Exception exception = (Exception) throwable.getCause() != null ? (Exception) throwable.getCause() : (Exception) throwable;
+		Exception exception = throwable.getCause() != null ? (Exception) throwable.getCause() : (Exception) throwable;
 		StringBuilder stacktrace = new StringBuilder(exception.getClass().getSimpleName());
 		if (exception.getMessage() != null) {
 			stacktrace.append(" (").append(exception.getMessage()).append(")");
@@ -65,7 +65,7 @@ public class ExceptionLogHandler extends Handler {
 		plugin.getLogger().log(Level.WARNING, "[Reporter service] <<-----------------------------[START]----------------------------->>");
 		plugin.getLogger().log(Level.WARNING, stacktrace.toString());
 		plugin.getLogger().log(Level.WARNING, "[Reporter service] <<------------------------------[END]------------------------------>>");
-		record.setMessage("[OITC] We have found a bug in the code. Contact us at our official discord server (Invite link: https://discordapp.com/invite/Vhyy4HA) with the following error given above!");
+		record.setMessage("[TNT Run] We have found a bug in the code. Contact us at our official discord server (Invite link: https://discordapp.com/invite/Vhyy4HA) with the following error given above!");
 	}
 
 	private boolean containsBlacklistedClass(Throwable throwable) {

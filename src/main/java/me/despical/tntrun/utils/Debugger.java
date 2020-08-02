@@ -11,10 +11,10 @@ import java.util.logging.Logger;
  */
 public class Debugger {
 
-	private static HashSet<String> listenedPerformance = new HashSet<>();
+	private static final HashSet<String> listenedPerformance = new HashSet<>();
 	private static boolean enabled = false;
 	private static boolean deep = false;
-	private static Logger logger = Logger.getLogger("");
+	private static final Logger logger = Logger.getLogger("");
 
 	private Debugger() {}
 

@@ -1,21 +1,19 @@
 package me.despical.tntrun.commands.game;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import org.bukkit.Bukkit;
-import org.bukkit.command.CommandSender;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.entity.Player;
-
 import me.despical.commonsbox.configuration.ConfigUtils;
 import me.despical.commonsbox.serializer.LocationSerializer;
 import me.despical.tntrun.arena.Arena;
 import me.despical.tntrun.arena.ArenaRegistry;
 import me.despical.tntrun.commands.SubCommand;
-import me.despical.tntrun.commands.exception.CommandException;
 import net.md_5.bungee.api.ChatColor;
+import org.bukkit.Bukkit;
+import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.Player;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * @author Despical
@@ -24,7 +22,7 @@ import net.md_5.bungee.api.ChatColor;
  */
 public class CreateCommand extends SubCommand {
 
-	public CreateCommand(String name) {
+	public CreateCommand() {
 		super("create");
 		setPermission("tntrun.admin.create");
 	}
@@ -40,7 +38,7 @@ public class CreateCommand extends SubCommand {
 	}
 
 	@Override
-	public void execute(CommandSender sender, String label, String[] args) throws CommandException {
+	public void execute(CommandSender sender, String label, String[] args) {
 		if (args.length == 0) {
 			sender.sendMessage(getPlugin().getChatManager().getPrefix() + getPlugin().getChatManager().colorMessage("Commands.Type-Arena-Name"));
 			return;
@@ -56,7 +54,7 @@ public class CreateCommand extends SubCommand {
 		if (ConfigUtils.getConfig(getPlugin(), "arenas").contains("instances." + args[0])) {
 			player.sendMessage(getPlugin().getChatManager().getPrefix() + ChatColor.RED + "Instance/Arena already exists! Use another ID or delete it first!");
 		} else {
-			createInstanceInConfig(args[0], player.getWorld().getName());
+			createInstanceInConfig(args[0]);
 			player.sendMessage(ChatColor.BOLD + "----------------------------------------");
 			player.sendMessage(ChatColor.YELLOW + "      Instance " + args[0] + " created!");
 			player.sendMessage("");
@@ -65,7 +63,7 @@ public class CreateCommand extends SubCommand {
 		}
 	}
 	
-	private void createInstanceInConfig(String id, String worldName) {
+	private void createInstanceInConfig(String id) {
 		String path = "instances." + id + ".";
 		FileConfiguration config = ConfigUtils.getConfig(getPlugin(), "arenas");
 		config.set(path + "lobbylocation", LocationSerializer.locationToString(Bukkit.getServer().getWorlds().get(0).getSpawnLocation()));
@@ -86,7 +84,7 @@ public class CreateCommand extends SubCommand {
 
 	@Override
 	public List<String> getTutorial() {
-		return Arrays.asList("Create new arena");
+		return Collections.singletonList("Create new arena");
 	}
 
 	@Override

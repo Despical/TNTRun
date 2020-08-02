@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: com.github.stefvanschie.inventoryframework:IF:0.5.19">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/com/github/stefvanschie/inventoryframework/IF/0.5.19/IF-0.5.19.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/com/github/stefvanschie/inventoryframework/IF/0.5.19/IF-0.5.19-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/com/github/stefvanschie/inventoryframework/IF/0.5.19/IF-0.5.19-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

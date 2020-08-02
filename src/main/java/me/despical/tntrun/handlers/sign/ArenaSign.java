@@ -24,9 +24,9 @@ import me.despical.tntrun.arena.Arena;
 public class ArenaSign {
 
 	private static Main plugin;
-	private Sign sign;
+	private final Sign sign;
 	private Block behind;
-	private Arena arena;
+	private final Arena arena;
 
 	public ArenaSign(Sign sign, Arena arena) {
 		this.sign = sign;

@@ -14,7 +14,6 @@ import me.despical.tntrun.arena.ArenaManager;
 import me.despical.tntrun.arena.ArenaRegistry;
 import me.despical.tntrun.arena.ArenaState;
 import me.despical.tntrun.commands.SubCommand;
-import me.despical.tntrun.commands.exception.CommandException;
 
 /**
  * @author Despical
@@ -23,7 +22,7 @@ import me.despical.tntrun.commands.exception.CommandException;
  */
 public class RandomJoinCommand extends SubCommand {
 
-	public RandomJoinCommand(String name) {
+	public RandomJoinCommand() {
 		super("randomjoin");
 	}
 
@@ -38,7 +37,7 @@ public class RandomJoinCommand extends SubCommand {
 	}
 
 	@Override
-	public void execute(CommandSender sender, String label, String[] args) throws CommandException {
+	public void execute(CommandSender sender, String label, String[] args) {
 		if (getPlugin().getConfigPreferences().getOption(ConfigPreferences.Option.BUNGEE_ENABLED)) {
 			return;
 		}

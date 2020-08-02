@@ -3,6 +3,7 @@ package me.despical.tntrun.handlers;
 import java.util.EnumMap;
 import java.util.Map;
 
+import me.despical.tntrun.arena.ArenaManager;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -27,9 +28,9 @@ import me.despical.tntrun.arena.ArenaState;
  */
 public class BungeeManager implements Listener {
 
-	private Main plugin;
-	private Map<ArenaState, String> gameStateToString = new EnumMap<>(ArenaState.class);
-	private String MOTD;
+	private final Main plugin;
+	private final Map<ArenaState, String> gameStateToString = new EnumMap<>(ArenaState.class);
+	private final String MOTD;
 
 	public BungeeManager(Main plugin) {
 		this.plugin = plugin;
@@ -77,14 +78,14 @@ public class BungeeManager implements Listener {
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onJoin(final PlayerJoinEvent event) {
 		event.setJoinMessage("");
-//		plugin.getServer().getScheduler().runTaskLater(plugin, () -> ArenaManager.joinAttempt(event.getPlayer(), ArenaRegistry.getArenas().get(ArenaRegistry.getBungeeArena())), 1L);
+		plugin.getServer().getScheduler().runTaskLater(plugin, () -> ArenaManager.joinAttempt(event.getPlayer(), ArenaRegistry.getArenas().get(ArenaRegistry.getBungeeArena())), 1L);
 	}
 
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onQuit(PlayerQuitEvent event) {
 		event.setQuitMessage("");
 		if (ArenaRegistry.getArena(event.getPlayer()) != null) {
-//			ArenaManager.leaveAttempt(event.getPlayer(), ArenaRegistry.getArenas().get(ArenaRegistry.getBungeeArena()));
+			ArenaManager.leaveAttempt(event.getPlayer(), ArenaRegistry.getArenas().get(ArenaRegistry.getBungeeArena()));
 		}
 	}
 }

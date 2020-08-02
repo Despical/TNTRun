@@ -38,53 +38,44 @@ import me.despical.tntrun.commands.game.StatsCommand;
  */
 public class CommandHandler implements CommandExecutor {
 
-	private List<SubCommand> subCommands;
-	private Map<Class<? extends SubCommand>, SubCommand> subCommandsByClass;
-	private Main plugin;
-	private TabCompletion tabCompletion;
-	
+	private final List<SubCommand> subCommands;
+	private final Main plugin;
+
 	public CommandHandler(Main plugin) {
 		this.plugin = plugin;
 		subCommands = new ArrayList<>();
-		subCommandsByClass = new HashMap<>();
 		
-		registerSubCommand(new CreateCommand("create"));
-		registerSubCommand(new EditCommand("edit"));
-		registerSubCommand(new DeleteCommand("delete"));
-		registerSubCommand(new ReloadCommand("reload"));
-		registerSubCommand(new ListCommand("list"));
-		registerSubCommand(new HelpCommand("help"));
-		registerSubCommand(new ForceStartCommand("forcestart"));
-		registerSubCommand(new StopCommand("stop"));
-		registerSubCommand(new JoinCommand("join"));
-		registerSubCommand(new RandomJoinCommand("randomjoin"));
-		registerSubCommand(new LeaveCommand("leave"));
-		registerSubCommand(new StatsCommand("stats"));
-		registerSubCommand(new LeaderBoardCommand("top"));
-		
-		tabCompletion = new TabCompletion(this);
+		registerSubCommand(new CreateCommand());
+		registerSubCommand(new EditCommand());
+		registerSubCommand(new DeleteCommand());
+		registerSubCommand(new ReloadCommand());
+		registerSubCommand(new ListCommand());
+		registerSubCommand(new HelpCommand());
+		registerSubCommand(new ForceStartCommand());
+		registerSubCommand(new StopCommand());
+		registerSubCommand(new JoinCommand());
+		registerSubCommand(new RandomJoinCommand());
+		registerSubCommand(new LeaveCommand());
+		registerSubCommand(new StatsCommand());
+		registerSubCommand(new LeaderBoardCommand());
+
 		plugin.getCommand("tntrun").setExecutor(this);
-		plugin.getCommand("tntrun").setTabCompleter(tabCompletion);
+		plugin.getCommand("tntrun").setTabCompleter(new TabCompletion(this));
 	}
 	
 	public void registerSubCommand(SubCommand subCommand) {
 		subCommands.add(subCommand);
-		subCommandsByClass.put(subCommand.getClass(), subCommand);
 	}
 	
 	public List<SubCommand> getSubCommands() {
 		return new ArrayList<>(subCommands);
 	}
 	
-	public SubCommand getSubCommand(Class<? extends SubCommand> subCommandClass) {
-		return subCommandsByClass.get(subCommandClass);
-	}
-	
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		if (args.length == 0) {
 			sender.sendMessage(ChatColor.DARK_AQUA + "This server is running " + ChatColor.AQUA + "TNT Run " + ChatColor.DARK_AQUA + "v" + this.plugin.getDescription().getVersion() + " by " + ChatColor.AQUA + "Despical");
-			if (sender.hasPermission("oitc.admin")) {
+			if (sender.hasPermission("tntrun.admin")) {
 				sender.sendMessage(ChatColor.DARK_AQUA + "Commands: " + ChatColor.AQUA + "/" + label + " help");
 			}
 			return true;

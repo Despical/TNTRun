@@ -16,7 +16,7 @@ import me.despical.tntrun.user.User;
  */
 public class QuitEvent implements Listener {
 
-	private Main plugin;
+	private final Main plugin;
 
 	public QuitEvent(Main plugin) {
 		this.plugin = plugin;

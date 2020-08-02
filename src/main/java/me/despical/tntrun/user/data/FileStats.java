@@ -14,8 +14,8 @@ import me.despical.tntrun.user.User;
  */
 public class FileStats implements UserDatabase {
 
-	private Main plugin;
-	private FileConfiguration config;
+	private final Main plugin;
+	private final FileConfiguration config;
 
 	public FileStats(Main plugin) {
 		this.plugin = plugin;

@@ -1,15 +1,13 @@
 package me.despical.tntrun.commands.admin.arena;
 
-import java.util.Arrays;
-import java.util.List;
-
+import me.despical.tntrun.arena.ArenaRegistry;
+import me.despical.tntrun.commands.SubCommand;
+import me.despical.tntrun.handlers.setup.SetupInventory;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import me.despical.tntrun.arena.ArenaRegistry;
-import me.despical.tntrun.commands.SubCommand;
-import me.despical.tntrun.commands.exception.CommandException;
-import me.despical.tntrun.handlers.setup.SetupInventory;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * @author Despical
@@ -18,7 +16,7 @@ import me.despical.tntrun.handlers.setup.SetupInventory;
  */
 public class EditCommand extends SubCommand {
 
-	public EditCommand(String name) {
+	public EditCommand() {
 		super("edit");
 		setPermission("tntrun.admin.setup");
 	}
@@ -34,7 +32,7 @@ public class EditCommand extends SubCommand {
 	}
 
 	@Override
-	public void execute(CommandSender sender, String label, String[] args) throws CommandException {
+	public void execute(CommandSender sender, String label, String[] args) {
 		if (ArenaRegistry.getArena(args[0]) == null) {
 			sender.sendMessage(getPlugin().getChatManager().getPrefix() + getPlugin().getChatManager().colorMessage("Commands.No-Arena-Like-That"));
 			return;
@@ -44,7 +42,7 @@ public class EditCommand extends SubCommand {
 
 	@Override
 	public List<String> getTutorial() {
-		return Arrays.asList("Open arena editor menu");
+		return Collections.singletonList("Open arena editor menu");
 	}
 
 	@Override

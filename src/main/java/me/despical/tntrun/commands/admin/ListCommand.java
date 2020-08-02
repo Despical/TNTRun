@@ -1,15 +1,13 @@
 package me.despical.tntrun.commands.admin;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import org.bukkit.command.CommandSender;
-
 import me.despical.tntrun.arena.Arena;
 import me.despical.tntrun.arena.ArenaRegistry;
 import me.despical.tntrun.commands.SubCommand;
-import me.despical.tntrun.commands.exception.CommandException;
+import org.bukkit.command.CommandSender;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author Despical
@@ -18,7 +16,7 @@ import me.despical.tntrun.commands.exception.CommandException;
  */
 public class ListCommand extends SubCommand {
 
-	public ListCommand(String name) {
+	public ListCommand() {
 		super("list");
 		setPermission("tntrun.admin.list");
 	}
@@ -34,19 +32,19 @@ public class ListCommand extends SubCommand {
 	}
 
 	@Override
-	public void execute(CommandSender sender, String label, String[] args) throws CommandException {
+	public void execute(CommandSender sender, String label, String[] args) {
 		if (ArenaRegistry.getArenas().size() == 0) {
 			sender.sendMessage(getPlugin().getChatManager().getPrefix() + getPlugin().getChatManager().colorMessage("Commands.Admin-Commands.List-Command.No-Arenas-Created"));
 			return;
 		}
 		List<String> arenas = ArenaRegistry.getArenas().stream().map(Arena::getId).collect(Collectors.toList());
 		sender.sendMessage(getPlugin().getChatManager().getPrefix() + getPlugin().getChatManager().colorMessage("Commands.Admin-Commands.List-Command.Format").replace("%list%",
-			arenas.toString().substring(1, arenas.toString().length() - 1)));
+				arenas.toString().substring(1, arenas.toString().length() - 1)));
 	}
 
 	@Override
 	public List<String> getTutorial() {
-		return Arrays.asList("Show all of the existing arenas");
+		return Collections.singletonList("Show all of the existing arenas");
 	}
 
 	@Override

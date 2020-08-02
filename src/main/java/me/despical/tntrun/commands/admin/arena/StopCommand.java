@@ -10,7 +10,6 @@ import me.despical.tntrun.arena.ArenaManager;
 import me.despical.tntrun.arena.ArenaRegistry;
 import me.despical.tntrun.arena.ArenaState;
 import me.despical.tntrun.commands.SubCommand;
-import me.despical.tntrun.commands.exception.CommandException;
 import me.despical.tntrun.utils.Utils;
 
 /**
@@ -20,7 +19,7 @@ import me.despical.tntrun.utils.Utils;
  */
 public class StopCommand extends SubCommand {
 
-	public StopCommand(String name) {
+	public StopCommand() {
 		super("stop");
 		setPermission("tntrun.admin.stop");
 	}
@@ -36,7 +35,7 @@ public class StopCommand extends SubCommand {
 	}
 
 	@Override
-	public void execute(CommandSender sender, String label, String[] args) throws CommandException {
+	public void execute(CommandSender sender, String label, String[] args) {
 		if (!Utils.checkIsInGameInstance((Player) sender)) {
 			return;
 		}

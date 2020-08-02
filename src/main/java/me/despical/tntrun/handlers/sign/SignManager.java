@@ -39,10 +39,10 @@ import me.despical.tntrun.utils.Debugger;
  */
 public class SignManager implements Listener {
 
-	private Main plugin;
-	private List<ArenaSign> arenaSigns = new ArrayList<>();
-	private Map<ArenaState, String> gameStateToString = new EnumMap<>(ArenaState.class);
-	private List<String> signLines;
+	private final Main plugin;
+	private final List<ArenaSign> arenaSigns = new ArrayList<>();
+	private final Map<ArenaState, String> gameStateToString = new EnumMap<>(ArenaState.class);
+	private final List<String> signLines;
 
 	public SignManager(Main plugin) {
 		this.plugin = plugin;
@@ -108,7 +108,7 @@ public class SignManager implements Listener {
 		if (arenaSign == null) {
 			return;
 		}
-		if (arenaSign != null && !e.getPlayer().hasPermission("tntrun.admin.sign.break")) {
+		if (!e.getPlayer().hasPermission("tntrun.admin.sign.break")) {
 			e.setCancelled(true);
 			e.getPlayer().sendMessage(plugin.getChatManager().getPrefix() + plugin.getChatManager().colorMessage("Signs.Doesnt-Have-Permission"));
 			return;

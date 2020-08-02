@@ -24,8 +24,8 @@ import me.despical.tntrun.utils.MessageUtils;
  */
 public class MysqlManager implements UserDatabase {
 
-	private Main plugin;
-	private MysqlDatabase database;
+	private final Main plugin;
+	private final MysqlDatabase database;
 
 	public MysqlManager(Main plugin) {
 		this.plugin = plugin;

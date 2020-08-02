@@ -14,7 +14,7 @@ import me.despical.tntrun.utils.Debugger;
 */
 public class PermissionsManager {
 
-	private static Main plugin = JavaPlugin.getPlugin(Main.class);
+	private static final Main plugin = JavaPlugin.getPlugin(Main.class);
 	private static String joinFullPerm = "tntrun.fullgames";
 	private static String joinPerm = "tntrun.join.<arena>";
 

@@ -45,7 +45,7 @@ ChatFormat-Enabled: true
 # It will disable the separated chat, for example
 Disable-Separate-Chat: false
 
-# Basic permissions for game, permissions explained here: wiki koycam işte .d
+# Basic permissions for game, permissions explained here: https://github.com/Despical/TNTRun/wiki/Commands-and-permissions#basic-permissions
 Basic-Permissions:
   Full-Games-Permission: "tntrun.fullgames"
   # <arena> represents arena name (NOT MAP NAME!), for example: 'tntrun.join.TR02'

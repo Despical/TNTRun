@@ -19,7 +19,7 @@ import me.despical.tntrun.handlers.PermissionsManager;
  */
 public class JoinEvent implements Listener {
 
-	private Main plugin;
+	private final Main plugin;
 
 	public JoinEvent(Main plugin) {
 		this.plugin = plugin;

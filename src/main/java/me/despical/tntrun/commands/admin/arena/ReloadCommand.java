@@ -17,7 +17,6 @@ import me.despical.tntrun.arena.Arena;
 import me.despical.tntrun.arena.ArenaManager;
 import me.despical.tntrun.arena.ArenaRegistry;
 import me.despical.tntrun.commands.SubCommand;
-import me.despical.tntrun.commands.exception.CommandException;
 import me.despical.tntrun.utils.Debugger;
 
 /**
@@ -27,12 +26,12 @@ import me.despical.tntrun.utils.Debugger;
  */
 public class ReloadCommand extends SubCommand {
 
-	public ReloadCommand(String name) {
+	public ReloadCommand() {
 		super("reload");
 		setPermission("tntrun.admin.reload");
 	}
 
-	private Set<CommandSender> confirmations = new HashSet<>();
+	private final Set<CommandSender> confirmations = new HashSet<>();
 
 	@Override
 	public String getPossibleArguments() {
@@ -45,7 +44,7 @@ public class ReloadCommand extends SubCommand {
 	}
 
 	@Override
-	public void execute(CommandSender sender, String label, String[] args) throws CommandException {
+	public void execute(CommandSender sender, String label, String[] args) {
 		if (!confirmations.contains(sender)) {
 			confirmations.add(sender);
 			Bukkit.getScheduler().runTaskLater(getPlugin(), () -> confirmations.remove(sender), 20 * 10);

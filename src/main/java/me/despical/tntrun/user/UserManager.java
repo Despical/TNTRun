@@ -23,8 +23,8 @@ import me.despical.tntrun.utils.Debugger;
  */
 public class UserManager {
 
-	private UserDatabase database;
-	private List<User> users = new ArrayList<>();
+	private final UserDatabase database;
+	private final List<User> users = new ArrayList<>();
 
 	public UserManager(Main plugin) {
 		if (plugin.getConfigPreferences().getOption(ConfigPreferences.Option.DATABASE_ENABLED)) {

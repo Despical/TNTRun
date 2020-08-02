@@ -16,7 +16,7 @@ import me.despical.tntrun.Main;
  */
 public class ArenaUtils {
 
-	private static Main plugin = JavaPlugin.getPlugin(Main.class);
+	private static final Main plugin = JavaPlugin.getPlugin(Main.class);
 
 	public static boolean areInSameArena(Player one, Player two) {
 		if (ArenaRegistry.getArena(one) == null || ArenaRegistry.getArena(two) == null) {

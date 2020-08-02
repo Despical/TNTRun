@@ -16,7 +16,7 @@ import me.despical.tntrun.arena.ArenaState;
 public class TRGameStateChangeEvent extends TREvent {
 
 	private static final HandlerList HANDLERS = new HandlerList();
-	private ArenaState arenaState;
+	private final ArenaState arenaState;
 
 	public TRGameStateChangeEvent(Arena eventArena, ArenaState arenaState) {
 		super(eventArena);

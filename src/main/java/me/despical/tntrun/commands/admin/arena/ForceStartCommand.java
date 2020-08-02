@@ -1,17 +1,15 @@
 package me.despical.tntrun.commands.admin.arena;
 
-import java.util.Arrays;
-import java.util.List;
-
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
-
 import me.despical.tntrun.arena.Arena;
 import me.despical.tntrun.arena.ArenaRegistry;
 import me.despical.tntrun.arena.ArenaState;
 import me.despical.tntrun.commands.SubCommand;
-import me.despical.tntrun.commands.exception.CommandException;
 import me.despical.tntrun.utils.Utils;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+
+import java.util.Collections;
+import java.util.List;
 
 /**
  * @author Despical
@@ -20,7 +18,7 @@ import me.despical.tntrun.utils.Utils;
  */
 public class ForceStartCommand extends SubCommand {
 
-	public ForceStartCommand(String name) {
+	public ForceStartCommand() {
 		super("forcestart");
 		setPermission("tntrun.admin.forcestart");
 	}
@@ -36,7 +34,7 @@ public class ForceStartCommand extends SubCommand {
 	}
 
 	@Override
-	public void execute(CommandSender sender, String label, String[] args) throws CommandException {
+	public void execute(CommandSender sender, String label, String[] args) {
 		if (!Utils.checkIsInGameInstance((Player) sender)) {
 			return;
 		}
@@ -57,7 +55,7 @@ public class ForceStartCommand extends SubCommand {
 
 	@Override
 	public List<String> getTutorial() {
-		return Arrays.asList("Force start arena you're in");
+		return Collections.singletonList("Force start arena you're in");
 	}
 
 	@Override

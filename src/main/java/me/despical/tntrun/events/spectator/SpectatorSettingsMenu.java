@@ -23,8 +23,8 @@ import me.despical.commonsbox.item.ItemBuilder;
 @Deprecated
 public class SpectatorSettingsMenu implements Listener {
 
-	private String inventoryName;
-	private String speedOptionName;
+	private final String inventoryName;
+	private final String speedOptionName;
 	private Inventory inv;
 
 	public SpectatorSettingsMenu(JavaPlugin plugin, String inventoryName, String speedOptionName) {

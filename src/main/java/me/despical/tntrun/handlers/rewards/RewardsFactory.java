@@ -26,9 +26,9 @@ import me.despical.tntrun.utils.Debugger;
  */
 public class RewardsFactory {
 
-	private Set<Reward> rewards = new HashSet<>();
-	private FileConfiguration config;
-	private boolean enabled;
+	private final Set<Reward> rewards = new HashSet<>();
+	private final FileConfiguration config;
+	private final boolean enabled;
 
 	public RewardsFactory(Main plugin) {
 		enabled = plugin.getConfig().getBoolean("Rewards-Enabled");

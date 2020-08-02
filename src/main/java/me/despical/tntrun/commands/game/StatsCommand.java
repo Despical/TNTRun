@@ -9,7 +9,6 @@ import org.bukkit.entity.Player;
 import me.despical.commonsbox.string.StringFormatUtils;
 import me.despical.tntrun.api.StatsStorage;
 import me.despical.tntrun.commands.SubCommand;
-import me.despical.tntrun.commands.exception.CommandException;
 import me.despical.tntrun.user.User;
 
 /**
@@ -19,7 +18,7 @@ import me.despical.tntrun.user.User;
  */
 public class StatsCommand extends SubCommand {
 
-	public StatsCommand(String name) {
+	public StatsCommand() {
 		super("stats");
 	}
 
@@ -34,9 +33,10 @@ public class StatsCommand extends SubCommand {
 	}
 
 	@Override
-	public void execute(CommandSender sender, String label, String[] args) throws CommandException {
+	public void execute(CommandSender sender, String label, String[] args) {
 		Player player = args.length == 1 ? Bukkit.getPlayerExact(args[0]) : (Player) sender;
 		if (player == null) {
+			assert sender != null;
 			sender.sendMessage(getPlugin().getChatManager().getPrefix() + getPlugin().getChatManager().colorMessage("Commands.Admin-Commands.Player-Not-Found"));
 			return;
 		}

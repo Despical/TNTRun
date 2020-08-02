@@ -50,16 +50,16 @@ public class Arena extends BukkitRunnable {
 	private static final Main plugin = JavaPlugin.getPlugin(Main.class);
 	private final String id;
 
-	private Set<Player> players = new HashSet<>();
+	private final Set<Player> players = new HashSet<>();
 
-	private LinkedList<BlockState> destroyedBlocks = new LinkedList<>();
+	private final LinkedList<BlockState> destroyedBlocks = new LinkedList<>();
 	
-	private Map<ArenaOption, Integer> arenaOptions = new EnumMap<>(ArenaOption.class);
-	private Map<GameLocation, Location> gameLocations = new EnumMap<>(GameLocation.class);
+	private final Map<ArenaOption, Integer> arenaOptions = new EnumMap<>(ArenaOption.class);
+	private final Map<GameLocation, Location> gameLocations = new EnumMap<>(GameLocation.class);
 
 	private ArenaState arenaState = ArenaState.INACTIVE;
 	private BossBar gameBar;
-	private ScoreboardManager scoreboardManager;
+	private final ScoreboardManager scoreboardManager;
 	private String mapName = "";
 	private boolean ready;
 	private boolean forceStart = false;

@@ -29,11 +29,11 @@ import me.despical.tntrun.user.User;
  */
 public class ScoreboardManager {
 
-	private static Main plugin = JavaPlugin.getPlugin(Main.class);
-	private static String boardTitle = plugin.getChatManager().colorMessage("Scoreboard.Title");
-	private List<Scoreboard> scoreboards = new ArrayList<>();
-	private Arena arena;
-	private FileConfiguration config = ConfigUtils.getConfig(plugin, "messages");
+	private static final Main plugin = JavaPlugin.getPlugin(Main.class);
+	private static final String boardTitle = plugin.getChatManager().colorMessage("Scoreboard.Title");
+	private final List<Scoreboard> scoreboards = new ArrayList<>();
+	private final Arena arena;
+	private final FileConfiguration config = ConfigUtils.getConfig(plugin, "messages");
 	
 	public ScoreboardManager(Arena arena) {
 		this.arena = arena;

@@ -22,10 +22,10 @@ import me.despical.tntrun.Main;
  */
 public class SpecialItem {
 
-	private Main plugin = JavaPlugin.getPlugin(Main.class);
+	private final Main plugin = JavaPlugin.getPlugin(Main.class);
 	private ItemStack itemStack;
 	private int slot;
-	private String name;
+	private final String name;
 
 	public SpecialItem(String name) {
 		this.name = name;

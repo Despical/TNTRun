@@ -1,20 +1,18 @@
 package me.despical.tntrun.commands.admin.arena;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import org.bukkit.Bukkit;
-import org.bukkit.command.CommandSender;
-import org.bukkit.configuration.file.FileConfiguration;
-
 import me.despical.commonsbox.configuration.ConfigUtils;
 import me.despical.tntrun.arena.Arena;
 import me.despical.tntrun.arena.ArenaManager;
 import me.despical.tntrun.arena.ArenaRegistry;
 import me.despical.tntrun.commands.SubCommand;
-import me.despical.tntrun.commands.exception.CommandException;
+import org.bukkit.Bukkit;
+import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.file.FileConfiguration;
+
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * @author Despical
@@ -23,9 +21,9 @@ import me.despical.tntrun.commands.exception.CommandException;
  */
 public class DeleteCommand extends SubCommand {
 
-	private Set<CommandSender> confirmations = new HashSet<>();
+	private final Set<CommandSender> confirmations = new HashSet<>();
 	
-	public DeleteCommand(String name) {
+	public DeleteCommand() {
 		super("delete");
 		setPermission("tntrun.admin.delete");
 	}
@@ -41,7 +39,7 @@ public class DeleteCommand extends SubCommand {
 	}
 
 	@Override
-	public void execute(CommandSender sender, String label, String[] args) throws CommandException {
+	public void execute(CommandSender sender, String label, String[] args) {
 		if (args.length == 0) {
 			sender.sendMessage(getPlugin().getChatManager().getPrefix() + getPlugin().getChatManager().colorMessage("Commands.Type-Arena-Name"));
 			return;
@@ -68,7 +66,7 @@ public class DeleteCommand extends SubCommand {
 
 	@Override
 	public List<String> getTutorial() {
-		return Arrays.asList("Delete specified arena");
+		return Collections.singletonList("Delete specified arena");
 	}
 
 	@Override

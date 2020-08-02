@@ -22,7 +22,7 @@ import net.md_5.bungee.api.chat.TextComponent;
  */
 public class HelpCommand extends SubCommand {
 	
-	public HelpCommand(String name) {
+	public HelpCommand() {
 		super("help");
 		setPermission("tntrun.admin");
 	}
@@ -38,7 +38,7 @@ public class HelpCommand extends SubCommand {
 	}
 
 	@Override
-	public void execute(CommandSender sender, String label, String[] args) throws CommandException {
+	public void execute(CommandSender sender, String label, String[] args) {
 		sender.sendMessage("");
 		sender.sendMessage(getPlugin().getChatManager().colorRawMessage("&3&l---- TNT Run Admin Commands ----"));
 		sender.sendMessage("");

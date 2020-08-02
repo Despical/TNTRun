@@ -15,9 +15,9 @@ import me.despical.tntrun.arena.Arena;
 */
 public class SetupUtilities {
 
-	private Main plugin = JavaPlugin.getPlugin(Main.class);
-	private FileConfiguration config;
-	private Arena arena;
+	private final Main plugin = JavaPlugin.getPlugin(Main.class);
+	private final FileConfiguration config;
+	private final Arena arena;
 
 	SetupUtilities(FileConfiguration config, Arena arena) {
 		this.config = config;

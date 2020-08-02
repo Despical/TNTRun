@@ -46,7 +46,7 @@ import me.despical.tntrun.utils.Utils;
  */
 public class Events implements Listener {
 
-	private Main plugin;
+	private final Main plugin;
 
 	public Events(Main plugin) {
 		this.plugin = plugin;
@@ -175,14 +175,6 @@ public class Events implements Listener {
 			if (arrow.getShooter() instanceof Player && ArenaRegistry.isInArena((Player) arrow.getShooter())) {
 				event.setCancelled(true);
 			}
-		}
-	}
-	
-	@EventHandler(priority = EventPriority.HIGH)
-	public void onRespawn(PlayerRespawnEvent event) {
-		Player player = event.getPlayer();
-		if (!ArenaRegistry.isInArena(player)) {
-			return;
 		}
 	}
 

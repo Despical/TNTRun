@@ -23,8 +23,8 @@ import me.despical.tntrun.utils.Debugger;
  */
 public class ArenaRegistry {
 
-	private static Main plugin = JavaPlugin.getPlugin(Main.class);
-	private static List<Arena> arenas = new ArrayList<>();
+	private static final Main plugin = JavaPlugin.getPlugin(Main.class);
+	private static final List<Arena> arenas = new ArrayList<>();
 	private static int bungeeArena = -999;
 
 	/**
