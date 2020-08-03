@@ -169,6 +169,7 @@ public class Arena extends BukkitRunnable {
 					player.sendMessage(plugin.getChatManager().getPrefix() + plugin.getChatManager().colorMessage("In-Game.Messages.Lobby-Messages.Game-Started"));
 					player.getInventory().setItem(SpecialItemManager.getSpecialItem("Double-Jump").getSlot(), SpecialItemManager.getSpecialItem("Double-Jump").getItemStack());
 					player.updateInventory();
+					player.setAllowFlight(true);
 				}
 			}
 			if (plugin.getConfigPreferences().getOption(ConfigPreferences.Option.BOSSBAR_ENABLED)) {
@@ -232,6 +233,7 @@ public class Arena extends BukkitRunnable {
 				doBarAction(BarAction.REMOVE, player);
 				player.setFireTicks(0);
 				player.setFoodLevel(20);
+
 			}
 			teleportAllToEndLocation();
 			if (plugin.getConfigPreferences().getOption(ConfigPreferences.Option.INVENTORY_MANAGER_ENABLED)) {
@@ -578,14 +580,13 @@ public class Arena extends BukkitRunnable {
 					return;
 				}
 				Location location = player.getLocation().clone();
-				for (int i = 1; i <= 4; i++) {
-					Block block = location.getBlock().getRelative(BlockFace.DOWN);
-					location.add(0, -i, 0);
-					if (block.isEmpty()) {
+				for (int i = 0; i <= 4; i++) {
+					Block block = location.add(0, -i, 0).getBlock().getRelative(BlockFace.DOWN);
+					if (plugin.getConfig().getStringList("Whitelisted-Blocks").contains(block.getType().name())) {
 						continue;
 					}
 					destroyedBlocks.add(block.getState());
-					Bukkit.getScheduler().runTaskLater(plugin, () -> block.setType(Material.AIR), plugin.getConfig().getLong("Block-Remove-Delay", 20L));
+					Bukkit.getScheduler().runTaskLater(plugin, () -> block.setType(Material.AIR), plugin.getConfig().getLong("Block-Remove-Delay", 8L));
 				}
 			}
 		}, 0L, 1L);

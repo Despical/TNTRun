@@ -254,7 +254,6 @@ public class Events implements Listener {
 		if (!(ArenaUtils.areInSameArena((Player) event.getDamager(), (Player) event.getEntity()))) {
 			return;
 		}
-		event.setDamage(0d);
 		event.setCancelled(true);
 	}
 	

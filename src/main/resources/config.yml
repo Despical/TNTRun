@@ -17,10 +17,16 @@ Start-Time-On-Full-Lobby: 15
 Start-Block-Remove: 5
 
 # How many ticks after the blocks will be removed when players moved on it.
-Block-Remove-Delay: 20
+Block-Remove-Delay: 8
  
 # The duration between using double jump again for in-game players.
 Double-Jump-Delay: 4
+
+# The block list that we are going to remove these when player is on these blocks in-game.
+Whitelisted-Blocks:
+  - SAND
+  - GRAVEL
+  - RED_GLAZED_TERRACOTTA
 
 # Should we hook into bungee cord? (If you wanna use arena per server option)
 # You STILL need to use external addon for HUB server game signs

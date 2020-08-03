@@ -3,7 +3,7 @@ package me.despical.tntrun.arena;
 import java.util.List;
 import java.util.logging.Level;
 
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
@@ -116,7 +116,6 @@ public class ArenaManager {
 		player.setFoodLevel(20);
 		player.getInventory().setArmorContents(new ItemStack[] { new ItemStack(Material.AIR), new ItemStack(Material.AIR), new ItemStack(Material.AIR), new ItemStack(Material.AIR) });
 		player.getInventory().clear();
-		player.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, Integer.MAX_VALUE, 0, false, false), false);
 		player.setGameMode(GameMode.ADVENTURE);
 		if (arena.getArenaState() == ArenaState.IN_GAME || arena.getArenaState() == ArenaState.ENDING) {
 			arena.teleportToStartLocation(player);
@@ -129,6 +128,7 @@ public class ArenaManager {
 				player.removePotionEffect(potionEffect.getType());
 			}
 			ArenaUtils.hidePlayer(player, arena);
+			player.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, Integer.MAX_VALUE, 0, false, false), false);
 			user.setSpectator(true);
 			player.setCollidable(false);
 			player.setAllowFlight(true);
@@ -267,15 +267,6 @@ public class ArenaManager {
 			User user = plugin.getUserManager().getUser(player);
 			if (user.getStat(StatsStorage.StatisticType.LOCAL_SURVIVE) > user.getStat(StatsStorage.StatisticType.LONGEST_SURVIVE)) {
 				user.setStat(StatsStorage.StatisticType.LONGEST_SURVIVE, user.getStat(StatsStorage.StatisticType.LOCAL_SURVIVE));
-			}
-			if (arena.getPlayersLeft().get(0).getName().equalsIgnoreCase(player.getName())) {
-				user.addStat(StatsStorage.StatisticType.WINS, 1);
-				player.sendTitle(plugin.getChatManager().colorMessage("In-Game.Messages.Game-End-Messages.Titles.Win"), plugin.getChatManager().colorMessage("In-Game.Messages.Game-End-Messages.Subtitles.Win").replace("%winner%", arena.getPlayersLeft().get(0).getName()), 5, 40, 5);
-				plugin.getRewardsFactory().performReward(player, Reward.RewardType.WIN);
-			} else if (!(user.isSpectator())) {
-				user.addStat(StatsStorage.StatisticType.LOSES, 1);
-				player.sendTitle(plugin.getChatManager().colorMessage("In-Game.Messages.Game-End-Messages.Titles.Lose"), plugin.getChatManager().colorMessage("In-Game.Messages.Game-End-Messages.Subtitles.Lose").replace("%winner%", arena.getPlayersLeft().get(0).getName()), 5, 40, 5);
-				plugin.getRewardsFactory().performReward(player, Reward.RewardType.LOSE);
 			}
 			player.getInventory().clear();
 			player.getInventory().setItem(SpecialItemManager.getSpecialItem("Leave").getSlot(), SpecialItemManager.getSpecialItem("Leave").getItemStack());

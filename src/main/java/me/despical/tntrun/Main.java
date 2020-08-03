@@ -177,8 +177,7 @@ public class Main extends JavaPlugin {
 		}
 		if (configPreferences.getOption(ConfigPreferences.Option.DATABASE_ENABLED)) {
 			FileConfiguration config = ConfigUtils.getConfig(this, "mysql");
-			database = new MysqlDatabase(config.getString("user"), config.getString("password"),
-					config.getString("address"));
+			database = new MysqlDatabase(config.getString("user"), config.getString("password"), config.getString("address"));
 		}
 		chatManager = new ChatManager(this);
 		userManager = new UserManager(this);

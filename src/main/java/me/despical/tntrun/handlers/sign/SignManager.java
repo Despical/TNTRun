@@ -185,6 +185,10 @@ public class SignManager implements Listener {
 			long start = System.currentTimeMillis();
 
 			for (ArenaSign arenaSign : arenaSigns) {
+				if (arenaSign.getArena() == null) {
+					arenaSigns.remove(arenaSign);
+					continue;
+				}
 				Sign sign = arenaSign.getSign();
 				for (int i = 0; i < signLines.size(); i++) {
 					sign.setLine(i, formatSign(signLines.get(i), arenaSign.getArena()));
