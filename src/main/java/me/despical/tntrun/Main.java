@@ -172,6 +172,7 @@ public class Main extends JavaPlugin {
 
 	private void initializeClasses() {
 		ScoreboardLib.setPluginInstance(this);
+		chatManager = new ChatManager(this);
 		if (getConfig().getBoolean("BungeeActivated", false)) {
 			bungeeManager = new BungeeManager(this);
 		}
@@ -179,7 +180,7 @@ public class Main extends JavaPlugin {
 			FileConfiguration config = ConfigUtils.getConfig(this, "mysql");
 			database = new MysqlDatabase(config.getString("user"), config.getString("password"), config.getString("address"));
 		}
-		chatManager = new ChatManager(this);
+		
 		userManager = new UserManager(this);
 		Utils.init(this);
 		ArenaSign.init(this);
@@ -256,8 +257,7 @@ public class Main extends JavaPlugin {
 	}
 
 	private void setupFiles() {
-		for (String fileName : Arrays.asList("arenas", "bungee", "rewards", "stats", "lobbyitems", "mysql",
-				"messages")) {
+		for (String fileName : Arrays.asList("arenas", "bungee", "rewards", "stats", "lobbyitems", "mysql", "messages")) {
 			File file = new File(getDataFolder() + File.separator + fileName + ".yml");
 			if (!file.exists()) {
 				saveResource(fileName + ".yml", false);

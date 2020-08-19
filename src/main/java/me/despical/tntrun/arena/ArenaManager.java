@@ -6,11 +6,9 @@ import java.util.logging.Level;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
-import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -32,7 +30,6 @@ import me.despical.tntrun.api.events.game.TRGameStopEvent;
 import me.despical.tntrun.handlers.ChatManager.ActionType;
 import me.despical.tntrun.handlers.PermissionsManager;
 import me.despical.tntrun.handlers.items.SpecialItemManager;
-import me.despical.tntrun.handlers.rewards.Reward;
 import me.despical.tntrun.user.User;
 import me.despical.tntrun.utils.Debugger;
 
@@ -114,7 +111,7 @@ public class ArenaManager {
 		player.setExp(1);
 		player.setHealth(player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue());
 		player.setFoodLevel(20);
-		player.getInventory().setArmorContents(new ItemStack[] { new ItemStack(Material.AIR), new ItemStack(Material.AIR), new ItemStack(Material.AIR), new ItemStack(Material.AIR) });
+		player.getInventory().setArmorContents(null);
 		player.getInventory().clear();
 		player.setGameMode(GameMode.ADVENTURE);
 		if (arena.getArenaState() == ArenaState.IN_GAME || arena.getArenaState() == ArenaState.ENDING) {

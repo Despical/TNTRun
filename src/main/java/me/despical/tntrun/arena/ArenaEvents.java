@@ -1,16 +1,12 @@
 package me.despical.tntrun.arena;
 
-import me.despical.tntrun.handlers.rewards.Reward;
-import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.player.PlayerToggleFlightEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
@@ -18,12 +14,13 @@ import org.bukkit.potion.PotionEffectType;
 
 import me.despical.commonsbox.compat.XMaterial;
 import me.despical.commonsbox.item.ItemBuilder;
+import me.despical.commonsbox.item.ItemUtils;
 import me.despical.tntrun.Main;
 import me.despical.tntrun.api.StatsStorage;
 import me.despical.tntrun.handlers.ChatManager;
 import me.despical.tntrun.handlers.items.SpecialItemManager;
+import me.despical.tntrun.handlers.rewards.Reward;
 import me.despical.tntrun.user.User;
-import me.despical.tntrun.utils.Utils;
 
 public class ArenaEvents implements Listener {
 	
@@ -62,7 +59,7 @@ public class ArenaEvents implements Listener {
 		}
 		Arena arena = ArenaRegistry.getArena(event.getPlayer());
 		ItemStack itemStack = event.getPlayer().getInventory().getItemInMainHand();
-		if (arena == null || !Utils.isNamed(itemStack)) {
+		if (arena == null || !ItemUtils.isItemStackNamed(itemStack)) {
 			return;
 		}
 		String key = SpecialItemManager.getRelatedSpecialItem(itemStack);
@@ -100,15 +97,22 @@ public class ArenaEvents implements Listener {
 			player.setHealth(20.0d);
 			if (user.isSpectator()) return;
 			user.addStat(StatsStorage.StatisticType.LOSES, 1);
-			if (arena.getPlayersLeft().size() == 1)
-				for (Player p : arena.getPlayersLeft()) {
-					plugin.getUserManager().getUser(p).addStat(StatsStorage.StatisticType.WINS, 1);
-					plugin.getRewardsFactory().performReward(p, Reward.RewardType.WIN);
+			plugin.getRewardsFactory().performReward(player, Reward.RewardType.LOSE);
+			user.setSpectator(true);
+			if (arena.getPlayersLeft().size() == 1) {
+				Player winner = arena.getPlayersLeft().get(0);
+				plugin.getUserManager().getUser(winner).addStat(StatsStorage.StatisticType.WINS, 1);
+				plugin.getRewardsFactory().performReward(winner, Reward.RewardType.WIN);
+				for (Player all : arena.getPlayers()) {
+					if (all == winner) {
+						all.sendTitle(plugin.getChatManager().colorMessage("In-Game.Messages.Game-End-Messages.Titles.Win"), plugin.getChatManager().colorMessage("In-Game.Messages.Game-End-Messages.Subtitles.Win").replace("%winner%", winner.getName()), 5, 40, 5);
+					} else {
+						all.sendTitle(plugin.getChatManager().colorMessage("In-Game.Messages.Game-End-Messages.Titles.Lose"), plugin.getChatManager().colorMessage("In-Game.Messages.Game-End-Messages.Subtitles.Lose").replace("%winner%", winner.getName()), 5, 40, 5);
+					}
+				}
 			}
 			player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 3 * 20, 0, false, false), false);
 			player.sendTitle(plugin.getChatManager().colorMessage("In-Game.Messages.Game-End-Messages.Titles.Lose"), plugin.getChatManager().colorMessage("In-Game.Messages.Game-End-Messages.Subtitles.Lose").replace("%winner%", arena.getPlayersLeft().get(0).getName()), 5, 40, 5);
-			plugin.getRewardsFactory().performReward(player, Reward.RewardType.LOSE);
-			user.setSpectator(true);
 			player.setCollidable(false);
 			player.setGameMode(GameMode.SURVIVAL);
 			ArenaUtils.hidePlayer(player, arena);

@@ -49,7 +49,8 @@ public class TabCompletion implements TabCompleter {
 				return Collections.emptyList();
 			}
 			if (args[0].equalsIgnoreCase("top")) {
-				return Arrays.stream(StatsStorage.StatisticType.values()).filter(StatsStorage.StatisticType::isPersistent).map(stat -> stat.getName().toLowerCase(Locale.ENGLISH)).collect(Collectors.toList());
+				List<String> statNames = Arrays.asList("games_played", "wins", "loses", "longest_survive", "coins");
+				return statNames;
 			}
 			if (args[0].equalsIgnoreCase("stats")) {
 				return Bukkit.getOnlinePlayers().stream().map(Player::getName).collect(Collectors.toList());

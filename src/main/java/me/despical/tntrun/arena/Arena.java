@@ -162,7 +162,7 @@ public class Arena extends BukkitRunnable {
 					player.setGameMode(GameMode.ADVENTURE);
 					ArenaUtils.hidePlayersOutsideTheGame(player, this);
 					plugin.getUserManager().getUser(player).addStat(StatsStorage.StatisticType.GAMES_PLAYED, 1);
-					plugin.getUserManager().getUser(player).setStat(StatsStorage.StatisticType.LOCAL_DOUBLE_JUMPS, 5);
+					plugin.getUserManager().getUser(player).setStat(StatsStorage.StatisticType.LOCAL_DOUBLE_JUMPS, plugin.getConfig().getInt("Double-Jumps", 5));
 					setTimer(2);
 					player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, Integer.MAX_VALUE, 0, false, false), false);
 					player.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, Integer.MAX_VALUE, 0, false, false), false);
@@ -198,6 +198,9 @@ public class Arena extends BukkitRunnable {
 					plugin.getUserManager().getUser(player).addStat(StatsStorage.StatisticType.COINS, 15);
 					player.sendMessage(plugin.getChatManager().getPrefix() + plugin.getChatManager().colorMessage("In-Game.Messages.Earned-Coin"));
 				}
+				if (plugin.getUserManager().getUser(player).getCooldown("double_jump") > 0) {
+					player.setAllowFlight(false);
+				} else player.setAllowFlight(true);
 			}
 			for (Player player : getPlayersLeft()) {
 				plugin.getUserManager().getUser(player).addStat(StatsStorage.StatisticType.LOCAL_SURVIVE, 1);
@@ -233,7 +236,6 @@ public class Arena extends BukkitRunnable {
 				doBarAction(BarAction.REMOVE, player);
 				player.setFireTicks(0);
 				player.setFoodLevel(20);
-
 			}
 			teleportAllToEndLocation();
 			if (plugin.getConfigPreferences().getOption(ConfigPreferences.Option.INVENTORY_MANAGER_ENABLED)) {
@@ -427,7 +429,7 @@ public class Arena extends BukkitRunnable {
 	 * Executes boss bar action for arena
 	 *
 	 * @param action add or remove a player from boss bar
-	 * @param p      player
+	 * @param p player
 	 */
 	public void doBarAction(BarAction action, Player p) {
 		if (!plugin.getConfigPreferences().getOption(ConfigPreferences.Option.BOSSBAR_ENABLED)) {
@@ -582,7 +584,7 @@ public class Arena extends BukkitRunnable {
 				Location location = player.getLocation().clone();
 				for (int i = 0; i <= 4; i++) {
 					Block block = location.add(0, -i, 0).getBlock().getRelative(BlockFace.DOWN);
-					if (plugin.getConfig().getStringList("Whitelisted-Blocks").contains(block.getType().name())) {
+					if (!plugin.getConfig().getStringList("Whitelisted-Blocks").contains(block.getType().name())) {
 						continue;
 					}
 					destroyedBlocks.add(block.getState());

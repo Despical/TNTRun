@@ -65,9 +65,7 @@ Scoreboard:
       - "&fMap: &a%mapname%"
       - "&fPlayers: &a%players%/%max_players%"
       - ""
-      - "&fStarting in &a%formatted_time% &fto"
-      - "&fallow time for"
-      - "&fadditional players"
+      - "&fWaiting for players..."
       - ""
       - "&ewww.despical.com"
     Starting:

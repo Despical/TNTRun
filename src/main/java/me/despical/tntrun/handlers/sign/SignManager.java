@@ -158,7 +158,22 @@ public class SignManager implements Listener {
 		}
 		return arenaSign;
 	}
-
+	
+	@Nullable
+	public ArenaSign getArenaSignByArena(Arena arena) {
+		if (arena == null) {
+			return null;
+		}
+		ArenaSign loopedSign = null;
+		for (ArenaSign sign : arenaSigns) {
+			if (sign.getArena() == arena) {
+				loopedSign = sign;
+				break;
+			}
+		}
+		return loopedSign;
+	}
+	
 	public void loadSigns() {
 		Debugger.debug(Level.INFO, "Signs load event started");
 		long start = System.currentTimeMillis();

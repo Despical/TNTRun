@@ -37,19 +37,6 @@ public class Utils {
 		}
 	}
 
-	/**
-	 * Checks whether itemstack is named (not null, has meta and display name)
-	 *
-	 * @param stack item stack to check
-	 * @return true if named, false otherwise
-	 */
-	public static boolean isNamed(ItemStack stack) {
-		if (stack == null) {
-			return false;
-		}
-		return stack.hasItemMeta() && stack.getItemMeta().hasDisplayName();
-	}
-
 	public static boolean checkIsInGameInstance(Player player) {
 		if (ArenaRegistry.getArena(player) == null) {
 			player.sendMessage(plugin.getChatManager().getPrefix() + plugin.getChatManager().colorMessage("Commands.Not-Playing", player));

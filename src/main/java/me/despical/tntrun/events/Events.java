@@ -25,11 +25,11 @@ import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerPickupArrowEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
-import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.player.PlayerSwapHandItemsEvent;
 import org.bukkit.inventory.ItemStack;
 
 import me.despical.commonsbox.compat.XMaterial;
+import me.despical.commonsbox.item.ItemUtils;
 import me.despical.tntrun.ConfigPreferences;
 import me.despical.tntrun.Main;
 import me.despical.tntrun.arena.Arena;
@@ -37,7 +37,6 @@ import me.despical.tntrun.arena.ArenaManager;
 import me.despical.tntrun.arena.ArenaRegistry;
 import me.despical.tntrun.arena.ArenaUtils;
 import me.despical.tntrun.handlers.items.SpecialItemManager;
-import me.despical.tntrun.utils.Utils;
 
 /**
  * @author Despical
@@ -120,7 +119,7 @@ public class Events implements Listener {
 		}
 		Arena arena = ArenaRegistry.getArena(event.getPlayer());
 		ItemStack itemStack = event.getPlayer().getInventory().getItemInMainHand();
-		if (arena == null || !Utils.isNamed(itemStack)) {
+		if (arena == null || !ItemUtils.isItemStackNamed(itemStack)) {
 			return;
 		}
 		String key = SpecialItemManager.getRelatedSpecialItem(itemStack);

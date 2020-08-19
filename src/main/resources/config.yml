@@ -19,18 +19,25 @@ Start-Block-Remove: 5
 # How many ticks after the blocks will be removed when players moved on it.
 Block-Remove-Delay: 8
  
+# Amount of double jumps for each of the player in-game. Default is 5
+Double-Jumps: 5
+
 # The duration between using double jump again for in-game players.
 Double-Jump-Delay: 4
 
 # The block list that we are going to remove these when player is on these blocks in-game.
 Whitelisted-Blocks:
+  - TNT
   - SAND
+  - SANDSTONE
   - GRAVEL
   - RED_GLAZED_TERRACOTTA
+  - RED_SANDSTONE
+  - RED_SAND
 
 # Should we hook into bungee cord? (If you wanna use arena per server option)
 # You STILL need to use external addon for HUB server game signs
-# One in the Chamber doesn't offer that addon.
+# TNT Run doesn't offer that addon.
 BungeeActivated: false
 
 # Enable this option when you're using MySQL, otherwise it won't work.

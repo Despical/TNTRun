@@ -66,7 +66,7 @@ public class SetupInventory {
 	}
 
 	private void sendProTip(Player p) {
-		int rand = random.nextInt(16 + 1);
+		int rand = random.nextInt(7 + 1);
 		switch (rand) {
 		case 0:
 			p.sendMessage(plugin.getChatManager().colorRawMessage("&e&lTIP: &7We are open source! You can always help us by contributing! Check https://github.com/Despical/TNTRun"));
