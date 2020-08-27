@@ -16,7 +16,7 @@ Jump on the blocks but don't fall into void, show your parkour talent! Who will 
 | [Commons Box](https://github.com/Despical/Commons-Box)        | [Despical](https://github.com/Despical)             | [GPLv3](https://github.com/Despical/Commons-Box/blob/master/LICENSE.md)      |
 
 
-## Want to use TNT Run API? [![](https://jitpack.io/v/Despical/OITC.svg)](https://jitpack.io/#Despical/OITC)
+## Want to use TNT Run API? [![](https://jitpack.io/v/Despical/TNTRun.svg)](https://jitpack.io/#Despical/TNTRun)
 Add repository
 ```xml
     <repositories>
