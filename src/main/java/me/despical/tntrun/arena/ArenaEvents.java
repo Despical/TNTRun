@@ -44,11 +44,13 @@ public class ArenaEvents implements Listener {
 		if (plugin.getUserManager().getUser(player).getCooldown("double_jump") > 0) {
 			return;
 		}
-		player.setFlying(false);
-		plugin.getUserManager().getUser(player).addStat(StatsStorage.StatisticType.LOCAL_DOUBLE_JUMPS, -1);
-		plugin.getUserManager().getUser(player).setCooldown("double_jump", plugin.getConfig().getInt("Double-Jump-Delay", 4));
-		player.setVelocity(player.getLocation().getDirection().multiply(1.5D).setY(0.7D));
-		event.setCancelled(true);
+		if (StatsStorage.getUserStats(player, StatsStorage.StatisticType.LOCAL_DOUBLE_JUMPS) > 0) {
+			player.setFlying(false);
+			plugin.getUserManager().getUser(player).addStat(StatsStorage.StatisticType.LOCAL_DOUBLE_JUMPS, -1);
+			plugin.getUserManager().getUser(player).setCooldown("double_jump", plugin.getConfig().getInt("Double-Jump-Delay", 4));
+			player.setVelocity(player.getLocation().getDirection().multiply(1.5D).setY(0.7D));
+			event.setCancelled(true);
+		}
 	}
 	
 	@EventHandler

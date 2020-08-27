@@ -200,7 +200,7 @@ public class Arena extends BukkitRunnable {
 				}
 				if (plugin.getUserManager().getUser(player).getCooldown("double_jump") > 0) {
 					player.setAllowFlight(false);
-				} else player.setAllowFlight(true);
+				} else if (plugin.getUserManager().getUser(player).getStat(StatsStorage.StatisticType.LOCAL_DOUBLE_JUMPS) != 0) player.setAllowFlight(true);
 			}
 			for (Player player : getPlayersLeft()) {
 				plugin.getUserManager().getUser(player).addStat(StatsStorage.StatisticType.LOCAL_SURVIVE, 1);
@@ -581,17 +581,29 @@ public class Arena extends BukkitRunnable {
 				if (getTimer() <= plugin.getConfig().getInt("Start-Block-Remove", 5)) {
 					return;
 				}
-				Location location = player.getLocation().clone();
-				for (int i = 0; i <= 4; i++) {
-					Block block = location.add(0, -i, 0).getBlock().getRelative(BlockFace.DOWN);
+				for (Block block : getRemovableBlocks(player)) {
 					if (!plugin.getConfig().getStringList("Whitelisted-Blocks").contains(block.getType().name())) {
 						continue;
 					}
 					destroyedBlocks.add(block.getState());
-					Bukkit.getScheduler().runTaskLater(plugin, () -> block.setType(Material.AIR), plugin.getConfig().getLong("Block-Remove-Delay", 8L));
+					Bukkit.getScheduler().runTaskLater(plugin, () -> block.setType(Material.AIR), plugin.getConfig().getLong("Block-Remove-Delay", 12L));
 				}
 			}
 		}, 0L, 1L);
+	}
+	
+	private List<Block> getRemovableBlocks(Player player) {
+		List<Block> removableBlocks = new ArrayList<>();
+		Location playerLocation = player.getLocation();
+		for (double ox = -0.2; ox <= 0.2; ox += 0.2) {
+			for (double oz = -0.2; oz <= 0.2; oz += 0.2) {
+				Block block = playerLocation.add(ox, 0, oz).getBlock().getRelative(BlockFace.DOWN);
+				removableBlocks.add(block);
+				removableBlocks.add(block.getRelative(BlockFace.DOWN));
+				removableBlocks.add(block.getRelative(BlockFace.DOWN).getRelative(BlockFace.DOWN));
+			}
+		}
+		return removableBlocks;
 	}
 
 	public int getOption(ArenaOption option) {

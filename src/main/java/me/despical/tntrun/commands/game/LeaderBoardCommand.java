@@ -1,5 +1,6 @@
 package me.despical.tntrun.commands.game;
 
+import me.despical.commonsbox.string.StringFormatUtils;
 import me.despical.tntrun.ConfigPreferences;
 import me.despical.tntrun.api.StatsStorage;
 import me.despical.tntrun.commands.SubCommand;
@@ -88,7 +89,7 @@ public class LeaderBoardCommand extends SubCommand {
 		String message = getPlugin().getChatManager().colorMessage("Commands.Statistics.Format");
 		message = StringUtils.replace(message, "%position%", String.valueOf(position));
 		message = StringUtils.replace(message, "%name%", playerName);
-		message = StringUtils.replace(message, "%value%", String.valueOf(value));
+		message = StringUtils.replace(message, "%value%", statisticName.equalsIgnoreCase("longest survive") ? String.valueOf(StringFormatUtils.formatIntoMMSS(value)) : String.valueOf(value));
 		message = StringUtils.replace(message, "%statistic%", statisticName);
 		return message;
 	}

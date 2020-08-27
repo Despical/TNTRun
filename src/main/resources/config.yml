@@ -17,7 +17,7 @@ Start-Time-On-Full-Lobby: 15
 Start-Block-Remove: 5
 
 # How many ticks after the blocks will be removed when players moved on it.
-Block-Remove-Delay: 8
+Block-Remove-Delay: 12
  
 # Amount of double jumps for each of the player in-game. Default is 5
 Double-Jumps: 5
@@ -31,7 +31,7 @@ Whitelisted-Blocks:
   - SAND
   - SANDSTONE
   - GRAVEL
-  - RED_GLAZED_TERRACOTTA
+  - STAINED_CLAY
   - RED_SANDSTONE
   - RED_SAND
 

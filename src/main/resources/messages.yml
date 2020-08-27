@@ -29,8 +29,8 @@ Commands:
   No-Permission: "&cYou don't have permission to use this command!"
   Admin-Commands:
     Teleported-To-Player: "&aTeleported to player!"
-    Player-Not-Found: "&cPlayer not found!"
-    Success-Reload: "&aArenas reloaded!"
+    Player-Not-Found: "&cPlayer not found with that name!"
+    Success-Reload: "&aSystem successfully reloaded all configurations and arenas!"
     List-Command:
       Format: "&aExisting arenas: &7%list%"
       No-Arenas-Created: "&cThere are no game instances!"
