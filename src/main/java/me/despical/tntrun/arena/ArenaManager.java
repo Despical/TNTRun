@@ -50,6 +50,7 @@ public class ArenaManager {
 	 * Can be cancelled only via above-mentioned event
 	 *
 	 * @param player player to join
+	 * @param arena target arena
 	 * @see TRGameJoinAttemptEvent
 	 */
 	public static void joinAttempt(Player player, Arena arena) {
@@ -170,6 +171,7 @@ public class ArenaManager {
 	 * Calls TRGameLeaveAttemptEvent event.
 	 *
 	 * @param player player to join
+	 * @param arena target arena
 	 * @see TRGameLeaveAttemptEvent
 	 */
 	public static void leaveAttempt(Player player, Arena arena) {
@@ -242,6 +244,7 @@ public class ArenaManager {
 	 * Calls TRGameStopEvent event
 	 *
 	 * @param quickStop should arena be stopped immediately? (use only in important cases)
+	 * @param arena target arena
 	 * @see TRGameStopEvent
 	 */
 	public static void stopGame(boolean quickStop, Arena arena) {
