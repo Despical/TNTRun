@@ -35,7 +35,7 @@ public class Debugger {
 	 * won't be posted if debugger is enabled, warnings and errors will be.
 	 *
 	 * @param level level of debugged message
-	 * @param msg   debugged message
+	 * @param msg debugged message
 	 */
 	public static void debug(Level level, String msg) {
 		if (!enabled && (level != Level.WARNING || level != Level.SEVERE)) {

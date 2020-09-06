@@ -30,7 +30,7 @@ import me.despical.tntrun.user.User;
 public class ChatEvents implements Listener {
 
 	private final Main plugin;
-	private final String[] regexChars = new String[] { "$", "\\" };
+	private final String[] regexChars = new String[] {"$", "\\"};
 
 	public ChatEvents(Main plugin) {
 		this.plugin = plugin;

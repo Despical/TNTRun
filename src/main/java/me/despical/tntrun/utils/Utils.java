@@ -1,7 +1,6 @@
 package me.despical.tntrun.utils;
 
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 
 import me.despical.tntrun.Main;
 import me.despical.tntrun.arena.ArenaRegistry;

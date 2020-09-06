@@ -97,9 +97,7 @@ public class ChatManager {
 		default:
 			return;
 		}
-		for (Player player : a.getPlayers()) {
-			player.sendMessage(prefix + message);
-		}
+		this.broadcast(a, prefix + message);
 	}
 	
 	public void reloadConfig() {

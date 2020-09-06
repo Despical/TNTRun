@@ -1,13 +1,14 @@
 package me.despical.tntrun.commands.admin.arena;
 
-import me.despical.tntrun.arena.ArenaRegistry;
-import me.despical.tntrun.commands.SubCommand;
-import me.despical.tntrun.handlers.setup.SetupInventory;
+import java.util.Collections;
+import java.util.List;
+
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import java.util.Collections;
-import java.util.List;
+import me.despical.tntrun.arena.ArenaRegistry;
+import me.despical.tntrun.commands.SubCommand;
+import me.despical.tntrun.handlers.setup.SetupInventory;
 
 /**
  * @author Despical

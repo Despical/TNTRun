@@ -6,8 +6,8 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import com.github.stefvanschie.inventoryframework.Gui;
-import com.github.stefvanschie.inventoryframework.pane.StaticPane;
+import com.github.despical.inventoryframework.Gui;
+import com.github.despical.inventoryframework.pane.StaticPane;
 
 import me.despical.commonsbox.configuration.ConfigUtils;
 import me.despical.tntrun.Main;

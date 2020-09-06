@@ -2,8 +2,7 @@ package me.despical.tntrun.utils;
 
 import org.junit.Test;
 
-import junit.framework.Assert;
-import me.despical.tntrun.utils.Utils;
+import static junit.framework.Assert.assertEquals;
 
 /**
  * @author Despical
@@ -14,8 +13,8 @@ public class UtilsTest {
 
 	@Test
 	public void serializeInt() {
-		Assert.assertEquals(9, Utils.serializeInt(3));
-		Assert.assertEquals(45, Utils.serializeInt(37));
-		Assert.assertEquals(45, Utils.serializeInt(43));
+		assertEquals(9, Utils.serializeInt(3));
+		assertEquals(45, Utils.serializeInt(37));
+		assertEquals(45, Utils.serializeInt(43));
 	}
 }

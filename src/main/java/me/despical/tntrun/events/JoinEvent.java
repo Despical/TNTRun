@@ -1,5 +1,6 @@
 package me.despical.tntrun.events;
 
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -11,6 +12,7 @@ import me.despical.tntrun.ConfigPreferences;
 import me.despical.tntrun.Main;
 import me.despical.tntrun.arena.ArenaRegistry;
 import me.despical.tntrun.handlers.PermissionsManager;
+import me.despical.tntrun.utils.UpdateChecker;
 
 /**
  * @author Despical
@@ -53,5 +55,24 @@ public class JoinEvent implements Listener {
 		if (plugin.getConfigPreferences().getOption(ConfigPreferences.Option.INVENTORY_MANAGER_ENABLED)) {
 			InventorySerializer.loadInventory(plugin, event.getPlayer());
 		}
+	}
+	
+	@EventHandler
+	public void onJoinCheckVersion(final PlayerJoinEvent event) {
+		if (!plugin.getConfig().getBoolean("Update-Notifier.Enabled", true) || !event.getPlayer().hasPermission("tntrun.updatenotify")) {
+			return;
+		}
+		Bukkit.getScheduler().runTaskLater(plugin, () -> UpdateChecker.init(plugin, 1).requestUpdateCheck().whenComplete((result, exception) -> {
+			if (!result.requiresUpdate()) {
+				return;
+			}
+			if (result.getNewestVersion().contains("b")) {
+				event.getPlayer().sendMessage(plugin.getChatManager().colorRawMessage("&3[TNT Run] &bFound a beta update: v" + result.getNewestVersion() + " Download"));
+				event.getPlayer().sendMessage(plugin.getChatManager().colorRawMessage("&3>> &bhttps://www.spigotmc.org/resources/tnt-run-1-12-1-16-2.83196/"));
+			} else {
+				event.getPlayer().sendMessage(plugin.getChatManager().colorRawMessage("&3[TNT Run] &bFound an update: v" + result.getNewestVersion() + " Download:"));
+				event.getPlayer().sendMessage(plugin.getChatManager().colorRawMessage("&3>> &bhttps://www.spigotmc.org/resources/tnt-run-1-12-1-16-2.83196/"));
+			}
+		}), 25);
 	}
 }
