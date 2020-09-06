@@ -248,14 +248,14 @@ public class Main extends JavaPlugin {
 				if (getConfig().getBoolean("Update-Notifier.Notify-Beta-Versions", true)) {
 					Bukkit.getConsoleSender().sendMessage("[TNTRun] Found a new beta version available: v" + result.getNewestVersion());
 					Bukkit.getConsoleSender().sendMessage("[TNTRun] Download it on SpigotMC:");
-					Bukkit.getConsoleSender().sendMessage("[KOTL] spigotmc.org/resources/king-of-the-ladder-1-8-3-1-16-2.80686/");
+					Bukkit.getConsoleSender().sendMessage("[TNTRun] spigotmc.org/resources/king-of-the-ladder-1-8-3-1-16-2.80686/");
 				}
 				return;
 			}
 			MessageUtils.updateIsHere();
 			Bukkit.getConsoleSender().sendMessage("[TNTRun] Found a new version available: v" + result.getNewestVersion());
 			Bukkit.getConsoleSender().sendMessage("[TNTRun] Download it SpigotMC:");
-			Bukkit.getConsoleSender().sendMessage("[KOTL] spigotmc.org/resources/tnt-run-1-12-1-16-2.83196/");
+			Bukkit.getConsoleSender().sendMessage("[TNTRun] spigotmc.org/resources/tnt-run-1-12-1-16-2.83196/");
 		});
 	}
 
