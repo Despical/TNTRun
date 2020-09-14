@@ -41,25 +41,29 @@ public class HelpCommand extends SubCommand {
 		sender.sendMessage("");
 		sender.sendMessage(getPlugin().getChatManager().colorRawMessage("&3&l---- TNT Run Admin Commands ----"));
 		sender.sendMessage("");
-		for (SubCommand subCommand : this.getPlugin().getCommandHandler().getSubCommands()) {
-			if (subCommand.getType() == SubCommand.CommandType.GENERIC) {
-				String usage = "/" + label + " " + subCommand.getName() + (subCommand.getPossibleArguments().length() > 0 ? " " + subCommand.getPossibleArguments() : "");
-				if (sender instanceof Player) {
-					List<String> help = new ArrayList<>();
-					help.add(ChatColor.DARK_AQUA + usage);
-					for (String tutLine : subCommand.getTutorial()) {
-						help.add(ChatColor.AQUA + tutLine);
-					}
-					((Player) sender).spigot().sendMessage(new ComponentBuilder(usage)
+
+		getPlugin().getCommandHandler().getSubCommands().stream().filter(subCommand -> subCommand.getType() == CommandType.GENERIC).forEach(subCommand -> {
+			String usage = "/" + label + " " + subCommand.getName() + (subCommand.getPossibleArguments().length() > 0 ? " " + subCommand.getPossibleArguments() : "");
+
+			if (sender instanceof Player) {
+				List<String> help = new ArrayList<>();
+
+				help.add(ChatColor.DARK_AQUA + usage);
+
+				for (String tutLine : subCommand.getTutorial()) {
+					help.add(ChatColor.AQUA + tutLine);
+				}
+
+				((Player) sender).spigot().sendMessage(new ComponentBuilder(usage)
 						.color(ChatColor.AQUA)
 						.event(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, usage))
 						.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.fromLegacyText(String.join("\n", help))))
 						.create());
-				} else {
-					sender.sendMessage(ChatColor.AQUA + usage);
-				}
+			} else {
+				sender.sendMessage(ChatColor.AQUA + usage);
 			}
-		}
+		});
+
 		if (sender instanceof Player) {
 			sendHoverTip((Player) sender);
 		}

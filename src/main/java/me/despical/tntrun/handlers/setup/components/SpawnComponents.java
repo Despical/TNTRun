@@ -36,6 +36,7 @@ public class SpawnComponents implements SetupComponent {
 		Arena arena = setupInventory.getArena();
 		Main plugin = setupInventory.getPlugin();
 		String serializedLocation = LocationSerializer.locationToString(player.getLocation());
+
 		pane.addItem(new GuiItem(new ItemBuilder(Material.REDSTONE_BLOCK)
 			.name(plugin.getChatManager().colorRawMessage("&e&lSet Ending Location"))
 			.lore(ChatColor.GRAY + "Click to set the ending location")

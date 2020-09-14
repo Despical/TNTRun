@@ -45,24 +45,32 @@ public class DeleteCommand extends SubCommand {
 			sender.sendMessage(getPlugin().getChatManager().getPrefix() + getPlugin().getChatManager().colorMessage("Commands.Type-Arena-Name"));
 			return;
 		}
+
 		Arena arena = ArenaRegistry.getArena(args[0]);
+
 		if (arena == null) {
 			sender.sendMessage(getPlugin().getChatManager().getPrefix() + getPlugin().getChatManager().colorMessage("Commands.No-Arena-Like-That"));
 			return;
 		}
+
 		if (!confirmations.contains(sender)) {
 			confirmations.add(sender);
 			Bukkit.getScheduler().runTaskLater(getPlugin(), () -> confirmations.remove(sender), 20 * 10);
+
 			sender.sendMessage(getPlugin().getChatManager().getPrefix() + getPlugin().getChatManager().colorMessage("Commands.Are-You-Sure"));
 			return;
 		}
+
 		confirmations.remove(sender);
 		ArenaManager.stopGame(true, arena);
 		getPlugin().getSignManager().getArenaSigns().remove(getPlugin().getSignManager().getArenaSignByArena(arena));
 		ArenaRegistry.unregisterArena(arena);
+
 		FileConfiguration config = ConfigUtils.getConfig(getPlugin(), "arenas");
+
 		config.set("instances." + args[0], null);
 		ConfigUtils.saveConfig(getPlugin(), config, "arenas");
+
 		sender.sendMessage(getPlugin().getChatManager().getPrefix() + getPlugin().getChatManager().colorMessage("Commands.Removed-Game-Instance"));
 	}
 

@@ -36,6 +36,7 @@ public class SetupInventory {
 		this.arena = arena;
 		this.player = player;
 		this.setupUtilities = new SetupUtilities(config, arena);
+
 		prepareGui();
 	}
 
@@ -66,19 +67,23 @@ public class SetupInventory {
 	}
 
 	private void sendProTip(Player p) {
-		int rand = random.nextInt(7 + 1);
+		int rand = random.nextInt(8 + 1);
+
 		switch (rand) {
-		case 0:
-			p.sendMessage(plugin.getChatManager().colorRawMessage("&e&lTIP: &7We are open source! You can always help us by contributing! Check https://github.com/Despical/TNTRun"));
-			break;
-		case 1:
-			p.sendMessage(plugin.getChatManager().colorRawMessage("&e&lTIP: &7Need help? Join our discord server: https://discordapp.com/invite/Vhyy4HA"));
-			break;
-		case 2:
-			p.sendMessage(plugin.getChatManager().colorRawMessage("&e&lTIP: &7Need help? Check our wiki: https://github.com/Despical/TNTRun/wiki"));
-			break;
-		default:
-			break;
+			case 0:
+				p.sendMessage(plugin.getChatManager().colorRawMessage("&e&lTIP: &7We are open source! You can always help us by contributing! Check https://github.com/Despical/TNTRun"));
+				break;
+			case 1:
+				p.sendMessage(plugin.getChatManager().colorRawMessage("&e&lTIP: &7Need help? Join our discord server: https://discordapp.com/invite/Vhyy4HA"));
+				break;
+			case 2:
+				p.sendMessage(plugin.getChatManager().colorRawMessage("&e&lTIP: &7Need help? Check our wiki: https://github.com/Despical/TNTRun/wiki"));
+				break;
+			case 3:
+				p.sendMessage(plugin.getChatManager().colorRawMessage("&e&lTIP: &7Want to access exclusive maps, addons and more? Check our Patreon page: https://www.patreon.com/despical"));
+				break;
+			default:
+				break;
 		}
 	}
 

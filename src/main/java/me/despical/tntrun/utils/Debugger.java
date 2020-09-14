@@ -41,6 +41,7 @@ public class Debugger {
 		if (!enabled && (level != Level.WARNING || level != Level.SEVERE)) {
 			return;
 		}
+
 		logger.log(level, "[TRDBG] " + msg);
 	}
 
@@ -57,6 +58,7 @@ public class Debugger {
 		if (!enabled && (level != Level.WARNING || level != Level.SEVERE)) {
 			return;
 		}
+
 		logger.log(level, "[TRDBG] " + msg, params);
 	}
 
@@ -72,9 +74,11 @@ public class Debugger {
 		if (!deep) {
 			return;
 		}
+
 		if (!listenedPerformance.contains(monitorName)) {
 			return;
 		}
+
 		logger.log(Level.INFO, "[TRDBG] " + msg, params);
 	}
 }

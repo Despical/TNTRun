@@ -62,32 +62,40 @@ public class Events implements Listener {
 	@EventHandler(priority = EventPriority.HIGH)
 	public void onDrop(PlayerDropItemEvent event) {
 		Arena arena = ArenaRegistry.getArena(event.getPlayer());
+
 		if (arena == null) {
 			return;
 		}
+
 		event.setCancelled(true);
 	}
 
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onCommandExecute(PlayerCommandPreprocessEvent event) {
 		Arena arena = ArenaRegistry.getArena(event.getPlayer());
+
 		if (arena == null) {
 			return;
 		}
+
 		if (!plugin.getConfig().getBoolean("Block-Commands-In-Game", true)) {
 			return;
 		}
+
 		for (String msg : plugin.getConfig().getStringList("Whitelisted-Commands")) {
 			if (event.getMessage().contains(msg)) {
 				return;
 			}
 		}
+
 		if (event.getPlayer().isOp() || event.getPlayer().hasPermission("tntrun.admin") || event.getPlayer().hasPermission("tntrun.command.bypass")) {
 			return;
 		}
+
 		if (event.getMessage().startsWith("/tntrun") || event.getMessage().startsWith("/tntrun") || event.getMessage().contains("leave") || event.getMessage().contains("stats")) {
 			return;
 		}
+
 		event.setCancelled(true);
 		event.getPlayer().sendMessage(plugin.getChatManager().getPrefix() + plugin.getChatManager().colorMessage("In-Game.Only-Command-Ingame-Is-Leave"));
 	}
@@ -95,9 +103,11 @@ public class Events implements Listener {
 	@EventHandler(priority = EventPriority.HIGH)
 	public void onInGameInteract(PlayerInteractEvent event) {
 		Arena arena = ArenaRegistry.getArena(event.getPlayer());
+
 		if (arena == null || event.getClickedBlock() == null) {
 			return;
 		}
+
 		if (event.getClickedBlock().getType() == XMaterial.PAINTING.parseMaterial() || event.getClickedBlock().getType() == XMaterial.FLOWER_POT.parseMaterial()) {
 			event.setCancelled(true);
 		}
@@ -106,9 +116,11 @@ public class Events implements Listener {
 	@EventHandler(priority = EventPriority.HIGH)
 	public void onInGameBedEnter(PlayerBedEnterEvent event) {
 		Arena arena = ArenaRegistry.getArena(event.getPlayer());
+
 		if (arena == null) {
 			return;
 		}
+
 		event.setCancelled(true);
 	}
 
@@ -117,15 +129,20 @@ public class Events implements Listener {
 		if (event.getAction() == Action.LEFT_CLICK_AIR || event.getAction() == Action.LEFT_CLICK_BLOCK || event.getAction() == Action.PHYSICAL) {
 			return;
 		}
+
 		Arena arena = ArenaRegistry.getArena(event.getPlayer());
 		ItemStack itemStack = event.getPlayer().getInventory().getItemInMainHand();
+
 		if (arena == null || !ItemUtils.isItemStackNamed(itemStack)) {
 			return;
 		}
+
 		String key = SpecialItemManager.getRelatedSpecialItem(itemStack);
+
 		if (key == null) {
 			return;
 		}
+
 		if (SpecialItemManager.getRelatedSpecialItem(itemStack).equalsIgnoreCase("Leave")) {
 			event.setCancelled(true);
 			if (plugin.getConfigPreferences().getOption(ConfigPreferences.Option.BUNGEE_ENABLED)) {
@@ -149,6 +166,7 @@ public class Events implements Listener {
 		if (!ArenaRegistry.isInArena(event.getPlayer())) {
 			return;
 		}
+
 		event.setCancelled(true);
 	}
 
@@ -157,6 +175,7 @@ public class Events implements Listener {
 		if (!ArenaRegistry.isInArena(event.getPlayer())) {
 			return;
 		}
+
 		event.setCancelled(true);
 	}
 
@@ -167,10 +186,13 @@ public class Events implements Listener {
 				event.setCancelled(true);
 				return;
 			}
+
 			if (!(event.getRemover() instanceof Arrow)) {
 				return;
 			}
+
 			Arrow arrow = (Arrow) event.getRemover();
+
 			if (arrow.getShooter() instanceof Player && ArenaRegistry.isInArena((Player) arrow.getShooter())) {
 				event.setCancelled(true);
 			}
@@ -182,10 +204,13 @@ public class Events implements Listener {
 		if (!(e.getEntity() instanceof LivingEntity)) {
 			return;
 		}
+
 		LivingEntity livingEntity = (LivingEntity) e.getEntity();
+
 		if (!livingEntity.getType().equals(EntityType.ARMOR_STAND)) {
 			return;
 		}
+
 		if (e.getDamager() instanceof Player && ArenaRegistry.isInArena((Player) e.getDamager())) {
 			e.setCancelled(true);
 		} else if (e.getDamager() instanceof Arrow) {
@@ -223,6 +248,7 @@ public class Events implements Listener {
 				e.setCancelled(true);
 				return;
 			}
+
 			if (e.getMessage().equalsIgnoreCase("/leave")) {
 				player.performCommand("tntrun leave");
 				e.setCancelled(true);
@@ -235,11 +261,14 @@ public class Events implements Listener {
 		if (!(e.getEntity() instanceof Player)) {
 			return;
 		}
+
 		Player victim = (Player) e.getEntity();
 		Arena arena = ArenaRegistry.getArena(victim);
+
 		if (arena == null) {
 			return;
 		}
+
 		if (e.getCause().equals(EntityDamageEvent.DamageCause.FALL)) {
 			e.setCancelled(true);
 		}
@@ -250,9 +279,11 @@ public class Events implements Listener {
 		if (!(event.getDamager() instanceof Player && event.getEntity() instanceof Player)) {
 			return;
 		}
+
 		if (!(ArenaUtils.areInSameArena((Player) event.getDamager(), (Player) event.getEntity()))) {
 			return;
 		}
+
 		event.setCancelled(true);
 	}
 	
@@ -267,9 +298,11 @@ public class Events implements Listener {
 	@EventHandler(priority = EventPriority.HIGH)
 	public void onPickupItem(PlayerPickupItemEvent event) {
 		Arena arena = ArenaRegistry.getArena(event.getPlayer());
+
 		if (arena == null) {
 			return;
 		}
+
 		event.setCancelled(true);
 		event.getItem().remove();
 	}
@@ -279,6 +312,7 @@ public class Events implements Listener {
 		if (!ArenaRegistry.isInArena(event.getPlayer())) {
 			return;
 		}
+
 		if (event.getPlayer().getTargetBlock(null, 7).getType() == XMaterial.CRAFTING_TABLE.parseMaterial()) {
 			event.setCancelled(true);
 		}

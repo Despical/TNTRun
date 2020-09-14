@@ -1,6 +1,5 @@
 package me.despical.tntrun.utils.conversation;
 
-import org.bukkit.ChatColor;
 import org.bukkit.conversations.Conversable;
 import org.bukkit.conversations.ConversationFactory;
 import org.bukkit.conversations.Prompt;
@@ -27,9 +26,10 @@ public class SimpleConversationBuilder {
 				if (listener.gracefulExit()) {
 					return;
 				}
-				listener.getContext().getForWhom().sendRawMessage(plugin.getChatManager().colorRawMessage("&7Operation cancelled!"));
-			})
-			.thatExcludesNonPlayersWithMessage(ChatColor.RED + "Only by players!");
+
+				listener.getContext().getForWhom().sendRawMessage(plugin.getChatManager().colorMessage("Conversation.Operation-Timeout"));
+
+			}).thatExcludesNonPlayersWithMessage(plugin.getChatManager().colorMessage("Conversation.Operation-Timeout"));
 	}
 
 	public SimpleConversationBuilder withPrompt(Prompt prompt) {

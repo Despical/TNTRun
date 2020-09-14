@@ -58,6 +58,7 @@ public class ScoreboardManager {
 				return formatScoreboard(user);
 			}
 		});
+
 		scoreboard.activate();
 		scoreboards.add(scoreboard);
 	}
@@ -85,12 +86,14 @@ public class ScoreboardManager {
 		for (Scoreboard board : scoreboards) {
 			board.deactivate();
 		}
+
 		scoreboards.clear();
 	}
 
 	private List<Entry> formatScoreboard(User user) {
 		EntryBuilder builder = new EntryBuilder();
 		List<String> lines;
+
 		if (arena.getArenaState() == ArenaState.IN_GAME) {
 			lines = config.getStringList("Scoreboard.Content.Playing");
 		} else {
@@ -100,9 +103,11 @@ public class ScoreboardManager {
 				lines = config.getStringList("Scoreboard.Content." + arena.getArenaState().getFormattedName());
 			}
 		}
+
 		for (String line : lines) {
 				builder.next(formatScoreboardLine(line, user));
 		}
+
 		return builder.build();
 	}
 
@@ -117,9 +122,11 @@ public class ScoreboardManager {
 		formattedLine = StringUtils.replace(formattedLine, "%coins_earned%", String.valueOf(StatsStorage.getUserStats(user.getPlayer(), StatsStorage.StatisticType.LOCAL_COINS)));
 		formattedLine = StringUtils.replace(formattedLine, "%double_jumps%", String.valueOf(StatsStorage.getUserStats(user.getPlayer(), StatsStorage.StatisticType.LOCAL_DOUBLE_JUMPS)));
 		formattedLine = plugin.getChatManager().colorRawMessage(formattedLine);
+
 		if (plugin.getServer().getPluginManager().isPluginEnabled("PlaceholderAPI")) {
 			formattedLine = PlaceholderAPI.setPlaceholders(user.getPlayer(), formattedLine);
 		}
+
 		return formattedLine;
 	}
 }

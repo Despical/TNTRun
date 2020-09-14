@@ -10,10 +10,11 @@ import org.bukkit.entity.Player;
 
 import me.despical.tntrun.ConfigPreferences;
 import me.despical.tntrun.arena.Arena;
-import me.despical.tntrun.arena.ArenaManager;
 import me.despical.tntrun.arena.ArenaRegistry;
 import me.despical.tntrun.arena.ArenaState;
 import me.despical.tntrun.commands.SubCommand;
+
+import static me.despical.tntrun.arena.ArenaManager.*;
 
 /**
  * @author Despical
@@ -41,26 +42,31 @@ public class RandomJoinCommand extends SubCommand {
 		if (getPlugin().getConfigPreferences().getOption(ConfigPreferences.Option.BUNGEE_ENABLED)) {
 			return;
 		}
+
 		Map<Arena, Integer> arenas = new HashMap<>();
+
 		for (Arena arena : ArenaRegistry.getArenas()) {
 			if (arena.getArenaState() == ArenaState.STARTING && arena.getPlayers().size() < arena.getMaximumPlayers()) {
 				arenas.put(arena, arena.getPlayers().size());
 			}
 		}
+
 		if (arenas.size() > 0) {
 			Stream<Map.Entry<Arena, Integer>> sorted = arenas.entrySet().stream().sorted(Map.Entry.comparingByValue());
 			Arena arena = sorted.findFirst().get().getKey();
 			if (arena != null) {
-				ArenaManager.joinAttempt((Player) sender, arena);
+				joinAttempt((Player) sender, arena);
 				return;
 			}
 		}
+
 		for (Arena arena : ArenaRegistry.getArenas()) {
 			if ((arena.getArenaState() == ArenaState.WAITING_FOR_PLAYERS || arena.getArenaState() == ArenaState.STARTING) && arena.getPlayers().size() < arena.getMaximumPlayers()) {
-				ArenaManager.joinAttempt((Player) sender, arena);
+				joinAttempt((Player) sender, arena);
 				return;
 			}
 		}
+
 		sender.sendMessage(getPlugin().getChatManager().getPrefix() + getPlugin().getChatManager().colorMessage("Commands.No-Free-Arenas"));
 	}
 

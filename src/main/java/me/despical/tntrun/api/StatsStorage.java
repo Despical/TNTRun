@@ -50,27 +50,35 @@ public class StatsStorage {
 			try (Connection connection = plugin.getMysqlDatabase().getConnection()) {
 				Statement statement = connection.createStatement();
 				ResultSet set = statement.executeQuery("SELECT UUID, " + stat.getName() + " FROM " + ((MysqlManager) plugin.getUserManager().getDatabase()).getTableName() + " ORDER BY " + stat.getName());
-				Map<java.util.UUID, java.lang.Integer> column = new LinkedHashMap<>();
+				Map<java.util.UUID, Integer> column = new LinkedHashMap<>();
+
 				while (set.next()) {
 					column.put(java.util.UUID.fromString(set.getString("UUID")), set.getInt(stat.getName()));
 				}
+
 				return column;
 			} catch (SQLException e) {
-				plugin.getLogger().log(Level.WARNING, "SQLException occurred! " + e.getSQLState() + " (" + e.getErrorCode() + ")");
+				plugin.getLogger().log(Level.WARNING, "SQL Exception occurred! " + e.getSQLState() + " (" + e.getErrorCode() + ")");
+
 				MessageUtils.errorOccurred();
+
 				Bukkit.getConsoleSender().sendMessage("Cannot get contents from MySQL database!");
 				Bukkit.getConsoleSender().sendMessage("Check configuration of mysql.yml file or disable mysql option in config.yml");
 				return Collections.emptyMap();
 			}
 		}
+
 		FileConfiguration config = ConfigUtils.getConfig(plugin, "stats");
 		Map<UUID, Integer> stats = new TreeMap<>();
+
 		for (String string : config.getKeys(false)) {
 			if (string.equals("data-version")) {
 				continue;
 			}
+
 			stats.put(UUID.fromString(string), config.getInt(string + "." + stat.getName()));
 		}
+
 		return SortUtils.sortByValue(stats);
 	}
 
@@ -90,12 +98,12 @@ public class StatsStorage {
 	 * Available statistics to get.
 	 */
 	public enum StatisticType {
-		WINS("wins", true), LOSES("loses", true), GAMES_PLAYED("gamesplayed", true), COINS("coinsearned", true),
-		LONGEST_SURVIVE("longestsurvive", true), LOCAL_SURVIVE("local_survive", false), LOCAL_COINS("local_coins", false),
-		LOCAL_DOUBLE_JUMPS("local_double_jumps", false);
+		COINS("coinsearned", true), GAMES_PLAYED("gamesplayed", true), LOCAL_COINS("local_coins", false), LOCAL_DOUBLE_JUMPS("local_double_jumps", false),
+		LOCAL_SURVIVE("local_survive", false), LONGEST_SURVIVE("longestsurvive", true), LOSES("loses", true),
+		WINS("wins", true);
 
 		private final String name;
-		private boolean persistent;
+		private final boolean persistent;
 
 		StatisticType(String name, boolean persistent) {
 			this.name = name;

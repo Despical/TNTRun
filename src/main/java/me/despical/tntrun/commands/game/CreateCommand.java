@@ -44,7 +44,9 @@ public class CreateCommand extends SubCommand {
 			sender.sendMessage(getPlugin().getChatManager().getPrefix() + getPlugin().getChatManager().colorMessage("Commands.Type-Arena-Name"));
 			return;
 		}
+
 		Player player = (Player) sender;
+
 		for (Arena arena : ArenaRegistry.getArenas()) {
 			if (arena.getId().equalsIgnoreCase(args[0])) {
 				player.sendMessage(getPlugin().getChatManager().getPrefix() + ChatColor.RED + "Arena with that ID already exists!");
@@ -52,6 +54,7 @@ public class CreateCommand extends SubCommand {
 				return;
 			}
 		}
+
 		if (ConfigUtils.getConfig(getPlugin(), "arenas").contains("instances." + args[0])) {
 			player.sendMessage(getPlugin().getChatManager().getPrefix() + ChatColor.RED + "Instance/Arena already exists! Use another ID or delete it first!");
 		} else {
@@ -67,6 +70,7 @@ public class CreateCommand extends SubCommand {
 	private void createInstanceInConfig(String id) {
 		String path = "instances." + id + ".";
 		FileConfiguration config = ConfigUtils.getConfig(getPlugin(), "arenas");
+
 		config.set(path + "lobbylocation", LocationSerializer.locationToString(Bukkit.getServer().getWorlds().get(0).getSpawnLocation()));
 		config.set(path + "Endlocation", LocationSerializer.locationToString(Bukkit.getServer().getWorlds().get(0).getSpawnLocation()));
 		config.set(path + "minimumplayers", 2);
@@ -75,11 +79,14 @@ public class CreateCommand extends SubCommand {
 		config.set(path + "signs", new ArrayList<>());
 		config.set(path + "isdone", false);
 		ConfigUtils.saveConfig(getPlugin(), config, "arenas");
+
 		Arena arena = new Arena(id);
+
 		arena.setMapName(config.getString(path + "mapname"));
 		arena.setLobbyLocation(LocationSerializer.locationFromString(config.getString(path + "lobbylocation")));
 		arena.setEndLocation(LocationSerializer.locationFromString(config.getString(path + "Endlocation")));
 		arena.setReady(false);
+		
 		ArenaRegistry.registerArena(arena);
 	}
 

@@ -11,7 +11,7 @@ import org.bukkit.inventory.ItemStack;
  */
 public class SpecialItemManager {
 
-	private static HashMap<String, SpecialItem> specialItems = new HashMap<>();
+	private static final HashMap<String, SpecialItem> specialItems = new HashMap<>();
 
 	public static void addItem(String name, SpecialItem entityItem) {
 		specialItems.put(name, entityItem);
@@ -21,6 +21,7 @@ public class SpecialItemManager {
 		if (specialItems.containsKey(name)) {
 			return specialItems.get(name);
 		}
+
 		return null;
 	}
 
@@ -31,6 +32,7 @@ public class SpecialItemManager {
 				return key;
 			}
 		}
+
 		return null;
 	}
 }

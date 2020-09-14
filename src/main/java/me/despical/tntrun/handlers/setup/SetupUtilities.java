@@ -28,6 +28,7 @@ public class SetupUtilities {
 		if (config.isSet(path)) {
 			return plugin.getChatManager().colorRawMessage("&a&l✔ Completed &7(value: &8" + config.getString(path) + "&7)");
 		}
+
 		return plugin.getChatManager().colorRawMessage("&c&l✘ Not Completed");
 	}
 
@@ -36,16 +37,20 @@ public class SetupUtilities {
 			if (Bukkit.getServer().getWorlds().get(0).getSpawnLocation().equals(LocationSerializer.locationFromString(config.getString(path)))) {
 				return plugin.getChatManager().colorRawMessage("&c&l✘ Not Completed");
 			}
+
 			return plugin.getChatManager().colorRawMessage("&a&l✔ Completed");
 		}
+
 		return plugin.getChatManager().colorRawMessage("&c&l✘ Not Completed");
 	}
 
 	public int getMinimumValueHigherThanZero(String path) {
 		int amount = config.getInt("instances." + arena.getId() + "." + path);
+
 		if (amount == 0) {
 			amount = 1;
 		}
+
 		return amount;
 	}
 }

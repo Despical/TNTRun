@@ -22,6 +22,7 @@ public class ArenaUtils {
 		if (ArenaRegistry.getArena(one) == null || ArenaRegistry.getArena(two) == null) {
 			return false;
 		}
+
 		return ArenaRegistry.getArena(one).equals(ArenaRegistry.getArena(two));
 	}
 	
@@ -42,6 +43,7 @@ public class ArenaUtils {
 			if (arena.getPlayers().contains(players)) {
 				continue;
 			}
+
 			player.hidePlayer(plugin, players);
 			players.hidePlayer(plugin, player);
 		}
@@ -51,19 +53,26 @@ public class ArenaUtils {
 		if (!plugin.getConfigPreferences().getOption(ConfigPreferences.Option.NAMETAGS_HIDDEN)) {
 			return;
 		}
+
 		for (Player players : plugin.getServer().getOnlinePlayers()) {
 			Arena arena = ArenaRegistry.getArena(players);
+
 			if (arena == null) {
 				continue;
 			}
+
 			Scoreboard scoreboard = players.getScoreboard();
+
 			if (scoreboard == Bukkit.getScoreboardManager().getMainScoreboard()) {
 				scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
 			}
+
 			Team team = scoreboard.getTeam("TRHide");
+
 			if (team == null) {
 				team = scoreboard.registerNewTeam("TRHide");
 			}
+
 			team.setOption(Team.Option.NAME_TAG_VISIBILITY, Team.OptionStatus.NEVER);
 			if (arena.getArenaState() == ArenaState.IN_GAME) {
 				team.addEntry(p.getName());
@@ -72,6 +81,7 @@ public class ArenaUtils {
 			} else if (arena.getArenaState() == ArenaState.ENDING || arena.getArenaState() == ArenaState.RESTARTING) {
 				team.removeEntry(p.getName());
 			}
+
 			players.setScoreboard(scoreboard);
 		}
 	}

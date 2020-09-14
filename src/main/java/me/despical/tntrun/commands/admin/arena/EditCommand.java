@@ -6,9 +6,10 @@ import java.util.List;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import me.despical.tntrun.arena.ArenaRegistry;
 import me.despical.tntrun.commands.SubCommand;
 import me.despical.tntrun.handlers.setup.SetupInventory;
+
+import static me.despical.tntrun.arena.ArenaRegistry.getArena;
 
 /**
  * @author Despical
@@ -34,11 +35,12 @@ public class EditCommand extends SubCommand {
 
 	@Override
 	public void execute(CommandSender sender, String label, String[] args) {
-		if (ArenaRegistry.getArena(args[0]) == null) {
+		if (getArena(args[0]) == null) {
 			sender.sendMessage(getPlugin().getChatManager().getPrefix() + getPlugin().getChatManager().colorMessage("Commands.No-Arena-Like-That"));
 			return;
 		}
-		new SetupInventory(ArenaRegistry.getArena(args[0]), (Player) sender).openInventory();	
+
+		new SetupInventory(getArena(args[0]), (Player) sender).openInventory();
 	}
 
 	@Override

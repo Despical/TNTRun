@@ -76,18 +76,22 @@ public class CommandHandler implements CommandExecutor {
 			if (sender.hasPermission("tntrun.admin")) {
 				sender.sendMessage(ChatColor.DARK_AQUA + "Commands: " + ChatColor.AQUA + "/" + label + " help");
 			}
+
 			return true;
 		}
+
 		for (SubCommand subCommand : subCommands) {
 			if (subCommand.isValidTrigger(args[0])) {
 				if (!subCommand.hasPermission(sender)) {
 					sender.sendMessage(plugin.getChatManager().getPrefix() + plugin.getChatManager().colorMessage("Commands.No-Permission"));
 					return true;
 				}
+
 				if (subCommand.getSenderType() == SenderType.PLAYER && !(sender instanceof Player)) {
 					sender.sendMessage(plugin.getChatManager().colorMessage("Commands.Only-By-Player"));
 					return false;
 				}
+
 				if (args.length - 1 >= subCommand.getMinimumArguments()) {
 					try {
 						subCommand.execute(sender, label, Arrays.copyOfRange(args, 1, args.length));
@@ -99,14 +103,18 @@ public class CommandHandler implements CommandExecutor {
 						sender.sendMessage(ChatColor.RED + "Usage: /" + label + " " + subCommand.getName() + " " + (subCommand.getPossibleArguments().length() > 0 ? subCommand.getPossibleArguments() : ""));
 					}
 				}
+
 				return true;
 			}
 		}
+
 		List<StringMatcher.Match> matches = StringMatcher.match(args[0], subCommands.stream().map(SubCommand::getName).collect(Collectors.toList()));
+
         if (!matches.isEmpty()) {
           sender.sendMessage(plugin.getChatManager().colorMessage("Commands.Did-You-Mean").replace("%command%", label + " " + matches.get(0).getMatch()));
           return true;
         }
+
         return true;
 	}
 }

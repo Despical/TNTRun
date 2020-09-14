@@ -41,6 +41,7 @@ public class PermissionsManager {
 	private static void setupPermissions() {
 		PermissionsManager.setJoinFullGames(plugin.getConfig().getString("Basic-Permissions.Full-Games-Permission", "tntrun.fullgames"));
 		PermissionsManager.setJoinPerm(plugin.getConfig().getString("Basic-Permissions.Join-Permission", "tntrun.join.<arena>"));
+
 		Debugger.debug(Level.INFO, "Basic permissions registered");
 	}
 }

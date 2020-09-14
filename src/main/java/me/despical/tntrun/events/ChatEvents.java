@@ -40,38 +40,50 @@ public class ChatEvents implements Listener {
 	@EventHandler
 	public void onChatIngame(AsyncPlayerChatEvent event) {
 		Arena arena = ArenaRegistry.getArena(event.getPlayer());
+
 		if (arena == null) {
 			return;
 		}
+
 		if (plugin.getConfigPreferences().getOption(ConfigPreferences.Option.CHAT_FORMAT_ENABLED)) {
 			event.setCancelled(true);
+
 			Iterator<Player> iterator = event.getRecipients().iterator();
 			List<Player> remove = new ArrayList<>();
+
 			while (iterator.hasNext()) {
 				Player player = iterator.next();
 				remove.add(player);
 			}
+
 			for (Player player : remove) {
 				event.getRecipients().remove(player);
 			}
+
 			remove.clear();
+
 			String message;
 			String eventMessage = event.getMessage();
 			boolean dead = !arena.getPlayersLeft().contains(event.getPlayer());
+
 			for (String regexChar : regexChars) {
 				if (eventMessage.contains(regexChar)) {
 					eventMessage = eventMessage.replaceAll(Pattern.quote(regexChar), "");
 				}
 			}
+
 			FileConfiguration config = ConfigUtils.getConfig(plugin, "messages");
 			message = formatChatPlaceholders(config.getString("In-Game.Game-Chat-Format"), plugin.getUserManager().getUser(event.getPlayer()), eventMessage);
+
 			for (Player player : arena.getPlayers()) {
 				if (dead && arena.getPlayersLeft().contains(player)) {
 					continue;
 				}
 				player.sendMessage(message);
 			}
+
 			Bukkit.getConsoleSender().sendMessage(message);
+
 		} else if (!plugin.getConfigPreferences().getOption(ConfigPreferences.Option.DISABLE_SEPARATE_CHAT)) {
 			event.getRecipients().clear();
 			event.getRecipients().addAll(new ArrayList<>(arena.getPlayers()));
@@ -83,9 +95,11 @@ public class ChatEvents implements Listener {
 		formatted = plugin.getChatManager().colorRawMessage(formatted);
 		formatted = StringUtils.replace(formatted, "%player%", user.getPlayer().getName());
 		formatted = StringUtils.replace(formatted, "%message%", ChatColor.stripColor(saidMessage));
+
 		if (plugin.getServer().getPluginManager().isPluginEnabled("PlaceholderAPI")) {
 			formatted = PlaceholderAPI.setPlaceholders(user.getPlayer(), formatted);
 		}
+
 		return formatted;
 	}
 }

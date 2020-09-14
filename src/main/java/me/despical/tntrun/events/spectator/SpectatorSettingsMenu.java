@@ -31,6 +31,7 @@ public class SpectatorSettingsMenu implements Listener {
 		this.inventoryName = inventoryName;
 		this.speedOptionName = speedOptionName;
 		plugin.getServer().getPluginManager().registerEvents(this, plugin);
+
 		initInventory();
 	}
 
@@ -43,11 +44,15 @@ public class SpectatorSettingsMenu implements Listener {
 		if (e.getInventory() == null || !e.getView().getTitle().equals(color(inventoryName))) {
 			return;
 		}
+
 		if (e.getCurrentItem() == null || !e.getCurrentItem().hasItemMeta()) {
 			return;
 		}
+
 		Player p = (Player) e.getWhoClicked();
+
 		p.closeInventory();
+
 		if (e.getCurrentItem().getType() == Material.LEATHER_BOOTS) {
 			p.removePotionEffect(PotionEffectType.SPEED);
 			p.setFlySpeed(0.15f);

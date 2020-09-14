@@ -37,9 +37,9 @@ public class ConfigPreferences {
 	public enum Option {
 		BOSSBAR_ENABLED("Bossbar-Enabled", true), BUNGEE_ENABLED("BungeeActivated", false),
 		CHAT_FORMAT_ENABLED("ChatFormat-Enabled", true), DATABASE_ENABLED("DatabaseActivated", false),
-		INVENTORY_MANAGER_ENABLED("InventoryManager", true), NAMETAGS_HIDDEN("Nametags-Hidden", false),
-		ENABLE_SHORT_COMMANDS("Enable-Short-Commands", false), DISABLE_SEPARATE_CHAT("Disable-Separate-Chat", false);
-		
+		DISABLE_SEPARATE_CHAT("Disable-Separate-Chat", false), ENABLE_SHORT_COMMANDS("Enable-Short-Commands", false),
+		INVENTORY_MANAGER_ENABLED("InventoryManager", true), NAMETAGS_HIDDEN("Nametags-Hidden", false);
+
 		private final String path;
 		private final boolean def;
 

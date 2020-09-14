@@ -26,6 +26,7 @@
 #
 #                               All script provided objects:
 #            player - Player object (API methods https://hub.spigotmc.org/javadocs/spigot/org/bukkit/entity/Player.html)
+# arena - TNT Run arena object (API methods https://javadoc.jitpack.io/com/github/Despical/TNTRun/1.0.2/javadoc/me/despical/tntrun/arena/Arena.html)
 #            server - Bukkit server object (API methods https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Server.html)
 
 # Rewards must be enabled via config.yml first!
@@ -36,7 +37,9 @@ rewards:
     - say Ooh and there were playing %players% players
   # Commands executed when player wins the game
   win:
+    - eco give %player% 2
     - say I won the game!
   # Commands executed when player loses the game
   lose:
+    - chance(10):eco give %player% 8
     - say I lost the game!

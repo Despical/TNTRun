@@ -23,35 +23,32 @@ public class PlaceholderManager extends PlaceholderExpansion {
 		return "tntrun";
 	}
 
-	public String getPlugin() {
-		return null;
-	}
-
 	public String getAuthor() {
 		return "Despical";
 	}
 
 	public String getVersion() {
-		return "1.0.1";
+		return "1.0.2";
 	}
 
 	public String onPlaceholderRequest(Player player, String id) {
 		if (player == null) {
 			return null;
 		}
+
 		switch (id.toLowerCase()) {
-		case "wins":
-			return String.valueOf(StatsStorage.getUserStats(player, StatsStorage.StatisticType.WINS));
-		case "loses":
-			return String.valueOf(StatsStorage.getUserStats(player, StatsStorage.StatisticType.LOSES));
-		case "games_played":
-			return String.valueOf(StatsStorage.getUserStats(player, StatsStorage.StatisticType.GAMES_PLAYED));
-		case "longest_survive":
-			return String.valueOf(StatsStorage.getUserStats(player, StatsStorage.StatisticType.LONGEST_SURVIVE));
-		case "coins":
-			return String.valueOf(StatsStorage.getUserStats(player, StatsStorage.StatisticType.COINS));
-		default:
-			return handleArenaPlaceholderRequest(id);
+			case "wins":
+				return String.valueOf(StatsStorage.getUserStats(player, StatsStorage.StatisticType.WINS));
+			case "loses":
+				return String.valueOf(StatsStorage.getUserStats(player, StatsStorage.StatisticType.LOSES));
+			case "games_played":
+				return String.valueOf(StatsStorage.getUserStats(player, StatsStorage.StatisticType.GAMES_PLAYED));
+			case "longest_survive":
+				return String.valueOf(StatsStorage.getUserStats(player, StatsStorage.StatisticType.LONGEST_SURVIVE));
+			case "coins":
+				return String.valueOf(StatsStorage.getUserStats(player, StatsStorage.StatisticType.COINS));
+			default:
+				return handleArenaPlaceholderRequest(id);
 		}
 	}
 
@@ -59,11 +56,14 @@ public class PlaceholderManager extends PlaceholderExpansion {
 		if (!id.contains(":")) {
 			return null;
 		}
+
 		String[] data = id.split(":");
 		Arena arena = ArenaRegistry.getArena(data[0]);
+
 		if (arena == null) {
 			return null;
 		}
+
 		switch (data[1].toLowerCase()) {
 			case "players":
 				return String.valueOf(arena.getPlayers().size());

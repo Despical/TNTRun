@@ -17,7 +17,7 @@ import me.despical.commonsbox.engine.ScriptEngine;
 import me.despical.tntrun.Main;
 import me.despical.tntrun.arena.Arena;
 import me.despical.tntrun.arena.ArenaRegistry;
-import me.despical.tntrun.utils.Debugger;
+import static me.despical.tntrun.utils.Debugger.debug;
 
 /**
  * @author Despical
@@ -33,6 +33,7 @@ public class RewardsFactory {
 	public RewardsFactory(Main plugin) {
 		enabled = plugin.getConfig().getBoolean("Rewards-Enabled");
 		config = ConfigUtils.getConfig(plugin, "rewards");
+
 		registerRewards();
 	}
 
@@ -40,40 +41,44 @@ public class RewardsFactory {
 		if (!enabled) {
 			return;
 		}
-		for (Player p : arena.getPlayers()) {
-			performReward(p, type);
-		}
+
+		arena.getPlayers().forEach(p -> performReward(p, type));
 	}
 
 	public void performReward(Player player, Reward.RewardType type) {
 		if (!enabled) {
 			return;
 		}
+
 		Arena arena = ArenaRegistry.getArena(player);
 		ScriptEngine engine = new ScriptEngine();
+
 		engine.setValue("player", player);
 		engine.setValue("server", Bukkit.getServer());
 		engine.setValue("arena", arena);
+
 		for (Reward reward : rewards) {
 			if (reward.getType() == type) {
 				if (reward.getChance() != -1 && ThreadLocalRandom.current().nextInt(0, 100) > reward.getChance()) {
 					continue;
 				}
+
 				String command = reward.getExecutableCode();
 				command = StringUtils.replace(command, "%player%", player.getName());
 				command = formatCommandPlaceholders(command, arena);
+
 				switch (reward.getExecutor()) {
-				case CONSOLE:
-					Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), command);
-					break;
-				case PLAYER:
-					player.performCommand(command);
-					break;
-				case SCRIPT:
-					engine.execute(command);
-					break;
-				default:
-					break;
+					case CONSOLE:
+						Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), command);
+						break;
+					case PLAYER:
+						player.performCommand(command);
+						break;
+					case SCRIPT:
+						engine.execute(command);
+						break;
+					default:
+						break;
 				}
 			}
 		}
@@ -91,19 +96,19 @@ public class RewardsFactory {
 		if (!enabled) {
 			return;
 		}
-		Debugger.debug(Level.INFO, "[RewardsFactory] Starting rewards registration");
-		long start = System.currentTimeMillis();
 
+		debug(Level.INFO, "[RewardsFactory] Starting rewards registration");
+		long start = System.currentTimeMillis();
 		Map<Reward.RewardType, Integer> registeredRewards = new HashMap<>();
+
 		for (Reward.RewardType rewardType : Reward.RewardType.values()) {
 			for (String reward : config.getStringList("rewards." + rewardType.getPath())) {
 				rewards.add(new Reward(rewardType, reward));
 				registeredRewards.put(rewardType, registeredRewards.getOrDefault(rewardType, 0) + 1);
 			}
 		}
-		for (Reward.RewardType rewardType : registeredRewards.keySet()) {
-			Debugger.debug(Level.INFO, "[RewardsFactory] Registered {0} {1} rewards!", registeredRewards.get(rewardType), rewardType.name());
-		}
-		Debugger.debug(Level.INFO, "[RewardsFactory] Registered all rewards took {0} ms", System.currentTimeMillis() - start);
+
+		registeredRewards.keySet().forEach(rewardType -> debug(Level.INFO, "[RewardsFactory] Registered {0} {1} rewards!", registeredRewards.get(rewardType), rewardType.name()));
+		debug(Level.INFO, "[RewardsFactory] Registered all rewards took {0} ms", System.currentTimeMillis() - start);
 	}
 }

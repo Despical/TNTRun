@@ -7,10 +7,11 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import me.despical.tntrun.arena.ArenaManager;
-import me.despical.tntrun.arena.ArenaRegistry;
 import me.despical.tntrun.arena.ArenaState;
 import me.despical.tntrun.commands.SubCommand;
 import me.despical.tntrun.utils.Utils;
+
+import static me.despical.tntrun.arena.ArenaRegistry.getArena;
 
 /**
  * @author Despical
@@ -39,8 +40,9 @@ public class StopCommand extends SubCommand {
 		if (!Utils.checkIsInGameInstance((Player) sender)) {
 			return;
 		}
-		if (ArenaRegistry.getArena((Player) sender).getArenaState() != ArenaState.ENDING) {
-			ArenaManager.stopGame(true, ArenaRegistry.getArena((Player) sender));
+
+		if (getArena((Player) sender).getArenaState() != ArenaState.ENDING) {
+			ArenaManager.stopGame(true, getArena((Player) sender));
 		}
 	}
 

@@ -1,3 +1,12 @@
+### 1.0.2 Release (14.09.2020)
+* Huge performance improvements.
+* Added more in-game tips.
+* Added new message options.
+* Added Minecraft 1.16.3 compatibility.
+* Made code more readable.
+* Fixed beta notification messages.
+* Optimized all imports.
+
 ### 1.0.1 Release (06.09.2020)
 * Activated update checker.
 * Improved setup GUIs.

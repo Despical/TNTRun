@@ -33,6 +33,7 @@ public class JoinEvent implements Listener {
 		if (!plugin.getConfigPreferences().getOption(ConfigPreferences.Option.BUNGEE_ENABLED) && !plugin.getServer().hasWhitelist() || e.getResult() != PlayerLoginEvent.Result.KICK_WHITELIST) {
 			return;
 		}
+
 		if (e.getPlayer().hasPermission(PermissionsManager.getJoinFullGames())) {
 			e.setResult(PlayerLoginEvent.Result.ALLOWED);
 		}
@@ -45,13 +46,16 @@ public class JoinEvent implements Listener {
 			ArenaRegistry.getArenas().get(ArenaRegistry.getBungeeArena()).teleportToLobby(event.getPlayer());
 			return;
 		}
+
 		for (Player player : plugin.getServer().getOnlinePlayers()) {
 			if (ArenaRegistry.getArena(player) == null) {
 				continue;
 			}
+
 			player.hidePlayer(plugin, event.getPlayer());
 			event.getPlayer().hidePlayer(plugin, player);
 		}
+
 		if (plugin.getConfigPreferences().getOption(ConfigPreferences.Option.INVENTORY_MANAGER_ENABLED)) {
 			InventorySerializer.loadInventory(plugin, event.getPlayer());
 		}
@@ -62,16 +66,18 @@ public class JoinEvent implements Listener {
 		if (!plugin.getConfig().getBoolean("Update-Notifier.Enabled", true) || !event.getPlayer().hasPermission("tntrun.updatenotify")) {
 			return;
 		}
+
 		Bukkit.getScheduler().runTaskLater(plugin, () -> UpdateChecker.init(plugin, 1).requestUpdateCheck().whenComplete((result, exception) -> {
 			if (!result.requiresUpdate()) {
 				return;
 			}
+
 			if (result.getNewestVersion().contains("b")) {
 				event.getPlayer().sendMessage(plugin.getChatManager().colorRawMessage("&3[TNT Run] &bFound a beta update: v" + result.getNewestVersion() + " Download"));
-				event.getPlayer().sendMessage(plugin.getChatManager().colorRawMessage("&3>> &bhttps://www.spigotmc.org/resources/tnt-run-1-12-1-16-2.83196/"));
+				event.getPlayer().sendMessage(plugin.getChatManager().colorRawMessage("&3>> &bhttps://www.spigotmc.org/resources/tnt-run-1-12-1-16-3.83196/"));
 			} else {
 				event.getPlayer().sendMessage(plugin.getChatManager().colorRawMessage("&3[TNT Run] &bFound an update: v" + result.getNewestVersion() + " Download:"));
-				event.getPlayer().sendMessage(plugin.getChatManager().colorRawMessage("&3>> &bhttps://www.spigotmc.org/resources/tnt-run-1-12-1-16-2.83196/"));
+				event.getPlayer().sendMessage(plugin.getChatManager().colorRawMessage("&3>> &bhttps://www.spigotmc.org/resources/tnt-run-1-12-1-16-3.83196/"));
 			}
 		}), 25);
 	}

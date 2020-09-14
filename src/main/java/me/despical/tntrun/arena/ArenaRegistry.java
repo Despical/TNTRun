@@ -14,7 +14,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import me.despical.commonsbox.configuration.ConfigUtils;
 import me.despical.commonsbox.serializer.LocationSerializer;
 import me.despical.tntrun.Main;
-import me.despical.tntrun.utils.Debugger;
+import static me.despical.tntrun.utils.Debugger.debug;
 
 /**
  * @author Despical
@@ -39,6 +39,7 @@ public class ArenaRegistry {
 				return true;
 			}
 		}
+
 		return false;
 	}
 
@@ -53,6 +54,7 @@ public class ArenaRegistry {
 		if (p == null || !p.isOnline()) {
 			return null;
 		}
+
 		for (Arena arena : arenas) {
 			for (Player player : arena.getPlayers()) {
 				if (player.getUniqueId().equals(p.getUniqueId())) {
@@ -60,6 +62,7 @@ public class ArenaRegistry {
 				}
 			}
 		}
+
 		return null;
 	}
 
@@ -71,50 +74,59 @@ public class ArenaRegistry {
 	 */
 	public static Arena getArena(String id) {
 		Arena arena = null;
+
 		for (Arena loopArena : arenas) {
 			if (loopArena.getId().equalsIgnoreCase(id)) {
 				arena = loopArena;
 				break;
 			}
 		}
+
 		return arena;
 	}
 
 	public static void registerArena(Arena arena) {
-		Debugger.debug(Level.INFO, "Registering new game instance {0}", arena.getId());
+		debug(Level.INFO, "Registering new game instance {0}", arena.getId());
 		arenas.add(arena);
 	}
 
 	public static void unregisterArena(Arena arena) {
-		Debugger.debug(Level.INFO, "Unregistering game instance {0}", arena.getId());
+		debug(Level.INFO, "Unregistering game instance {0}", arena.getId());
 		arenas.remove(arena);
 	}
 
 	public static void registerArenas() {
-		Debugger.debug(Level.INFO, "Initial arenas registration");
+		debug(Level.INFO, "Initial arenas registration");
 		long start = System.currentTimeMillis();
+
 		if (ArenaRegistry.getArenas().size() > 0) {
 			for (Arena arena : new ArrayList<>(ArenaRegistry.getArenas())) {
 				unregisterArena(arena);
 			}
 		}
+
 		FileConfiguration config = ConfigUtils.getConfig(plugin, "arenas");
 
 		if (!config.contains("instances")) {
 			Bukkit.getConsoleSender().sendMessage(plugin.getChatManager().colorMessage("Validator.No-Instances-Created"));
 			return;
 		}
+
 		ConfigurationSection section = config.getConfigurationSection("instances");
+
 		if (section == null) {
 			Bukkit.getConsoleSender().sendMessage(plugin.getChatManager().colorMessage("Validator.No-Instances-Created"));
 			return;
 		}
+
 		for (String id : section.getKeys(false)) {
 			Arena arena;
 			String s = "instances." + id + ".";
+
 			if (s.contains("default")) {
 				continue;
 			}
+
 			arena = new Arena(id);
 			arena.setReady(true);
 			arena.setMinimumPlayers(config.getInt(s + "minimumplayers", 2));
@@ -122,18 +134,22 @@ public class ArenaRegistry {
 			arena.setMapName(config.getString(s + "mapname", "undefined"));
 			arena.setLobbyLocation(LocationSerializer.locationFromString(config.getString(s + "lobbylocation", "world, -994.000, 4.000, 853.000, 0.000, 0.000")));
 			arena.setEndLocation(LocationSerializer.locationFromString(config.getString(s + "Endlocation", "world, -994.000, 4.000, 853.000, 0.000, 0.000")));
+
 			if (!config.getBoolean(s + "isdone", false)) {
 				Bukkit.getConsoleSender().sendMessage(plugin.getChatManager().colorMessage("Validator.Invalid-Arena-Configuration").replace("%arena%", id).replace("%error%", "NOT VALIDATED"));
 				arena.setReady(false);
 				ArenaRegistry.registerArena(arena);
 				continue;
 			}
+
 			arena.setArenaState(ArenaState.WAITING_FOR_PLAYERS);
 			ArenaRegistry.registerArena(arena);
 			arena.start();
+
 			Bukkit.getConsoleSender().sendMessage(plugin.getChatManager().colorMessage("Validator.Instance-Started").replace("%arena%", id));
 		}
-		Debugger.debug(Level.INFO, "Arenas registration completed, took {0} ms", System.currentTimeMillis() - start);
+
+		debug(Level.INFO, "Arenas registration completed, took {0} ms", System.currentTimeMillis() - start);
 	}
 
 	public static List<Arena> getArenas() {
@@ -148,6 +164,7 @@ public class ArenaRegistry {
 		if (bungeeArena == -999) {
 			bungeeArena = new Random().nextInt(arenas.size());
 		}
+
 		return bungeeArena;
 	}
 }

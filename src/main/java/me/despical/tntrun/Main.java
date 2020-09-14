@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.logging.Level;
 
+import me.despical.tntrun.utils.MessageUtils;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -43,11 +44,11 @@ import me.despical.tntrun.handlers.sign.SignManager;
 import me.despical.tntrun.user.User;
 import me.despical.tntrun.user.UserManager;
 import me.despical.tntrun.user.data.MysqlManager;
-import me.despical.tntrun.utils.Debugger;
 import me.despical.tntrun.utils.ExceptionLogHandler;
-import me.despical.tntrun.utils.MessageUtils;
 import me.despical.tntrun.utils.UpdateChecker;
 import me.despical.tntrun.utils.Utils;
+
+import static me.despical.tntrun.utils.Debugger.*;
 
 /**
  * @author Despical
@@ -73,29 +74,31 @@ public class Main extends JavaPlugin {
 		if (!validateIfPluginShouldStart()) {
 			return;
 		}
+
 		exceptionLogHandler = new ExceptionLogHandler(this);
 		saveDefaultConfig();
-		if (getDescription().getVersion().contains("d")) {
-			Debugger.setEnabled(true);
-		} else {
-			Debugger.setEnabled(getConfig().getBoolean("Debug-Messages", false));
-		}
-		Debugger.debug(Level.INFO, "Initialization start");
+
+		setEnabled(getDescription().getVersion().contains("d") || getConfig().getBoolean("Debug-Messages", false));
+		debug(Level.INFO, "Initialization start");
+
 		if (getConfig().getBoolean("Developer-Mode", false)) {
-			Debugger.deepDebug(true);
-			Debugger.debug(Level.INFO, "Deep debug enabled");
+			deepDebug(true);
+			debug(Level.INFO, "Deep debug enabled");
+
 			for (String listenable : new ArrayList<>(getConfig().getStringList("Listenable-Performances"))) {
-				Debugger.monitorPerformance(listenable);
+				monitorPerformance(listenable);
 			}
 		}
-		long start = System.currentTimeMillis();
 
+		long start = System.currentTimeMillis();
 		configPreferences = new ConfigPreferences(this);
+
 		setupFiles();
 		initializeClasses();
 		checkUpdate();
 
-		Debugger.debug(Level.INFO, "Initialization finished took {0} ms", System.currentTimeMillis() - start);
+		debug(Level.INFO, "Initialization finished took {0} ms", System.currentTimeMillis() - start);
+
 		if (configPreferences.getOption(ConfigPreferences.Option.NAMETAGS_HIDDEN)) {
 			Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(this, () -> {
 				for (Player player : Bukkit.getOnlinePlayers()) {
@@ -107,17 +110,21 @@ public class Main extends JavaPlugin {
 
 	private boolean validateIfPluginShouldStart() {
 		version = Bukkit.getServer().getClass().getPackage().getName().replace(".", ",").split(",")[3];
+
 		if (!(version.equalsIgnoreCase("v1_12_R1") || version.equalsIgnoreCase("v1_13_R1")
 			|| version.equalsIgnoreCase("v1_13_R2") || version.equalsIgnoreCase("v1_14_R1")
 			|| version.equalsIgnoreCase("v1_15_R1") || version.equalsIgnoreCase("v1_16_R1")
 			|| version.equalsIgnoreCase("v1_16_R2"))) {
+
 			MessageUtils.thisVersionIsNotSupported();
 			Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "Your server version is not supported by TNT Run!");
 			Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "Sadly, we must shut off. Maybe you consider changing your server version?");
 			forceDisable = true;
+
 			getServer().getPluginManager().disablePlugin(this);
 			return false;
 		}
+
 		try {
 			Class.forName("org.spigotmc.SpigotConfig");
 		} catch (Exception e) {
@@ -125,9 +132,11 @@ public class Main extends JavaPlugin {
 			Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "Your server software is not supported by TNT Run!");
 			Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "We support only Spigot and Spigot forks only! Shutting off...");
 			forceDisable = true;
+
 			getServer().getPluginManager().disablePlugin(this);
 			return false;
 		}
+
 		return true;
 	}
 
@@ -136,47 +145,55 @@ public class Main extends JavaPlugin {
 		if (forceDisable) {
 			return;
 		}
-		Debugger.debug(Level.INFO, "System disable initialized");
+
+		debug(Level.INFO, "System disable initialized");
 		long start = System.currentTimeMillis();
 
 		Bukkit.getLogger().removeHandler(exceptionLogHandler);
 		saveAllUserStatistics();
+
 		if (configPreferences.getOption(ConfigPreferences.Option.DATABASE_ENABLED)) {
 			database.shutdownConnPool();
 		}
+
 		for (Arena arena : ArenaRegistry.getArenas()) {
 			arena.getScoreboardManager().stopAllScoreboards();
+
 			for (Player player : arena.getPlayers()) {
 				arena.doBarAction(Arena.BarAction.REMOVE, player);
 				arena.teleportToEndLocation(player);
 				player.setFlySpeed(0.1f);
+
 				if (configPreferences.getOption(ConfigPreferences.Option.INVENTORY_MANAGER_ENABLED)) {
 					InventorySerializer.loadInventory(this, player);
 				} else {
 					player.getInventory().clear();
 					player.getInventory().setArmorContents(null);
-					for (PotionEffect pe : player.getActivePotionEffects()) {
-						player.removePotionEffect(pe.getType());
-					}
+					player.getActivePotionEffects().stream().map(PotionEffect::getType).forEach(player::removePotionEffect);
 					player.setWalkSpeed(0.2f);
 				}
 			}
+
 			Iterator<BlockState> iterator = arena.getDestroyedBlocks().iterator();
+
 			while (iterator.hasNext()) {
 				BlockState bs = iterator.next();
 				bs.update(true);
 				iterator.remove();
 			}
 		}
-		Debugger.debug(Level.INFO, "System disable finished took {0} ms", System.currentTimeMillis() - start);
+
+		debug(Level.INFO, "System disable finished took {0} ms", System.currentTimeMillis() - start);
 	}
 
 	private void initializeClasses() {
 		ScoreboardLib.setPluginInstance(this);
 		chatManager = new ChatManager(this);
+
 		if (getConfig().getBoolean("BungeeActivated", false)) {
 			bungeeManager = new BungeeManager(this);
 		}
+
 		if (configPreferences.getOption(ConfigPreferences.Option.DATABASE_ENABLED)) {
 			FileConfiguration config = ConfigUtils.getConfig(this, "mysql");
 			database = new MysqlDatabase(config.getString("user"), config.getString("password"), config.getString("address"));
@@ -204,19 +221,22 @@ public class Main extends JavaPlugin {
 	}
 
 	private void registerSoftDependenciesAndServices() {
-		Debugger.debug(Level.INFO, "Hooking into soft dependencies");
+		debug(Level.INFO, "Hooking into soft dependencies");
 		long start = System.currentTimeMillis();
 
 		startPluginMetrics();
+
 		if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
-			Debugger.debug(Level.INFO, "Hooking into PlaceholderAPI");
+			debug(Level.INFO, "Hooking into PlaceholderAPI");
 			new PlaceholderManager().register();
 		}
-		Debugger.debug(Level.INFO, "Hooked into soft dependencies took {0} ms", System.currentTimeMillis() - start);
+
+		debug(Level.INFO, "Hooked into soft dependencies took {0} ms", System.currentTimeMillis() - start);
 	}
 
 	private void startPluginMetrics() {
 		Metrics metrics = new Metrics(this, 8147);
+
 		metrics.addCustomChart(new Metrics.SimplePie("database_enabled", () -> String.valueOf(configPreferences.getOption(ConfigPreferences.Option.DATABASE_ENABLED))));
 		metrics.addCustomChart(new Metrics.SimplePie("bungeecord_hooked", () -> String.valueOf(configPreferences.getOption(ConfigPreferences.Option.BUNGEE_ENABLED))));
 		metrics.addCustomChart(new Metrics.SimplePie("update_notifier", () -> {
@@ -240,28 +260,32 @@ public class Main extends JavaPlugin {
 		if (!getConfig().getBoolean("Update-Notifier.Enabled", true)) {
 			return;
 		}
+
 		UpdateChecker.init(this, 1).requestUpdateCheck().whenComplete((result, exception) -> {
 			if (!result.requiresUpdate()) {
 				return;
 			}
+
 			if (result.getNewestVersion().contains("b")) {
 				if (getConfig().getBoolean("Update-Notifier.Notify-Beta-Versions", true)) {
 					Bukkit.getConsoleSender().sendMessage("[TNTRun] Found a new beta version available: v" + result.getNewestVersion());
 					Bukkit.getConsoleSender().sendMessage("[TNTRun] Download it on SpigotMC:");
-					Bukkit.getConsoleSender().sendMessage("[TNTRun] spigotmc.org/resources/king-of-the-ladder-1-8-3-1-16-2.80686/");
+					Bukkit.getConsoleSender().sendMessage("[TNTRun] spigotmc.org/resources/tnt-run-1-12-1-16-3.83196/");
 				}
 				return;
 			}
+
 			MessageUtils.updateIsHere();
 			Bukkit.getConsoleSender().sendMessage("[TNTRun] Found a new version available: v" + result.getNewestVersion());
 			Bukkit.getConsoleSender().sendMessage("[TNTRun] Download it SpigotMC:");
-			Bukkit.getConsoleSender().sendMessage("[TNTRun] spigotmc.org/resources/tnt-run-1-12-1-16-2.83196/");
+			Bukkit.getConsoleSender().sendMessage("[TNTRun] spigotmc.org/resources/tnt-run-1-12-1-16-3.83196/");
 		});
 	}
 
 	private void setupFiles() {
 		for (String fileName : Arrays.asList("arenas", "bungee", "rewards", "stats", "lobbyitems", "mysql", "messages")) {
 			File file = new File(getDataFolder() + File.separator + fileName + ".yml");
+
 			if (!file.exists()) {
 				saveResource(fileName + ".yml", false);
 			}
@@ -323,15 +347,18 @@ public class Main extends JavaPlugin {
 	private void saveAllUserStatistics() {
 		for (Player player : getServer().getOnlinePlayers()) {
 			User user = userManager.getUser(player);
+
 			for (StatsStorage.StatisticType stat : StatsStorage.StatisticType.values()) {
 				if (!stat.isPersistent()) {
 					continue;
 				}
+
 				if (userManager.getDatabase() instanceof MysqlManager) {
 					((MysqlManager) userManager.getDatabase()).getDatabase().executeUpdate("UPDATE " + ((MysqlManager) userManager.getDatabase()).getTableName() + " SET " + stat.getName() + "=" + user.getStat(stat) + " WHERE UUID='" + user.getPlayer().getUniqueId().toString() + "';");
-					Debugger.debug(Level.INFO, "Executed MySQL: " + "UPDATE " + ((MysqlManager) userManager.getDatabase()).getTableName() + " " + stat.getName() + "=" + user.getStat(stat) + " WHERE UUID='" + user.getPlayer().getUniqueId().toString() + "';");
+					debug(Level.INFO, "Executed MySQL: " + "UPDATE " + ((MysqlManager) userManager.getDatabase()).getTableName() + " " + stat.getName() + "=" + user.getStat(stat) + " WHERE UUID='" + user.getPlayer().getUniqueId().toString() + "';");
 					continue;
 				}
+
 				userManager.getDatabase().saveStatistic(user, stat);
 			}
 		}

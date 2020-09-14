@@ -19,6 +19,9 @@ Commands:
   Look-Sign: "&cYou have to look at a sign to perform this command!"
   Type-Arena-Name: "&cPlease type arena ID!"
   No-Free-Arenas: "&cThere are no free arenas!"
+  Conversation:
+    Operation-Timeout: "&7Operation cancelled!"
+    Only-By-Player: "&4Only by players!"
   Statistics:
     Type-Name: "&cPlease type statistic name to view!"
     Invalid-Name: "&cName of statistic is invalid! Type: games_played, wins, loses, longest_survive and coins"

@@ -37,12 +37,14 @@ public class JoinCommand extends SubCommand {
 			sender.sendMessage(getPlugin().getChatManager().getPrefix() + getPlugin().getChatManager().colorMessage("Commands.Type-Arena-Name"));
 			return;
 		}
+
 		for (Arena arena : ArenaRegistry.getArenas()) {
 			if (args[0].equalsIgnoreCase(arena.getId())) {
 				ArenaManager.joinAttempt((Player) sender, arena);
 				return;
 			}
 		}
+
 		sender.sendMessage(getPlugin().getChatManager().getPrefix() + getPlugin().getChatManager().colorMessage("Commands.No-Arena-Like-That"));
 	}
 

@@ -14,8 +14,9 @@ import me.despical.commonsbox.database.MysqlDatabase;
 import me.despical.tntrun.Main;
 import me.despical.tntrun.api.StatsStorage;
 import me.despical.tntrun.user.User;
-import me.despical.tntrun.utils.Debugger;
 import me.despical.tntrun.utils.MessageUtils;
+
+import static me.despical.tntrun.utils.Debugger.debug;
 
 /**
  * @author Despical
@@ -30,6 +31,7 @@ public class MysqlManager implements UserDatabase {
 	public MysqlManager(Main plugin) {
 		this.plugin = plugin;
 		database = plugin.getMysqlDatabase();
+
 		Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
 			try (Connection connection = database.getConnection()) {
 				Statement statement = connection.createStatement();
@@ -54,7 +56,7 @@ public class MysqlManager implements UserDatabase {
 	public void saveStatistic(User user, StatsStorage.StatisticType stat) {
 		Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
 			database.executeUpdate("UPDATE " + getTableName() + " SET " + stat.getName() + "=" + user.getStat(stat) + " WHERE UUID='" + user.getPlayer().getUniqueId().toString() + "';");
-			Debugger.debug(Level.INFO, "Executed MySQL: " + "UPDATE " + getTableName() + " SET " + stat.getName() + "=" + user.getStat(stat) + " WHERE UUID='" + user.getPlayer().getUniqueId().toString() + "';");
+			debug(Level.INFO, "Executed MySQL: " + "UPDATE " + getTableName() + " SET " + stat.getName() + "=" + user.getStat(stat) + " WHERE UUID='" + user.getPlayer().getUniqueId().toString() + "';");
 		});
 	}
 
@@ -62,19 +64,24 @@ public class MysqlManager implements UserDatabase {
 	public void loadStatistics(User user) {
 		Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
 			String uuid = user.getPlayer().getUniqueId().toString();
+
 			try (Connection connection = database.getConnection()) {
 				Statement statement = connection.createStatement();
 				ResultSet rs = statement.executeQuery("SELECT * from " + getTableName() + " WHERE UUID='" + uuid + "';");
+
 				if (rs.next()) {
-					Debugger.debug(Level.INFO, "MySQL Stats | Player {0} already exist. Getting Stats...", user.getPlayer().getName());
+					debug(Level.INFO, "MySQL Stats | Player {0} already exist. Getting Stats...", user.getPlayer().getName());
+
 					for (StatsStorage.StatisticType stat : StatsStorage.StatisticType.values()) {
 						if (!stat.isPersistent()) continue;
 						int val = rs.getInt(stat.getName());
+
 						user.setStat(stat, val);
 					}
 				} else {
-					Debugger.debug(Level.INFO, "MySQL Stats | Player {0} does not exist. Creating new one...", user.getPlayer().getName());
+					debug(Level.INFO, "MySQL Stats | Player {0} does not exist. Creating new one...", user.getPlayer().getName());
 					statement.executeUpdate("INSERT INTO " + getTableName() + " (UUID,name) VALUES ('" + uuid + "','" + user.getPlayer().getName() + "');");
+
 					for (StatsStorage.StatisticType stat : StatsStorage.StatisticType.values()) {
 						if (!stat.isPersistent())
 							continue;

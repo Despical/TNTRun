@@ -3,6 +3,7 @@ package me.despical.tntrun.user;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
+import java.util.stream.Collectors;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -14,7 +15,8 @@ import me.despical.tntrun.arena.Arena;
 import me.despical.tntrun.user.data.FileStats;
 import me.despical.tntrun.user.data.MysqlManager;
 import me.despical.tntrun.user.data.UserDatabase;
-import me.despical.tntrun.utils.Debugger;
+
+import static me.despical.tntrun.utils.Debugger.debug;
 
 /**
  * @author Despical
@@ -29,17 +31,21 @@ public class UserManager {
 	public UserManager(Main plugin) {
 		if (plugin.getConfigPreferences().getOption(ConfigPreferences.Option.DATABASE_ENABLED)) {
 			database = new MysqlManager(plugin);
-			Debugger.debug(Level.INFO, "MySQL Stats enabled");
+
+			debug(Level.INFO, "MySQL Stats enabled");
 		} else {
 			database = new FileStats(plugin);
-			Debugger.debug(Level.INFO, "File Stats enabled");
+
+			debug(Level.INFO, "File Stats enabled");
 		}
+
 		loadStatsForPlayersOnline();
 	}
 
 	private void loadStatsForPlayersOnline() {
 		for (Player player : Bukkit.getServer().getOnlinePlayers()) {
 			User user = getUser(player);
+
 			loadStatistics(user);
 		}
 	}
@@ -50,24 +56,24 @@ public class UserManager {
 				return user;
 			}
 		}
-		Debugger.debug(Level.INFO, "Registering new user {0} ({1})", player.getUniqueId(), player.getName());
+
+		debug(Level.INFO, "Registering new user {0} ({1})", player.getUniqueId(), player.getName());
+
 		User user = new User(player);
+
 		users.add(user);
 		return user;
 	}
 	
 	public List<User> getUsers(Arena arena) {
-		List<User> users = new ArrayList<>();
-		for (Player player : arena.getPlayers()) {
-			users.add(getUser(player));
-		}
-		return users;
+		return arena.getPlayers().stream().map(this::getUser).collect(Collectors.toList());
 	}
 
 	public void saveStatistic(User user, StatsStorage.StatisticType stat) {
 		if (!stat.isPersistent()) {
 			return;
 		}
+
 		database.saveStatistic(user, stat);
 	}
 

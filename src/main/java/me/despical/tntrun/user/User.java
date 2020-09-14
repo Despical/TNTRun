@@ -57,10 +57,12 @@ public class User {
 	public int getStat(StatsStorage.StatisticType stat) {
 		if (!stats.containsKey(stat)) {
 			stats.put(stat, 0);
+
 			return 0;
 		} else if (stats.get(stat) == null) {
 			return 0;
 		}
+
 		return stats.get(stat);
 	}
 	
@@ -70,6 +72,7 @@ public class User {
 
 	public void setStat(StatsStorage.StatisticType stat, int i) {
 		stats.put(stat, i);
+
 		Bukkit.getScheduler().runTask(plugin, () -> {
 			TRPlayerStatisticChangeEvent playerStatisticChangeEvent = new TRPlayerStatisticChangeEvent(getArena(), player, stat, i);
 			Bukkit.getPluginManager().callEvent(playerStatisticChangeEvent);
@@ -78,6 +81,7 @@ public class User {
 
 	public void addStat(StatsStorage.StatisticType stat, int i) {
 		stats.put(stat, getStat(stat) + i);
+
 		Bukkit.getScheduler().runTask(plugin, () -> {
 			TRPlayerStatisticChangeEvent playerStatisticChangeEvent = new TRPlayerStatisticChangeEvent(getArena(), player, stat, getStat(stat));
 			Bukkit.getPluginManager().callEvent(playerStatisticChangeEvent);
@@ -92,6 +96,7 @@ public class User {
 		if (!cooldowns.containsKey(s) || cooldowns.get(s) <= cooldownCounter) {
 			return 0;
 		}
+
 		return cooldowns.get(s) - cooldownCounter;
 	}
 }

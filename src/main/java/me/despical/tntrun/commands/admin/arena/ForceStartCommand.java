@@ -39,18 +39,19 @@ public class ForceStartCommand extends SubCommand {
 		if (!Utils.checkIsInGameInstance((Player) sender)) {
 			return;
 		}
+
 		Arena arena = ArenaRegistry.getArena((Player) sender);
+
 		if (arena.getPlayers().size() < 2) {
 			getPlugin().getChatManager().broadcast(arena, getPlugin().getChatManager().formatMessage(arena, getPlugin().getChatManager().colorMessage("In-Game.Messages.Lobby-Messages.Waiting-For-Players"), arena.getMinimumPlayers()));
 			return;
 		}
+
 		if (arena.getArenaState() == ArenaState.WAITING_FOR_PLAYERS || arena.getArenaState() == ArenaState.STARTING) {
 			arena.setArenaState(ArenaState.STARTING);
 			arena.setForceStart(true);
 			arena.setTimer(0);
-			for (Player p : ArenaRegistry.getArena((Player) sender).getPlayers()) {
-				p.sendMessage(getPlugin().getChatManager().getPrefix() + getPlugin().getChatManager().colorMessage("In-Game.Messages.Admin-Messages.Set-Starting-In-To-0"));
-			}
+			arena.getPlayers().forEach(p -> p.sendMessage(getPlugin().getChatManager().getPrefix() + getPlugin().getChatManager().colorMessage("In-Game.Messages.Admin-Messages.Set-Starting-In-To-0")));
 		}
 	}
 

@@ -16,7 +16,6 @@ import com.google.common.io.ByteStreams;
 
 import me.despical.commonsbox.configuration.ConfigUtils;
 import me.despical.tntrun.Main;
-import me.despical.tntrun.arena.Arena;
 import me.despical.tntrun.arena.ArenaManager;
 import me.despical.tntrun.arena.ArenaRegistry;
 import me.despical.tntrun.arena.ArenaState;
@@ -34,12 +33,15 @@ public class BungeeManager implements Listener {
 
 	public BungeeManager(Main plugin) {
 		this.plugin = plugin;
+
 		gameStateToString.put(ArenaState.WAITING_FOR_PLAYERS, plugin.getChatManager().colorRawMessage(ConfigUtils.getConfig(plugin, "bungee").getString("MOTD.Game-States.Inactive", "Inactive")));
 		gameStateToString.put(ArenaState.STARTING, plugin.getChatManager().colorRawMessage(ConfigUtils.getConfig(plugin, "bungee").getString("MOTD.Game-States.Starting", "Starting")));
 		gameStateToString.put(ArenaState.IN_GAME, plugin.getChatManager().colorRawMessage(ConfigUtils.getConfig(plugin, "bungee").getString("MOTD.Game-States.In-Game", "In-Game")));
 		gameStateToString.put(ArenaState.ENDING, plugin.getChatManager().colorRawMessage(ConfigUtils.getConfig(plugin, "bungee").getString("MOTD.Game-States.Ending", "Ending")));
 		gameStateToString.put(ArenaState.RESTARTING, plugin.getChatManager().colorRawMessage(ConfigUtils.getConfig(plugin, "bungee").getString("MOTD.Game-States.Restarting", "Restarting")));
+
 		MOTD = plugin.getChatManager().colorRawMessage(ConfigUtils.getConfig(plugin, "bungee").getString("MOTD.Message", "The actual game state of TNT Run is %state%"));
+
 		plugin.getServer().getMessenger().registerOutgoingPluginChannel(plugin, "BungeeCord");
 		plugin.getServer().getPluginManager().registerEvents(this, plugin);
 	}
@@ -48,15 +50,17 @@ public class BungeeManager implements Listener {
 		if (!ConfigUtils.getConfig(plugin, "bungee").getBoolean("Connect-To-Hub", true)) {
 			return;
 		}
+
 		ByteArrayDataOutput out = ByteStreams.newDataOutput();
+
 		out.writeUTF("Connect");
 		out.writeUTF(getHubServerName());
+
 		player.sendPluginMessage(plugin, "BungeeCord", out.toByteArray());
 	}
 
 	private ArenaState getArenaState() {
-		Arena arena = ArenaRegistry.getArenas().get(ArenaRegistry.getBungeeArena());
-		return arena.getArenaState();
+		return ArenaRegistry.getArenas().get(ArenaRegistry.getBungeeArena()).getArenaState();
 	}
 
 	private String getHubServerName() {

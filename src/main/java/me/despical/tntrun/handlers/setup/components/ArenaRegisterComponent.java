@@ -45,6 +45,7 @@ public class ArenaRegisterComponent implements SetupComponent {
 		FileConfiguration config = setupInventory.getConfig();
 		Main plugin = setupInventory.getPlugin();
 		ItemStack registeredItem;
+
 		if (!setupInventory.getArena().isReady()) {
 			registeredItem = new ItemBuilder(XMaterial.FIREWORK_ROCKET.parseItem())
 				.name(plugin.getChatManager().colorRawMessage("&e&lRegister Arena - Finish Setup"))
@@ -61,6 +62,7 @@ public class ArenaRegisterComponent implements SetupComponent {
 				.flag(ItemFlag.HIDE_ENCHANTS)
 				.build();
 		}
+
 		pane.addItem(new GuiItem(registeredItem, e -> {
 			Arena arena = setupInventory.getArena();
 			e.getWhoClicked().closeInventory();
@@ -68,23 +70,30 @@ public class ArenaRegisterComponent implements SetupComponent {
 				e.getWhoClicked().sendMessage(plugin.getChatManager().colorRawMessage("&a&l✔ &aThis arena was already validated and is ready to use!"));
 				return;
 			}
-			String[] locations = new String[] { "lobbylocation", "Endlocation" };
+
+			String[] locations = new String[] {"lobbylocation", "Endlocation"};
+
 			for (String s : locations) {
 				if (!config.isSet("instances." + arena.getId() + "." + s) || config.getString("instances." + arena.getId() + "." + s).equals(LocationSerializer.locationToString(Bukkit.getWorlds().get(0).getSpawnLocation()))) {
 					e.getWhoClicked().sendMessage(plugin.getChatManager().colorRawMessage("&c&l✘ &cArena validation failed! Please configure following spawn properly: " + s + " (cannot be world spawn location)"));
 					return;
 				}
 			}
+
 			e.getWhoClicked().sendMessage(plugin.getChatManager().colorRawMessage("&a&l✔ &aValidation succeeded! Registering new arena instance: " + arena.getId()));
 			config.set("instances." + arena.getId() + ".isdone", true);
 			ConfigUtils.saveConfig(plugin, config, "arenas");
+
 			List<Sign> signsToUpdate = new ArrayList<>();
+
 			ArenaRegistry.unregisterArena(setupInventory.getArena());
+
 			for (ArenaSign arenaSign : plugin.getSignManager().getArenaSigns()) {
 				if (arenaSign.getArena().equals(setupInventory.getArena())) {
 					signsToUpdate.add(arenaSign.getSign());
 				}
 			}
+
 			arena.setArenaState(ArenaState.WAITING_FOR_PLAYERS);
 			arena.setReady(true);
 			arena.setMinimumPlayers(config.getInt("instances." + arena.getId() + ".minimumplayers"));
@@ -94,7 +103,9 @@ public class ArenaRegisterComponent implements SetupComponent {
 			arena.setEndLocation(LocationSerializer.locationFromString(config.getString("instances." + arena.getId() + ".Endlocation")));
 			ArenaRegistry.registerArena(arena);
 			arena.start();
+
 			ConfigUtils.saveConfig(plugin, config, "arenas");
+
 			for (Sign s : signsToUpdate) {
 				plugin.getSignManager().getArenaSigns().add(new ArenaSign(s, arena));
 			}

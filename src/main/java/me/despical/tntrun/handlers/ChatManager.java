@@ -26,7 +26,7 @@ public class ChatManager {
 	public ChatManager(Main plugin) {
 		this.plugin = plugin;
 		this.config = ConfigUtils.getConfig(plugin, "messages");
-		this.prefix = colorRawMessage(config.getString("In-Game.Plugin-Prefix"));
+		this.prefix = colorRawMessage(config.getString("In-Game.Plugin-Prefix", "&8[&6TNTRun&8] "));
 	}
 	
 	public String getPrefix() {
@@ -43,9 +43,11 @@ public class ChatManager {
 	
 	public String colorMessage(String message, Player player) {
 		String returnString = config.getString(message);
+
 		if (plugin.getServer().getPluginManager().isPluginEnabled("PlaceholderAPI")) {
 			returnString = PlaceholderAPI.setPlaceholders(player, returnString);
 		}
+
 		return ChatColor.translateAlternateColorCodes('&', returnString);
 	}
 
@@ -53,14 +55,17 @@ public class ChatManager {
 		String returnString = message;
 		returnString = StringUtils.replace(returnString, "%player%", player.getName());
 		returnString = colorRawMessage(formatPlaceholders(returnString, arena));
+
 		if (plugin.getServer().getPluginManager().isPluginEnabled("PlaceholderAPI")) {
 			returnString = PlaceholderAPI.setPlaceholders(player, returnString);
 		}
+
 		return returnString;
 	}
 
 	private String formatPlaceholders(String message, Arena arena) {
 		String returnString = message;
+
 		returnString = StringUtils.replace(returnString, "%arena%", arena.getMapName());
 		returnString = StringUtils.replace(returnString, "%time%", Integer.toString(arena.getTimer()));
 		returnString = StringUtils.replace(returnString, "%formatted_time%", StringFormatUtils.formatIntoMMSS((arena.getTimer())));
@@ -72,32 +77,29 @@ public class ChatManager {
 	
 	public String formatMessage(Arena arena, String message, int integer) {
 		String returnString = message;
+
 		returnString = StringUtils.replace(returnString, "%number%", Integer.toString(integer));
 		returnString = colorRawMessage(formatPlaceholders(returnString, arena));
 		return returnString;
 	}
 
-	public void broadcast(Arena a, String msg) {
-		for (Player p : a.getPlayers()) {
-			p.sendMessage(prefix + msg);
-		}
-	}
-
 	public void broadcastAction(Arena a, Player p, ActionType action) {
 		String message;
 		switch (action) {
-		case JOIN:
-			message = formatMessage(a, colorMessage("In-Game.Messages.Join"), p);
-			break;
-		case LEAVE:
-			message = formatMessage(a, colorMessage("In-Game.Messages.Leave"), p);
-			break;
-		case DEATH:
-			message = formatMessage(a, colorMessage("In-Game.Messages.Death"), p);
-		default:
-			return;
+			case JOIN:
+				message = formatMessage(a, colorMessage("In-Game.Messages.Join"), p);
+				break;
+			case LEAVE:
+				message = formatMessage(a, colorMessage("In-Game.Messages.Leave"), p);
+				break;
+			case DEATH:
+				message = formatMessage(a, colorMessage("In-Game.Messages.Death"), p);
+				break;
+			default:
+				return;
 		}
-		this.broadcast(a, prefix + message);
+
+		a.getPlayers().forEach(player -> player.sendMessage(prefix + message));
 	}
 	
 	public void reloadConfig() {

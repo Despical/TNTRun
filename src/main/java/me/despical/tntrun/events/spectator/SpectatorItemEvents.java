@@ -50,10 +50,13 @@ public class SpectatorItemEvents implements Listener {
 			if (ArenaRegistry.getArena(e.getPlayer()) == null) {
 				return;
 			}
+
 			ItemStack stack = e.getPlayer().getInventory().getItemInMainHand();
+
 			if (stack == null || !stack.hasItemMeta() || !stack.getItemMeta().hasDisplayName()) {
 				return;
 			}
+
 			if (stack.getItemMeta().getDisplayName().equalsIgnoreCase(plugin.getChatManager().colorMessage("In-Game.Spectator.Spectator-Item-Name"))) {
 				e.setCancelled(true);
 				openSpectatorMenu(e.getPlayer().getWorld(), e.getPlayer());
@@ -65,9 +68,9 @@ public class SpectatorItemEvents implements Listener {
 	}
 
 	private void openSpectatorMenu(World world, Player p) {
-		Inventory inventory = plugin.getServer().createInventory(null, Utils.serializeInt(ArenaRegistry.getArena(p).getPlayers().size()),
-			plugin.getChatManager().colorMessage("In-Game.Spectator.Spectator-Menu-Name"));
+		Inventory inventory = plugin.getServer().createInventory(null, Utils.serializeInt(ArenaRegistry.getArena(p).getPlayers().size()), plugin.getChatManager().colorMessage("In-Game.Spectator.Spectator-Menu-Name"));
 		Set<Player> players = ArenaRegistry.getArena(p).getPlayers();
+
 		for (Player player : world.getPlayers()) {
 			if (players.contains(player) && !plugin.getUserManager().getUser(player).isSpectator()) {
 				ItemStack skull;
@@ -76,39 +79,53 @@ public class SpectatorItemEvents implements Listener {
 				} else {
 					skull = XMaterial.PLAYER_HEAD.parseItem();
 				}
+
 				SkullMeta meta = (SkullMeta) skull.getItemMeta();
+
 				if (usesPaperSpigot && player.getPlayerProfile().hasTextures()) {
 					meta.setPlayerProfile(player.getPlayerProfile());
 				} else {
 					meta.setOwningPlayer(player);
 				}
+
 				meta.setDisplayName(player.getName());
+
 				String score = plugin.getChatManager().colorMessage("In-Game.Spectator.Target-Player-Score");
 				score = StringUtils.replace(score, "%score%", String.valueOf(StatsStorage.getUserStats(player, StatsStorage.StatisticType.LOCAL_COINS)));
+
 				skull.setLore(Collections.singletonList(score));
 				skull.setDurability((short) SkullType.PLAYER.ordinal());
 				skull.setItemMeta(meta);
+
 				inventory.addItem(skull);
 			}
 		}
+
 		p.openInventory(inventory);
 	}
 
 	@EventHandler
 	public void onSpectatorInventoryClick(InventoryClickEvent e) {
 		Player p = (Player) e.getWhoClicked();
+
 		if (ArenaRegistry.getArena(p) == null) {
 			return;
 		}
+
 		Arena arena = ArenaRegistry.getArena(p);
+
 		if (e.getCurrentItem() == null || !e.getCurrentItem().hasItemMeta() || !e.getCurrentItem().getItemMeta().hasDisplayName() || !e.getCurrentItem().getItemMeta().hasLore()) {
 			return;
 		}
+
 		if (!e.getView().getTitle().equalsIgnoreCase(plugin.getChatManager().colorMessage("In-Game.Spectator.Spectator-Menu-Name", p))) {
 			return;
 		}
+
 		e.setCancelled(true);
+
 		ItemMeta meta = e.getCurrentItem().getItemMeta();
+
 		for (Player player : arena.getPlayers()) {
 			if (player.getName().equalsIgnoreCase(meta.getDisplayName()) || ChatColor.stripColor(meta.getDisplayName()).contains(player.getName())) {
 				p.sendMessage(plugin.getChatManager().formatMessage(arena, plugin.getChatManager().colorMessage("Commands.Admin-Commands.Teleported-To-Player"), player));
@@ -117,6 +134,7 @@ public class SpectatorItemEvents implements Listener {
 				return;
 			}
 		}
+
 		p.sendMessage(plugin.getChatManager().colorMessage("Commands.Admin-Commands.Player-Not-Found"));
 	}
 }

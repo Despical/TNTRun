@@ -7,8 +7,9 @@ import java.util.stream.Collectors;
 import org.bukkit.command.CommandSender;
 
 import me.despical.tntrun.arena.Arena;
-import me.despical.tntrun.arena.ArenaRegistry;
 import me.despical.tntrun.commands.SubCommand;
+
+import static me.despical.tntrun.arena.ArenaRegistry.*;
 
 /**
  * @author Despical
@@ -34,11 +35,13 @@ public class ListCommand extends SubCommand {
 
 	@Override
 	public void execute(CommandSender sender, String label, String[] args) {
-		if (ArenaRegistry.getArenas().size() == 0) {
+		if (getArenas().size() == 0) {
 			sender.sendMessage(getPlugin().getChatManager().getPrefix() + getPlugin().getChatManager().colorMessage("Commands.Admin-Commands.List-Command.No-Arenas-Created"));
 			return;
 		}
-		List<String> arenas = ArenaRegistry.getArenas().stream().map(Arena::getId).collect(Collectors.toList());
+
+		List<String> arenas = getArenas().stream().map(Arena::getId).collect(Collectors.toList());
+
 		sender.sendMessage(getPlugin().getChatManager().getPrefix() + getPlugin().getChatManager().colorMessage("Commands.Admin-Commands.List-Command.Format").replace("%list%",
 				arenas.toString().substring(1, arenas.toString().length() - 1)));
 	}

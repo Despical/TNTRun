@@ -35,6 +35,7 @@ public class SpecialItem {
 		new SpecialItem("Leave").load(ChatColor.RED + "Leave", new String[] { 
 			ChatColor.GRAY + "Click to teleport to hub" 
 		}, XMaterial.WHITE_BED.parseMaterial(), 8);
+
 		new SpecialItem("Double-Jump").load(ChatColor.RED + "Double Jump", new String[] { 
 			ChatColor.GRAY + "Click to double jump" 
 		}, XMaterial.FEATHER.parseMaterial(), 0);
@@ -49,19 +50,25 @@ public class SpecialItem {
 			config.set(name + ".material-name", material.toString());
 			config.set(name + ".slot", slot);
 		}
+
 		ConfigUtils.saveConfig(JavaPlugin.getPlugin(Main.class), config, "lobbyitems");
+
 		ItemStack stack = XMaterial.fromString(config.getString(name + ".material-name").toUpperCase()).parseItem();
 		ItemMeta meta = stack.getItemMeta();
+
 		meta.setDisplayName(plugin.getChatManager().colorRawMessage(config.getString(name + ".displayname")));
 
 		List<String> colorizedLore = new ArrayList<>();
+
 		for (String str : config.getStringList(name + ".lore")) {
 			colorizedLore.add(plugin.getChatManager().colorRawMessage(str));
 		}
+
 		meta.setLore(colorizedLore);
 		stack.setItemMeta(meta);
 
 		SpecialItem item = new SpecialItem(name);
+
 		item.itemStack = stack;
 		item.slot = config.getInt(name + ".slot");
 		SpecialItemManager.addItem(name, item);

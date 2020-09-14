@@ -29,11 +29,7 @@ public class Utils {
 	 * @return serialized number
 	 */
 	public static int serializeInt(Integer i) {
-		if ((i % 9) == 0) {
-			return i;
-		} else {
-			return (int) ((Math.ceil(i / 9) * 9) + 9);
-		}
+		return (i % 9) == 0 ? i : (int) (Math.ceil(i / 9) * 9 + 9);
 	}
 
 	public static boolean checkIsInGameInstance(Player player) {
@@ -41,6 +37,7 @@ public class Utils {
 			player.sendMessage(plugin.getChatManager().getPrefix() + plugin.getChatManager().colorMessage("Commands.Not-Playing", player));
 			return false;
 		}
+
 		return true;
 	}
 }

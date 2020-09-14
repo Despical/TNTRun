@@ -32,6 +32,7 @@ public class PlayerAmountComponents implements SetupComponent {
 		FileConfiguration config = setupInventory.getConfig();
 		Arena arena = setupInventory.getArena();
 		Main plugin = setupInventory.getPlugin();
+
 		pane.addItem(new GuiItem(new ItemBuilder(Material.COAL)
 			.amount(setupInventory.getSetupUtilities().getMinimumValueHigherThanZero("minimumplayers"))
 			.name(plugin.getChatManager().colorRawMessage("&e&lSet Minimum Players Amount"))
@@ -43,13 +44,16 @@ public class PlayerAmountComponents implements SetupComponent {
 				if (e.getClick().isRightClick()) {
 					e.getInventory().getItem(e.getSlot()).setAmount(e.getCurrentItem().getAmount() + 1);
 				}
+
 				if (e.getClick().isLeftClick()) {
 					e.getInventory().getItem(e.getSlot()).setAmount(e.getCurrentItem().getAmount() - 1);
 				}
+
 				if (e.getInventory().getItem(e.getSlot()).getAmount() <= 1) {
 					e.getWhoClicked().sendMessage(plugin.getChatManager().colorRawMessage("&c&l✖ &cWarning | Please do not set amount lower than 2! Game is designed for 2 or more players!"));
 					e.getInventory().getItem(e.getSlot()).setAmount(2);
 				}
+
 				config.set("instances." + arena.getId() + ".minimumplayers", e.getCurrentItem().getAmount());
 				arena.setMinimumPlayers(e.getCurrentItem().getAmount());
 				ConfigUtils.saveConfig(plugin, config, "arenas");
@@ -66,13 +70,16 @@ public class PlayerAmountComponents implements SetupComponent {
 				if (e.getClick().isRightClick()) {
 					e.getCurrentItem().setAmount(e.getCurrentItem().getAmount() + 1);
 				}
+
 				if (e.getClick().isLeftClick()) {
 					e.getCurrentItem().setAmount(e.getCurrentItem().getAmount() - 1);
 				}
+
 				if (e.getInventory().getItem(e.getSlot()).getAmount() <= 1) {
 					e.getWhoClicked().sendMessage(plugin.getChatManager().colorRawMessage("&c&l✖ &cWarning | Please do not set amount lower than 2! Game is designed for 2 or more players!"));
 					e.getInventory().getItem(e.getSlot()).setAmount(2);
 				}
+
 				config.set("instances." + arena.getId() + ".maximumplayers", e.getCurrentItem().getAmount());
 				arena.setMaximumPlayers(e.getCurrentItem().getAmount());
 				ConfigUtils.saveConfig(plugin, config, "arenas");

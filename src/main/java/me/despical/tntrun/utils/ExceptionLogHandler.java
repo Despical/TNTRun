@@ -22,6 +22,7 @@ public class ExceptionLogHandler extends Handler {
 	
 	public ExceptionLogHandler(Main plugin) {
 		this.plugin = plugin;
+
 		Bukkit.getLogger().addHandler(this);
 	}
 
@@ -34,37 +35,48 @@ public class ExceptionLogHandler extends Handler {
 	@Override
 	public void publish(LogRecord record) {
 		Throwable throwable = record.getThrown();
+
 		if (!(throwable instanceof Exception) || !throwable.getClass().getSimpleName().contains("Exception")) {
 			return;
 		}
+
 		if (throwable.getStackTrace().length <= 0) {
 			return;
 		}
+
 		if (throwable.getCause() != null && throwable.getCause().getStackTrace() != null) {
 			if (!throwable.getCause().getStackTrace()[0].getClassName().contains("me.despical.tntrun")) {
 				return;
 			}
 		}
+
 		if (!throwable.getStackTrace()[0].getClassName().contains("me.despical.tntrun")) {
 			return;
 		}
+
 		if (containsBlacklistedClass(throwable)) {
 			return;
 		}
+
 		record.setThrown(null);
 	
 		Exception exception = throwable.getCause() != null ? (Exception) throwable.getCause() : (Exception) throwable;
 		StringBuilder stacktrace = new StringBuilder(exception.getClass().getSimpleName());
+
 		if (exception.getMessage() != null) {
 			stacktrace.append(" (").append(exception.getMessage()).append(")");
 		}
+
 		stacktrace.append("\n");
+
 		for (StackTraceElement str : exception.getStackTrace()) {
 			stacktrace.append(str.toString()).append("\n");
 		}
+
 		plugin.getLogger().log(Level.WARNING, "[Reporter service] <<-----------------------------[START]----------------------------->>");
 		plugin.getLogger().log(Level.WARNING, stacktrace.toString());
 		plugin.getLogger().log(Level.WARNING, "[Reporter service] <<------------------------------[END]------------------------------>>");
+
 		record.setMessage("[TNT Run] We have found a bug in the code. Contact us at our official discord server (Invite link: https://discordapp.com/invite/Vhyy4HA) with the following error given above!");
 	}
 
@@ -76,6 +88,7 @@ public class ExceptionLogHandler extends Handler {
 				}
 			}
 		}
+
 		return false;
 	}
 }

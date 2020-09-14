@@ -26,11 +26,14 @@ public class LobbyEvent implements Listener {
 		if (event.getEntity().getType() != EntityType.PLAYER) {
 			return;
 		}
+
 		Player player = (Player) event.getEntity();
 		Arena arena = ArenaRegistry.getArena(player);
+
 		if (arena == null) {
 			return;
 		}
+
 		if (event.getDamage() < 500d) {
 			event.setCancelled(true);
 			player.setFireTicks(0);
