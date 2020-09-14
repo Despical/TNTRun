@@ -43,7 +43,7 @@ public class ForceStartCommand extends SubCommand {
 		Arena arena = ArenaRegistry.getArena((Player) sender);
 
 		if (arena.getPlayers().size() < 2) {
-			getPlugin().getChatManager().broadcast(arena, getPlugin().getChatManager().formatMessage(arena, getPlugin().getChatManager().colorMessage("In-Game.Messages.Lobby-Messages.Waiting-For-Players"), arena.getMinimumPlayers()));
+			arena.getPlayers().forEach(p -> p.sendMessage(getPlugin().getChatManager().formatMessage(arena, getPlugin().getChatManager().colorMessage("In-Game.Messages.Lobby-Messages.Waiting-For-Players"), arena.getMinimumPlayers())));
 			return;
 		}
 
