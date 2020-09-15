@@ -1,3 +1,6 @@
+### 1.0.3 Beta Release (15.09.2020)
+* Fixed plugin is not enabling.
+
 ### 1.0.2 Release (14.09.2020)
 * Huge performance improvements.
 * Added more in-game tips.

@@ -6,7 +6,7 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.logging.Level;
 
-import me.despical.tntrun.utils.MessageUtils;
+import me.despical.tntrun.utils.*;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -44,9 +44,6 @@ import me.despical.tntrun.handlers.sign.SignManager;
 import me.despical.tntrun.user.User;
 import me.despical.tntrun.user.UserManager;
 import me.despical.tntrun.user.data.MysqlManager;
-import me.despical.tntrun.utils.ExceptionLogHandler;
-import me.despical.tntrun.utils.UpdateChecker;
-import me.despical.tntrun.utils.Utils;
 
 import static me.despical.tntrun.utils.Debugger.*;
 
@@ -78,7 +75,7 @@ public class Main extends JavaPlugin {
 		exceptionLogHandler = new ExceptionLogHandler(this);
 		saveDefaultConfig();
 
-		setEnabled(getDescription().getVersion().contains("d") || getConfig().getBoolean("Debug-Messages", false));
+		Debugger.setEnabled(getDescription().getVersion().contains("d") || getConfig().getBoolean("Debug-Messages", false));
 		debug(Level.INFO, "Initialization start");
 
 		if (getConfig().getBoolean("Developer-Mode", false)) {

@@ -2,7 +2,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>me.despical</groupId>
 	<artifactId>tnt-run</artifactId>
-	<version>1.0.2</version>
+	<version>1.0.3b</version>
 	<name>TNT Run</name>
 
 	<properties>
