@@ -2,10 +2,11 @@ package me.despical.tntrun.handlers;
 
 import java.util.logging.Level;
 
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import me.despical.tntrun.Main;
-import me.despical.tntrun.utils.Debugger;
+import static me.despical.tntrun.utils.Debugger.debug;
 
 /**
 * @author Despical
@@ -42,6 +43,16 @@ public class PermissionsManager {
 		PermissionsManager.setJoinFullGames(plugin.getConfig().getString("Basic-Permissions.Full-Games-Permission", "tntrun.fullgames"));
 		PermissionsManager.setJoinPerm(plugin.getConfig().getString("Basic-Permissions.Join-Permission", "tntrun.join.<arena>"));
 
-		Debugger.debug(Level.INFO, "Basic permissions registered");
+		debug(Level.INFO, "Basic permissions registered");
+	}
+
+	public static int getDoubleJumps(Player player) {
+		for (String perm : plugin.getConfig().getStringList("Double-Jumps")) {
+            if (perm.startsWith("tntrun") && player.hasPermission(perm)) {
+            	return Integer.parseInt(perm.substring(perm.lastIndexOf('.') + 1));
+            }
+        }
+
+		return plugin.getConfig().getInt("Default-Double-Jumps", 5);
 	}
 }

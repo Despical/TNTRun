@@ -1,6 +1,6 @@
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
 # +---------------------------------------------------------+ #
-# |           TNT Run by Despical (Version 1.0.2)           | #
+# |           TNT Run by Despical (Version 1.0.3)           | #
 # +---------------------------------------------------------+ #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
@@ -19,8 +19,18 @@ Start-Block-Remove: 5
 # How many ticks after the blocks will be removed when players moved on it.
 Block-Remove-Delay: 12
  
-# Amount of double jumps for each of the player in-game. Default is 5
-Double-Jumps: 5
+# Default amount of double jumps for each of in-game players that doesn't have double jump permission.
+# To change player's default double jumps amount check out the Double-Jumps section below.
+Default-Double-Jumps: 5
+
+# These sections are also the permission names that player need to have to change their double jump
+# amount. Also users can add custom double jump amounts with adding addition sections below.
+Double-Jumps:
+  # Double jump amounts should be greater than 0 otherwise it'll return the default value (5).
+  # For more info check our wiki: https://github.com/Despical/TNTRun/wiki/Commands-and-permissions#double-jump-permissions
+  - tntrun.doublejumps.1
+  - tntrun.doublejumps.3
+  - tntrun.doublejumps.5
 
 # The duration between using double jump again for in-game players.
 Double-Jump-Delay: 4

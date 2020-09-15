@@ -88,11 +88,12 @@ public class ArenaEvents implements Listener {
 		if (SpecialItemManager.getRelatedSpecialItem(itemStack).equalsIgnoreCase("Double-Jump")) {
 			event.setCancelled(true);
 
-			if (StatsStorage.getUserStats(player, StatsStorage.StatisticType.LOCAL_DOUBLE_JUMPS) > 0) {
+			if (StatsStorage.getUserStats(player, StatsStorage.StatisticType.LOCAL_DOUBLE_JUMPS) > 0 && arena.getArenaState() == ArenaState.IN_GAME) {
 				event.setCancelled(true);
 				plugin.getUserManager().getUser(player).addStat(StatsStorage.StatisticType.LOCAL_DOUBLE_JUMPS, -1);
 				plugin.getUserManager().getUser(player).setCooldown("double_jump", plugin.getConfig().getInt("Double-Jump-Delay", 4));
 				player.setVelocity(player.getLocation().getDirection().multiply(1.5D).setY(0.7D));
+				player.setFlying(false);
 			}
 		}
 	}

@@ -1,3 +1,8 @@
+### 1.0.3 Release (15.09.2020)
+* Added per double jump amount for per player.
+* Fixed double jump fly issues.
+* Fixed a issue about arena creation.
+
 ### 1.0.3 Beta Release (15.09.2020)
 * Fixed plugin is not enabling.
 

@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 
+import me.despical.tntrun.handlers.PermissionsManager;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -30,7 +31,6 @@ import me.despical.commonsbox.configuration.ConfigUtils;
 import me.despical.commonsbox.serializer.InventorySerializer;
 import me.despical.tntrun.ConfigPreferences;
 import me.despical.tntrun.Main;
-import me.despical.tntrun.api.StatsStorage;
 import me.despical.tntrun.api.events.game.TRGameStartEvent;
 import me.despical.tntrun.api.events.game.TRGameStateChangeEvent;
 import me.despical.tntrun.arena.managers.ScoreboardManager;
@@ -38,7 +38,9 @@ import me.despical.tntrun.arena.options.ArenaOption;
 import me.despical.tntrun.handlers.items.SpecialItemManager;
 import me.despical.tntrun.handlers.rewards.Reward;
 import me.despical.tntrun.user.User;
+
 import static me.despical.tntrun.utils.Debugger.*;
+import static me.despical.tntrun.api.StatsStorage.StatisticType.*;
 
 /**
  * @author Despical
@@ -160,6 +162,7 @@ public class Arena extends BukkitRunnable {
 
 				break;
 			}
+
 			if (getTimer() == 0 || forceStart) {
 				TRGameStartEvent gameStartEvent = new TRGameStartEvent(this);
 
@@ -186,8 +189,8 @@ public class Arena extends BukkitRunnable {
 
 					ArenaUtils.hidePlayersOutsideTheGame(player, this);
 
-					plugin.getUserManager().getUser(player).addStat(StatsStorage.StatisticType.GAMES_PLAYED, 1);
-					plugin.getUserManager().getUser(player).setStat(StatsStorage.StatisticType.LOCAL_DOUBLE_JUMPS, plugin.getConfig().getInt("Double-Jumps", 5));
+					plugin.getUserManager().getUser(player).addStat(GAMES_PLAYED, 1);
+					plugin.getUserManager().getUser(player).setStat(LOCAL_DOUBLE_JUMPS, PermissionsManager.getDoubleJumps(player));
 
 					setTimer(2);
 
@@ -196,7 +199,6 @@ public class Arena extends BukkitRunnable {
 					player.sendMessage(plugin.getChatManager().getPrefix() + plugin.getChatManager().colorMessage("In-Game.Messages.Lobby-Messages.Game-Started"));
 					player.getInventory().setItem(SpecialItemManager.getSpecialItem("Double-Jump").getSlot(), SpecialItemManager.getSpecialItem("Double-Jump").getItemStack());
 					player.updateInventory();
-					player.setAllowFlight(true);
 				}
 			}
 
@@ -222,18 +224,18 @@ public class Arena extends BukkitRunnable {
 
 			for (Player player : getPlayersLeft()) {
 				if (getTimer() % 30 == 0) {
-					plugin.getUserManager().getUser(player).addStat(StatsStorage.StatisticType.LOCAL_COINS, 15);
-					plugin.getUserManager().getUser(player).addStat(StatsStorage.StatisticType.COINS, 15);
+					plugin.getUserManager().getUser(player).addStat(LOCAL_COINS, 15);
+					plugin.getUserManager().getUser(player).addStat(COINS, 15);
 					player.sendMessage(plugin.getChatManager().getPrefix() + plugin.getChatManager().colorMessage("In-Game.Messages.Earned-Coin"));
 				}
 
 				if (plugin.getUserManager().getUser(player).getCooldown("double_jump") > 0) {
 					player.setAllowFlight(false);
-				} else if (plugin.getUserManager().getUser(player).getStat(StatsStorage.StatisticType.LOCAL_DOUBLE_JUMPS) != 0) player.setAllowFlight(true);
+				} else if (plugin.getUserManager().getUser(player).getStat(LOCAL_DOUBLE_JUMPS) > 0) player.setAllowFlight(true);
 			}
 
 			for (Player player : getPlayersLeft()) {
-				plugin.getUserManager().getUser(player).addStat(StatsStorage.StatisticType.LOCAL_SURVIVE, 1);
+				plugin.getUserManager().getUser(player).addStat(LOCAL_SURVIVE, 1);
 			}
 
 			setTimer(getTimer() + 1);

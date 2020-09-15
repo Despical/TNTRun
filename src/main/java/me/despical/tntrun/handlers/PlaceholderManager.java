@@ -27,8 +27,12 @@ public class PlaceholderManager extends PlaceholderExpansion {
 		return "Despical";
 	}
 
+	public String getPlugin() {
+		return null;
+	}
+
 	public String getVersion() {
-		return "1.0.2";
+		return "1.0.3";
 	}
 
 	public String onPlaceholderRequest(Player player, String id) {
