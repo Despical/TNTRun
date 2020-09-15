@@ -10,7 +10,7 @@ Jump on the blocks but don't fall into void, show your parkour talent! Who will 
 | Library                                                     | Author                                          | License                                                                    |
 |-------------------------------------------------------------|-------------------------------------------------|----------------------------------------------------------------------------|
 | [InventoryFramework](https://github.com/Despical/InventoryFramework/)   | [Despical](https://github.com/Despical) | [Unlicense](https://github.com/Despical/InventoryFramework/blob/master/LICENSE)        |
-| [ScoreboardLib](https://github.com/TigerHix/ScoreboardLib/) | [TigerHix](https://github.com/TigerHix)         | [LGPLv3](https://github.com/TigerHix/ScoreboardLib/blob/master/LICENSE)    |
+| [ScoreboardLib](https://github.com/Despical/Commons-Box/tree/master/src/main/java/me/despical/commonsbox/scoreboard) | [Despical](https://github.com/Despical)         | [GPLv3](https://github.com/Despical/Commons-Box/blob/master/LICENSE)    |
 | [HikariCP](https://github.com/brettwooldridge/HikariCP)     | [brettwooldridge](https://github.com/brettwooldridge) | [Apache License 2.0](https://github.com/brettwooldridge/HikariCP/blob/dev/LICENSE) |
 | [bStats](https://github.com/Bastian/bStats-Metrics)         | [Bastian](https://github.com/Bastian)           | [LGPLv3](https://github.com/Bastian/bStats-Metrics/blob/master/LICENSE)    |
 | [Commons-Box](https://github.com/Despical/Commons-Box)        | [Despical](https://github.com/Despical)             | [GPLv3](https://github.com/Despical/Commons-Box/blob/master/LICENSE)      |
@@ -32,7 +32,7 @@ Then add the dependency
         <dependency>
             <groupId>com.github.Despical</groupId>
             <artifactId>TNTRun</artifactId>
-            <version>1.0.2</version>
+            <version>1.0.3-beta</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>
