@@ -30,7 +30,6 @@ import me.despical.tntrun.user.User;
 public class ScoreboardManager {
 
 	private static final Main plugin = JavaPlugin.getPlugin(Main.class);
-	private static final String boardTitle = plugin.getChatManager().colorMessage("Scoreboard.Title");
 	private final List<Scoreboard> scoreboards = new ArrayList<>();
 	private final Arena arena;
 	private final FileConfiguration config = ConfigUtils.getConfig(plugin, "messages");
@@ -50,7 +49,7 @@ public class ScoreboardManager {
 
 			@Override
 			public String getTitle(Player player) {
-				return boardTitle;
+				return plugin.getChatManager().colorMessage("Scoreboard.Title");
 			}
 
 			@Override
@@ -83,10 +82,7 @@ public class ScoreboardManager {
 	 * Forces all scoreboards to deactivate.
 	 */
 	public void stopAllScoreboards() {
-		for (Scoreboard board : scoreboards) {
-			board.deactivate();
-		}
-
+		scoreboards.forEach(Scoreboard::deactivate);
 		scoreboards.clear();
 	}
 
@@ -104,10 +100,7 @@ public class ScoreboardManager {
 			}
 		}
 
-		for (String line : lines) {
-				builder.next(formatScoreboardLine(line, user));
-		}
-
+		lines.stream().map(line -> formatScoreboardLine(line, user)).forEach(builder::next);
 		return builder.build();
 	}
 

@@ -50,7 +50,7 @@ public class SpawnComponents implements SetupComponent {
 				arena.setEndLocation(player.getLocation());
 				player.sendMessage(plugin.getChatManager().colorRawMessage("&e✔ Completed | &aEnding location for arena " + arena.getId() + " set at your location!"));
 				ConfigUtils.saveConfig(plugin, config, "arenas");
-			}), 0, 0);
+		}), 0, 0);
 
 		pane.addItem(new GuiItem(new ItemBuilder(Material.LAPIS_BLOCK)
 			.name(plugin.getChatManager().colorRawMessage("&e&lSet Lobby Location"))
@@ -63,6 +63,6 @@ public class SpawnComponents implements SetupComponent {
 				arena.setLobbyLocation(player.getLocation());
 				player.sendMessage(plugin.getChatManager().colorRawMessage("&e✔ Completed | &aLobby location for arena " + arena.getId() + " set at your location!"));
 				ConfigUtils.saveConfig(plugin, config, "arenas");
-			}), 1, 0);
+		}), 1, 0);
 	}
 }

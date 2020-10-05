@@ -27,9 +27,9 @@ public class SimpleConversationBuilder {
 					return;
 				}
 
-				listener.getContext().getForWhom().sendRawMessage(plugin.getChatManager().colorMessage("Commands.Conversation.Operation-Timeout"));
+				listener.getContext().getForWhom().sendRawMessage(plugin.getChatManager().colorRawMessage("&7Operation cancelled!"));
 
-			}).thatExcludesNonPlayersWithMessage(plugin.getChatManager().colorMessage("Commands.Conversation.Only-By-Player"));
+			}).thatExcludesNonPlayersWithMessage(plugin.getChatManager().colorMessage("&4Only by players!"));
 	}
 
 	public SimpleConversationBuilder withPrompt(Prompt prompt) {

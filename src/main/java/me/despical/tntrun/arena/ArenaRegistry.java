@@ -1,20 +1,18 @@
 package me.despical.tntrun.arena;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-import java.util.logging.Level;
-
+import me.despical.commonsbox.configuration.ConfigUtils;
+import me.despical.commonsbox.serializer.LocationSerializer;
+import me.despical.tntrun.Main;
+import me.despical.tntrun.utils.Debugger;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import me.despical.commonsbox.configuration.ConfigUtils;
-import me.despical.commonsbox.serializer.LocationSerializer;
-import me.despical.tntrun.Main;
-import static me.despical.tntrun.utils.Debugger.debug;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 /**
  * @author Despical
@@ -73,34 +71,31 @@ public class ArenaRegistry {
 	 * @return Arena or null if not found
 	 */
 	public static Arena getArena(String id) {
-		Arena arena = null;
-
 		for (Arena loopArena : arenas) {
 			if (loopArena.getId().equalsIgnoreCase(id)) {
-				arena = loopArena;
-				break;
+				return loopArena;
 			}
 		}
 
-		return arena;
+		return null;
 	}
 
 	public static void registerArena(Arena arena) {
-		debug(Level.INFO, "Registering new game instance {0}", arena.getId());
+		Debugger.debug("Registering new game instance {0}", arena.getId());
 		arenas.add(arena);
 	}
 
 	public static void unregisterArena(Arena arena) {
-		debug(Level.INFO, "Unregistering game instance {0}", arena.getId());
+		Debugger.debug("Unregistering game instance {0}", arena.getId());
 		arenas.remove(arena);
 	}
 
 	public static void registerArenas() {
-		debug(Level.INFO, "Initial arenas registration");
+		Debugger.debug("Initial arenas registration");
 		long start = System.currentTimeMillis();
 
 		if (ArenaRegistry.getArenas().size() > 0) {
-			for (Arena arena : new ArrayList<>(ArenaRegistry.getArenas())) {
+			for (Arena arena : ArenaRegistry.getArenas()) {
 				unregisterArena(arena);
 			}
 		}
@@ -149,7 +144,7 @@ public class ArenaRegistry {
 			Bukkit.getConsoleSender().sendMessage(plugin.getChatManager().colorMessage("Validator.Instance-Started").replace("%arena%", id));
 		}
 
-		debug(Level.INFO, "Arenas registration completed, took {0} ms", System.currentTimeMillis() - start);
+		Debugger.debug("Arenas registration completed, took {0} ms", System.currentTimeMillis() - start);
 	}
 
 	public static List<Arena> getArenas() {

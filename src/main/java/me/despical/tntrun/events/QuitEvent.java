@@ -20,6 +20,7 @@ public class QuitEvent implements Listener {
 
 	public QuitEvent(Main plugin) {
 		this.plugin = plugin;
+
 		plugin.getServer().getPluginManager().registerEvents(this, plugin);
 	}
 

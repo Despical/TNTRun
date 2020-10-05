@@ -1,9 +1,13 @@
 package me.despical.tntrun.utils;
 
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import me.despical.tntrun.Main;
 import me.despical.tntrun.arena.ArenaRegistry;
+import org.bukkit.inventory.meta.SkullMeta;
+
+import java.util.concurrent.CompletableFuture;
 
 /**
  * @author Despical
@@ -20,24 +24,27 @@ public class Utils {
 		Utils.plugin = plugin;
 	}
 
-	/**
-	 * Serialize int to use it in Inventories size ex. you have 38 kits and it will
-	 * serialize it to 45 (9*5) because it is valid inventory size next ex. you have
-	 * 55 items and it will serialize it to 63 (9*7) not 54 because it's too less
-	 *
-	 * @param i integer to serialize
-	 * @return serialized number
-	 */
-	public static int serializeInt(Integer i) {
-		return (i % 9) == 0 ? i : (int) (Math.ceil(i / 9) * 9 + 9);
-	}
-
 	public static boolean checkIsInGameInstance(Player player) {
-		if (ArenaRegistry.getArena(player) == null) {
+		if (ArenaRegistry.isInArena(player)) {
 			player.sendMessage(plugin.getChatManager().getPrefix() + plugin.getChatManager().colorMessage("Commands.Not-Playing", player));
 			return false;
 		}
 
 		return true;
+	}
+
+	public static SkullMeta setPlayerHead(Player player, SkullMeta meta) {
+		if (Bukkit.getServer().getVersion().contains("Paper") && player.getPlayerProfile().hasTextures()) {
+			return CompletableFuture.supplyAsync(() -> {
+				meta.setPlayerProfile(player.getPlayerProfile());
+				return meta;
+			}).exceptionally(e -> {
+				Debugger.debug(java.util.logging.Level.WARNING, "Retrieving player profile of " + player.getName() + " failed!");
+				return meta;
+			}).join();
+		}
+
+		meta.setOwningPlayer(player);
+		return meta;
 	}
 }

@@ -1,19 +1,5 @@
 package me.despical.tntrun.arena;
 
-import java.util.List;
-import java.util.logging.Level;
-
-import org.apache.commons.lang.StringUtils;
-import org.bukkit.Bukkit;
-import org.bukkit.GameMode;
-import org.bukkit.attribute.Attribute;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.entity.Player;
-import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
-import org.bukkit.scheduler.BukkitRunnable;
-
 import me.clip.placeholderapi.PlaceholderAPI;
 import me.despical.commonsbox.compat.XMaterial;
 import me.despical.commonsbox.configuration.ConfigUtils;
@@ -31,8 +17,19 @@ import me.despical.tntrun.handlers.ChatManager.ActionType;
 import me.despical.tntrun.handlers.PermissionsManager;
 import me.despical.tntrun.handlers.items.SpecialItemManager;
 import me.despical.tntrun.user.User;
+import me.despical.tntrun.utils.Debugger;
+import org.apache.commons.lang.StringUtils;
+import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
+import org.bukkit.attribute.Attribute;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.Player;
+import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
+import org.bukkit.scheduler.BukkitRunnable;
 
-import static me.despical.tntrun.utils.Debugger.debug;
+import java.util.List;
 
 /**
  * @author Despical
@@ -55,7 +52,7 @@ public class ArenaManager {
 	 * @see TRGameJoinAttemptEvent
 	 */
 	public static void joinAttempt(Player player, Arena arena) {
-		debug(Level.INFO, "[{0}] Initial join attempt for {1}", arena.getId(), player.getName());
+		Debugger.debug("[{0}] Initial join attempt for {1}", arena.getId(), player.getName());
 		long start = System.currentTimeMillis();
 		TRGameJoinAttemptEvent gameJoinAttemptEvent = new TRGameJoinAttemptEvent(player, arena);
 
@@ -102,7 +99,7 @@ public class ArenaManager {
 
 				ArenaManager.leaveAttempt(loopPlayer, arena);
 				loopPlayer.sendMessage(plugin.getChatManager().getPrefix() + plugin.getChatManager().colorMessage("In-Game.Messages.Lobby-Messages.You-Were-Kicked-For-Premium-Slot"));
-				arena.getPlayers().forEach(p -> p.sendMessage(plugin.getChatManager().formatMessage(arena, plugin.getChatManager().colorMessage("In-Game.Messages.Lobby-Messages.Kicked-For-Premium-Slot"), loopPlayer)));
+				arena.broadcastMessage(plugin.getChatManager().formatMessage(arena, plugin.getChatManager().colorMessage("In-Game.Messages.Lobby-Messages.Kicked-For-Premium-Slot"), loopPlayer));
 
 				foundSlot = true;
 				break;
@@ -114,7 +111,7 @@ public class ArenaManager {
 			}
 		}
 
-		debug(Level.INFO, "[{0}] Checked join attempt for {1} initialized", arena.getId(), player.getName());
+		Debugger.debug("[{0}] Checked join attempt for {1} initialized", arena.getId(), player.getName());
 		User user = plugin.getUserManager().getUser(player);
 		arena.getScoreboardManager().createScoreboard(user);
 
@@ -139,11 +136,11 @@ public class ArenaManager {
 			player.getInventory().setItem(0, new ItemBuilder(XMaterial.COMPASS.parseItem()).name(plugin.getChatManager().colorMessage("In-Game.Spectator.Spectator-Item-Name")).build());
 			player.getInventory().setItem(4, new ItemBuilder(XMaterial.COMPARATOR.parseItem()).name(plugin.getChatManager().colorMessage("In-Game.Spectator.Settings-Menu.Item-Name")).build());
 			player.getInventory().setItem(8, SpecialItemManager.getSpecialItem("Leave").getItemStack());
-			player.getActivePotionEffects().stream().map(PotionEffect::getType).forEach(player::removePotionEffect);
+			player.getActivePotionEffects().forEach(effect -> player.removePotionEffect(effect.getType()));
 
 			ArenaUtils.hidePlayer(player, arena);
 
-			player.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, Integer.MAX_VALUE, 0, false, false), false);
+			player.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, Integer.MAX_VALUE, 0, false, false));
 
 			user.setSpectator(true);
 
@@ -166,7 +163,7 @@ public class ArenaManager {
 			}
 
 			ArenaUtils.hidePlayersOutsideTheGame(player, arena);
-			debug(Level.INFO, "[{0}] Join attempt as spectator finished for {1} took {2} ms", arena.getId(), player.getName(), System.currentTimeMillis() - start);
+			Debugger.debug("[{0}] Join attempt as spectator finished for {1} took {2} ms", arena.getId(), player.getName(), System.currentTimeMillis() - start);
 			return;
 		}
 
@@ -185,13 +182,11 @@ public class ArenaManager {
 
 		player.updateInventory();
 
-		for (Player arenaPlayer : arena.getPlayers()) {
-			ArenaUtils.showPlayer(arenaPlayer, arena);
-		}
-
+		arena.getPlayers().forEach(arenaPlayer -> ArenaUtils.showPlayer(arenaPlayer, arena));
 		arena.showPlayers();
+
 		ArenaUtils.updateNameTagsVisibility(player);
-		debug(Level.INFO, "[{0}] Join attempt as player for {1} took {2} ms", arena.getId(), player.getName(), System.currentTimeMillis() - start);
+		Debugger.debug("[{0}] Join attempt as player for {1} took {2} ms", arena.getId(), player.getName(), System.currentTimeMillis() - start);
 	}
 
 	/**
@@ -203,7 +198,7 @@ public class ArenaManager {
 	 * @see TRGameLeaveAttemptEvent
 	 */
 	public static void leaveAttempt(Player player, Arena arena) {
-		debug(Level.INFO, "[{0}] Initial leave attempt for {1}", arena.getId(), player.getName());
+		Debugger.debug("[{0}] Initial leave attempt for {1}", arena.getId(), player.getName());
 		long start = System.currentTimeMillis();
 
 		TRGameLeaveAttemptEvent event = new TRGameLeaveAttemptEvent(player, arena);
@@ -247,11 +242,7 @@ public class ArenaManager {
 		player.setExp(0);
 		player.setFlying(false);
 		player.setAllowFlight(false);
-
-		for (PotionEffect effect : player.getActivePotionEffects()) {
-			player.removePotionEffect(effect.getType());
-		}
-
+		player.getActivePotionEffects().forEach(effect -> player.removePotionEffect(effect.getType()));
 		player.setWalkSpeed(0.2f);
 		player.setFireTicks(0);
 
@@ -276,15 +267,8 @@ public class ArenaManager {
 			InventorySerializer.loadInventory(plugin, player);
 		}
 
-		for (StatsStorage.StatisticType stat : StatsStorage.StatisticType.values()) {
-			if (!stat.isPersistent()) {
-				user.setStat(stat, 0);
-			}
-
-			plugin.getUserManager().saveStatistic(user, stat);
-		}
-
-		debug(Level.INFO, "[{0}] Game leave finished for {1} took {2} ms", arena.getId(), player.getName(), System.currentTimeMillis() - start);
+		plugin.getUserManager().saveAllStatistic(user);
+		Debugger.debug("[{0}] Game leave finished for {1} took {2} ms", arena.getId(), player.getName(), System.currentTimeMillis() - start);
 	}
 
 	/**
@@ -296,7 +280,7 @@ public class ArenaManager {
 	 * @see TRGameStopEvent
 	 */
 	public static void stopGame(boolean quickStop, Arena arena) {
-		debug(Level.INFO, "[{0}] Stop game event initialized with quickStop {1}", arena.getId(), quickStop);
+		Debugger.debug("[{0}] Stop game event initialized with quickStop {1}", arena.getId(), quickStop);
 		FileConfiguration config = ConfigUtils.getConfig(plugin, "messages");
 		long start = System.currentTimeMillis();
 
@@ -307,7 +291,7 @@ public class ArenaManager {
 
 		if (quickStop) {
 			Bukkit.getScheduler().runTaskLater(plugin, () -> arena.setArenaState(ArenaState.ENDING), 20L * 2);
-			arena.getPlayers().forEach(p -> p.sendMessage(plugin.getChatManager().colorMessage("In-Game.Messages.Admin-Messages.Stopped-Game")));
+			arena.broadcastMessage(plugin.getChatManager().colorMessage("In-Game.Messages.Admin-Messages.Stopped-Game"));
 		} else {
 			Bukkit.getScheduler().runTaskLater(plugin, () -> arena.setArenaState(ArenaState.ENDING), 20L * 10);
 		}
@@ -327,19 +311,10 @@ public class ArenaManager {
 			player.getInventory().setItem(SpecialItemManager.getSpecialItem("Leave").getSlot(), SpecialItemManager.getSpecialItem("Leave").getItemStack());
 
 			if (!quickStop) {
-				for (String msg : summaryMessages) {
-					MiscUtils.sendCenteredMessage(player, formatSummaryPlaceholders(msg, arena, player));
-				}
+				summaryMessages.forEach(msg -> MiscUtils.sendCenteredMessage(player, formatSummaryPlaceholders(msg, arena, player)));
 			}
 
-			for (StatsStorage.StatisticType stat : StatsStorage.StatisticType.values()) {
-				if (!stat.isPersistent()) {
-					user.setStat(stat, 0);
-				}
-
-				plugin.getUserManager().saveStatistic(user, stat);
-			}
-
+			plugin.getUserManager().saveAllStatistic(user);
 			user.removeScoreboard();
 
 			if (!quickStop && plugin.getConfig().getBoolean("Firework-When-Game-Ends", true)) {
@@ -358,7 +333,7 @@ public class ArenaManager {
 			}
 		}
 
-		debug(Level.INFO, "[{0}] Stop game event finished took {1} ms", arena.getId(), System.currentTimeMillis() - start);
+		Debugger.debug("[{0}] Stop game event finished took {1} ms", arena.getId(), System.currentTimeMillis() - start);
 	}
 
 	private static String formatSummaryPlaceholders(String msg, Arena arena, Player player) {

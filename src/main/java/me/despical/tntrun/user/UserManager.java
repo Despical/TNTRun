@@ -2,9 +2,9 @@ package me.despical.tntrun.user;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
 import java.util.stream.Collectors;
 
+import me.despical.tntrun.utils.Debugger;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -15,8 +15,6 @@ import me.despical.tntrun.arena.Arena;
 import me.despical.tntrun.user.data.FileStats;
 import me.despical.tntrun.user.data.MysqlManager;
 import me.despical.tntrun.user.data.UserDatabase;
-
-import static me.despical.tntrun.utils.Debugger.debug;
 
 /**
  * @author Despical
@@ -32,22 +30,18 @@ public class UserManager {
 		if (plugin.getConfigPreferences().getOption(ConfigPreferences.Option.DATABASE_ENABLED)) {
 			database = new MysqlManager(plugin);
 
-			debug(Level.INFO, "MySQL Stats enabled");
+			Debugger.debug("MySQL Stats enabled");
 		} else {
 			database = new FileStats(plugin);
 
-			debug(Level.INFO, "File Stats enabled");
+			Debugger.debug("File Stats enabled");
 		}
 
 		loadStatsForPlayersOnline();
 	}
 
 	private void loadStatsForPlayersOnline() {
-		for (Player player : Bukkit.getServer().getOnlinePlayers()) {
-			User user = getUser(player);
-
-			loadStatistics(user);
-		}
+		Bukkit.getServer().getOnlinePlayers().stream().map(this::getUser).forEach(this::loadStatistics);
 	}
 
 	public User getUser(Player player) {
@@ -57,7 +51,7 @@ public class UserManager {
 			}
 		}
 
-		debug(Level.INFO, "Registering new user {0} ({1})", player.getUniqueId(), player.getName());
+		Debugger.debug("Registering new user {0} ({1})", player.getUniqueId(), player.getName());
 
 		User user = new User(player);
 
@@ -75,6 +69,10 @@ public class UserManager {
 		}
 
 		database.saveStatistic(user, stat);
+	}
+
+	public void saveAllStatistic(User user) {
+		database.saveAllStatistic(user);
 	}
 
 	public void loadStatistics(User user) {

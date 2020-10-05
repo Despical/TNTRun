@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import me.despical.tntrun.commands.game.*;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -22,12 +23,6 @@ import me.despical.tntrun.commands.admin.arena.ForceStartCommand;
 import me.despical.tntrun.commands.admin.arena.ReloadCommand;
 import me.despical.tntrun.commands.admin.arena.StopCommand;
 import me.despical.tntrun.commands.exception.CommandException;
-import me.despical.tntrun.commands.game.CreateCommand;
-import me.despical.tntrun.commands.game.JoinCommand;
-import me.despical.tntrun.commands.game.LeaderBoardCommand;
-import me.despical.tntrun.commands.game.LeaveCommand;
-import me.despical.tntrun.commands.game.RandomJoinCommand;
-import me.despical.tntrun.commands.game.StatsCommand;
 
 /**
  * @author Despical
@@ -51,6 +46,7 @@ public class CommandHandler implements CommandExecutor {
 		registerSubCommand(new HelpCommand());
 		registerSubCommand(new ForceStartCommand());
 		registerSubCommand(new StopCommand());
+		registerSubCommand(new ArenaSelectorCommand());
 		registerSubCommand(new JoinCommand());
 		registerSubCommand(new RandomJoinCommand());
 		registerSubCommand(new LeaveCommand());
@@ -73,6 +69,7 @@ public class CommandHandler implements CommandExecutor {
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		if (args.length == 0) {
 			sender.sendMessage(ChatColor.DARK_AQUA + "This server is running " + ChatColor.AQUA + "TNT Run " + ChatColor.DARK_AQUA + "v" + this.plugin.getDescription().getVersion() + " by " + ChatColor.AQUA + "Despical");
+
 			if (sender.hasPermission("tntrun.admin")) {
 				sender.sendMessage(ChatColor.DARK_AQUA + "Commands: " + ChatColor.AQUA + "/" + label + " help");
 			}

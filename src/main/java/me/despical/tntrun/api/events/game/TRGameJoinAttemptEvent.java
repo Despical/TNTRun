@@ -42,6 +42,7 @@ public class TRGameJoinAttemptEvent extends TREvent implements Cancellable {
 		return player;
 	}
 
+	@Override
 	public HandlerList getHandlers() {
 		return HANDLERS;
 	}

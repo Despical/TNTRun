@@ -72,9 +72,11 @@ public class BungeeManager implements Listener {
 		if (!ConfigUtils.getConfig(plugin, "bungee").getBoolean("MOTD.Manager", false)) {
 			return;
 		}
+
 		if (ArenaRegistry.getArenas().isEmpty()) {
 			return;
 		}
+
 		event.setMaxPlayers(ArenaRegistry.getArenas().get(ArenaRegistry.getBungeeArena()).getMaximumPlayers());
 		event.setMotd(MOTD.replace("%state%", gameStateToString.get(getArenaState())));
 	}
@@ -88,6 +90,7 @@ public class BungeeManager implements Listener {
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onQuit(PlayerQuitEvent event) {
 		event.setQuitMessage("");
+
 		if (ArenaRegistry.getArena(event.getPlayer()) != null) {
 			ArenaManager.leaveAttempt(event.getPlayer(), ArenaRegistry.getArenas().get(ArenaRegistry.getBungeeArena()));
 		}

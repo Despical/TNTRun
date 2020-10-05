@@ -1,92 +1,60 @@
 package me.despical.tntrun.events.spectator;
 
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Material;
+import com.github.despical.inventoryframework.Gui;
+import com.github.despical.inventoryframework.pane.StaticPane;
+import me.despical.tntrun.Main;
+import me.despical.tntrun.events.spectator.components.MiscComponents;
+import me.despical.tntrun.events.spectator.components.SpeedComponents;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
-
-import me.despical.commonsbox.compat.XMaterial;
-import me.despical.commonsbox.item.ItemBuilder;
 
 /**
  * @author Despical
  * <p>
  * Created at 10.07.2020
  */
-@Deprecated
 public class SpectatorSettingsMenu implements Listener {
 
-	private final String inventoryName;
-	private final String speedOptionName;
-	private Inventory inv;
+	private final Main plugin = JavaPlugin.getPlugin(Main.class);
+	private final Player player;
+	private Gui gui;
 
-	public SpectatorSettingsMenu(JavaPlugin plugin, String inventoryName, String speedOptionName) {
-		this.inventoryName = inventoryName;
-		this.speedOptionName = speedOptionName;
-		plugin.getServer().getPluginManager().registerEvents(this, plugin);
+	public SpectatorSettingsMenu(Player player) {
+		this.player = player;
 
-		initInventory();
+		prepareGui();
 	}
 
-	public void openSpectatorSettingsMenu(Player player) {
-		player.openInventory(this.inv);
+	private void prepareGui() {
+		this.gui = new Gui(plugin, 4, plugin.getChatManager().colorMessage("In-Game.Spectator.Settings-Menu.Inventory-Name"));
+		this.gui.setOnGlobalClick(e -> e.setCancelled(true));
+
+		StaticPane pane = new StaticPane(9, 4);
+		this.gui.addPane(pane);
+
+		prepareComponents(pane);
 	}
 
-	@EventHandler
-	public void onSpectatorMenuClick(InventoryClickEvent e) {
-		if (e.getInventory() == null || !e.getView().getTitle().equals(color(inventoryName))) {
-			return;
-		}
+	private void prepareComponents(StaticPane pane) {
+		SpeedComponents speedComponents = new SpeedComponents();
+		speedComponents.prepare(this);
+		speedComponents.injectComponents(pane);
 
-		if (e.getCurrentItem() == null || !e.getCurrentItem().hasItemMeta()) {
-			return;
-		}
-
-		Player p = (Player) e.getWhoClicked();
-
-		p.closeInventory();
-
-		if (e.getCurrentItem().getType() == Material.LEATHER_BOOTS) {
-			p.removePotionEffect(PotionEffectType.SPEED);
-			p.setFlySpeed(0.15f);
-			p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, Integer.MAX_VALUE, 0, false, false), false);
-		} else if (e.getCurrentItem().getType() == Material.CHAINMAIL_BOOTS) {
-			p.removePotionEffect(PotionEffectType.SPEED);
-			p.setFlySpeed(0.2f);
-			p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, Integer.MAX_VALUE, 1, false, false), false);
-		} else if (e.getCurrentItem().getType() == Material.IRON_BOOTS) {
-			p.removePotionEffect(PotionEffectType.SPEED);
-			p.setFlySpeed(0.25f);
-			p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, Integer.MAX_VALUE, 2, false, false), false);
-		} else if (e.getCurrentItem().getType() == XMaterial.GOLDEN_BOOTS.parseMaterial()) {
-			p.removePotionEffect(PotionEffectType.SPEED);
-			p.setFlySpeed(0.3f);
-			p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, Integer.MAX_VALUE, 3, false, false), false);
-		} else if (e.getCurrentItem().getType() == Material.DIAMOND_BOOTS) {
-			p.removePotionEffect(PotionEffectType.SPEED);
-			p.setFlySpeed(0.35f);
-			p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, Integer.MAX_VALUE, 4, false, false), false);
-		}
+		MiscComponents miscComponents = new MiscComponents();
+		miscComponents.prepare(this);
+		miscComponents.injectComponents(pane);
 	}
 
-	private void initInventory() {
-		Inventory inv = Bukkit.createInventory(null, 9 * 3, inventoryName);
-		inv.setItem(11, new ItemBuilder(Material.LEATHER_BOOTS).name(color(speedOptionName + " I")).build());
-		inv.setItem(12, new ItemBuilder(Material.CHAINMAIL_BOOTS).name(color(speedOptionName + " II")).build());
-		inv.setItem(13, new ItemBuilder(Material.IRON_BOOTS).name(color(speedOptionName + " III")).build());
-		inv.setItem(14, new ItemBuilder(XMaterial.GOLDEN_BOOTS.parseItem()).name(color(speedOptionName + " IV")).build());
-		inv.setItem(15, new ItemBuilder(Material.DIAMOND_BOOTS).name(color(speedOptionName + " V")).build());
-		this.inv = inv;
+	public void openInventory() {
+		gui.show(player);
 	}
 
-	private String color(String message) {
-		return ChatColor.translateAlternateColorCodes('&', message);
+	public Main getPlugin() {
+		return plugin;
+	}
+
+	public Player getPlayer() {
+		return player;
 	}
 }

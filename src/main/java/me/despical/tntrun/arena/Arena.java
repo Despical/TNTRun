@@ -10,7 +10,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 
+import me.despical.tntrun.api.StatsStorage;
 import me.despical.tntrun.handlers.PermissionsManager;
+import me.despical.tntrun.utils.Debugger;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -38,9 +40,6 @@ import me.despical.tntrun.arena.options.ArenaOption;
 import me.despical.tntrun.handlers.items.SpecialItemManager;
 import me.despical.tntrun.handlers.rewards.Reward;
 import me.despical.tntrun.user.User;
-
-import static me.despical.tntrun.utils.Debugger.*;
-import static me.despical.tntrun.api.StatsStorage.StatisticType.*;
 
 /**
  * @author Despical
@@ -95,7 +94,7 @@ public class Arena extends BukkitRunnable {
 			return;
 		}
 
-		performance("ArenaTask", "[PerformanceMonitor] [{0}] Running game task", getId());
+		Debugger.performance("ArenaTask", "[PerformanceMonitor] [{0}] Running game task", getId());
 		long start = System.currentTimeMillis();
 
 		switch (getArenaState()) {
@@ -107,7 +106,7 @@ public class Arena extends BukkitRunnable {
 			if (getPlayers().size() < getMinimumPlayers()) {
 				if (getTimer() <= 0) {
 					setTimer(15);
-					players.forEach(p -> p.sendMessage(plugin.getChatManager().formatMessage(this, plugin.getChatManager().colorMessage("In-Game.Messages.Lobby-Messages.Waiting-For-Players"), getMinimumPlayers())));
+					broadcastMessage(plugin.getChatManager().formatMessage(this, plugin.getChatManager().colorMessage("In-Game.Messages.Lobby-Messages.Waiting-For-Players"), getMinimumPlayers()));
 					break;
 				}
 			} else {
@@ -115,7 +114,7 @@ public class Arena extends BukkitRunnable {
 					gameBar.setTitle(plugin.getChatManager().colorMessage("Bossbar.Waiting-For-Players"));
 				}
 
-				players.forEach(p -> p.sendMessage(plugin.getChatManager().colorMessage("In-Game.Messages.Lobby-Messages.Enough-Players-To-Start")));
+				broadcastMessage(plugin.getChatManager().colorMessage("In-Game.Messages.Lobby-Messages.Enough-Players-To-Start"));
 
 				setArenaState(ArenaState.STARTING);
 				setTimer(plugin.getConfig().getInt("Starting-Waiting-Time", 60));
@@ -126,8 +125,8 @@ public class Arena extends BukkitRunnable {
 			break;
 		case STARTING:
 			if (getPlayers().size() == getMaximumPlayers() && getTimer() >= plugin.getConfig().getInt("Start-Time-On-Full-Lobby", 15) && !forceStart) {
-				setTimer(plugin.getConfig().getInt("Start-Time-On-Full-Lobby", 15));
-				players.forEach(p -> p.sendMessage(plugin.getChatManager().colorMessage("In-Game.Messages.Lobby-Messages.Start-In").replace("%time%", String.valueOf(getTimer()))));
+				setTimer(plugin.getConfig().getInt("Start-Time-On-Full-Lobby", 45));
+				broadcastMessage(plugin.getChatManager().colorMessage("In-Game.Messages.Lobby-Messages.Start-In").replace("%time%", String.valueOf(getTimer())));
 			}
 
 			if (plugin.getConfigPreferences().getOption(ConfigPreferences.Option.BOSSBAR_ENABLED)) {
@@ -146,11 +145,12 @@ public class Arena extends BukkitRunnable {
 					gameBar.setProgress(1.0);
 				}
 
-				players.forEach(p -> p.sendMessage(plugin.getChatManager().formatMessage(this, plugin.getChatManager().colorMessage("In-Game.Messages.Lobby-Messages.Waiting-For-Players"), getMinimumPlayers())));
+				broadcastMessage(plugin.getChatManager().formatMessage(this, plugin.getChatManager().colorMessage("In-Game.Messages.Lobby-Messages.Waiting-For-Players"), getMinimumPlayers()));
 
 				setArenaState(ArenaState.WAITING_FOR_PLAYERS);
 				Bukkit.getPluginManager().callEvent(new TRGameStartEvent(this));
 				setTimer(15);
+
 				for (Player player : getPlayers()) {
 					player.setExp(1);
 					player.setLevel(0);
@@ -189,13 +189,13 @@ public class Arena extends BukkitRunnable {
 
 					ArenaUtils.hidePlayersOutsideTheGame(player, this);
 
-					plugin.getUserManager().getUser(player).addStat(GAMES_PLAYED, 1);
-					plugin.getUserManager().getUser(player).setStat(LOCAL_DOUBLE_JUMPS, PermissionsManager.getDoubleJumps(player));
+					plugin.getUserManager().getUser(player).addStat(StatsStorage.StatisticType.GAMES_PLAYED, 1);
+					plugin.getUserManager().getUser(player).setStat(StatsStorage.StatisticType.LOCAL_DOUBLE_JUMPS, PermissionsManager.getDoubleJumps(player));
 
 					setTimer(2);
 
-					player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, Integer.MAX_VALUE, 0, false, false), false);
-					player.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, Integer.MAX_VALUE, 0, false, false), false);
+					player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, Integer.MAX_VALUE, 0, false, false));
+					player.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, Integer.MAX_VALUE, 0, false, false));
 					player.sendMessage(plugin.getChatManager().getPrefix() + plugin.getChatManager().colorMessage("In-Game.Messages.Lobby-Messages.Game-Started"));
 					player.getInventory().setItem(SpecialItemManager.getSpecialItem("Double-Jump").getSlot(), SpecialItemManager.getSpecialItem("Double-Jump").getItemStack());
 					player.updateInventory();
@@ -224,20 +224,17 @@ public class Arena extends BukkitRunnable {
 
 			for (Player player : getPlayersLeft()) {
 				if (getTimer() % 30 == 0) {
-					plugin.getUserManager().getUser(player).addStat(LOCAL_COINS, 15);
-					plugin.getUserManager().getUser(player).addStat(COINS, 15);
+					plugin.getUserManager().getUser(player).addStat(StatsStorage.StatisticType.LOCAL_COINS, 15);
+					plugin.getUserManager().getUser(player).addStat(StatsStorage.StatisticType.COINS, 15);
 					player.sendMessage(plugin.getChatManager().getPrefix() + plugin.getChatManager().colorMessage("In-Game.Messages.Earned-Coin"));
 				}
 
 				if (plugin.getUserManager().getUser(player).getCooldown("double_jump") > 0) {
 					player.setAllowFlight(false);
-				} else if (plugin.getUserManager().getUser(player).getStat(LOCAL_DOUBLE_JUMPS) > 0) player.setAllowFlight(true);
+				} else if (plugin.getUserManager().getUser(player).getStat(StatsStorage.StatisticType.LOCAL_DOUBLE_JUMPS) > 0) player.setAllowFlight(true);
 			}
 
-			for (Player player : getPlayersLeft()) {
-				plugin.getUserManager().getUser(player).addStat(LOCAL_SURVIVE, 1);
-			}
-
+			getPlayersLeft().forEach(player -> plugin.getUserManager().getUser(player).addStat(StatsStorage.StatisticType.LOCAL_SURVIVE, 1));
 			setTimer(getTimer() + 1);
 			break;
 		case ENDING:
@@ -259,15 +256,13 @@ public class Arena extends BukkitRunnable {
 
 				for (Player players : Bukkit.getOnlinePlayers()) {
 					player.showPlayer(plugin, players);
-					if (ArenaRegistry.getArena(players) == null) {
+
+					if (ArenaRegistry.isInArena(players)) {
 						players.showPlayer(plugin, player);
 					}
 				}
 
-				for (PotionEffect effect : player.getActivePotionEffects()) {
-					player.removePotionEffect(effect.getType());
-				}
-
+				player.getActivePotionEffects().forEach(effect -> player.removePotionEffect(effect.getType()));
 				player.setWalkSpeed(0.2f);
 				player.setFlying(false);
 				player.setAllowFlight(false);
@@ -287,7 +282,7 @@ public class Arena extends BukkitRunnable {
 				}
 			}
 
-			players.forEach(p -> p.sendMessage(plugin.getChatManager().colorMessage("Commands.Teleported-To-The-Lobby")));
+			broadcastMessage(plugin.getChatManager().colorMessage("Commands.Teleported-To-The-Lobby"));
 
 			for (User user : plugin.getUserManager().getUsers(this)) {
 				user.setSpectator(false);
@@ -336,7 +331,7 @@ public class Arena extends BukkitRunnable {
 			break;
 		}
 
-		performance("ArenaTask", "[PerformanceMonitor] [{0}] Game task finished took {1} ms", getId(), System.currentTimeMillis() - start);
+		Debugger.performance("ArenaTask", "[PerformanceMonitor] [{0}] Game task finished took {1} ms", getId(), System.currentTimeMillis() - start);
 	}
 
 	public void setForceStart(boolean forceStart) {
@@ -373,7 +368,7 @@ public class Arena extends BukkitRunnable {
 	 */
 	public void setMinimumPlayers(int minimumPlayers) {
 		if (minimumPlayers < 2) {
-			debug(Level.WARNING, "Minimum players amount for arena cannot be less than 2! Got {0}", minimumPlayers);
+			Debugger.debug(Level.WARNING, "Minimum players amount for arena cannot be less than 2! Got {0}", minimumPlayers);
 			setOptionValue(ArenaOption.MINIMUM_PLAYERS, 2);
 			return;
 		}
@@ -471,16 +466,14 @@ public class Arena extends BukkitRunnable {
 		player.setFoodLevel(20);
 		player.setFlying(false);
 		player.setAllowFlight(false);
-
-		for (PotionEffect effect : player.getActivePotionEffects()) {
-			player.removePotionEffect(effect.getType());
-		}
-
+		player.getActivePotionEffects().forEach(effect -> player.removePotionEffect(effect.getType()));
 		player.setWalkSpeed(0.2f);
+
 		Location location = getLobbyLocation();
 
 		if (location == null) {
 			System.out.print("Lobby location isn't intialized for arena " + getId());
+			return;
 		}
 
 		player.teleport(location);
@@ -498,14 +491,14 @@ public class Arena extends BukkitRunnable {
 		}
 
 		switch (action) {
-		case ADD:
-			gameBar.addPlayer(p);
-			break;
-		case REMOVE:
-			gameBar.removePlayer(p);
-			break;
-		default:
-			break;
+			case ADD:
+				gameBar.addPlayer(p);
+				break;
+			case REMOVE:
+				gameBar.removePlayer(p);
+				break;
+			default:
+				break;
 		}
 	}
 
@@ -541,9 +534,7 @@ public class Arena extends BukkitRunnable {
 	}
 	
 	private void teleportAllToStartLocation() {
-		for (Player player : players) {
-			teleportToStartLocation(player);
-		}
+		players.forEach(this::teleportToStartLocation);
 	}
 
 	public void teleportAllToEndLocation() {
@@ -562,8 +553,10 @@ public class Arena extends BukkitRunnable {
 			System.out.print("EndLocation for arena " + getId() + " isn't intialized!");
 		}
 
-		for (Player player : getPlayers()) {
-			player.teleport(location);
+		if (location != null) {
+			for (Player player : getPlayers()) {
+				player.teleport(location);
+			}
 		}
 	}
 
@@ -602,7 +595,7 @@ public class Arena extends BukkitRunnable {
 	}
 
 	public void start() {
-		debug(Level.INFO, "[{0}] Game instance started", getId());
+		Debugger.debug("[{0}] Game instance started", getId());
 
 		startRemovingBlock();
 		runTaskTimer(plugin, 20L, 20L);
@@ -640,6 +633,10 @@ public class Arena extends BukkitRunnable {
 				p.showPlayer(plugin, player);
 			}
 		}
+	}
+
+	public void broadcastMessage(String message) {
+		getPlayers().forEach(player -> player.sendMessage(message));
 	}
 	
 	public void startRemovingBlock() {

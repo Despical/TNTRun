@@ -27,15 +27,11 @@ public class ArenaUtils {
 	}
 	
 	public static void hidePlayer(Player p, Arena arena) {
-		for (Player player : arena.getPlayers()) {
-			player.hidePlayer(plugin, p);
-		}
+		arena.getPlayers().forEach(player -> player.hidePlayer(plugin, p));
 	}
 
 	public static void showPlayer(Player p, Arena arena) {
-		for (Player player : arena.getPlayers()) {
-			player.showPlayer(plugin, p);
-		}
+		arena.getPlayers().forEach(player -> player.showPlayer(plugin, p));
 	}
 
 	public static void hidePlayersOutsideTheGame(Player player, Arena arena) {

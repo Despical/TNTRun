@@ -28,21 +28,27 @@ public class Reward {
 		} else {
 			this.executor = RewardExecutor.CONSOLE;
 		}
+
 		if (processedCode.contains("chance(")) {
 			int loc = processedCode.indexOf(")");
+
 			if (loc == -1) {
 				Bukkit.getLogger().warning("rewards.yml configuration is broken! Make sure you don't forget using ')' character in chance condition! Command: " + rawCode);
+
 				this.chance = 0.0;
 				return;
 			}
+
 			String chanceStr = processedCode;
 			chanceStr = chanceStr.substring(0, loc).replaceAll("[^0-9]+", "");
 			double chance = Double.parseDouble(chanceStr);
+
 			processedCode = StringUtils.replace(processedCode, "chance(" + chanceStr + "):", "");
 			this.chance = chance;
 		} else {
 			this.chance = 100.0;
 		}
+
 		this.executableCode = processedCode;
 	}
 

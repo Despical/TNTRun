@@ -7,7 +7,7 @@
 #             %arena-id% - Arena Identifier
 #             %players% - Number of players in game
 #
-#        Commands are executed by default BY CONSOLE, use "p:" to preform command by player
+#        Commands are executed by default bY CONSOLE, use "p:" to preform command by player
 #  You can use chance to execute command adding "chance(NUMBER):" (ex chance(10):) at the beginning of command
 #
 #  Commands examples:
@@ -16,7 +16,7 @@
 #    - chance(1):p:say I was very lucky!              # Player has 1% chance to say "I was very lucky!"
 #    - p:chance(99):spawn                             # Player has 99% chance to teleport to spawn
 #       ^ YOU CANt EVEN SWAP CHANCE WITH PLAYER!
-#    - chance(50):eco give %player% 10                # Console has 10% chance to give player 10$
+#    - chance(50):eco give %player% 10                # Console has 50% chance to give player 10$
 #
 #    Just add example reward:
 #    - script:player.sendMessage("oh, hi %player%");      # It will send "oh, hi <player name>" to player! 100% plain java!
@@ -26,7 +26,7 @@
 #
 #                               All script provided objects:
 #            player - Player object (API methods https://hub.spigotmc.org/javadocs/spigot/org/bukkit/entity/Player.html)
-# arena - TNT Run arena object (API methods https://javadoc.jitpack.io/com/github/Despical/TNTRun/1.0.2/javadoc/me/despical/tntrun/arena/Arena.html)
+#     arena - TNT Run arena object (API methods https://javadoc.jitpack.io/com/github/Despical/TNTRun/1.0.4/javadoc/me/despical/tntrun/arena/Arena.html)
 #            server - Bukkit server object (API methods https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Server.html)
 
 # Rewards must be enabled via config.yml first!

@@ -4,13 +4,13 @@ import java.lang.reflect.InvocationTargetException;
 
 import javax.annotation.Nullable;
 
+import me.despical.commonsbox.compat.VersionResolver;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Sign;
 
-import me.despical.tntrun.Main;
 import me.despical.tntrun.arena.Arena;
 
 /**
@@ -23,7 +23,6 @@ import me.despical.tntrun.arena.Arena;
  */
 public class ArenaSign {
 
-	private static Main plugin;
 	private final Sign sign;
 	private Block behind;
 	private final Arena arena;
@@ -35,19 +34,11 @@ public class ArenaSign {
 		setBehindBlock();
 	}
 
-	public static void init(Main plugin) {
-		ArenaSign.plugin = plugin;
-	}
-
 	private void setBehindBlock() {
 		this.behind = null;
 
-		if (sign.getBlock().getType() == Material.WALL_SIGN) {
-			if (plugin.is1_14_R1() || plugin.is1_15_R1() || plugin.is1_16_R1() || plugin.is1_16_R2()) {
-				this.behind = getBlockBehind();
-			} else {
-				this.behind = getBlockBehindLegacy();
-			}
+		if (sign.getBlock().getType() == Material.getMaterial("WALL_SIGN")) {
+			this.behind = VersionResolver.isCurrentEqualOrHigher(VersionResolver.ServerVersion.v1_14_R1) ? getBlockBehind() : getBlockBehindLegacy();
 		}
 	}
 

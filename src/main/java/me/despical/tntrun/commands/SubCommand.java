@@ -46,7 +46,7 @@ public abstract class SubCommand {
 	}
 		
 	public final boolean hasPermission(CommandSender sender) {
-			if (permission == null) return true;
+		if (permission == null) return true;
 		return sender.hasPermission(permission);
 	}
 	
@@ -74,13 +74,15 @@ public abstract class SubCommand {
 		if (this.name.equalsIgnoreCase(name)) {
 			return true;
 		}
+
 		if (aliases != null) {
 			for (String alias : aliases) {
 				if (alias.equalsIgnoreCase(name)) {
 					return true;
 				}
 			}
-		}	
+		}
+
 		return false;
 	}
 }

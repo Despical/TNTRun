@@ -58,7 +58,7 @@ public class PlayerAmountComponents implements SetupComponent {
 				arena.setMinimumPlayers(e.getCurrentItem().getAmount());
 				ConfigUtils.saveConfig(plugin, config, "arenas");
 				new SetupInventory(arena, setupInventory.getPlayer()).openInventory();
-			}), 2, 0);
+		}), 2, 0);
 
 		pane.addItem(new GuiItem(new ItemBuilder(Material.REDSTONE)
 			.amount(setupInventory.getSetupUtilities().getMinimumValueHigherThanZero("maximumplayers"))
@@ -84,6 +84,6 @@ public class PlayerAmountComponents implements SetupComponent {
 				arena.setMaximumPlayers(e.getCurrentItem().getAmount());
 				ConfigUtils.saveConfig(plugin, config, "arenas");
 				new SetupInventory(arena, setupInventory.getPlayer()).openInventory();
-			}), 3, 0);
+		}), 3, 0);
 	}
 }

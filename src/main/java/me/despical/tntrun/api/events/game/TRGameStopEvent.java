@@ -24,6 +24,7 @@ public class TRGameStopEvent extends TREvent {
 		return HANDLERS;
 	}
 
+	@Override
 	public HandlerList getHandlers() {
 		return HANDLERS;
 	}

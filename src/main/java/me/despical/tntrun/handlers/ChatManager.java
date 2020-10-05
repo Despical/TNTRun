@@ -1,5 +1,7 @@
 package me.despical.tntrun.handlers;
 
+import me.despical.commonsbox.compat.VersionResolver;
+import me.despical.commonsbox.string.StringMatcher;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -18,29 +20,37 @@ import me.despical.tntrun.arena.Arena;
  */
 public class ChatManager {
 
-	private final String prefix;
-	
+	private String prefix;
+
 	private final Main plugin;
 	private FileConfiguration config;
 	
 	public ChatManager(Main plugin) {
 		this.plugin = plugin;
 		this.config = ConfigUtils.getConfig(plugin, "messages");
-		this.prefix = colorRawMessage(config.getString("In-Game.Plugin-Prefix", "&8[&6TNTRun&8] "));
+		this.prefix = colorRawMessage(config.getString("In-Game.Plugin-Prefix"));
 	}
 	
 	public String getPrefix() {
 		return prefix;
 	}
-	
+
 	public String colorRawMessage(String message) {
+		if (message == null) {
+			return "";
+		}
+
+		if (message.contains("#") && VersionResolver.isCurrentEqualOrHigher(VersionResolver.ServerVersion.v1_16_R1)) {
+			message = StringMatcher.matchColorRegex(message);
+		}
+
 		return ChatColor.translateAlternateColorCodes('&', message);
 	}
 
 	public String colorMessage(String message) {
-		return ChatColor.translateAlternateColorCodes('&', config.getString(message));
+		return colorRawMessage(config.getString(message));
 	}
-	
+
 	public String colorMessage(String message, Player player) {
 		String returnString = config.getString(message);
 
@@ -48,7 +58,7 @@ public class ChatManager {
 			returnString = PlaceholderAPI.setPlaceholders(player, returnString);
 		}
 
-		return ChatColor.translateAlternateColorCodes('&', returnString);
+		return colorRawMessage(returnString);
 	}
 
 	public String formatMessage(Arena arena, String message, Player player) {
@@ -99,11 +109,12 @@ public class ChatManager {
 				return;
 		}
 
-		a.getPlayers().forEach(player -> player.sendMessage(prefix + message));
+		a.broadcastMessage(prefix + message);
 	}
 	
 	public void reloadConfig() {
 		config = ConfigUtils.getConfig(plugin, "messages");
+		prefix = colorRawMessage(config.getString("In-Game.Plugin-Prefix"));
 	}
 
 	public enum ActionType {

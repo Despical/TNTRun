@@ -1,7 +1,6 @@
 package me.despical.tntrun.utils;
 
 import java.util.Arrays;
-import java.util.List;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
@@ -17,7 +16,6 @@ import me.despical.tntrun.Main;
  */
 public class ExceptionLogHandler extends Handler {
 
-	private final List<String> blacklistedClasses = Arrays.asList("me.despical.tntrun.user.data.MysqlManager", "me.despical.tntrun.commonsbox.database.MysqlDatabase");
 	private final Main plugin;
 	
 	public ExceptionLogHandler(Main plugin) {
@@ -69,9 +67,7 @@ public class ExceptionLogHandler extends Handler {
 
 		stacktrace.append("\n");
 
-		for (StackTraceElement str : exception.getStackTrace()) {
-			stacktrace.append(str.toString()).append("\n");
-		}
+		Arrays.stream(exception.getStackTrace()).forEach(str -> stacktrace.append(str.toString()).append("\n"));
 
 		plugin.getLogger().log(Level.WARNING, "[Reporter service] <<-----------------------------[START]----------------------------->>");
 		plugin.getLogger().log(Level.WARNING, stacktrace.toString());
@@ -82,7 +78,7 @@ public class ExceptionLogHandler extends Handler {
 
 	private boolean containsBlacklistedClass(Throwable throwable) {
 		for (StackTraceElement element : throwable.getStackTrace()) {
-			for (String blacklist : blacklistedClasses) {
+			for (String blacklist : Arrays.asList("me.despical.tntrun.user.data.MysqlManager", "me.despical.tntrun.commonsbox.database.MysqlDatabase")) {
 				if (element.getClassName().contains(blacklist)) {
 					return true;
 				}

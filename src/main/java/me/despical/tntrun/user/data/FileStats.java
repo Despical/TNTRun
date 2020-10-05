@@ -19,14 +19,27 @@ public class FileStats implements UserDatabase {
 
 	public FileStats(Main plugin) {
 		this.plugin = plugin;
+
 		config = ConfigUtils.getConfig(plugin, "stats");
 	}
 
 	@Override
 	public void saveStatistic(User user, StatsStorage.StatisticType stat) {
 		config.set(user.getPlayer().getUniqueId().toString() + "." + stat.getName(), user.getStat(stat));
+
 		ConfigUtils.saveConfig(plugin, config, "stats");
 	}
+
+	@Override
+	public void saveAllStatistic(User user) {
+		for (StatsStorage.StatisticType stat : StatsStorage.StatisticType.values()) {
+			if (!stat.isPersistent()) continue;
+			config.set(user.getPlayer().getUniqueId().toString() + "." + stat.getName(), user.getStat(stat));
+		}
+
+		ConfigUtils.saveConfig(plugin, config, "stats");
+	}
+
 
 	@Override
 	public void loadStatistics(User user) {

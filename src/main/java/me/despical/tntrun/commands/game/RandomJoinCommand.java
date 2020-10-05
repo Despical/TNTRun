@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
+import me.despical.tntrun.arena.ArenaManager;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -13,8 +14,6 @@ import me.despical.tntrun.arena.Arena;
 import me.despical.tntrun.arena.ArenaRegistry;
 import me.despical.tntrun.arena.ArenaState;
 import me.despical.tntrun.commands.SubCommand;
-
-import static me.despical.tntrun.arena.ArenaManager.*;
 
 /**
  * @author Despical
@@ -54,15 +53,16 @@ public class RandomJoinCommand extends SubCommand {
 		if (arenas.size() > 0) {
 			Stream<Map.Entry<Arena, Integer>> sorted = arenas.entrySet().stream().sorted(Map.Entry.comparingByValue());
 			Arena arena = sorted.findFirst().get().getKey();
+
 			if (arena != null) {
-				joinAttempt((Player) sender, arena);
+				ArenaManager.joinAttempt((Player) sender, arena);
 				return;
 			}
 		}
 
 		for (Arena arena : ArenaRegistry.getArenas()) {
 			if ((arena.getArenaState() == ArenaState.WAITING_FOR_PLAYERS || arena.getArenaState() == ArenaState.STARTING) && arena.getPlayers().size() < arena.getMaximumPlayers()) {
-				joinAttempt((Player) sender, arena);
+				ArenaManager.joinAttempt((Player) sender, arena);
 				return;
 			}
 		}

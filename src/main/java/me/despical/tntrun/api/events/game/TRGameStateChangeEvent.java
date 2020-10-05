@@ -27,6 +27,7 @@ public class TRGameStateChangeEvent extends TREvent {
 		return HANDLERS;
 	}
 
+	@Override
 	public HandlerList getHandlers() {
 		return HANDLERS;
 	}

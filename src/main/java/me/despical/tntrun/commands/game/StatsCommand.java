@@ -37,7 +37,6 @@ public class StatsCommand extends SubCommand {
 		Player player = args.length == 1 ? Bukkit.getPlayerExact(args[0]) : (Player) sender;
 
 		if (player == null) {
-			assert sender != null;
 			sender.sendMessage(getPlugin().getChatManager().getPrefix() + getPlugin().getChatManager().colorMessage("Commands.Admin-Commands.Player-Not-Found"));
 			return;
 		}

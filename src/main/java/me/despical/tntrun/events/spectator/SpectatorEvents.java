@@ -36,10 +36,11 @@ public class SpectatorEvents implements Listener {
 
 	public SpectatorEvents(Main plugin) {
 		this.plugin = plugin;
+
 		plugin.getServer().getPluginManager().registerEvents(this, plugin);
 	}
 
-	@EventHandler(priority = EventPriority.HIGHEST)
+	@EventHandler(priority = EventPriority.HIGH)
 	public void onSpectatorTarget(EntityTargetEvent e) {
 		if (!(e.getTarget() instanceof Player)) {
 			return;
@@ -51,7 +52,7 @@ public class SpectatorEvents implements Listener {
 		}
 	}
 
-	@EventHandler(priority = EventPriority.HIGHEST)
+	@EventHandler(priority = EventPriority.HIGH)
 	public void onSpectatorTarget(EntityTargetLivingEntityEvent e) {
 		if (!(e.getTarget() instanceof Player)) {
 			return;
@@ -201,9 +202,7 @@ public class SpectatorEvents implements Listener {
 
 	@EventHandler(priority = EventPriority.HIGH)
 	public void onRightClick(PlayerInteractEvent event) {
-		Arena arena = ArenaRegistry.getArena(event.getPlayer());
-
-		if (arena != null && plugin.getUserManager().getUser(event.getPlayer()).isSpectator()) {
+		if (ArenaRegistry.isInArena(event.getPlayer()) && plugin.getUserManager().getUser(event.getPlayer()).isSpectator()) {
 			event.setCancelled(true);
 		}
 	}

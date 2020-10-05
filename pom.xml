@@ -2,7 +2,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>me.despical</groupId>
 	<artifactId>tnt-run</artifactId>
-	<version>1.0.3</version>
+	<version>1.0.4</version>
 	<name>TNT Run</name>
 
 	<properties>
@@ -41,10 +41,6 @@
 			<url>http://repo.extendedclip.com/content/repositories/placeholderapi/</url>
 		</repository>
 		<repository>
-			<id>bstats-repo</id>
-			<url>https://jitpack.io</url>
-		</repository>
-		<repository>
 			<id>codemc-repo</id>
 			<url>https://repo.codemc.org/repository/maven-public/</url>
 		</repository>
@@ -58,26 +54,19 @@
 		<dependency>
 			<groupId>com.destroystokyo.paper</groupId>
 			<artifactId>paper-api</artifactId>
-			<version>1.12.2-R0.1-SNAPSHOT</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.bukkit</groupId>
-			<artifactId>bukkit</artifactId>
-			<version>1.12.2-R0.1-SNAPSHOT</version>
+			<version>1.16.1-R0.1-SNAPSHOT</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.github.Despical</groupId>
 			<artifactId>commons-box</artifactId>
-			<version>1.1.1</version>
+			<version>1.1.4</version>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.github.Despical</groupId>
 			<artifactId>InventoryFramework</artifactId>
-			<version>1.0.1-SNAPSHOT</version>
-			<scope>compile</scope>
+			<version>1.0.2</version>
 		</dependency>
 		<dependency>
 			<groupId>me.clip</groupId>
@@ -106,6 +95,7 @@
 				<filtering>true</filtering>
 			</resource>
 		</resources>
+
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -150,7 +140,7 @@
 						<configuration>
 							<relocations>
 								<relocation>
-									<pattern>com.github.Despical.inventoryframework</pattern>
+									<pattern>com.github.despical.inventoryframework</pattern>
 									<shadedPattern>me.despical.tntrun.utils.inventoryframework</shadedPattern>
 								</relocation>
 								<relocation>

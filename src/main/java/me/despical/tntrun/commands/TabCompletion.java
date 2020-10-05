@@ -1,12 +1,7 @@
 package me.despical.tntrun.commands;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Locale;
-import java.util.stream.Collectors;
-
+import me.despical.tntrun.arena.Arena;
+import me.despical.tntrun.arena.ArenaRegistry;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -14,8 +9,11 @@ import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import org.bukkit.util.StringUtil;
 
-import me.despical.tntrun.arena.Arena;
-import me.despical.tntrun.arena.ArenaRegistry;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author Despical
@@ -24,26 +22,19 @@ import me.despical.tntrun.arena.ArenaRegistry;
  */
 public class TabCompletion implements TabCompleter {
 
-	public List<String> commands = new ArrayList<>();
+	public CommandHandler commandHandler;
 
 	public TabCompletion(CommandHandler commandHandler) {
-		for (SubCommand command : commandHandler.getSubCommands()) {
-			this.commands.add(command.getName().toLowerCase(Locale.ENGLISH));
-		}
+		this.commandHandler = commandHandler;
 	}
 
 	@Override
 	public List<String> onTabComplete(CommandSender sender, Command cmd, String label, String[] args) {
 		List<String> completions = new ArrayList<>();
+		List<String> commands = commandHandler.getSubCommands().stream().map(command -> command.getName().toLowerCase()).collect(Collectors.toList());
 
-		if (!(sender instanceof Player)) {
-			return Collections.emptyList();
-		}
-
-		Player player = (Player) sender;
-
-		if (!(player.hasPermission("oitc.admin"))) {
-			return Collections.emptyList();
+		if (args.length == 1) {
+			StringUtil.copyPartialMatches(args[0], commands, completions);
 		}
 
 		if (args.length == 1) {

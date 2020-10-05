@@ -1,29 +1,24 @@
 package me.despical.tntrun.api;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.TreeMap;
-import java.util.UUID;
-import java.util.logging.Level;
-
-import org.bukkit.Bukkit;
+import me.despical.commonsbox.configuration.ConfigUtils;
+import me.despical.commonsbox.sorter.SortUtils;
+import me.despical.tntrun.ConfigPreferences;
+import me.despical.tntrun.Main;
+import me.despical.tntrun.user.data.MysqlManager;
+import me.despical.tntrun.utils.Debugger;
+import me.despical.tntrun.utils.MessageUtils;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
-import me.despical.commonsbox.configuration.ConfigUtils;
-import me.despical.commonsbox.sorter.SortUtils;
-import me.despical.tntrun.ConfigPreferences;
-import me.despical.tntrun.Main;
-import me.despical.tntrun.user.data.MysqlManager;
-import me.despical.tntrun.utils.MessageUtils;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.*;
+import java.util.logging.Level;
 
 /**
  * @author Despical
@@ -50,20 +45,18 @@ public class StatsStorage {
 			try (Connection connection = plugin.getMysqlDatabase().getConnection()) {
 				Statement statement = connection.createStatement();
 				ResultSet set = statement.executeQuery("SELECT UUID, " + stat.getName() + " FROM " + ((MysqlManager) plugin.getUserManager().getDatabase()).getTableName() + " ORDER BY " + stat.getName());
-				Map<java.util.UUID, Integer> column = new LinkedHashMap<>();
+				Map<UUID, Integer> column = new LinkedHashMap<>();
 
 				while (set.next()) {
-					column.put(java.util.UUID.fromString(set.getString("UUID")), set.getInt(stat.getName()));
+					column.put(UUID.fromString(set.getString("UUID")), set.getInt(stat.getName()));
 				}
 
 				return column;
 			} catch (SQLException e) {
 				plugin.getLogger().log(Level.WARNING, "SQL Exception occurred! " + e.getSQLState() + " (" + e.getErrorCode() + ")");
-
 				MessageUtils.errorOccurred();
-
-				Bukkit.getConsoleSender().sendMessage("Cannot get contents from MySQL database!");
-				Bukkit.getConsoleSender().sendMessage("Check configuration of mysql.yml file or disable mysql option in config.yml");
+				Debugger.sendConsoleMessage("&cCannot get contents from MySQL database!");
+				Debugger.sendConsoleMessage("&cCheck configuration of mysql.yml file or disable mysql option in config.yml");
 				return Collections.emptyMap();
 			}
 		}

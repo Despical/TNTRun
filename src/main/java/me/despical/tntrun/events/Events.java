@@ -49,6 +49,7 @@ public class Events implements Listener {
 
 	public Events(Main plugin) {
 		this.plugin = plugin;
+
 		plugin.getServer().getPluginManager().registerEvents(this, plugin);
 	}
 
@@ -70,11 +71,9 @@ public class Events implements Listener {
 		event.setCancelled(true);
 	}
 
-	@EventHandler(priority = EventPriority.HIGHEST)
+	@EventHandler(priority = EventPriority.HIGH)
 	public void onCommandExecute(PlayerCommandPreprocessEvent event) {
-		Arena arena = ArenaRegistry.getArena(event.getPlayer());
-
-		if (arena == null) {
+		if (!ArenaRegistry.isInArena(event.getPlayer())) {
 			return;
 		}
 
@@ -102,9 +101,7 @@ public class Events implements Listener {
 
 	@EventHandler(priority = EventPriority.HIGH)
 	public void onInGameInteract(PlayerInteractEvent event) {
-		Arena arena = ArenaRegistry.getArena(event.getPlayer());
-
-		if (arena == null || event.getClickedBlock() == null) {
+		if (!ArenaRegistry.isInArena(event.getPlayer()) || event.getClickedBlock() == null) {
 			return;
 		}
 
@@ -115,9 +112,7 @@ public class Events implements Listener {
 
 	@EventHandler(priority = EventPriority.HIGH)
 	public void onInGameBedEnter(PlayerBedEnterEvent event) {
-		Arena arena = ArenaRegistry.getArena(event.getPlayer());
-
-		if (arena == null) {
+		if (!ArenaRegistry.isInArena(event.getPlayer())) {
 			return;
 		}
 
@@ -133,7 +128,7 @@ public class Events implements Listener {
 		Arena arena = ArenaRegistry.getArena(event.getPlayer());
 		ItemStack itemStack = event.getPlayer().getInventory().getItemInMainHand();
 
-		if (arena == null || !ItemUtils.isItemStackNamed(itemStack)) {
+		if (arena == null || !ItemUtils.isNamed(itemStack)) {
 			return;
 		}
 
@@ -215,10 +210,12 @@ public class Events implements Listener {
 			e.setCancelled(true);
 		} else if (e.getDamager() instanceof Arrow) {
 			Arrow arrow = (Arrow) e.getDamager();
+
 			if (arrow.getShooter() instanceof Player && ArenaRegistry.isInArena((Player) arrow.getShooter())) {
 				e.setCancelled(true);
 				return;
 			}
+
 			e.setCancelled(true);
 		}
 	}
@@ -243,6 +240,7 @@ public class Events implements Listener {
 	public void playerCommandExecution(PlayerCommandPreprocessEvent e) {
 		if (plugin.getConfigPreferences().getOption(ConfigPreferences.Option.ENABLE_SHORT_COMMANDS)) {
 			Player player = e.getPlayer();
+
 			if (e.getMessage().equalsIgnoreCase("/start")) {
 				player.performCommand("tntrun forcestart");
 				e.setCancelled(true);
@@ -263,9 +261,8 @@ public class Events implements Listener {
 		}
 
 		Player victim = (Player) e.getEntity();
-		Arena arena = ArenaRegistry.getArena(victim);
 
-		if (arena == null) {
+		if (!ArenaRegistry.isInArena(victim)) {
 			return;
 		}
 
@@ -297,9 +294,7 @@ public class Events implements Listener {
 	
 	@EventHandler(priority = EventPriority.HIGH)
 	public void onPickupItem(PlayerPickupItemEvent event) {
-		Arena arena = ArenaRegistry.getArena(event.getPlayer());
-
-		if (arena == null) {
+		if (!ArenaRegistry.isInArena(event.getPlayer())) {
 			return;
 		}
 

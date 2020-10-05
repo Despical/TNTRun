@@ -10,5 +10,5 @@ user: <user>
 # MySQL user password
 password: <password>
 
-# MySQL tablename
+# MySQL table name
 table: playerstats

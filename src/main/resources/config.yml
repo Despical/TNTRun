@@ -1,6 +1,6 @@
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
 # +---------------------------------------------------------+ #
-# |           TNT Run by Despical (Version 1.0.3)           | #
+# |           TNT Run by Despical (Version 1.0.4)           | #
 # +---------------------------------------------------------+ #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
@@ -115,5 +115,8 @@ Update-Notifier:
   # Should we inform you when beta version is out?
   # Also note that BETA IS NOT ALWAYS AS STABLE AS NORMAL RELEASE!
   Notify-Beta-Versions: true
+
+# Don't edit it. But who's stopping you? It's your server!
+File-Version: 0
 
 # No way! You've reached the end! But... where's the dragon!?

@@ -71,7 +71,7 @@ public class ArenaRegisterComponent implements SetupComponent {
 				return;
 			}
 
-			String[] locations = new String[] {"lobbylocation", "Endlocation"};
+			String[] locations = {"lobbylocation", "Endlocation"};
 
 			for (String s : locations) {
 				if (!config.isSet("instances." + arena.getId() + "." + s) || config.getString("instances." + arena.getId() + "." + s).equals(LocationSerializer.locationToString(Bukkit.getWorlds().get(0).getSpawnLocation()))) {
@@ -104,11 +104,9 @@ public class ArenaRegisterComponent implements SetupComponent {
 			ArenaRegistry.registerArena(arena);
 			arena.start();
 
-			ConfigUtils.saveConfig(plugin, config, "arenas");
+			signsToUpdate.forEach(s -> plugin.getSignManager().getArenaSigns().add(new ArenaSign(s, arena)));
 
-			for (Sign s : signsToUpdate) {
-				plugin.getSignManager().getArenaSigns().add(new ArenaSign(s, arena));
-			}
+			ConfigUtils.saveConfig(plugin, config, "arenas");
 		}), 8, 0);
 	}
 }

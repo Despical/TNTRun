@@ -24,6 +24,7 @@ public class TRGameStartEvent extends TREvent {
 		return HANDLERS;
 	}
 
+	@Override
 	public HandlerList getHandlers() {
 		return HANDLERS;
 	}

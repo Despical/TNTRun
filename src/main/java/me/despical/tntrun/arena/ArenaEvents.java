@@ -28,6 +28,7 @@ public class ArenaEvents implements Listener {
 	
 	public ArenaEvents(Main plugin) {
 		this.plugin = plugin;
+
 		plugin.getServer().getPluginManager().registerEvents(this, plugin);
 	}
 
@@ -39,9 +40,7 @@ public class ArenaEvents implements Listener {
 			return;
 		}
 
-		Arena arena = ArenaRegistry.getArena(player);
-
-		if (arena == null) {
+		if (!ArenaRegistry.isInArena(player)) {
 			return;
 		}
 
@@ -71,7 +70,7 @@ public class ArenaEvents implements Listener {
 		Arena arena = ArenaRegistry.getArena(event.getPlayer());
 		ItemStack itemStack = event.getPlayer().getInventory().getItemInMainHand();
 
-		if (arena == null || !ItemUtils.isItemStackNamed(itemStack)) {
+		if (arena == null || !ItemUtils.isNamed(itemStack)) {
 			return;
 		}
 
@@ -142,7 +141,7 @@ public class ArenaEvents implements Listener {
 				}
 			}
 
-			player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 3 * 20, 0, false, false), false);
+			player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 3 * 20, 0, false, false));
 			player.sendTitle(plugin.getChatManager().colorMessage("In-Game.Messages.Game-End-Messages.Titles.Lose"), plugin.getChatManager().colorMessage("In-Game.Messages.Game-End-Messages.Subtitles.Lose").replace("%winner%", arena.getPlayersLeft().get(0).getName()), 5, 40, 5);
 			player.setCollidable(false);
 			player.setGameMode(GameMode.SURVIVAL);

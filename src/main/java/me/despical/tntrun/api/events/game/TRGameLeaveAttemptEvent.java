@@ -31,6 +31,7 @@ public class TRGameLeaveAttemptEvent extends TREvent {
 		return player;
 	}
 
+	@Override
 	public HandlerList getHandlers() {
 		return HANDLERS;
 	}

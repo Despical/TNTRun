@@ -103,14 +103,22 @@ In-Game:
   Join-Cancelled-Via-API: "&cYou can't join this game!"
   Arena-Not-Configured: "&cArena is not configured yet! Contact staff!"
   Game-Chat-Format: "&7%player%: &f%message%"
+  Game-Death-Format: "&7[&4☠&7] &r"
   Spectator:
-    Spectator-Item-Name: "&7Players list"
-    Spectator-Menu-Name: "&8Players list"
+    Spectator-Item-Name: "&b&lTeleporter &7(Right Click)"
+    Spectator-Menu-Name: "&8Teleporter"
     Target-Player-Score: "&7Score: %score%"
     Settings-Menu:
-      Item-Name: "&7Spectator settings"
-      Inventory-Name: "&7Spectator settings"
+      Item-Name: "&b&lSpectator settings &7(Right Click)"
+      Inventory-Name: "&8Spectator settings"
       Speed-Name: "&aSpeed"
+      No-Speed: "&aNo Speed"
+      Disable-Night-Vision: "&cDisable Night Vision"
+      Disable-Night-Vision-Lore:
+        - "&7Click to disable night vision!"
+      Hide-Spectators: "&cHide Spectators"
+      Hide-Spectators-Lore:
+        - "&7Click to hide other spectators!"
   Messages:
     Lobby-Messages:
       Start-In: "&7The game starts in &b%time%&7 seconds!"
@@ -164,7 +172,23 @@ Signs:
     - "%mapname%"
     - "&5[%players%/%maxplayers%]"
 
+Arena-Selector:
+  Inventory-Title: "Arena selector"
+  Item:
+    Lore:
+      - "&7TNT Run &f- &e%mapname%"
+      - " "
+      - " "
+      - "  &fOnline: %playersize%/%maxplayers%"
+      - "  &fState: %state%"
+      - " "
+      - " "
+      - "&eClick to join this arena"
+
 Validator:
   Invalid-Arena-Configuration: "[TNTRun] Arena %arena% has invalid configuration! Missing node: %error%"
   Instance-Started: "[TNTRun] Arena %arena% instance successfully started!"
   No-Instances-Created: "[TNTRun] There are no arena instances created in configuration!"
+
+# Don't edit it. But who's stopping you? It's your server!
+File-Version: 0

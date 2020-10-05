@@ -1,22 +1,19 @@
 package me.despical.tntrun.user.data;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.logging.Level;
-
-import org.bukkit.Bukkit;
-import org.bukkit.configuration.file.FileConfiguration;
-
 import me.despical.commonsbox.configuration.ConfigUtils;
 import me.despical.commonsbox.database.MysqlDatabase;
 import me.despical.tntrun.Main;
 import me.despical.tntrun.api.StatsStorage;
 import me.despical.tntrun.user.User;
+import me.despical.tntrun.utils.Debugger;
 import me.despical.tntrun.utils.MessageUtils;
+import org.bukkit.Bukkit;
+import org.bukkit.configuration.file.FileConfiguration;
 
-import static me.despical.tntrun.utils.Debugger.debug;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 /**
  * @author Despical
@@ -46,8 +43,8 @@ public class MysqlManager implements UserDatabase {
 			} catch (SQLException e) {
 				e.printStackTrace();
 				MessageUtils.errorOccurred();
-				Bukkit.getConsoleSender().sendMessage("Cannot save contents to MySQL database!");
-				Bukkit.getConsoleSender().sendMessage("Check configuration of mysql.yml file or disable mysql option in config.yml");
+				Debugger.sendConsoleMessage("&cCannot save contents to MySQL database!");
+				Debugger.sendConsoleMessage("&cCheck configuration of mysql.yml file or disable mysql option in config.yml");
 			}
 		});
 	}
@@ -56,8 +53,28 @@ public class MysqlManager implements UserDatabase {
 	public void saveStatistic(User user, StatsStorage.StatisticType stat) {
 		Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
 			database.executeUpdate("UPDATE " + getTableName() + " SET " + stat.getName() + "=" + user.getStat(stat) + " WHERE UUID='" + user.getPlayer().getUniqueId().toString() + "';");
-			debug(Level.INFO, "Executed MySQL: " + "UPDATE " + getTableName() + " SET " + stat.getName() + "=" + user.getStat(stat) + " WHERE UUID='" + user.getPlayer().getUniqueId().toString() + "';");
+
+			Debugger.debug("Executed MySQL: " + "UPDATE " + getTableName() + " SET " + stat.getName() + "=" + user.getStat(stat) + " WHERE UUID='" + user.getPlayer().getUniqueId().toString() + "';");
 		});
+	}
+
+	@Override
+	public void saveAllStatistic(User user) {
+		StringBuilder update = new StringBuilder(" SET ");
+
+		for (StatsStorage.StatisticType stat : StatsStorage.StatisticType.values()) {
+			if (!stat.isPersistent()) continue;
+
+			if (update.toString().equalsIgnoreCase(" SET ")) {
+				update.append(stat.getName()).append("=").append(user.getStat(stat));
+			}
+
+			update.append(", ").append(stat.getName()).append("=").append(user.getStat(stat));
+		}
+
+		String finalUpdate = update.toString();
+
+		Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> database.executeUpdate("UPDATE " + getTableName() + finalUpdate + " WHERE UUID='" + user.getPlayer().getUniqueId().toString() + "';"));
 	}
 
 	@Override
@@ -70,7 +87,7 @@ public class MysqlManager implements UserDatabase {
 				ResultSet rs = statement.executeQuery("SELECT * from " + getTableName() + " WHERE UUID='" + uuid + "';");
 
 				if (rs.next()) {
-					debug(Level.INFO, "MySQL Stats | Player {0} already exist. Getting Stats...", user.getPlayer().getName());
+					Debugger.debug("MySQL Stats | Player {0} already exist. Getting Stats...", user.getPlayer().getName());
 
 					for (StatsStorage.StatisticType stat : StatsStorage.StatisticType.values()) {
 						if (!stat.isPersistent()) continue;
@@ -79,7 +96,7 @@ public class MysqlManager implements UserDatabase {
 						user.setStat(stat, val);
 					}
 				} else {
-					debug(Level.INFO, "MySQL Stats | Player {0} does not exist. Creating new one...", user.getPlayer().getName());
+					Debugger.debug("MySQL Stats | Player {0} does not exist. Creating new one...", user.getPlayer().getName());
 					statement.executeUpdate("INSERT INTO " + getTableName() + " (UUID,name) VALUES ('" + uuid + "','" + user.getPlayer().getName() + "');");
 
 					for (StatsStorage.StatisticType stat : StatsStorage.StatisticType.values()) {

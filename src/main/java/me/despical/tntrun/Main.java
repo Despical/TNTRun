@@ -1,21 +1,6 @@
 package me.despical.tntrun;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.logging.Level;
-
-import me.despical.tntrun.utils.*;
-import org.bstats.bukkit.Metrics;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.block.BlockState;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.entity.Player;
-import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.potion.PotionEffect;
-
+import me.despical.commonsbox.compat.VersionResolver;
 import me.despical.commonsbox.configuration.ConfigUtils;
 import me.despical.commonsbox.database.MysqlDatabase;
 import me.despical.commonsbox.scoreboard.ScoreboardLib;
@@ -26,11 +11,7 @@ import me.despical.tntrun.arena.ArenaEvents;
 import me.despical.tntrun.arena.ArenaRegistry;
 import me.despical.tntrun.arena.ArenaUtils;
 import me.despical.tntrun.commands.CommandHandler;
-import me.despical.tntrun.events.ChatEvents;
-import me.despical.tntrun.events.Events;
-import me.despical.tntrun.events.JoinEvent;
-import me.despical.tntrun.events.LobbyEvent;
-import me.despical.tntrun.events.QuitEvent;
+import me.despical.tntrun.events.*;
 import me.despical.tntrun.events.spectator.SpectatorEvents;
 import me.despical.tntrun.events.spectator.SpectatorItemEvents;
 import me.despical.tntrun.handlers.BungeeManager;
@@ -39,13 +20,23 @@ import me.despical.tntrun.handlers.PermissionsManager;
 import me.despical.tntrun.handlers.PlaceholderManager;
 import me.despical.tntrun.handlers.items.SpecialItem;
 import me.despical.tntrun.handlers.rewards.RewardsFactory;
-import me.despical.tntrun.handlers.sign.ArenaSign;
 import me.despical.tntrun.handlers.sign.SignManager;
 import me.despical.tntrun.user.User;
 import me.despical.tntrun.user.UserManager;
 import me.despical.tntrun.user.data.MysqlManager;
+import me.despical.tntrun.utils.*;
+import org.bstats.bukkit.Metrics;
+import org.bukkit.Bukkit;
+import org.bukkit.block.BlockState;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.Player;
+import org.bukkit.plugin.java.JavaPlugin;
 
-import static me.despical.tntrun.utils.Debugger.*;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.logging.Level;
 
 /**
  * @author Despical
@@ -55,7 +46,6 @@ import static me.despical.tntrun.utils.Debugger.*;
 public class Main extends JavaPlugin {
 
 	private ExceptionLogHandler exceptionLogHandler;
-	private String version;
 	private boolean forceDisable = false;
 	private BungeeManager bungeeManager;
 	private RewardsFactory rewardsFactory;
@@ -76,14 +66,14 @@ public class Main extends JavaPlugin {
 		saveDefaultConfig();
 
 		Debugger.setEnabled(getDescription().getVersion().contains("d") || getConfig().getBoolean("Debug-Messages", false));
-		debug(Level.INFO, "Initialization start");
+		Debugger.debug("Initialization start");
 
 		if (getConfig().getBoolean("Developer-Mode", false)) {
-			deepDebug(true);
-			debug(Level.INFO, "Deep debug enabled");
+			Debugger.deepDebug(true);
+			Debugger.debug("Deep debug enabled");
 
 			for (String listenable : new ArrayList<>(getConfig().getStringList("Listenable-Performances"))) {
-				monitorPerformance(listenable);
+				Debugger.monitorPerformance(listenable);
 			}
 		}
 
@@ -94,28 +84,19 @@ public class Main extends JavaPlugin {
 		initializeClasses();
 		checkUpdate();
 
-		debug(Level.INFO, "Initialization finished took {0} ms", System.currentTimeMillis() - start);
+		Debugger.debug(Level.INFO, "Initialization finished took {0} ms", System.currentTimeMillis() - start);
 
 		if (configPreferences.getOption(ConfigPreferences.Option.NAMETAGS_HIDDEN)) {
-			Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(this, () -> {
-				for (Player player : Bukkit.getOnlinePlayers()) {
-					ArenaUtils.updateNameTagsVisibility(player);
-				}
-			}, 60, 140);
+			Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(this, () ->
+				Bukkit.getOnlinePlayers().forEach(ArenaUtils::updateNameTagsVisibility), 60, 140);
 		}
 	}
 
 	private boolean validateIfPluginShouldStart() {
-		version = Bukkit.getServer().getClass().getPackage().getName().replace(".", ",").split(",")[3];
-
-		if (!(version.equalsIgnoreCase("v1_12_R1") || version.equalsIgnoreCase("v1_13_R1")
-			|| version.equalsIgnoreCase("v1_13_R2") || version.equalsIgnoreCase("v1_14_R1")
-			|| version.equalsIgnoreCase("v1_15_R1") || version.equalsIgnoreCase("v1_16_R1")
-			|| version.equalsIgnoreCase("v1_16_R2"))) {
-
+		if (VersionResolver.isCurrentLower(VersionResolver.ServerVersion.v1_12_R1)) {
 			MessageUtils.thisVersionIsNotSupported();
-			Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "Your server version is not supported by TNT Run!");
-			Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "Sadly, we must shut off. Maybe you consider changing your server version?");
+			Debugger.sendConsoleMessage("&cYour server version is not supported by TNT Run!");
+			Debugger.sendConsoleMessage("&cSadly, we must shut off. Maybe you consider changing your server version?");
 			forceDisable = true;
 
 			getServer().getPluginManager().disablePlugin(this);
@@ -126,8 +107,8 @@ public class Main extends JavaPlugin {
 			Class.forName("org.spigotmc.SpigotConfig");
 		} catch (Exception e) {
 			MessageUtils.thisVersionIsNotSupported();
-			Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "Your server software is not supported by TNT Run!");
-			Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "We support only Spigot and Spigot forks only! Shutting off...");
+			Debugger.sendConsoleMessage("&cYour server software is not supported by TNT Run!");
+			Debugger.sendConsoleMessage("&cWe support only Spigot and Spigot forks only! Shutting off...");
 			forceDisable = true;
 
 			getServer().getPluginManager().disablePlugin(this);
@@ -143,7 +124,7 @@ public class Main extends JavaPlugin {
 			return;
 		}
 
-		debug(Level.INFO, "System disable initialized");
+		Debugger.debug("System disable initialized");
 		long start = System.currentTimeMillis();
 
 		Bukkit.getLogger().removeHandler(exceptionLogHandler);
@@ -166,7 +147,7 @@ public class Main extends JavaPlugin {
 				} else {
 					player.getInventory().clear();
 					player.getInventory().setArmorContents(null);
-					player.getActivePotionEffects().stream().map(PotionEffect::getType).forEach(player::removePotionEffect);
+					player.getActivePotionEffects().forEach(effect -> player.removePotionEffect(effect.getType()));
 					player.setWalkSpeed(0.2f);
 				}
 			}
@@ -180,7 +161,7 @@ public class Main extends JavaPlugin {
 			}
 		}
 
-		debug(Level.INFO, "System disable finished took {0} ms", System.currentTimeMillis() - start);
+		Debugger.debug("System disable finished took {0} ms", System.currentTimeMillis() - start);
 	}
 
 	private void initializeClasses() {
@@ -198,7 +179,6 @@ public class Main extends JavaPlugin {
 		
 		userManager = new UserManager(this);
 		Utils.init(this);
-		ArenaSign.init(this);
 		SpecialItem.loadAll();
 		PermissionsManager.init();
 		new SpectatorEvents(this);
@@ -218,38 +198,34 @@ public class Main extends JavaPlugin {
 	}
 
 	private void registerSoftDependenciesAndServices() {
-		debug(Level.INFO, "Hooking into soft dependencies");
+		Debugger.debug("Hooking into soft dependencies");
 		long start = System.currentTimeMillis();
 
 		startPluginMetrics();
 
 		if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
-			debug(Level.INFO, "Hooking into PlaceholderAPI");
+			Debugger.debug("Hooking into PlaceholderAPI");
 			new PlaceholderManager().register();
 		}
 
-		debug(Level.INFO, "Hooked into soft dependencies took {0} ms", System.currentTimeMillis() - start);
+		Debugger.debug("Hooked into soft dependencies took {0} ms", System.currentTimeMillis() - start);
 	}
 
 	private void startPluginMetrics() {
 		Metrics metrics = new Metrics(this, 8147);
 
+		if (!metrics.isEnabled()) {
+			return;
+		}
+
 		metrics.addCustomChart(new Metrics.SimplePie("database_enabled", () -> String.valueOf(configPreferences.getOption(ConfigPreferences.Option.DATABASE_ENABLED))));
 		metrics.addCustomChart(new Metrics.SimplePie("bungeecord_hooked", () -> String.valueOf(configPreferences.getOption(ConfigPreferences.Option.BUNGEE_ENABLED))));
 		metrics.addCustomChart(new Metrics.SimplePie("update_notifier", () -> {
 			if (getConfig().getBoolean("Update-Notifier.Enabled", true)) {
-				if (getConfig().getBoolean("Update-Notifier.Notify-Beta-Versions", true)) {
-					return "Enabled with beta notifier";
-				} else {
-					return "Enabled";
-				}
-			} else {
-				if (getConfig().getBoolean("Update-Notifier.Notify-Beta-Versions", true)) {
-					return "Beta notifier only";
-				} else {
-					return "Disabled";
-				}
+				return getConfig().getBoolean("Update-Notifier.Notify-Beta-Versions", true) ? "Enabled with beta notifier" : "Enabled";
 			}
+
+			return getConfig().getBoolean("Update-Notifier.Notify-Beta-Versions", true) ? "Beta notifier only" : "Disabled";
 		}));
 	}
 
@@ -258,7 +234,7 @@ public class Main extends JavaPlugin {
 			return;
 		}
 
-		UpdateChecker.init(this, 1).requestUpdateCheck().whenComplete((result, exception) -> {
+		UpdateChecker.init(this, 83196).requestUpdateCheck().whenComplete((result, exception) -> {
 			if (!result.requiresUpdate()) {
 				return;
 			}
@@ -289,26 +265,6 @@ public class Main extends JavaPlugin {
 		}
 	}
 
-	public boolean is1_12_R1() {
-		return version.equalsIgnoreCase("v1_12_R1");
-	}
-
-	public boolean is1_14_R1() {
-		return version.equalsIgnoreCase("v1_14_R1");
-	}
-
-	public boolean is1_15_R1() {
-		return version.equalsIgnoreCase("v1_15_R1");
-	}
-
-	public boolean is1_16_R1() {
-		return version.equalsIgnoreCase("v1_16_R1");
-	}
-
-	public boolean is1_16_R2() {
-		return version.equalsIgnoreCase("v1_16_R2");
-	}
-	
 	public RewardsFactory getRewardsFactory() {
 		return rewardsFactory;
 	}
@@ -345,19 +301,23 @@ public class Main extends JavaPlugin {
 		for (Player player : getServer().getOnlinePlayers()) {
 			User user = userManager.getUser(player);
 
-			for (StatsStorage.StatisticType stat : StatsStorage.StatisticType.values()) {
-				if (!stat.isPersistent()) {
-					continue;
+			if (userManager.getDatabase() instanceof MysqlManager) {
+				StringBuilder update = new StringBuilder(" SET ");
+				for (StatsStorage.StatisticType stat : StatsStorage.StatisticType.values()) {
+					if (!stat.isPersistent()) continue;
+					if (update.toString().equalsIgnoreCase(" SET ")) {
+						update.append(stat.getName()).append("=").append(user.getStat(stat));
+					}
+
+					update.append(", ").append(stat.getName()).append("=").append(user.getStat(stat));
 				}
 
-				if (userManager.getDatabase() instanceof MysqlManager) {
-					((MysqlManager) userManager.getDatabase()).getDatabase().executeUpdate("UPDATE " + ((MysqlManager) userManager.getDatabase()).getTableName() + " SET " + stat.getName() + "=" + user.getStat(stat) + " WHERE UUID='" + user.getPlayer().getUniqueId().toString() + "';");
-					debug(Level.INFO, "Executed MySQL: " + "UPDATE " + ((MysqlManager) userManager.getDatabase()).getTableName() + " " + stat.getName() + "=" + user.getStat(stat) + " WHERE UUID='" + user.getPlayer().getUniqueId().toString() + "';");
-					continue;
-				}
-
-				userManager.getDatabase().saveStatistic(user, stat);
+				String finalUpdate = update.toString();
+				((MysqlManager) userManager.getDatabase()).getDatabase().executeUpdate("UPDATE " + ((MysqlManager) getUserManager().getDatabase()).getTableName() + finalUpdate + " WHERE UUID='" + user.getPlayer().getUniqueId().toString() + "';");
+				continue;
 			}
+
+			Arrays.stream(StatsStorage.StatisticType.values()).forEach(stat -> userManager.getDatabase().saveStatistic(user, stat));
 		}
 	}
 }

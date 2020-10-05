@@ -71,6 +71,7 @@ public class HelpCommand extends SubCommand {
 	
 	public static void sendHoverTip(Player player) {
 		player.sendMessage("");
+
 		player.spigot().sendMessage(new ComponentBuilder("TIP:").color(ChatColor.YELLOW).bold(true)
 			.append(" Try to ", FormatRetention.NONE).color(ChatColor.GRAY)
 			.append("hover").color(ChatColor.WHITE).underlined(true)
