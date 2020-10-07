@@ -1,19 +1,34 @@
-package me.despical.tntrun.handlers.setup.components;
+/*
+ * TNT Run - Don't stop running to win!
+ * Copyright (C) 2020 Despical
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
-import org.bukkit.ChatColor;
-import org.bukkit.Material;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.entity.Player;
+package me.despical.tntrun.handlers.setup.components;
 
 import com.github.despical.inventoryframework.GuiItem;
 import com.github.despical.inventoryframework.pane.StaticPane;
-
 import me.despical.commonsbox.configuration.ConfigUtils;
 import me.despical.commonsbox.item.ItemBuilder;
 import me.despical.commonsbox.serializer.LocationSerializer;
 import me.despical.tntrun.Main;
 import me.despical.tntrun.arena.Arena;
 import me.despical.tntrun.handlers.setup.SetupInventory;
+import org.bukkit.Material;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.Player;
 
 /**
  * @author Despical
@@ -39,10 +54,10 @@ public class SpawnComponents implements SetupComponent {
 
 		pane.addItem(new GuiItem(new ItemBuilder(Material.REDSTONE_BLOCK)
 			.name(plugin.getChatManager().colorRawMessage("&e&lSet Ending Location"))
-			.lore(ChatColor.GRAY + "Click to set the ending location")
-			.lore(ChatColor.GRAY + "on the place where you are standing.")
-			.lore(ChatColor.DARK_GRAY + "(location where players will be")
-			.lore(ChatColor.DARK_GRAY + "teleported after the game)")
+			.lore("&7Click to set the ending location")
+			.lore("&7on the place where you are standing.")
+			.lore("&8(location where players will be")
+			.lore("&8teleported after the game)")
 			.lore("", setupInventory.getSetupUtilities().isOptionDoneBool("instances." + arena.getId() + ".Endlocation"))
 			.build(), e -> {
 				e.getWhoClicked().closeInventory();
@@ -54,8 +69,8 @@ public class SpawnComponents implements SetupComponent {
 
 		pane.addItem(new GuiItem(new ItemBuilder(Material.LAPIS_BLOCK)
 			.name(plugin.getChatManager().colorRawMessage("&e&lSet Lobby Location"))
-			.lore(ChatColor.GRAY + "Click to set the lobby location")
-			.lore(ChatColor.GRAY + "on the place where you are standing")
+			.lore("&7Click to set the lobby location")
+			.lore("&7on the place where you are standing")
 			.lore("", setupInventory.getSetupUtilities().isOptionDoneBool("instances." + arena.getId() + ".lobbylocation"))
 			.build(), e -> {
 				e.getWhoClicked().closeInventory();

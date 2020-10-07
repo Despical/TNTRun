@@ -2,9 +2,6 @@
 /out/
 /generated/
 *.iml
-/minecraft/
 /target/
-.classpath
-.project
 .settings
 /bin/

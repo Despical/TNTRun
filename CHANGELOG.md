@@ -1,8 +1,15 @@
+### 1.0.5 Release (07.10.2020)
+* Added more in-game tips.
+* Added license header.
+* Fixed signs.
+* Removed static handler list getter from events.
+* Improved GUI performances.
+
 ### 1.0.4 Release (05.10.2020)
 * Added death prefix.
 * Added arena selector.
 * Added missing 1.14, 1.15 and 1.16 items.
-* Added support for 1.16 hex colors.
+* Added support for 1.16 Hex colors.
 * Fixed player skulls on spectator menu.
 * Fixed separate chat.
 * Fixed player skulls on spectator menu.

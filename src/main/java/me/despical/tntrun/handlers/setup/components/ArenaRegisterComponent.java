@@ -1,20 +1,25 @@
+/*
+ * TNT Run - Don't stop running to win!
+ * Copyright (C) 2020 Despical
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package me.despical.tntrun.handlers.setup.components;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Material;
-import org.bukkit.block.Sign;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.enchantments.Enchantment;
-import org.bukkit.inventory.ItemFlag;
-import org.bukkit.inventory.ItemStack;
 
 import com.github.despical.inventoryframework.GuiItem;
 import com.github.despical.inventoryframework.pane.StaticPane;
-
 import me.despical.commonsbox.compat.XMaterial;
 import me.despical.commonsbox.configuration.ConfigUtils;
 import me.despical.commonsbox.item.ItemBuilder;
@@ -25,6 +30,16 @@ import me.despical.tntrun.arena.ArenaRegistry;
 import me.despical.tntrun.arena.ArenaState;
 import me.despical.tntrun.handlers.setup.SetupInventory;
 import me.despical.tntrun.handlers.sign.ArenaSign;
+import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.block.Sign;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.enchantments.Enchantment;
+import org.bukkit.inventory.ItemFlag;
+import org.bukkit.inventory.ItemStack;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Despical
@@ -48,16 +63,16 @@ public class ArenaRegisterComponent implements SetupComponent {
 
 		if (!setupInventory.getArena().isReady()) {
 			registeredItem = new ItemBuilder(XMaterial.FIREWORK_ROCKET.parseItem())
-				.name(plugin.getChatManager().colorRawMessage("&e&lRegister Arena - Finish Setup"))
-				.lore(ChatColor.GRAY + "Click this when you're done with configuration.")
-				.lore(ChatColor.GRAY + "It will validate and register arena.")
+				.name("&e&lRegister Arena - Finish Setup")
+				.lore("&7Click this when you're done with configuration.")
+				.lore("&7It will validate and register arena.")
 				.build();
 		} else {
 			registeredItem = new ItemBuilder(Material.BARRIER)
 				.name(plugin.getChatManager().colorRawMessage("&a&lArena Registered - Congratulations"))
-				.lore(ChatColor.GRAY + "This arena is already registered!")
-				.lore(ChatColor.GRAY + "Good job, you went through whole setup!")
-				.lore(ChatColor.GRAY + "You can play on this arena now!")
+				.lore("&7This arena is already registered!")
+				.lore("&7Good job, you went through whole setup!")
+				.lore("&7You can play on this arena now!")
 				.enchantment(Enchantment.DURABILITY)
 				.flag(ItemFlag.HIDE_ENCHANTS)
 				.build();
@@ -66,6 +81,7 @@ public class ArenaRegisterComponent implements SetupComponent {
 		pane.addItem(new GuiItem(registeredItem, e -> {
 			Arena arena = setupInventory.getArena();
 			e.getWhoClicked().closeInventory();
+
 			if (ArenaRegistry.getArena(setupInventory.getArena().getId()).isReady()) {
 				e.getWhoClicked().sendMessage(plugin.getChatManager().colorRawMessage("&a&l✔ &aThis arena was already validated and is ready to use!"));
 				return;

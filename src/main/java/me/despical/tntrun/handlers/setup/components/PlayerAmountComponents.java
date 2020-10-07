@@ -1,17 +1,32 @@
-package me.despical.tntrun.handlers.setup.components;
+/*
+ * TNT Run - Don't stop running to win!
+ * Copyright (C) 2020 Despical
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
-import org.bukkit.ChatColor;
-import org.bukkit.Material;
-import org.bukkit.configuration.file.FileConfiguration;
+package me.despical.tntrun.handlers.setup.components;
 
 import com.github.despical.inventoryframework.GuiItem;
 import com.github.despical.inventoryframework.pane.StaticPane;
-
 import me.despical.commonsbox.configuration.ConfigUtils;
 import me.despical.commonsbox.item.ItemBuilder;
 import me.despical.tntrun.Main;
 import me.despical.tntrun.arena.Arena;
 import me.despical.tntrun.handlers.setup.SetupInventory;
+import org.bukkit.Material;
+import org.bukkit.configuration.file.FileConfiguration;
 
 /**
  * @author Despical
@@ -35,10 +50,11 @@ public class PlayerAmountComponents implements SetupComponent {
 
 		pane.addItem(new GuiItem(new ItemBuilder(Material.COAL)
 			.amount(setupInventory.getSetupUtilities().getMinimumValueHigherThanZero("minimumplayers"))
-			.name(plugin.getChatManager().colorRawMessage("&e&lSet Minimum Players Amount"))
-			.lore(ChatColor.GRAY + "LEFT click to decrease").lore(ChatColor.GRAY + "RIGHT click to increase")
-			.lore(ChatColor.DARK_GRAY + "(how many players are needed")
-			.lore(ChatColor.DARK_GRAY + "for game to start lobby countdown)").lore("", setupInventory
+			.name("&e&lSet Minimum Players Amount")
+			.lore("&7LEFT click to decrease")
+			.lore("&7RIGHT click to increase")
+			.lore("&8(how many players are needed")
+			.lore("&8for game to start lobby countdown)").lore("", setupInventory
 			.getSetupUtilities().isOptionDone("instances." + arena.getId() + ".minimumplayers"))
 			.build(), e -> {
 				if (e.getClick().isRightClick()) {
@@ -62,10 +78,11 @@ public class PlayerAmountComponents implements SetupComponent {
 
 		pane.addItem(new GuiItem(new ItemBuilder(Material.REDSTONE)
 			.amount(setupInventory.getSetupUtilities().getMinimumValueHigherThanZero("maximumplayers"))
-			.name(plugin.getChatManager().colorRawMessage("&e&lSet Maximum Players Amount"))
-			.lore(ChatColor.GRAY + "LEFT click to decrease").lore(ChatColor.GRAY + "RIGHT click to increase")
-			.lore(ChatColor.DARK_GRAY + "(how many players arena can hold)").lore("", setupInventory
-			.getSetupUtilities().isOptionDone("instances." + arena.getId() + ".maximumplayers"))
+			.name("&e&lSet Maximum Players Amount")
+			.lore("&7LEFT click to decrease")
+			.lore("&7RIGHT click to increase")
+			.lore("&8(how many players arena can hold)")
+			.lore("", setupInventory.getSetupUtilities().isOptionDone("instances." + arena.getId() + ".maximumplayers"))
 			.build(), e -> {
 				if (e.getClick().isRightClick()) {
 					e.getCurrentItem().setAmount(e.getCurrentItem().getAmount() + 1);

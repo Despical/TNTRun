@@ -1,9 +1,9 @@
-#    You can translate TNT Run messages here.
+#        You can translate TNT Run messages here.
 #             Color codes (&) supported.
 #
 #              Use \n to make new line
 #        Some messages like kit and kit items
-#        descriptions dont't support new lines
+#        descriptions don't support new lines
 # they are wrapped every 40 characters automatically
 #
 #     Some messages support their own placeholders
@@ -123,7 +123,7 @@ In-Game:
     Lobby-Messages:
       Start-In: "&7The game starts in &b%time%&7 seconds!"
       Waiting-For-Players: "&7Waiting for players... We need at least &b%minplayers%&7 players to start."
-      Enough-Players-To-Start: "&7We now have enough players. The game is starting soon!"
+      Enough-Players-To-Start: "&7Now we have enough players. The game is starting soon!"
       Game-Started: "&7Game started! Don't stop running!"
       Kicked-For-Premium-Slot: "&c%player% got removed from the game to make a place for premium players!"
       You-Were-Kicked-For-Premium-Slot: "&cYou got kicked out of the game to make a place for a premium player!"

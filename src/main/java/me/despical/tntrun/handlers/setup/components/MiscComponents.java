@@ -1,9 +1,36 @@
+/*
+ * TNT Run - Don't stop running to win!
+ * Copyright (C) 2020 Despical
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package me.despical.tntrun.handlers.setup.components;
 
-import java.util.List;
-
+import com.github.despical.inventoryframework.GuiItem;
+import com.github.despical.inventoryframework.pane.StaticPane;
+import me.despical.commonsbox.compat.XMaterial;
+import me.despical.commonsbox.configuration.ConfigUtils;
+import me.despical.commonsbox.item.ItemBuilder;
+import me.despical.commonsbox.serializer.LocationSerializer;
+import me.despical.tntrun.ConfigPreferences;
+import me.despical.tntrun.Main;
+import me.despical.tntrun.arena.Arena;
+import me.despical.tntrun.handlers.setup.SetupInventory;
+import me.despical.tntrun.handlers.sign.ArenaSign;
+import me.despical.tntrun.utils.conversation.SimpleConversationBuilder;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Sign;
@@ -15,19 +42,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
 
-import com.github.despical.inventoryframework.GuiItem;
-import com.github.despical.inventoryframework.pane.StaticPane;
-
-import me.despical.commonsbox.compat.XMaterial;
-import me.despical.commonsbox.configuration.ConfigUtils;
-import me.despical.commonsbox.item.ItemBuilder;
-import me.despical.commonsbox.serializer.LocationSerializer;
-import me.despical.tntrun.ConfigPreferences;
-import me.despical.tntrun.Main;
-import me.despical.tntrun.arena.Arena;
-import me.despical.tntrun.handlers.setup.SetupInventory;
-import me.despical.tntrun.handlers.sign.ArenaSign;
-import me.despical.tntrun.utils.conversation.SimpleConversationBuilder;
+import java.util.List;
 
 /**
  * @author Despical
@@ -53,15 +68,16 @@ public class MiscComponents implements SetupComponent {
 
 		if (!plugin.getConfigPreferences().getOption(ConfigPreferences.Option.BUNGEE_ENABLED)) {
 			bungeeItem = new ItemBuilder(XMaterial.OAK_SIGN.parseMaterial())
-				.name(plugin.getChatManager().colorRawMessage("&e&lAdd Game Sign"))
-				.lore(ChatColor.GRAY + "Target a sign and click this.")
-				.lore(ChatColor.DARK_GRAY + "(this will set target sign as game sign)").build();
+				.name("&e&lAdd Game Sign")
+				.lore("&7Target a sign and click this.")
+				.lore("&8(this will set target sign as game sign)")
+				.build();
 		} else {
 			bungeeItem = new ItemBuilder(Material.BARRIER)
-				.name(plugin.getChatManager().colorRawMessage("&c&lAdd Game Sign"))
-				.lore(ChatColor.GRAY + "Option disabled in bungee cord mode.")
-				.lore(ChatColor.DARK_GRAY + "Bungee mode is meant to be one arena per server")
-				.lore(ChatColor.DARK_GRAY + "If you wish to have multi arena, disable bungee in config!")
+				.name("&c&lAdd Game Sign")
+				.lore("&7Option disabled in bungee cord mode.")
+				.lore("&8Bungee mode is meant to be one arena per server")
+				.lore("&8If you wish to have multi arena, disable bungee in config!")
 				.build();
 		}
 
@@ -97,11 +113,12 @@ public class MiscComponents implements SetupComponent {
 		}), 4, 0);
 
 		pane.addItem(new GuiItem(new ItemBuilder(Material.NAME_TAG)
-			.name(plugin.getChatManager().colorRawMessage("&e&lSet Map Name"))
-			.lore(ChatColor.GRAY + "Click to set arena map name")
-			.lore("", plugin.getChatManager().colorRawMessage("&a&lCurrently: &e" + config.getString("instances." + arena.getId() + ".mapname")))
+			.name("&e&lSet Map Name")
+			.lore("&7Click to set arena map name")
+			.lore("", "&a&lCurrently: &e" + config.getString("instances." + arena.getId() + ".mapname"))
 			.build(), e -> {
 				e.getWhoClicked().closeInventory();
+
 				new SimpleConversationBuilder().withPrompt(new StringPrompt() {
 
 					@Override
@@ -125,9 +142,9 @@ public class MiscComponents implements SetupComponent {
 			}), 5, 0);
 
 		pane.addItem(new GuiItem(new ItemBuilder(XMaterial.FILLED_MAP.parseItem())
-			.name(plugin.getChatManager().colorRawMessage("&e&lView Wiki Page"))
-			.lore(ChatColor.GRAY + "Having problems with setup or wanna")
-			.lore(ChatColor.GRAY + "know some useful tips? Click to get wiki link!")
+			.name("&e&lView Wiki Page")
+			.lore("&7Having problems with setup or want to")
+			.lore("&7know some useful tips? Click to get wiki link!")
 			.build(), e -> {
 				e.getWhoClicked().closeInventory();
 				player.sendMessage(plugin.getChatManager().getPrefix() + plugin.getChatManager().colorRawMessage("&7Check out our wiki: https://github.com/Despical/TNTRun/wiki"));
