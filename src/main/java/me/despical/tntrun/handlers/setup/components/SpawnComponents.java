@@ -60,11 +60,11 @@ public class SpawnComponents implements SetupComponent {
 			.lore("&8teleported after the game)")
 			.lore("", setupInventory.getSetupUtilities().isOptionDoneBool("instances." + arena.getId() + ".Endlocation"))
 			.build(), e -> {
-				e.getWhoClicked().closeInventory();
-				config.set("instances." + arena.getId() + ".Endlocation", serializedLocation);
-				arena.setEndLocation(player.getLocation());
-				player.sendMessage(plugin.getChatManager().colorRawMessage("&e✔ Completed | &aEnding location for arena " + arena.getId() + " set at your location!"));
-				ConfigUtils.saveConfig(plugin, config, "arenas");
+			e.getWhoClicked().closeInventory();
+			config.set("instances." + arena.getId() + ".Endlocation", serializedLocation);
+			arena.setEndLocation(player.getLocation());
+			player.sendMessage(plugin.getChatManager().colorRawMessage("&e✔ Completed | &aEnding location for arena " + arena.getId() + " set at your location!"));
+			ConfigUtils.saveConfig(plugin, config, "arenas");
 		}), 0, 0);
 
 		pane.addItem(new GuiItem(new ItemBuilder(Material.LAPIS_BLOCK)
@@ -73,11 +73,11 @@ public class SpawnComponents implements SetupComponent {
 			.lore("&7on the place where you are standing")
 			.lore("", setupInventory.getSetupUtilities().isOptionDoneBool("instances." + arena.getId() + ".lobbylocation"))
 			.build(), e -> {
-				e.getWhoClicked().closeInventory();
-				config.set("instances." + arena.getId() + ".lobbylocation", serializedLocation);
-				arena.setLobbyLocation(player.getLocation());
-				player.sendMessage(plugin.getChatManager().colorRawMessage("&e✔ Completed | &aLobby location for arena " + arena.getId() + " set at your location!"));
-				ConfigUtils.saveConfig(plugin, config, "arenas");
+			e.getWhoClicked().closeInventory();
+			config.set("instances." + arena.getId() + ".lobbylocation", serializedLocation);
+			arena.setLobbyLocation(player.getLocation());
+			player.sendMessage(plugin.getChatManager().colorRawMessage("&e✔ Completed | &aLobby location for arena " + arena.getId() + " set at your location!"));
+			ConfigUtils.saveConfig(plugin, config, "arenas");
 		}), 1, 0);
 	}
 }

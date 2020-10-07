@@ -25,8 +25,9 @@ package me.despical.tntrun.utils;
  */
 public class MessageUtils {
 
-	private MessageUtils() {}
-	
+	private MessageUtils() {
+	}
+
 	public static void thisVersionIsNotSupported() {
 		Debugger.sendConsoleMessage("&c  _   _           _                                                    _                _ ");
 		Debugger.sendConsoleMessage("&c | \\ | |   ___   | |_     ___   _   _   _ __    _ __     ___    _ __  | |_    ___    __| |");

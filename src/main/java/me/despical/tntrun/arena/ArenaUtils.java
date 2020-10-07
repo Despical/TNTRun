@@ -18,14 +18,13 @@
 
 package me.despical.tntrun.arena;
 
+import me.despical.tntrun.ConfigPreferences;
+import me.despical.tntrun.Main;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
-
-import me.despical.tntrun.ConfigPreferences;
-import me.despical.tntrun.Main;
 
 /**
  * @author Despical
@@ -43,7 +42,7 @@ public class ArenaUtils {
 
 		return ArenaRegistry.getArena(one).equals(ArenaRegistry.getArena(two));
 	}
-	
+
 	public static void hidePlayer(Player p, Arena arena) {
 		arena.getPlayers().forEach(player -> player.hidePlayer(plugin, p));
 	}

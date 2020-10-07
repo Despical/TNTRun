@@ -18,9 +18,8 @@
 
 package me.despical.tntrun.api.events;
 
-import org.bukkit.event.Event;
-
 import me.despical.tntrun.arena.Arena;
+import org.bukkit.event.Event;
 
 /**
  * Represents TNT Run game related events.

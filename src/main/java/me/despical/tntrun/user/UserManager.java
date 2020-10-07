@@ -18,14 +18,6 @@
 
 package me.despical.tntrun.user;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import me.despical.tntrun.utils.Debugger;
-import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
-
 import me.despical.tntrun.ConfigPreferences;
 import me.despical.tntrun.Main;
 import me.despical.tntrun.api.StatsStorage;
@@ -33,6 +25,13 @@ import me.despical.tntrun.arena.Arena;
 import me.despical.tntrun.user.data.FileStats;
 import me.despical.tntrun.user.data.MysqlManager;
 import me.despical.tntrun.user.data.UserDatabase;
+import me.despical.tntrun.utils.Debugger;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author Despical
@@ -76,7 +75,7 @@ public class UserManager {
 		users.add(user);
 		return user;
 	}
-	
+
 	public List<User> getUsers(Arena arena) {
 		return arena.getPlayers().stream().map(this::getUser).collect(Collectors.toList());
 	}

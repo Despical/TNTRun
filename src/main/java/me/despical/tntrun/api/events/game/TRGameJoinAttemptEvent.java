@@ -18,18 +18,17 @@
 
 package me.despical.tntrun.api.events.game;
 
+import me.despical.tntrun.api.events.TREvent;
+import me.despical.tntrun.arena.Arena;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.HandlerList;
-
-import me.despical.tntrun.api.events.TREvent;
-import me.despical.tntrun.arena.Arena;
 
 /**
  * @author Despical
  * @since 1.0.0
  * <p>
- * 
+ * <p>
  * Called when player is attempting to join arena.
  */
 public class TRGameJoinAttemptEvent extends TREvent implements Cancellable {

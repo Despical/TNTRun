@@ -18,14 +18,6 @@
 
 package me.despical.tntrun.arena.managers;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.apache.commons.lang.StringUtils;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.entity.Player;
-import org.bukkit.plugin.java.JavaPlugin;
-
 import me.clip.placeholderapi.PlaceholderAPI;
 import me.despical.commonsbox.configuration.ConfigUtils;
 import me.despical.commonsbox.scoreboard.ScoreboardLib;
@@ -39,6 +31,13 @@ import me.despical.tntrun.api.StatsStorage;
 import me.despical.tntrun.arena.Arena;
 import me.despical.tntrun.arena.ArenaState;
 import me.despical.tntrun.user.User;
+import org.apache.commons.lang.StringUtils;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.Player;
+import org.bukkit.plugin.java.JavaPlugin;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Despical
@@ -51,7 +50,7 @@ public class ScoreboardManager {
 	private final List<Scoreboard> scoreboards = new ArrayList<>();
 	private final Arena arena;
 	private final FileConfiguration config = ConfigUtils.getConfig(plugin, "messages");
-	
+
 	public ScoreboardManager(Arena arena) {
 		this.arena = arena;
 	}
@@ -125,7 +124,7 @@ public class ScoreboardManager {
 	private String formatScoreboardLine(String line, User user) {
 		String formattedLine = line;
 		formattedLine = StringUtils.replace(formattedLine, "%time%", String.valueOf(arena.getTimer()));
-		formattedLine = StringUtils.replace(formattedLine, "%formatted_time%",StringFormatUtils.formatIntoMMSS(arena.getTimer()));
+		formattedLine = StringUtils.replace(formattedLine, "%formatted_time%", StringFormatUtils.formatIntoMMSS(arena.getTimer()));
 		formattedLine = StringUtils.replace(formattedLine, "%mapname%", arena.getMapName());
 		formattedLine = StringUtils.replace(formattedLine, "%players%", String.valueOf(arena.getPlayers().size()));
 		formattedLine = StringUtils.replace(formattedLine, "%max_players%", String.valueOf(arena.getMaximumPlayers()));

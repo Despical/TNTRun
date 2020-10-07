@@ -18,11 +18,10 @@
 
 package me.despical.tntrun.utils;
 
-import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
-
 import me.despical.tntrun.Main;
 import me.despical.tntrun.arena.ArenaRegistry;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.meta.SkullMeta;
 
 import java.util.concurrent.CompletableFuture;
@@ -36,7 +35,8 @@ public class Utils {
 
 	private static Main plugin;
 
-	private Utils() {}
+	private Utils() {
+	}
 
 	public static void init(Main plugin) {
 		Utils.plugin = plugin;

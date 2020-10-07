@@ -55,25 +55,25 @@ public class PlayerAmountComponents implements SetupComponent {
 			.lore("&7RIGHT click to increase")
 			.lore("&8(how many players are needed")
 			.lore("&8for game to start lobby countdown)").lore("", setupInventory
-			.getSetupUtilities().isOptionDone("instances." + arena.getId() + ".minimumplayers"))
+				.getSetupUtilities().isOptionDone("instances." + arena.getId() + ".minimumplayers"))
 			.build(), e -> {
-				if (e.getClick().isRightClick()) {
-					e.getInventory().getItem(e.getSlot()).setAmount(e.getCurrentItem().getAmount() + 1);
-				}
+			if (e.getClick().isRightClick()) {
+				e.getInventory().getItem(e.getSlot()).setAmount(e.getCurrentItem().getAmount() + 1);
+			}
 
-				if (e.getClick().isLeftClick()) {
-					e.getInventory().getItem(e.getSlot()).setAmount(e.getCurrentItem().getAmount() - 1);
-				}
+			if (e.getClick().isLeftClick()) {
+				e.getInventory().getItem(e.getSlot()).setAmount(e.getCurrentItem().getAmount() - 1);
+			}
 
-				if (e.getInventory().getItem(e.getSlot()).getAmount() <= 1) {
-					e.getWhoClicked().sendMessage(plugin.getChatManager().colorRawMessage("&c&l✖ &cWarning | Please do not set amount lower than 2! Game is designed for 2 or more players!"));
-					e.getInventory().getItem(e.getSlot()).setAmount(2);
-				}
+			if (e.getInventory().getItem(e.getSlot()).getAmount() <= 1) {
+				e.getWhoClicked().sendMessage(plugin.getChatManager().colorRawMessage("&c&l✖ &cWarning | Please do not set amount lower than 2! Game is designed for 2 or more players!"));
+				e.getInventory().getItem(e.getSlot()).setAmount(2);
+			}
 
-				config.set("instances." + arena.getId() + ".minimumplayers", e.getCurrentItem().getAmount());
-				arena.setMinimumPlayers(e.getCurrentItem().getAmount());
-				ConfigUtils.saveConfig(plugin, config, "arenas");
-				new SetupInventory(arena, setupInventory.getPlayer()).openInventory();
+			config.set("instances." + arena.getId() + ".minimumplayers", e.getCurrentItem().getAmount());
+			arena.setMinimumPlayers(e.getCurrentItem().getAmount());
+			ConfigUtils.saveConfig(plugin, config, "arenas");
+			new SetupInventory(arena, setupInventory.getPlayer()).openInventory();
 		}), 2, 0);
 
 		pane.addItem(new GuiItem(new ItemBuilder(Material.REDSTONE)
@@ -84,23 +84,23 @@ public class PlayerAmountComponents implements SetupComponent {
 			.lore("&8(how many players arena can hold)")
 			.lore("", setupInventory.getSetupUtilities().isOptionDone("instances." + arena.getId() + ".maximumplayers"))
 			.build(), e -> {
-				if (e.getClick().isRightClick()) {
-					e.getCurrentItem().setAmount(e.getCurrentItem().getAmount() + 1);
-				}
+			if (e.getClick().isRightClick()) {
+				e.getCurrentItem().setAmount(e.getCurrentItem().getAmount() + 1);
+			}
 
-				if (e.getClick().isLeftClick()) {
-					e.getCurrentItem().setAmount(e.getCurrentItem().getAmount() - 1);
-				}
+			if (e.getClick().isLeftClick()) {
+				e.getCurrentItem().setAmount(e.getCurrentItem().getAmount() - 1);
+			}
 
-				if (e.getInventory().getItem(e.getSlot()).getAmount() <= 1) {
-					e.getWhoClicked().sendMessage(plugin.getChatManager().colorRawMessage("&c&l✖ &cWarning | Please do not set amount lower than 2! Game is designed for 2 or more players!"));
-					e.getInventory().getItem(e.getSlot()).setAmount(2);
-				}
+			if (e.getInventory().getItem(e.getSlot()).getAmount() <= 1) {
+				e.getWhoClicked().sendMessage(plugin.getChatManager().colorRawMessage("&c&l✖ &cWarning | Please do not set amount lower than 2! Game is designed for 2 or more players!"));
+				e.getInventory().getItem(e.getSlot()).setAmount(2);
+			}
 
-				config.set("instances." + arena.getId() + ".maximumplayers", e.getCurrentItem().getAmount());
-				arena.setMaximumPlayers(e.getCurrentItem().getAmount());
-				ConfigUtils.saveConfig(plugin, config, "arenas");
-				new SetupInventory(arena, setupInventory.getPlayer()).openInventory();
+			config.set("instances." + arena.getId() + ".maximumplayers", e.getCurrentItem().getAmount());
+			arena.setMaximumPlayers(e.getCurrentItem().getAmount());
+			ConfigUtils.saveConfig(plugin, config, "arenas");
+			new SetupInventory(arena, setupInventory.getPlayer()).openInventory();
 		}), 3, 0);
 	}
 }

@@ -18,12 +18,11 @@
 
 package me.despical.tntrun.api.events.player;
 
-import org.bukkit.entity.Player;
-import org.bukkit.event.HandlerList;
-
 import me.despical.tntrun.api.StatsStorage;
 import me.despical.tntrun.api.events.TREvent;
 import me.despical.tntrun.arena.Arena;
+import org.bukkit.entity.Player;
+import org.bukkit.event.HandlerList;
 
 /**
  * @author Despical

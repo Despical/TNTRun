@@ -18,12 +18,11 @@
 
 package me.despical.tntrun.handlers;
 
-import org.bukkit.entity.Player;
-
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import me.despical.tntrun.api.StatsStorage;
 import me.despical.tntrun.arena.Arena;
 import me.despical.tntrun.arena.ArenaRegistry;
+import org.bukkit.entity.Player;
 
 /**
  * @author Despical

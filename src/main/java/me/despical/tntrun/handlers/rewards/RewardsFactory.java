@@ -18,23 +18,22 @@
 
 package me.despical.tntrun.handlers.rewards;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.ThreadLocalRandom;
-
+import me.despical.commonsbox.configuration.ConfigUtils;
+import me.despical.commonsbox.engine.ScriptEngine;
+import me.despical.tntrun.Main;
+import me.despical.tntrun.arena.Arena;
+import me.despical.tntrun.arena.ArenaRegistry;
 import me.despical.tntrun.utils.Debugger;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 
-import me.despical.commonsbox.configuration.ConfigUtils;
-import me.despical.commonsbox.engine.ScriptEngine;
-import me.despical.tntrun.Main;
-import me.despical.tntrun.arena.Arena;
-import me.despical.tntrun.arena.ArenaRegistry;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * @author Despical

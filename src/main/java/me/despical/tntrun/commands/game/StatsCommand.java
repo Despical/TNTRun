@@ -18,16 +18,15 @@
 
 package me.despical.tntrun.commands.game;
 
-import java.util.List;
-
-import org.bukkit.Bukkit;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
-
 import me.despical.commonsbox.string.StringFormatUtils;
 import me.despical.tntrun.api.StatsStorage;
 import me.despical.tntrun.commands.SubCommand;
 import me.despical.tntrun.user.User;
+import org.bukkit.Bukkit;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+
+import java.util.List;
 
 /**
  * @author Despical

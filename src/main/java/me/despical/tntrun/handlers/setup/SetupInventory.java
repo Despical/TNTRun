@@ -18,23 +18,21 @@
 
 package me.despical.tntrun.handlers.setup;
 
-import java.util.Random;
-
-import me.despical.tntrun.handlers.ChatManager;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.entity.Player;
-import org.bukkit.plugin.java.JavaPlugin;
-
 import com.github.despical.inventoryframework.Gui;
 import com.github.despical.inventoryframework.pane.StaticPane;
-
 import me.despical.commonsbox.configuration.ConfigUtils;
 import me.despical.tntrun.Main;
 import me.despical.tntrun.arena.Arena;
+import me.despical.tntrun.handlers.ChatManager;
 import me.despical.tntrun.handlers.setup.components.ArenaRegisterComponent;
 import me.despical.tntrun.handlers.setup.components.MiscComponents;
 import me.despical.tntrun.handlers.setup.components.PlayerAmountComponents;
 import me.despical.tntrun.handlers.setup.components.SpawnComponents;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.Player;
+import org.bukkit.plugin.java.JavaPlugin;
+
+import java.util.Random;
 
 /**
  * @author Despical

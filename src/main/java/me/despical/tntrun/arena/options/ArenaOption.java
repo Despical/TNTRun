@@ -24,7 +24,7 @@ package me.despical.tntrun.arena.options;
  * Created at 10.07.2020
  */
 public enum ArenaOption {
-	
+
 	/**
 	 * Current arena timer, ex. 30 seconds before game starts.
 	 */

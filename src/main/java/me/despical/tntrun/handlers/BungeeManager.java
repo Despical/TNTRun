@@ -18,9 +18,13 @@
 
 package me.despical.tntrun.handlers;
 
-import java.util.EnumMap;
-import java.util.Map;
-
+import com.google.common.io.ByteArrayDataOutput;
+import com.google.common.io.ByteStreams;
+import me.despical.commonsbox.configuration.ConfigUtils;
+import me.despical.tntrun.Main;
+import me.despical.tntrun.arena.ArenaManager;
+import me.despical.tntrun.arena.ArenaRegistry;
+import me.despical.tntrun.arena.ArenaState;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -29,14 +33,8 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.server.ServerListPingEvent;
 
-import com.google.common.io.ByteArrayDataOutput;
-import com.google.common.io.ByteStreams;
-
-import me.despical.commonsbox.configuration.ConfigUtils;
-import me.despical.tntrun.Main;
-import me.despical.tntrun.arena.ArenaManager;
-import me.despical.tntrun.arena.ArenaRegistry;
-import me.despical.tntrun.arena.ArenaState;
+import java.util.EnumMap;
+import java.util.Map;
 
 /**
  * @author Despical

@@ -117,37 +117,37 @@ public class MiscComponents implements SetupComponent {
 			.lore("&7Click to set arena map name")
 			.lore("", "&a&lCurrently: &e" + config.getString("instances." + arena.getId() + ".mapname"))
 			.build(), e -> {
-				e.getWhoClicked().closeInventory();
+			e.getWhoClicked().closeInventory();
 
-				new SimpleConversationBuilder().withPrompt(new StringPrompt() {
+			new SimpleConversationBuilder().withPrompt(new StringPrompt() {
 
-					@Override
-					public String getPromptText(ConversationContext context) {
-						return plugin.getChatManager().colorRawMessage(plugin.getChatManager().getPrefix() + "&ePlease type in chat arena name! You can use color codes.");
-					}
+				@Override
+				public String getPromptText(ConversationContext context) {
+					return plugin.getChatManager().colorRawMessage(plugin.getChatManager().getPrefix() + "&ePlease type in chat arena name! You can use color codes.");
+				}
 
-					@Override
-					public Prompt acceptInput(ConversationContext context, String input) {
-						String name = plugin.getChatManager().colorRawMessage(input);
+				@Override
+				public Prompt acceptInput(ConversationContext context, String input) {
+					String name = plugin.getChatManager().colorRawMessage(input);
 
-						player.sendRawMessage(plugin.getChatManager().colorRawMessage("&e✔ Completed | &aName of arena " + arena.getId() + " set to " + name));
-						arena.setMapName(name);
-						config.set("instances." + arena.getId() + ".mapname", arena.getMapName());
-						ConfigUtils.saveConfig(plugin, config, "arenas");
+					player.sendRawMessage(plugin.getChatManager().colorRawMessage("&e✔ Completed | &aName of arena " + arena.getId() + " set to " + name));
+					arena.setMapName(name);
+					config.set("instances." + arena.getId() + ".mapname", arena.getMapName());
+					ConfigUtils.saveConfig(plugin, config, "arenas");
 
-						new SetupInventory(arena, player).openInventory();
-						return Prompt.END_OF_CONVERSATION;
-					}
-				}).buildFor(player);
-			}), 5, 0);
+					new SetupInventory(arena, player).openInventory();
+					return Prompt.END_OF_CONVERSATION;
+				}
+			}).buildFor(player);
+		}), 5, 0);
 
 		pane.addItem(new GuiItem(new ItemBuilder(XMaterial.FILLED_MAP.parseItem())
 			.name("&e&lView Wiki Page")
 			.lore("&7Having problems with setup or want to")
 			.lore("&7know some useful tips? Click to get wiki link!")
 			.build(), e -> {
-				e.getWhoClicked().closeInventory();
-				player.sendMessage(plugin.getChatManager().getPrefix() + plugin.getChatManager().colorRawMessage("&7Check out our wiki: https://github.com/Despical/TNTRun/wiki"));
-			}), 7, 0);
+			e.getWhoClicked().closeInventory();
+			player.sendMessage(plugin.getChatManager().getPrefix() + plugin.getChatManager().colorRawMessage("&7Check out our wiki: https://github.com/Despical/TNTRun/wiki"));
+		}), 7, 0);
 	}
 }

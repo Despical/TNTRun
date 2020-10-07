@@ -28,7 +28,7 @@ import me.despical.tntrun.events.spectator.SpectatorSettingsMenu;
  */
 public interface SpectatorSettingComponent {
 
-    void prepare(SpectatorSettingsMenu spectatorSettingsMenu);
+	void prepare(SpectatorSettingsMenu spectatorSettingsMenu);
 
-    void injectComponents(StaticPane pane);
+	void injectComponents(StaticPane pane);
 }

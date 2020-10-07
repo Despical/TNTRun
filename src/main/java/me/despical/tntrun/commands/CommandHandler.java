@@ -18,11 +18,13 @@
 
 package me.despical.tntrun.commands;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
-
+import me.despical.commonsbox.string.StringMatcher;
+import me.despical.tntrun.Main;
+import me.despical.tntrun.commands.SubCommand.SenderType;
+import me.despical.tntrun.commands.admin.HelpCommand;
+import me.despical.tntrun.commands.admin.ListCommand;
+import me.despical.tntrun.commands.admin.arena.*;
+import me.despical.tntrun.commands.exception.CommandException;
 import me.despical.tntrun.commands.game.*;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -30,17 +32,10 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import me.despical.commonsbox.string.StringMatcher;
-import me.despical.tntrun.Main;
-import me.despical.tntrun.commands.SubCommand.SenderType;
-import me.despical.tntrun.commands.admin.HelpCommand;
-import me.despical.tntrun.commands.admin.ListCommand;
-import me.despical.tntrun.commands.admin.arena.DeleteCommand;
-import me.despical.tntrun.commands.admin.arena.EditCommand;
-import me.despical.tntrun.commands.admin.arena.ForceStartCommand;
-import me.despical.tntrun.commands.admin.arena.ReloadCommand;
-import me.despical.tntrun.commands.admin.arena.StopCommand;
-import me.despical.tntrun.commands.exception.CommandException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author Despical
@@ -55,7 +50,7 @@ public class CommandHandler implements CommandExecutor {
 	public CommandHandler(Main plugin) {
 		this.plugin = plugin;
 		subCommands = new ArrayList<>();
-		
+
 		registerSubCommand(new CreateCommand());
 		registerSubCommand(new EditCommand());
 		registerSubCommand(new DeleteCommand());
@@ -74,15 +69,15 @@ public class CommandHandler implements CommandExecutor {
 		plugin.getCommand("tntrun").setExecutor(this);
 		plugin.getCommand("tntrun").setTabCompleter(new TabCompletion(this));
 	}
-	
+
 	public void registerSubCommand(SubCommand subCommand) {
 		subCommands.add(subCommand);
 	}
-	
+
 	public List<SubCommand> getSubCommands() {
 		return new ArrayList<>(subCommands);
 	}
-	
+
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		if (args.length == 0) {
@@ -125,11 +120,11 @@ public class CommandHandler implements CommandExecutor {
 
 		List<StringMatcher.Match> matches = StringMatcher.match(args[0], subCommands.stream().map(SubCommand::getName).collect(Collectors.toList()));
 
-        if (!matches.isEmpty()) {
-          sender.sendMessage(plugin.getChatManager().colorMessage("Commands.Did-You-Mean").replace("%command%", label + " " + matches.get(0).getMatch()));
-          return true;
-        }
+		if (!matches.isEmpty()) {
+			sender.sendMessage(plugin.getChatManager().colorMessage("Commands.Did-You-Mean").replace("%command%", label + " " + matches.get(0).getMatch()));
+			return true;
+		}
 
-        return true;
+		return true;
 	}
 }

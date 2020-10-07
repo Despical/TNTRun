@@ -18,20 +18,19 @@
 
 package me.despical.tntrun.user;
 
-import java.util.EnumMap;
-import java.util.HashMap;
-import java.util.Map;
-
-import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
-import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scoreboard.ScoreboardManager;
-
 import me.despical.tntrun.Main;
 import me.despical.tntrun.api.StatsStorage;
 import me.despical.tntrun.api.events.player.TRPlayerStatisticChangeEvent;
 import me.despical.tntrun.arena.Arena;
 import me.despical.tntrun.arena.ArenaRegistry;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
+import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scoreboard.ScoreboardManager;
+
+import java.util.EnumMap;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author Despical
@@ -51,7 +50,7 @@ public class User {
 	public User(Player player) {
 		this.player = player;
 	}
-	
+
 	public static void cooldownHandlerTask() {
 		Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, () -> cooldownCounter++, 20, 20);
 	}
@@ -63,11 +62,11 @@ public class User {
 	public Player getPlayer() {
 		return player;
 	}
-	
+
 	public boolean isSpectator() {
 		return spectator;
 	}
-	
+
 	public void setSpectator(boolean b) {
 		spectator = b;
 	}
@@ -83,7 +82,7 @@ public class User {
 
 		return stats.get(stat);
 	}
-	
+
 	public void removeScoreboard() {
 		player.setScoreboard(scoreboardManager.getNewScoreboard());
 	}
@@ -105,7 +104,7 @@ public class User {
 			Bukkit.getPluginManager().callEvent(playerStatisticChangeEvent);
 		});
 	}
-	
+
 	public void setCooldown(String s, double seconds) {
 		cooldowns.put(s, seconds + cooldownCounter);
 	}

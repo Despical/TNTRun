@@ -18,18 +18,17 @@
 
 package me.despical.tntrun.handlers;
 
+import me.clip.placeholderapi.PlaceholderAPI;
 import me.despical.commonsbox.compat.VersionResolver;
+import me.despical.commonsbox.configuration.ConfigUtils;
+import me.despical.commonsbox.string.StringFormatUtils;
 import me.despical.commonsbox.string.StringMatcher;
+import me.despical.tntrun.Main;
+import me.despical.tntrun.arena.Arena;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
-
-import me.clip.placeholderapi.PlaceholderAPI;
-import me.despical.commonsbox.configuration.ConfigUtils;
-import me.despical.commonsbox.string.StringFormatUtils;
-import me.despical.tntrun.Main;
-import me.despical.tntrun.arena.Arena;
 
 /**
  * @author Despical
@@ -42,13 +41,13 @@ public class ChatManager {
 
 	private final Main plugin;
 	private FileConfiguration config;
-	
+
 	public ChatManager(Main plugin) {
 		this.plugin = plugin;
 		this.config = ConfigUtils.getConfig(plugin, "messages");
 		this.prefix = colorRawMessage(config.getString("In-Game.Plugin-Prefix"));
 	}
-	
+
 	public String getPrefix() {
 		return prefix;
 	}
@@ -102,7 +101,7 @@ public class ChatManager {
 		returnString = StringUtils.replace(returnString, "%minplayers%", Integer.toString(arena.getMinimumPlayers()));
 		return returnString;
 	}
-	
+
 	public String formatMessage(Arena arena, String message, int integer) {
 		String returnString = message;
 
@@ -129,7 +128,7 @@ public class ChatManager {
 
 		a.broadcastMessage(prefix + message);
 	}
-	
+
 	public void reloadConfig() {
 		config = ConfigUtils.getConfig(plugin, "messages");
 		prefix = colorRawMessage(config.getString("In-Game.Plugin-Prefix"));

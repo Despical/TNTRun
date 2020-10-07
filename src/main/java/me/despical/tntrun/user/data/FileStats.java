@@ -18,12 +18,11 @@
 
 package me.despical.tntrun.user.data;
 
-import org.bukkit.configuration.file.FileConfiguration;
-
 import me.despical.commonsbox.configuration.ConfigUtils;
 import me.despical.tntrun.Main;
 import me.despical.tntrun.api.StatsStorage;
 import me.despical.tntrun.user.User;
+import org.bukkit.configuration.file.FileConfiguration;
 
 /**
  * @author Despical

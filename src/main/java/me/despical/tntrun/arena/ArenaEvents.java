@@ -18,6 +18,15 @@
 
 package me.despical.tntrun.arena;
 
+import me.despical.commonsbox.compat.XMaterial;
+import me.despical.commonsbox.item.ItemBuilder;
+import me.despical.commonsbox.item.ItemUtils;
+import me.despical.tntrun.Main;
+import me.despical.tntrun.api.StatsStorage;
+import me.despical.tntrun.handlers.ChatManager;
+import me.despical.tntrun.handlers.items.SpecialItemManager;
+import me.despical.tntrun.handlers.rewards.Reward;
+import me.despical.tntrun.user.User;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -30,20 +39,10 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import me.despical.commonsbox.compat.XMaterial;
-import me.despical.commonsbox.item.ItemBuilder;
-import me.despical.commonsbox.item.ItemUtils;
-import me.despical.tntrun.Main;
-import me.despical.tntrun.api.StatsStorage;
-import me.despical.tntrun.handlers.ChatManager;
-import me.despical.tntrun.handlers.items.SpecialItemManager;
-import me.despical.tntrun.handlers.rewards.Reward;
-import me.despical.tntrun.user.User;
-
 public class ArenaEvents implements Listener {
-	
+
 	private final Main plugin;
-	
+
 	public ArenaEvents(Main plugin) {
 		this.plugin = plugin;
 
@@ -76,7 +75,7 @@ public class ArenaEvents implements Listener {
 			event.setCancelled(true);
 		}
 	}
-	
+
 	@EventHandler
 	public void onDoubleJump(PlayerInteractEvent event) {
 		Player player = event.getPlayer();
@@ -114,10 +113,10 @@ public class ArenaEvents implements Listener {
 			}
 		}
 	}
-	
+
 	@EventHandler
 	public void onDamage(EntityDamageEvent event) {
-		if(!(event.getEntity() instanceof Player)) {
+		if (!(event.getEntity() instanceof Player)) {
 			return;
 		}
 

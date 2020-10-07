@@ -18,23 +18,21 @@
 
 package me.despical.tntrun.handlers.sign;
 
-import java.lang.reflect.InvocationTargetException;
-
-import javax.annotation.Nullable;
-
 import me.despical.commonsbox.compat.VersionResolver;
+import me.despical.tntrun.arena.Arena;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Sign;
 
-import me.despical.tntrun.arena.Arena;
+import javax.annotation.Nullable;
+import java.lang.reflect.InvocationTargetException;
 
 /**
  * Created for 1.14 compatibility purposes, it will cache block behind
  * sign that will be accessed via reflection on 1.14 which is expensive
- * 
+ *
  * @author Despical
  * <p>
  * Created at 10.07.2020

@@ -18,9 +18,9 @@
 
 package me.despical.tntrun.handlers.items;
 
-import java.util.HashMap;
-
 import org.bukkit.inventory.ItemStack;
+
+import java.util.HashMap;
 
 /**
  * @author Despical

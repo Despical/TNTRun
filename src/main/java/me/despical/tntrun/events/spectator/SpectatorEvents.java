@@ -18,30 +18,18 @@
 
 package me.despical.tntrun.events.spectator;
 
+import me.despical.tntrun.Main;
+import me.despical.tntrun.arena.Arena;
+import me.despical.tntrun.arena.ArenaRegistry;
+import me.despical.tntrun.user.User;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
-import org.bukkit.event.entity.EntityDamageByBlockEvent;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.entity.EntityTargetEvent;
-import org.bukkit.event.entity.EntityTargetLivingEntityEvent;
-import org.bukkit.event.entity.FoodLevelChangeEvent;
-import org.bukkit.event.player.PlayerBucketEmptyEvent;
-import org.bukkit.event.player.PlayerDropItemEvent;
-import org.bukkit.event.player.PlayerInteractEntityEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerItemConsumeEvent;
-import org.bukkit.event.player.PlayerPickupItemEvent;
-import org.bukkit.event.player.PlayerShearEntityEvent;
-
-import me.despical.tntrun.Main;
-import me.despical.tntrun.arena.Arena;
-import me.despical.tntrun.arena.ArenaRegistry;
-import me.despical.tntrun.user.User;
+import org.bukkit.event.entity.*;
+import org.bukkit.event.player.*;
 
 /**
  * @author Despical

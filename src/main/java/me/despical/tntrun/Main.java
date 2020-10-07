@@ -194,7 +194,7 @@ public class Main extends JavaPlugin {
 			FileConfiguration config = ConfigUtils.getConfig(this, "mysql");
 			database = new MysqlDatabase(config.getString("user"), config.getString("password"), config.getString("address"));
 		}
-		
+
 		userManager = new UserManager(this);
 		Utils.init(this);
 		SpecialItem.loadAll();

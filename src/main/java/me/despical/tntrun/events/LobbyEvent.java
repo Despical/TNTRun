@@ -18,15 +18,14 @@
 
 package me.despical.tntrun.events;
 
+import me.despical.tntrun.Main;
+import me.despical.tntrun.arena.Arena;
+import me.despical.tntrun.arena.ArenaRegistry;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
-
-import me.despical.tntrun.Main;
-import me.despical.tntrun.arena.Arena;
-import me.despical.tntrun.arena.ArenaRegistry;
 
 /**
  * @author Despical

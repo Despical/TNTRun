@@ -42,7 +42,7 @@ import java.util.logging.Level;
  * @author Despical
  * @since 1.0.0
  * <p>
- * 
+ * <p>
  * Class for accessing users statistics.
  */
 public class StatsStorage {
@@ -54,7 +54,7 @@ public class StatsStorage {
 	 *
 	 * @param stat Statistic type to get (kills, deaths etc.)
 	 * @return Map of UUID keys and Integer values sorted in ascending order of
-	 *         requested statistic type
+	 * requested statistic type
 	 */
 	@NotNull
 	@Contract("null -> fail")
@@ -96,7 +96,7 @@ public class StatsStorage {
 	/**
 	 * Get user statistic based on StatisticType
 	 *
-	 * @param player Online player to get data from
+	 * @param player        Online player to get data from
 	 * @param statisticType Statistic type to get (kills, deaths etc.)
 	 * @return int of statistic
 	 * @see StatisticType

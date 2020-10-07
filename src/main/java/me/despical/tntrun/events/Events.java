@@ -18,12 +18,16 @@
 
 package me.despical.tntrun.events;
 
-import org.bukkit.entity.Arrow;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.ItemFrame;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Painting;
-import org.bukkit.entity.Player;
+import me.despical.commonsbox.compat.XMaterial;
+import me.despical.commonsbox.item.ItemUtils;
+import me.despical.tntrun.ConfigPreferences;
+import me.despical.tntrun.Main;
+import me.despical.tntrun.arena.Arena;
+import me.despical.tntrun.arena.ArenaManager;
+import me.despical.tntrun.arena.ArenaRegistry;
+import me.despical.tntrun.arena.ArenaUtils;
+import me.despical.tntrun.handlers.items.SpecialItemManager;
+import org.bukkit.entity.*;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -36,25 +40,8 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.hanging.HangingBreakByEntityEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.player.PlayerArmorStandManipulateEvent;
-import org.bukkit.event.player.PlayerBedEnterEvent;
-import org.bukkit.event.player.PlayerCommandPreprocessEvent;
-import org.bukkit.event.player.PlayerDropItemEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerPickupArrowEvent;
-import org.bukkit.event.player.PlayerPickupItemEvent;
-import org.bukkit.event.player.PlayerSwapHandItemsEvent;
+import org.bukkit.event.player.*;
 import org.bukkit.inventory.ItemStack;
-
-import me.despical.commonsbox.compat.XMaterial;
-import me.despical.commonsbox.item.ItemUtils;
-import me.despical.tntrun.ConfigPreferences;
-import me.despical.tntrun.Main;
-import me.despical.tntrun.arena.Arena;
-import me.despical.tntrun.arena.ArenaManager;
-import me.despical.tntrun.arena.ArenaRegistry;
-import me.despical.tntrun.arena.ArenaUtils;
-import me.despical.tntrun.handlers.items.SpecialItemManager;
 
 /**
  * @author Despical
@@ -244,7 +231,7 @@ public class Events implements Listener {
 			event.setCancelled(true);
 		}
 	}
-	
+
 	@EventHandler(priority = EventPriority.HIGH)
 	public void onItemMove(InventoryClickEvent e) {
 		if (e.getWhoClicked() instanceof Player) {
@@ -271,7 +258,7 @@ public class Events implements Listener {
 			}
 		}
 	}
-	
+
 	@EventHandler(priority = EventPriority.HIGH)
 	public void onFallDamage(EntityDamageEvent e) {
 		if (!(e.getEntity() instanceof Player)) {
@@ -288,7 +275,7 @@ public class Events implements Listener {
 			e.setCancelled(true);
 		}
 	}
-	
+
 	@EventHandler(priority = EventPriority.HIGH)
 	public void onDamage(EntityDamageByEntityEvent event) {
 		if (!(event.getDamager() instanceof Player && event.getEntity() instanceof Player)) {
@@ -301,7 +288,7 @@ public class Events implements Listener {
 
 		event.setCancelled(true);
 	}
-	
+
 	@EventHandler(priority = EventPriority.HIGH)
 	public void onArrowPickup(PlayerPickupArrowEvent e) {
 		if (ArenaRegistry.isInArena(e.getPlayer())) {
@@ -309,7 +296,7 @@ public class Events implements Listener {
 			e.setCancelled(true);
 		}
 	}
-	
+
 	@EventHandler(priority = EventPriority.HIGH)
 	public void onPickupItem(PlayerPickupItemEvent event) {
 		if (!ArenaRegistry.isInArena(event.getPlayer())) {

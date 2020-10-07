@@ -18,21 +18,20 @@
 
 package me.despical.tntrun.commands.game;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
-import org.bukkit.Bukkit;
-import org.bukkit.command.CommandSender;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.entity.Player;
-
 import me.despical.commonsbox.configuration.ConfigUtils;
 import me.despical.commonsbox.serializer.LocationSerializer;
 import me.despical.tntrun.arena.Arena;
 import me.despical.tntrun.arena.ArenaRegistry;
 import me.despical.tntrun.commands.SubCommand;
 import net.md_5.bungee.api.ChatColor;
+import org.bukkit.Bukkit;
+import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.Player;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * @author Despical
@@ -81,11 +80,11 @@ public class CreateCommand extends SubCommand {
 			player.sendMessage(ChatColor.BOLD + "----------------------------------------");
 			player.sendMessage(ChatColor.YELLOW + "      Instance " + args[0] + " created!");
 			player.sendMessage("");
-			player.sendMessage(ChatColor.GREEN + "Edit this arena via " + ChatColor.GOLD + "/" + label + " edit "  + args[0] + ChatColor.GREEN + "!");
+			player.sendMessage(ChatColor.GREEN + "Edit this arena via " + ChatColor.GOLD + "/" + label + " edit " + args[0] + ChatColor.GREEN + "!");
 			player.sendMessage(ChatColor.BOLD + "----------------------------------------");
 		}
 	}
-	
+
 	private void createInstanceInConfig(String id) {
 		String path = "instances." + id + ".";
 		FileConfiguration config = ConfigUtils.getConfig(getPlugin(), "arenas");
@@ -105,7 +104,7 @@ public class CreateCommand extends SubCommand {
 		arena.setLobbyLocation(LocationSerializer.locationFromString(config.getString(path + "lobbylocation")));
 		arena.setEndLocation(LocationSerializer.locationFromString(config.getString(path + "Endlocation")));
 		arena.setReady(false);
-		
+
 		ArenaRegistry.registerArena(arena);
 	}
 

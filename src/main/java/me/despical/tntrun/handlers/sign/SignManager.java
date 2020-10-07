@@ -18,13 +18,15 @@
 
 package me.despical.tntrun.handlers.sign;
 
-import java.util.ArrayList;
-import java.util.EnumMap;
-import java.util.List;
-import java.util.Map;
-import java.util.logging.Level;
-
 import me.despical.commonsbox.compat.VersionResolver;
+import me.despical.commonsbox.compat.XMaterial;
+import me.despical.commonsbox.configuration.ConfigUtils;
+import me.despical.commonsbox.serializer.LocationSerializer;
+import me.despical.tntrun.Main;
+import me.despical.tntrun.arena.Arena;
+import me.despical.tntrun.arena.ArenaManager;
+import me.despical.tntrun.arena.ArenaRegistry;
+import me.despical.tntrun.arena.ArenaState;
 import me.despical.tntrun.utils.Debugger;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
@@ -40,14 +42,11 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
-import me.despical.commonsbox.compat.XMaterial;
-import me.despical.commonsbox.configuration.ConfigUtils;
-import me.despical.commonsbox.serializer.LocationSerializer;
-import me.despical.tntrun.Main;
-import me.despical.tntrun.arena.Arena;
-import me.despical.tntrun.arena.ArenaManager;
-import me.despical.tntrun.arena.ArenaRegistry;
-import me.despical.tntrun.arena.ArenaState;
+import java.util.ArrayList;
+import java.util.EnumMap;
+import java.util.List;
+import java.util.Map;
+import java.util.logging.Level;
 
 /**
  * @author Despical
@@ -213,7 +212,7 @@ public class SignManager implements Listener {
 
 		return null;
 	}
-	
+
 	public void loadSigns() {
 		Debugger.debug("Signs load event started");
 		long start = System.currentTimeMillis();
@@ -310,7 +309,8 @@ public class SignManager implements Listener {
 							default:
 								break;
 						}
-					} catch (Exception ignored) {}
+					} catch (Exception ignored) {
+					}
 				}
 
 				sign.update();

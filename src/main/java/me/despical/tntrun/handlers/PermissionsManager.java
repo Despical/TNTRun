@@ -18,17 +18,16 @@
 
 package me.despical.tntrun.handlers;
 
+import me.despical.tntrun.Main;
 import me.despical.tntrun.utils.Debugger;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import me.despical.tntrun.Main;
-
 /**
-* @author Despical
-* <p>
-* Created at 10.07.2020
-*/
+ * @author Despical
+ * <p>
+ * Created at 10.07.2020
+ */
 public class PermissionsManager {
 
 	private static final Main plugin = JavaPlugin.getPlugin(Main.class);
@@ -64,10 +63,10 @@ public class PermissionsManager {
 
 	public static int getDoubleJumps(Player player) {
 		for (String perm : plugin.getConfig().getStringList("Double-Jumps")) {
-            if (perm.startsWith("tntrun") && player.hasPermission(perm)) {
-            	return Integer.parseInt(perm.substring(perm.lastIndexOf('.') + 1));
-            }
-        }
+			if (perm.startsWith("tntrun") && player.hasPermission(perm)) {
+				return Integer.parseInt(perm.substring(perm.lastIndexOf('.') + 1));
+			}
+		}
 
 		return plugin.getConfig().getInt("Default-Double-Jumps", 5);
 	}

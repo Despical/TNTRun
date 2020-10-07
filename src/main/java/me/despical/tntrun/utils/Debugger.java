@@ -39,7 +39,8 @@ public class Debugger {
 	private static boolean deep = false;
 	private static final Logger logger = Logger.getLogger("TNT Run");
 
-	private Debugger() {}
+	private Debugger() {
+	}
 
 	public static void setEnabled(boolean enabled) {
 		Debugger.enabled = enabled;
@@ -66,7 +67,7 @@ public class Debugger {
 	 * won't be posted if debugger is enabled, warnings and errors will be.
 	 *
 	 * @param level level of debugged message
-	 * @param msg message to debug
+	 * @param msg   message to debug
 	 */
 	public static void debug(Level level, String msg) {
 		if (!enabled && (level != Level.WARNING || level != Level.SEVERE)) {
@@ -79,7 +80,7 @@ public class Debugger {
 	/**
 	 * Prints debug message with selected INFO log level.
 	 *
-	 * @param msg debugged message
+	 * @param msg    debugged message
 	 * @param params to debug
 	 */
 	public static void debug(String msg, Object... params) {
@@ -101,8 +102,8 @@ public class Debugger {
 	 * Messages of level INFO or TASK won't be posted if debugger is enabled,
 	 * warnings and errors will be.
 	 *
-	 * @param level level of debugged message
-	 * @param msg debugged message
+	 * @param level  level of debugged message
+	 * @param msg    debugged message
 	 * @param params any params to debug
 	 */
 	public static void debug(Level level, String msg, Object... params) {
@@ -118,8 +119,8 @@ public class Debugger {
 	 * parameters.
 	 *
 	 * @param monitorName name of monitor
-	 * @param msg debugged message
-	 * @param params any params to debug
+	 * @param msg         debugged message
+	 * @param params      any params to debug
 	 */
 	public static void performance(String monitorName, String msg, Object... params) {
 		if (!deep || !listenedPerformance.contains(monitorName)) {

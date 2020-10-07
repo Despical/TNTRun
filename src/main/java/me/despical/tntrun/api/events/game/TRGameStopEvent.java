@@ -18,16 +18,15 @@
 
 package me.despical.tntrun.api.events.game;
 
-import org.bukkit.event.HandlerList;
-
 import me.despical.tntrun.api.events.TREvent;
 import me.despical.tntrun.arena.Arena;
+import org.bukkit.event.HandlerList;
 
 /**
  * @author Despical
  * @since 1.0.0
  * <p>
- * 
+ * <p>
  * Called when arena is stopped.
  */
 public class TRGameStopEvent extends TREvent {

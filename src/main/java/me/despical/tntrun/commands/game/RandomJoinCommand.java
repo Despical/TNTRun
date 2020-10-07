@@ -18,20 +18,19 @@
 
 package me.despical.tntrun.commands.game;
 
+import me.despical.tntrun.ConfigPreferences;
+import me.despical.tntrun.arena.Arena;
+import me.despical.tntrun.arena.ArenaManager;
+import me.despical.tntrun.arena.ArenaRegistry;
+import me.despical.tntrun.arena.ArenaState;
+import me.despical.tntrun.commands.SubCommand;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
-
-import me.despical.tntrun.arena.ArenaManager;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
-
-import me.despical.tntrun.ConfigPreferences;
-import me.despical.tntrun.arena.Arena;
-import me.despical.tntrun.arena.ArenaRegistry;
-import me.despical.tntrun.arena.ArenaState;
-import me.despical.tntrun.commands.SubCommand;
 
 /**
  * @author Despical

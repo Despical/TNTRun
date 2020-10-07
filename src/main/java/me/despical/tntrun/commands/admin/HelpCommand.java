@@ -18,12 +18,6 @@
 
 package me.despical.tntrun.commands.admin;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
-
 import me.despical.tntrun.commands.SubCommand;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.ClickEvent;
@@ -31,6 +25,11 @@ import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.ComponentBuilder.FormatRetention;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Despical
@@ -38,7 +37,7 @@ import net.md_5.bungee.api.chat.TextComponent;
  * Created at 10.07.2020
  */
 public class HelpCommand extends SubCommand {
-	
+
 	public HelpCommand() {
 		super("help");
 		setPermission("tntrun.admin");
@@ -73,10 +72,10 @@ public class HelpCommand extends SubCommand {
 				}
 
 				((Player) sender).spigot().sendMessage(new ComponentBuilder(usage)
-						.color(ChatColor.AQUA)
-						.event(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, usage))
-						.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.fromLegacyText(String.join("\n", help))))
-						.create());
+					.color(ChatColor.AQUA)
+					.event(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, usage))
+					.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.fromLegacyText(String.join("\n", help))))
+					.create());
 			} else {
 				sender.sendMessage(ChatColor.AQUA + usage);
 			}
@@ -86,7 +85,7 @@ public class HelpCommand extends SubCommand {
 			sendHoverTip((Player) sender);
 		}
 	}
-	
+
 	public static void sendHoverTip(Player player) {
 		player.sendMessage("");
 

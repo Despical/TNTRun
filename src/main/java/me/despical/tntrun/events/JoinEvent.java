@@ -18,19 +18,18 @@
 
 package me.despical.tntrun.events;
 
-import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerLoginEvent;
-
 import me.despical.commonsbox.serializer.InventorySerializer;
 import me.despical.tntrun.ConfigPreferences;
 import me.despical.tntrun.Main;
 import me.despical.tntrun.arena.ArenaRegistry;
 import me.despical.tntrun.handlers.PermissionsManager;
 import me.despical.tntrun.utils.UpdateChecker;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerLoginEvent;
 
 /**
  * @author Despical
@@ -80,7 +79,7 @@ public class JoinEvent implements Listener {
 			InventorySerializer.loadInventory(plugin, event.getPlayer());
 		}
 	}
-	
+
 	@EventHandler
 	public void onJoinCheckVersion(final PlayerJoinEvent event) {
 		if (!plugin.getConfig().getBoolean("Update-Notifier.Enabled", true) || !event.getPlayer().hasPermission("tntrun.updatenotify")) {

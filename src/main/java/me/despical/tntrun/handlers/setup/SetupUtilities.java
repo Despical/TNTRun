@@ -18,19 +18,18 @@
 
 package me.despical.tntrun.handlers.setup;
 
+import me.despical.commonsbox.serializer.LocationSerializer;
+import me.despical.tntrun.Main;
+import me.despical.tntrun.arena.Arena;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import me.despical.commonsbox.serializer.LocationSerializer;
-import me.despical.tntrun.Main;
-import me.despical.tntrun.arena.Arena;
-
 /**
-* @author Despical
-* <p>
-* Created at 10.07.2020
-*/
+ * @author Despical
+ * <p>
+ * Created at 10.07.2020
+ */
 public class SetupUtilities {
 
 	private final Main plugin = JavaPlugin.getPlugin(Main.class);

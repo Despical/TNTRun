@@ -18,12 +18,11 @@
 
 package me.despical.tntrun.utils.conversation;
 
+import me.despical.tntrun.Main;
 import org.bukkit.conversations.Conversable;
 import org.bukkit.conversations.ConversationFactory;
 import org.bukkit.conversations.Prompt;
 import org.bukkit.plugin.java.JavaPlugin;
-
-import me.despical.tntrun.Main;
 
 /**
  * @author Despical
