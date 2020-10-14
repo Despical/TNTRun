@@ -55,7 +55,7 @@ public class PlayerAmountComponents implements SetupComponent {
 			.lore("&7RIGHT click to increase")
 			.lore("&8(how many players are needed")
 			.lore("&8for game to start lobby countdown)").lore("", setupInventory
-				.getSetupUtilities().isOptionDone("instances." + arena.getId() + ".minimumplayers"))
+			.getSetupUtilities().isOptionDone("instances." + arena.getId() + ".minimumplayers"))
 			.build(), e -> {
 			if (e.getClick().isRightClick()) {
 				e.getInventory().getItem(e.getSlot()).setAmount(e.getCurrentItem().getAmount() + 1);

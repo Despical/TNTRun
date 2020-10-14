@@ -4,5 +4,6 @@
 **Contributors are listed in alphabetical order, every contributor is equally important!**
 
 * [Despical](https://www.spigotmc.org/members/despical.615094/) - Owner & Author
+* [Dreandor](https://www.spigotmc.org/members/dreandor.643921/) - German translator
 
 **Also thanks to every bug reporters for reporting us those nasty bugs, and code contributors for making TNT Run better!**

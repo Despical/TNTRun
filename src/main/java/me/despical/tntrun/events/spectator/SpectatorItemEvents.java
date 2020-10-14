@@ -19,12 +19,12 @@
 package me.despical.tntrun.events.spectator;
 
 import me.despical.commonsbox.compat.XMaterial;
+import me.despical.commonsbox.item.ItemUtils;
 import me.despical.commonsbox.number.NumberUtils;
 import me.despical.tntrun.Main;
 import me.despical.tntrun.api.StatsStorage;
 import me.despical.tntrun.arena.Arena;
 import me.despical.tntrun.arena.ArenaRegistry;
-import me.despical.tntrun.utils.Utils;
 import org.bukkit.ChatColor;
 import org.bukkit.SkullType;
 import org.bukkit.World;
@@ -60,7 +60,7 @@ public class SpectatorItemEvents implements Listener {
 	@EventHandler(priority = EventPriority.HIGH)
 	public void onSpectatorItemClick(PlayerInteractEvent e) {
 		if (e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.RIGHT_CLICK_BLOCK || e.getAction() != Action.PHYSICAL) {
-			if (ArenaRegistry.getArena(e.getPlayer()) == null) {
+			if (!ArenaRegistry.isInArena(e.getPlayer())) {
 				return;
 			}
 
@@ -89,7 +89,7 @@ public class SpectatorItemEvents implements Listener {
 			if (players.contains(player) && !plugin.getUserManager().getUser(player).isSpectator()) {
 				ItemStack skull = XMaterial.PLAYER_HEAD.parseItem();
 				SkullMeta meta = (SkullMeta) skull.getItemMeta();
-				meta = Utils.setPlayerHead(player, meta);
+				meta = ItemUtils.setPlayerHead(player, meta);
 				meta.setDisplayName(player.getName());
 
 				String score = plugin.getChatManager().colorMessage("In-Game.Spectator.Target-Player-Score", p).replace("%score%", Integer.toString(StatsStorage.getUserStats(player, StatsStorage.StatisticType.LOCAL_COINS)));
@@ -108,7 +108,7 @@ public class SpectatorItemEvents implements Listener {
 	public void onSpectatorInventoryClick(InventoryClickEvent e) {
 		Player p = (Player) e.getWhoClicked();
 
-		if (ArenaRegistry.getArena(p) == null) {
+		if (!ArenaRegistry.isInArena(p)) {
 			return;
 		}
 

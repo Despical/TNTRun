@@ -104,7 +104,7 @@ public class CommandHandler implements CommandExecutor {
 
 				if (args.length - 1 >= subCommand.getMinimumArguments()) {
 					try {
-						subCommand.execute(sender, label, Arrays.copyOfRange(args, 1, args.length));
+						subCommand.execute(sender, Arrays.copyOfRange(args, 1, args.length));
 					} catch (CommandException e) {
 						sender.sendMessage(ChatColor.RED + e.getMessage());
 					}

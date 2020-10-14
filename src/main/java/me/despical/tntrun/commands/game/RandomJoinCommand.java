@@ -54,8 +54,8 @@ public class RandomJoinCommand extends SubCommand {
 	}
 
 	@Override
-	public void execute(CommandSender sender, String label, String[] args) {
-		if (getPlugin().getConfigPreferences().getOption(ConfigPreferences.Option.BUNGEE_ENABLED)) {
+	public void execute(CommandSender sender, String[] args) {
+		if (plugin.getConfigPreferences().getOption(ConfigPreferences.Option.BUNGEE_ENABLED)) {
 			return;
 		}
 
@@ -84,7 +84,7 @@ public class RandomJoinCommand extends SubCommand {
 			}
 		}
 
-		sender.sendMessage(getPlugin().getChatManager().getPrefix() + getPlugin().getChatManager().colorMessage("Commands.No-Free-Arenas"));
+		sender.sendMessage(plugin.getChatManager().getPrefix() + plugin.getChatManager().colorMessage("Commands.No-Free-Arenas"));
 	}
 
 	@Override

@@ -43,6 +43,7 @@ public class DeleteCommand extends SubCommand {
 
 	public DeleteCommand() {
 		super("delete");
+
 		setPermission("tntrun.admin.delete");
 	}
 
@@ -57,38 +58,38 @@ public class DeleteCommand extends SubCommand {
 	}
 
 	@Override
-	public void execute(CommandSender sender, String label, String[] args) {
+	public void execute(CommandSender sender, String[] args) {
 		if (args.length == 0) {
-			sender.sendMessage(getPlugin().getChatManager().getPrefix() + getPlugin().getChatManager().colorMessage("Commands.Type-Arena-Name"));
+			sender.sendMessage(plugin.getChatManager().getPrefix() + plugin.getChatManager().colorMessage("Commands.Type-Arena-Name"));
 			return;
 		}
 
 		Arena arena = ArenaRegistry.getArena(args[0]);
 
 		if (arena == null) {
-			sender.sendMessage(getPlugin().getChatManager().getPrefix() + getPlugin().getChatManager().colorMessage("Commands.No-Arena-Like-That"));
+			sender.sendMessage(plugin.getChatManager().getPrefix() + plugin.getChatManager().colorMessage("Commands.No-Arena-Like-That"));
 			return;
 		}
 
 		if (!confirmations.contains(sender)) {
 			confirmations.add(sender);
-			Bukkit.getScheduler().runTaskLater(getPlugin(), () -> confirmations.remove(sender), 20 * 10);
+			Bukkit.getScheduler().runTaskLater(plugin, () -> confirmations.remove(sender), 20 * 10);
 
-			sender.sendMessage(getPlugin().getChatManager().getPrefix() + getPlugin().getChatManager().colorMessage("Commands.Are-You-Sure"));
+			sender.sendMessage(plugin.getChatManager().getPrefix() + plugin.getChatManager().colorMessage("Commands.Are-You-Sure"));
 			return;
 		}
 
 		confirmations.remove(sender);
 		ArenaManager.stopGame(true, arena);
-		getPlugin().getSignManager().getArenaSigns().remove(getPlugin().getSignManager().getArenaSignByArena(arena));
+		plugin.getSignManager().getArenaSigns().remove(plugin.getSignManager().getArenaSignByArena(arena));
 		ArenaRegistry.unregisterArena(arena);
 
-		FileConfiguration config = ConfigUtils.getConfig(getPlugin(), "arenas");
+		FileConfiguration config = ConfigUtils.getConfig(plugin, "arenas");
 
 		config.set("instances." + args[0], null);
-		ConfigUtils.saveConfig(getPlugin(), config, "arenas");
+		ConfigUtils.saveConfig(plugin, config, "arenas");
 
-		sender.sendMessage(getPlugin().getChatManager().getPrefix() + getPlugin().getChatManager().colorMessage("Commands.Removed-Game-Instance"));
+		sender.sendMessage(plugin.getChatManager().getPrefix() + plugin.getChatManager().colorMessage("Commands.Removed-Game-Instance"));
 	}
 
 	@Override

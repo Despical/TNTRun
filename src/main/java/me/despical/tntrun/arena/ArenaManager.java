@@ -47,6 +47,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -58,8 +59,7 @@ public class ArenaManager {
 
 	private static final Main plugin = JavaPlugin.getPlugin(Main.class);
 
-	private ArenaManager() {
-	}
+	private ArenaManager() {}
 
 	/**
 	 * Attempts player to join arena.
@@ -167,11 +167,7 @@ public class ArenaManager {
 			player.setAllowFlight(true);
 			player.setFlying(true);
 
-			for (StatsStorage.StatisticType stat : StatsStorage.StatisticType.values()) {
-				if (!stat.isPersistent()) {
-					user.setStat(stat, 0);
-				}
-			}
+			Arrays.stream(StatsStorage.StatisticType.values()).filter(stat -> !stat.isPersistent()).forEach(stat -> user.setStat(stat, 0));
 
 			for (Player spectator : arena.getPlayers()) {
 				if (plugin.getUserManager().getUser(spectator).isSpectator()) {

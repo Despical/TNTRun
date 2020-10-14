@@ -46,7 +46,7 @@ public class SimpleConversationBuilder {
 
 				listener.getContext().getForWhom().sendRawMessage(plugin.getChatManager().colorRawMessage("&7Operation cancelled!"));
 
-			}).thatExcludesNonPlayersWithMessage(plugin.getChatManager().colorMessage("&4Only by players!"));
+			}).thatExcludesNonPlayersWithMessage(plugin.getChatManager().colorRawMessage("&4Only by players!"));
 	}
 
 	public SimpleConversationBuilder withPrompt(Prompt prompt) {

@@ -279,7 +279,7 @@ public final class UpdateChecker {
 		private final UpdateReason reason;
 		private final String newestVersion;
 
-		{ // An actual use for initializer blocks. This is madness!
+		{
 			UpdateChecker.this.lastResult = this;
 		}
 

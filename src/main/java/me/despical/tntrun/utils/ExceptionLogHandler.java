@@ -42,12 +42,10 @@ public class ExceptionLogHandler extends Handler {
 	}
 
 	@Override
-	public void close() throws SecurityException {
-	}
+	public void close() throws SecurityException {}
 
 	@Override
-	public void flush() {
-	}
+	public void flush() {}
 
 	@Override
 	public void publish(LogRecord record) {
@@ -92,12 +90,12 @@ public class ExceptionLogHandler extends Handler {
 		plugin.getLogger().log(Level.WARNING, stacktrace.toString());
 		plugin.getLogger().log(Level.WARNING, "[Reporter service] <<------------------------------[END]------------------------------>>");
 
-		record.setMessage("[TNT Run] We have found a bug in the code. Contact us at our official discord server (Invite link: https://discordapp.com/invite/Vhyy4HA) with the following error given above!");
+		record.setMessage("[TNT Run] We have found a bug in the code. Contact us at our official Discord server (Invite link: https://discordapp.com/invite/Vhyy4HA) with the following error given above!");
 	}
 
 	private boolean containsBlacklistedClass(Throwable throwable) {
 		for (StackTraceElement element : throwable.getStackTrace()) {
-			for (String blacklist : Arrays.asList("me.despical.tntrun.user.data.MysqlManager", "me.despical.tntrun.commonsbox.database.MysqlDatabase")) {
+			for (String blacklist : new String[] {"me.despical.tntrun.user.data.MysqlManager", "me.despical.tntrun.commonsbox.database.MysqlDatabase"}) {
 				if (element.getClassName().contains(blacklist)) {
 					return true;
 				}

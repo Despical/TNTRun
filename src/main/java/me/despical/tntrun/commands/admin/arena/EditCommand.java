@@ -36,6 +36,7 @@ public class EditCommand extends SubCommand {
 
 	public EditCommand() {
 		super("edit");
+
 		setPermission("tntrun.admin.setup");
 	}
 
@@ -50,9 +51,9 @@ public class EditCommand extends SubCommand {
 	}
 
 	@Override
-	public void execute(CommandSender sender, String label, String[] args) {
+	public void execute(CommandSender sender, String[] args) {
 		if (ArenaRegistry.getArena(args[0]) == null) {
-			sender.sendMessage(getPlugin().getChatManager().getPrefix() + getPlugin().getChatManager().colorMessage("Commands.No-Arena-Like-That"));
+			sender.sendMessage(plugin.getChatManager().getPrefix() + plugin.getChatManager().colorMessage("Commands.No-Arena-Like-That"));
 			return;
 		}
 

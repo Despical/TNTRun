@@ -40,6 +40,7 @@ public class HelpCommand extends SubCommand {
 
 	public HelpCommand() {
 		super("help");
+
 		setPermission("tntrun.admin");
 	}
 
@@ -54,13 +55,13 @@ public class HelpCommand extends SubCommand {
 	}
 
 	@Override
-	public void execute(CommandSender sender, String label, String[] args) {
+	public void execute(CommandSender sender, String[] args) {
 		sender.sendMessage("");
-		sender.sendMessage(getPlugin().getChatManager().colorRawMessage("&3&l---- TNT Run Admin Commands ----"));
+		sender.sendMessage(plugin.getChatManager().colorRawMessage("&3&l---- TNT Run Admin Commands ----"));
 		sender.sendMessage("");
 
-		getPlugin().getCommandHandler().getSubCommands().stream().filter(subCommand -> subCommand.getType() == CommandType.GENERIC).forEach(subCommand -> {
-			String usage = "/" + label + " " + subCommand.getName() + (subCommand.getPossibleArguments().length() > 0 ? " " + subCommand.getPossibleArguments() : "");
+		plugin.getCommandHandler().getSubCommands().stream().filter(subCommand -> subCommand.getType() == CommandType.GENERIC).forEach(subCommand -> {
+			String usage = "/tr " + subCommand.getName() + (subCommand.getPossibleArguments().length() > 0 ? " " + subCommand.getPossibleArguments() : "");
 
 			if (sender instanceof Player) {
 				List<String> help = new ArrayList<>();

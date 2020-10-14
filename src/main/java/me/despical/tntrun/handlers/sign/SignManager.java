@@ -309,8 +309,7 @@ public class SignManager implements Listener {
 							default:
 								break;
 						}
-					} catch (Exception ignored) {
-					}
+					} catch (Exception ignored) {}
 				}
 
 				sign.update();

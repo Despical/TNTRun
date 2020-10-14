@@ -19,8 +19,10 @@
 package me.despical.tntrun.commands;
 
 import me.despical.tntrun.Main;
+import me.despical.tntrun.arena.ArenaRegistry;
 import me.despical.tntrun.commands.exception.CommandException;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.List;
@@ -32,7 +34,7 @@ import java.util.List;
  */
 public abstract class SubCommand {
 
-	private final Main plugin = JavaPlugin.getPlugin(Main.class);
+	protected final Main plugin = JavaPlugin.getPlugin(Main.class);
 	private final String name;
 	private String permission;
 	private final String[] aliases;
@@ -58,10 +60,6 @@ public abstract class SubCommand {
 		return permission;
 	}
 
-	public Main getPlugin() {
-		return plugin;
-	}
-
 	public final boolean hasPermission(CommandSender sender) {
 		if (permission == null) return true;
 		return sender.hasPermission(permission);
@@ -71,7 +69,7 @@ public abstract class SubCommand {
 
 	public abstract int getMinimumArguments();
 
-	public abstract void execute(CommandSender sender, String label, String[] args) throws CommandException;
+	public abstract void execute(CommandSender sender, String[] args) throws CommandException;
 
 	public abstract List<String> getTutorial();
 
@@ -85,6 +83,15 @@ public abstract class SubCommand {
 
 	public enum SenderType {
 		PLAYER, BOTH
+	}
+
+	public final boolean checkIsInGameInstance(Player player) {
+		if (ArenaRegistry.isInArena(player)) {
+			player.sendMessage(plugin.getChatManager().getPrefix() + plugin.getChatManager().colorMessage("Commands.Not-Playing", player));
+			return false;
+		}
+
+		return true;
 	}
 
 	public final boolean isValidTrigger(String name) {

@@ -24,7 +24,6 @@ import me.despical.tntrun.arena.ArenaManager;
 import me.despical.tntrun.arena.ArenaRegistry;
 import me.despical.tntrun.commands.SubCommand;
 import me.despical.tntrun.utils.Debugger;
-import me.despical.tntrun.utils.Utils;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -52,18 +51,18 @@ public class LeaveCommand extends SubCommand {
 	}
 
 	@Override
-	public void execute(CommandSender sender, String label, String[] args) {
-		if (!getPlugin().getConfig().getBoolean("Disable-Leave-Command", false)) {
+	public void execute(CommandSender sender, String[] args) {
+		if (!plugin.getConfig().getBoolean("Disable-Leave-Command", false)) {
 			Player player = (Player) sender;
 
-			if (!Utils.checkIsInGameInstance((Player) sender)) {
+			if (!checkIsInGameInstance((Player) sender)) {
 				return;
 			}
 
-			player.sendMessage(getPlugin().getChatManager().getPrefix() + getPlugin().getChatManager().colorMessage("Commands.Teleported-To-The-Lobby", player));
+			player.sendMessage(plugin.getChatManager().getPrefix() + plugin.getChatManager().colorMessage("Commands.Teleported-To-The-Lobby", player));
 
-			if (getPlugin().getConfigPreferences().getOption(ConfigPreferences.Option.BUNGEE_ENABLED)) {
-				getPlugin().getBungeeManager().connectToHub(player);
+			if (plugin.getConfigPreferences().getOption(ConfigPreferences.Option.BUNGEE_ENABLED)) {
+				plugin.getBungeeManager().connectToHub(player);
 				Debugger.debug("{0} was teleported to the Hub server", player.getName());
 				return;
 			}

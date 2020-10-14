@@ -9,7 +9,7 @@
 #     Some messages support their own placeholders
 #                  like %player%
 
-# TNT Run command messages
+# TNT Run Commands Messages
 Commands:
   Did-You-Mean: "&3Did you mean &b/%command%&3?"
   Are-You-Sure: "&cAre you sure you want to do this action? Type the command again &6within 10 seconds &cto confirm!"

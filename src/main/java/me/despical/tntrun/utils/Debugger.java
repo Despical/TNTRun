@@ -39,8 +39,7 @@ public class Debugger {
 	private static boolean deep = false;
 	private static final Logger logger = Logger.getLogger("TNT Run");
 
-	private Debugger() {
-	}
+	private Debugger() {}
 
 	public static void setEnabled(boolean enabled) {
 		Debugger.enabled = enabled;
@@ -84,7 +83,7 @@ public class Debugger {
 	 * @param params to debug
 	 */
 	public static void debug(String msg, Object... params) {
-		debug(Level.INFO, "[TRDBG] " + msg, params);
+		debug(Level.INFO, msg, params);
 	}
 
 	/**

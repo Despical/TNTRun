@@ -67,7 +67,7 @@ public class JoinEvent implements Listener {
 		}
 
 		for (Player player : plugin.getServer().getOnlinePlayers()) {
-			if (ArenaRegistry.getArena(player) == null) {
+			if (!ArenaRegistry.isInArena(player)) {
 				continue;
 			}
 

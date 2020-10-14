@@ -2,7 +2,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>me.despical</groupId>
 	<artifactId>tnt-run</artifactId>
-	<version>1.0.5</version>
+	<version>1.0.6</version>
 	<name>TNT Run</name>
 
 	<properties>
@@ -60,13 +60,13 @@
 		<dependency>
 			<groupId>com.github.Despical</groupId>
 			<artifactId>commons-box</artifactId>
-			<version>1.1.5</version>
+			<version>1.1.6</version>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.github.Despical</groupId>
 			<artifactId>InventoryFramework</artifactId>
-			<version>1.0.2</version>
+			<version>1.0.4</version>
 		</dependency>
 		<dependency>
 			<groupId>me.clip</groupId>

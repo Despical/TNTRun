@@ -24,6 +24,8 @@ import me.despical.tntrun.api.StatsStorage;
 import me.despical.tntrun.user.User;
 import org.bukkit.configuration.file.FileConfiguration;
 
+import java.util.Arrays;
+
 /**
  * @author Despical
  * <p>
@@ -49,10 +51,7 @@ public class FileStats implements UserDatabase {
 
 	@Override
 	public void saveAllStatistic(User user) {
-		for (StatsStorage.StatisticType stat : StatsStorage.StatisticType.values()) {
-			if (!stat.isPersistent()) continue;
-			config.set(user.getPlayer().getUniqueId().toString() + "." + stat.getName(), user.getStat(stat));
-		}
+		Arrays.stream(StatsStorage.StatisticType.values()).filter(StatsStorage.StatisticType::isPersistent).forEach(stat -> config.set(user.getPlayer().getUniqueId().toString() + "." + stat.getName(), user.getStat(stat)));
 
 		ConfigUtils.saveConfig(plugin, config, "stats");
 	}
@@ -60,8 +59,6 @@ public class FileStats implements UserDatabase {
 
 	@Override
 	public void loadStatistics(User user) {
-		for (StatsStorage.StatisticType stat : StatsStorage.StatisticType.values()) {
-			user.setStat(stat, config.getInt(user.getPlayer().getUniqueId().toString() + "." + stat.getName(), 0));
-		}
+		Arrays.stream(StatsStorage.StatisticType.values()).forEach(stat -> user.setStat(stat, config.getInt(user.getPlayer().getUniqueId().toString() + "." + stat.getName(), 0)));
 	}
 }

@@ -48,10 +48,11 @@ public class ArenaSelectorCommand extends SubCommand implements Listener {
 
 	public ArenaSelectorCommand() {
 		super("arenas");
-		setPermission("oitc.arenas");
 
-		this.chatManager = getPlugin().getChatManager();
-		getPlugin().getServer().getPluginManager().registerEvents(this, getPlugin());
+		setPermission("tr.arenas");
+
+		this.chatManager = plugin.getChatManager();
+		plugin.getServer().getPluginManager().registerEvents(this, plugin);
 	}
 
 	@Override
@@ -65,7 +66,7 @@ public class ArenaSelectorCommand extends SubCommand implements Listener {
 	}
 
 	@Override
-	public void execute(CommandSender sender, String label, String[] args) {
+	public void execute(CommandSender sender, String[] args) {
 		Player player = (Player) sender;
 
 		if (ArenaRegistry.getArenas().isEmpty()) {
@@ -94,10 +95,10 @@ public class ArenaSelectorCommand extends SubCommand implements Listener {
 			itemMeta.setDisplayName(arena.getId());
 
 			ArrayList<String> lore = new ArrayList<>();
-			FileConfiguration config = ConfigUtils.getConfig(getPlugin(), "messages");
+			FileConfiguration config = ConfigUtils.getConfig(plugin, "messages");
 
 			for (String string : config.getStringList("Arena-Selector.Item.Lore")) {
-				lore.add(formatItem(string, arena, getPlugin()));
+				lore.add(formatItem(string, arena, plugin));
 			}
 
 			itemMeta.setLore(lore);

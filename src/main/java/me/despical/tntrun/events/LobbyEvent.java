@@ -19,7 +19,6 @@
 package me.despical.tntrun.events;
 
 import me.despical.tntrun.Main;
-import me.despical.tntrun.arena.Arena;
 import me.despical.tntrun.arena.ArenaRegistry;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -45,9 +44,8 @@ public class LobbyEvent implements Listener {
 		}
 
 		Player player = (Player) event.getEntity();
-		Arena arena = ArenaRegistry.getArena(player);
 
-		if (arena == null) {
+		if (!ArenaRegistry.isInArena(player)) {
 			return;
 		}
 

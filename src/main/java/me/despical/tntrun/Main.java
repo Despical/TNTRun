@@ -196,7 +196,6 @@ public class Main extends JavaPlugin {
 		}
 
 		userManager = new UserManager(this);
-		Utils.init(this);
 		SpecialItem.loadAll();
 		PermissionsManager.init();
 		new SpectatorEvents(this);

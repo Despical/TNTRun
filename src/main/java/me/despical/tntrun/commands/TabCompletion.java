@@ -55,10 +55,6 @@ public class TabCompletion implements TabCompleter {
 			StringUtil.copyPartialMatches(args[0], commands, completions);
 		}
 
-		if (args.length == 1) {
-			StringUtil.copyPartialMatches(args[0], commands, completions);
-		}
-
 		if (args.length == 2) {
 			if (args[0].equalsIgnoreCase("create") || args[0].equalsIgnoreCase("help") || args[0].equalsIgnoreCase("list") ||
 				args[0].equalsIgnoreCase("reload") || args[0].equalsIgnoreCase("randomjoin") || args[0].equalsIgnoreCase("stop") ||
