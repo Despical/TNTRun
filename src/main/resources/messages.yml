@@ -99,7 +99,7 @@ In-Game:
   No-Slots-For-Premium: "&cThis game is already full of premium players! Sorry"
   You-Are-Spectator: "&cYou're now a spectator! You can fly now!"
   Only-Command-Ingame-Is-Leave: "&cYou have to leave the game first to perform commands. The only command that works is /tr leave!"
-  # Join cancelled via external plugin that uses TNT Run api.
+  # Join cancelled via external plugin that uses TNT Run API.
   Join-Cancelled-Via-API: "&cYou can't join this game!"
   Arena-Not-Configured: "&cArena is not configured yet! Contact staff!"
   Game-Chat-Format: "&7%player%: &f%message%"

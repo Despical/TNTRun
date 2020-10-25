@@ -45,7 +45,7 @@ public class PlaceholderManager extends PlaceholderExpansion {
 	}
 
 	public String getVersion() {
-		return "1.0.6";
+		return "1.0.7";
 	}
 
 	public String onPlaceholderRequest(Player player, String id) {
@@ -83,11 +83,13 @@ public class PlaceholderManager extends PlaceholderExpansion {
 
 		switch (data[1].toLowerCase()) {
 			case "players":
-				return String.valueOf(arena.getPlayers().size());
+				return Integer.toString(arena.getPlayers().size());
+			case "players_left":
+				return Integer.toString(arena.getPlayersLeft().size());
 			case "max_players":
-				return String.valueOf(arena.getMaximumPlayers());
+				return Integer.toString(arena.getMaximumPlayers());
 			case "min_players":
-				return String.valueOf(arena.getMinimumPlayers());
+				return Integer.toString(arena.getMinimumPlayers());
 			case "state":
 				return String.valueOf(arena.getArenaState());
 			case "state_pretty":

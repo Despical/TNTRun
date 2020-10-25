@@ -96,7 +96,7 @@ public class ChatManager {
 		returnString = StringUtils.replace(returnString, "%arena%", arena.getMapName());
 		returnString = StringUtils.replace(returnString, "%time%", Integer.toString(arena.getTimer()));
 		returnString = StringUtils.replace(returnString, "%formatted_time%", StringFormatUtils.formatIntoMMSS((arena.getTimer())));
-		returnString = StringUtils.replace(returnString, "%players%", Integer.toString(arena.getPlayers().size()));
+		returnString = StringUtils.replace(returnString, "%players%", Integer.toString(arena.getPlayersLeft().size()));
 		returnString = StringUtils.replace(returnString, "%maxplayers%", Integer.toString(arena.getMaximumPlayers()));
 		returnString = StringUtils.replace(returnString, "%minplayers%", Integer.toString(arena.getMinimumPlayers()));
 		return returnString;

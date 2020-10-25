@@ -116,7 +116,7 @@ public class Arena extends BukkitRunnable {
 				if (getPlayers().size() < getMinimumPlayers()) {
 					if (getTimer() <= 0) {
 						setTimer(15);
-						broadcastMessage(plugin.getChatManager().formatMessage(this, plugin.getChatManager().colorMessage("In-Game.Messages.Lobby-Messages.Waiting-For-Players"), getMinimumPlayers()));
+						broadcastMessage(plugin.getChatManager().getPrefix() + plugin.getChatManager().formatMessage(this, plugin.getChatManager().colorMessage("In-Game.Messages.Lobby-Messages.Waiting-For-Players"), getMinimumPlayers()));
 						break;
 					}
 				} else {
@@ -124,7 +124,7 @@ public class Arena extends BukkitRunnable {
 						gameBar.setTitle(plugin.getChatManager().colorMessage("Bossbar.Waiting-For-Players"));
 					}
 
-					broadcastMessage(plugin.getChatManager().colorMessage("In-Game.Messages.Lobby-Messages.Enough-Players-To-Start"));
+					broadcastMessage(plugin.getChatManager().getPrefix() + plugin.getChatManager().colorMessage("In-Game.Messages.Lobby-Messages.Enough-Players-To-Start"));
 
 					setArenaState(ArenaState.STARTING);
 					setTimer(plugin.getConfig().getInt("Starting-Waiting-Time", 60));
@@ -136,7 +136,7 @@ public class Arena extends BukkitRunnable {
 			case STARTING:
 				if (getPlayers().size() == getMaximumPlayers() && getTimer() >= plugin.getConfig().getInt("Start-Time-On-Full-Lobby", 15) && !forceStart) {
 					setTimer(plugin.getConfig().getInt("Start-Time-On-Full-Lobby", 45));
-					broadcastMessage(plugin.getChatManager().colorMessage("In-Game.Messages.Lobby-Messages.Start-In").replace("%time%", String.valueOf(getTimer())));
+					broadcastMessage(plugin.getChatManager().getPrefix() + plugin.getChatManager().colorMessage("In-Game.Messages.Lobby-Messages.Start-In").replace("%time%", String.valueOf(getTimer())));
 				}
 
 				if (plugin.getConfigPreferences().getOption(ConfigPreferences.Option.BOSSBAR_ENABLED)) {
@@ -155,7 +155,7 @@ public class Arena extends BukkitRunnable {
 						gameBar.setProgress(1.0);
 					}
 
-					broadcastMessage(plugin.getChatManager().formatMessage(this, plugin.getChatManager().colorMessage("In-Game.Messages.Lobby-Messages.Waiting-For-Players"), getMinimumPlayers()));
+					broadcastMessage(plugin.getChatManager().getPrefix() + plugin.getChatManager().formatMessage(this, plugin.getChatManager().colorMessage("In-Game.Messages.Lobby-Messages.Waiting-For-Players"), getMinimumPlayers()));
 
 					setArenaState(ArenaState.WAITING_FOR_PLAYERS);
 					Bukkit.getPluginManager().callEvent(new TRGameStartEvent(this));
@@ -293,7 +293,7 @@ public class Arena extends BukkitRunnable {
 					}
 				}
 
-				broadcastMessage(plugin.getChatManager().colorMessage("Commands.Teleported-To-The-Lobby"));
+				broadcastMessage(plugin.getChatManager().getPrefix() + plugin.getChatManager().colorMessage("Commands.Teleported-To-The-Lobby"));
 
 				for (User user : plugin.getUserManager().getUsers(this)) {
 					user.setSpectator(false);

@@ -1,3 +1,12 @@
+### 1.0.7 Release (25.10.2020)
+* Fixed some prefix bugs.
+* Fixed players size placeholder.
+* Added new placeholder to get players size without spectators size.
+* Some addition bug fixes.
+
+### 1.0.6 Release (14.10.2020)
+* Some addition stuff and bug fixes.
+
 ### 1.0.5 Release (07.10.2020)
 * Added more in-game tips.
 * Added license header.
