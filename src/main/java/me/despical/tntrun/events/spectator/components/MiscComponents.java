@@ -20,15 +20,15 @@ package me.despical.tntrun.events.spectator.components;
 
 import com.github.despical.inventoryframework.GuiItem;
 import com.github.despical.inventoryframework.pane.StaticPane;
-import me.despical.commonsbox.configuration.ConfigUtils;
 import me.despical.commonsbox.item.ItemBuilder;
 import me.despical.tntrun.Main;
 import me.despical.tntrun.arena.Arena;
 import me.despical.tntrun.arena.ArenaRegistry;
 import me.despical.tntrun.events.spectator.SpectatorSettingsMenu;
 import org.bukkit.Material;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 /**
@@ -49,24 +49,55 @@ public class MiscComponents implements SpectatorSettingComponent {
 	public void injectComponents(StaticPane pane) {
 		Main plugin = spectatorSettingsMenu.getPlugin();
 		Player player = spectatorSettingsMenu.getPlayer();
-		FileConfiguration config = ConfigUtils.getConfig(plugin, "messages");
+		Arena arena = ArenaRegistry.getArena(player);
+		ItemStack nightVision;
 
-		pane.addItem(new GuiItem(new ItemBuilder(Material.ENDER_PEARL)
-			.name(plugin.getChatManager().colorMessage("In-Game.Spectator.Settings-Menu.Disable-Night-Vision"))
-			.lore(config.getStringList("In-Game.Spectator.Settings-Menu.Disable-Night-Vision-Lore"))
-			.build(), e -> {
-			player.closeInventory();
-			player.removePotionEffect(PotionEffectType.NIGHT_VISION);
+		if (player.hasPotionEffect(PotionEffectType.NIGHT_VISION)) {
+			nightVision = new ItemBuilder(Material.ENDER_PEARL)
+				.name(plugin.getChatManager().colorMessage("In-Game.Spectator.Settings-Menu.Disable-Night-Vision"))
+				.lore(plugin.getChatManager().getStringList("In-Game.Spectator.Settings-Menu.Disable-Night-Vision-Lore"))
+				.build();
+		} else {
+			nightVision = new ItemBuilder(Material.ENDER_EYE)
+				.name(plugin.getChatManager().colorMessage("In-Game.Spectator.Settings-Menu.Enable-Night-Vision"))
+				.lore(plugin.getChatManager().getStringList("In-Game.Spectator.Settings-Menu.Enable-Night-Vision-Lore"))
+				.build();
+		}
+
+		pane.addItem(new GuiItem(nightVision, e -> {
+			e.getWhoClicked().closeInventory();
+
+			if (player.hasPotionEffect(PotionEffectType.NIGHT_VISION)) {
+				player.removePotionEffect(PotionEffectType.NIGHT_VISION);
+			} else {
+				player.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, Integer.MAX_VALUE, 0));
+			}
 		}), 2, 2);
 
-		pane.addItem(new GuiItem(new ItemBuilder(Material.REDSTONE)
-			.name(plugin.getChatManager().colorMessage("In-Game.Spectator.Settings-Menu.Hide-Spectators"))
-			.lore(config.getStringList("In-Game.Spectator.Settings-Menu.Hide-Spectators-Lore"))
-			.build(), e -> {
-			Arena arena = ArenaRegistry.getArena(player);
+		boolean canSee = arena.getPlayers().stream().filter(p -> plugin.getUserManager().getUser(p).isSpectator()).anyMatch(player::canSee);
+		ItemStack specItem;
 
-			player.closeInventory();
-			arena.getPlayers().stream().filter(p -> plugin.getUserManager().getUser(p).isSpectator()).forEach(p -> player.hidePlayer(plugin, p));
+		if (canSee) {
+			specItem = new ItemBuilder(Material.REDSTONE)
+				.name(plugin.getChatManager().colorMessage("In-Game.Spectator.Settings-Menu.Hide-Spectators"))
+				.lore(plugin.getChatManager().getStringList("In-Game.Spectator.Settings-Menu.Hide-Spectators-Lore"))
+				.build();
+		} else {
+			specItem = new ItemBuilder(Material.GLOWSTONE_DUST)
+				.name(plugin.getChatManager().colorMessage("In-Game.Spectator.Settings-Menu.Show-Spectators"))
+				.lore(plugin.getChatManager().getStringList("In-Game.Spectator.Settings-Menu.Show-Spectators-Lore"))
+				.build();
+		}
+
+		pane.addItem(new GuiItem(specItem, e -> {
+			e.getWhoClicked().closeInventory();
+			if (canSee) {
+				arena.getPlayers().stream().filter(p -> plugin.getUserManager().getUser(p).isSpectator()).forEach(p -> player.hidePlayer(plugin, p));
+				player.sendMessage(plugin.getChatManager().colorMessage("In-Game.Spectator.Settings-Menu.Show-Spectators-Message"));
+			} else {
+				arena.getPlayers().stream().filter(p -> plugin.getUserManager().getUser(p).isSpectator()).forEach(p -> player.showPlayer(plugin, p));
+				player.sendMessage(plugin.getChatManager().colorMessage("In-Game.Spectator.Settings-Menu.Hide-Spectators-Message"));
+			}
 		}), 3, 2);
 	}
 }

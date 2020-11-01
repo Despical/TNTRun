@@ -30,6 +30,7 @@ import me.despical.tntrun.user.User;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageEvent;
@@ -49,7 +50,7 @@ public class ArenaEvents implements Listener {
 		plugin.getServer().getPluginManager().registerEvents(this, plugin);
 	}
 
-	@EventHandler
+	@EventHandler(priority = EventPriority.HIGH)
 	public void onDoubleJump(PlayerToggleFlightEvent event) {
 		Player player = event.getPlayer();
 
@@ -76,7 +77,7 @@ public class ArenaEvents implements Listener {
 		}
 	}
 
-	@EventHandler
+	@EventHandler(priority = EventPriority.HIGH)
 	public void onDoubleJump(PlayerInteractEvent event) {
 		Player player = event.getPlayer();
 
@@ -114,7 +115,7 @@ public class ArenaEvents implements Listener {
 		}
 	}
 
-	@EventHandler
+	@EventHandler(ignoreCancelled = true, priority = EventPriority.HIGH)
 	public void onDamage(EntityDamageEvent event) {
 		if (!(event.getEntity() instanceof Player)) {
 			return;

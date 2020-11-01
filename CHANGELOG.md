@@ -1,3 +1,10 @@
+### 1.0.8 Release (01.11.2020)
+* Added new language system.
+* Added enable option for spectator settings.
+* Fixed scoreboard friendly fire caused players visible.
+* Fixed NPE when signs aren't located in default world.
+* Optimized events.
+
 ### 1.0.7 Release (25.10.2020)
 * Fixed some prefix bugs.
 * Fixed players size placeholder.

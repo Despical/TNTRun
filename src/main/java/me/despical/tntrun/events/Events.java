@@ -113,11 +113,9 @@ public class Events implements Listener {
 
 	@EventHandler(priority = EventPriority.HIGH)
 	public void onInGameBedEnter(PlayerBedEnterEvent event) {
-		if (!ArenaRegistry.isInArena(event.getPlayer())) {
-			return;
+		if (ArenaRegistry.isInArena(event.getPlayer())) {
+			event.setCancelled(true);
 		}
-
-		event.setCancelled(true);
 	}
 
 	@EventHandler(priority = EventPriority.HIGH)

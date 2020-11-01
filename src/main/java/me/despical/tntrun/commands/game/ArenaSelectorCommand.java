@@ -19,7 +19,6 @@
 package me.despical.tntrun.commands.game;
 
 import me.despical.commonsbox.compat.XMaterial;
-import me.despical.commonsbox.configuration.ConfigUtils;
 import me.despical.commonsbox.number.NumberUtils;
 import me.despical.tntrun.Main;
 import me.despical.tntrun.arena.Arena;
@@ -30,7 +29,6 @@ import me.despical.tntrun.handlers.ChatManager;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -95,9 +93,8 @@ public class ArenaSelectorCommand extends SubCommand implements Listener {
 			itemMeta.setDisplayName(arena.getId());
 
 			ArrayList<String> lore = new ArrayList<>();
-			FileConfiguration config = ConfigUtils.getConfig(plugin, "messages");
 
-			for (String string : config.getStringList("Arena-Selector.Item.Lore")) {
+			for (String string : chatManager.getStringList("Arena-Selector.Item.Lore")) {
 				lore.add(formatItem(string, arena, plugin));
 			}
 

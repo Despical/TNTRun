@@ -30,6 +30,8 @@ import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 
+import java.util.List;
+
 /**
  * @author Despical
  * <p>
@@ -112,6 +114,7 @@ public class ChatManager {
 
 	public void broadcastAction(Arena a, Player p, ActionType action) {
 		String message;
+
 		switch (action) {
 			case JOIN:
 				message = formatMessage(a, colorMessage("In-Game.Messages.Join"), p);
@@ -127,6 +130,10 @@ public class ChatManager {
 		}
 
 		a.broadcastMessage(prefix + message);
+	}
+
+	public List<String> getStringList(String path) {
+		return config.getStringList(path);
 	}
 
 	public void reloadConfig() {

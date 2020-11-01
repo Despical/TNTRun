@@ -90,7 +90,7 @@ public class ExceptionLogHandler extends Handler {
 		plugin.getLogger().log(Level.WARNING, stacktrace.toString());
 		plugin.getLogger().log(Level.WARNING, "[Reporter service] <<------------------------------[END]------------------------------>>");
 
-		record.setMessage("[TNT Run] We have found a bug in the code. Contact us at our official Discord server (Invite link: https://discordapp.com/invite/Vhyy4HA) with the following error given above!");
+		record.setMessage("[TNT Run] We have found a bug in the code. Contact us at our official Discord Server (Invite link: https://discordapp.com/invite/Vhyy4HA) with the following error given above!");
 	}
 
 	private boolean containsBlacklistedClass(Throwable throwable) {

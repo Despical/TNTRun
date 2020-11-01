@@ -26,7 +26,7 @@
 #
 #                               All script provided objects:
 #            player - Player object (API methods https://hub.spigotmc.org/javadocs/spigot/org/bukkit/entity/Player.html)
-#     arena - TNT Run arena object (API methods https://javadoc.jitpack.io/com/github/Despical/TNTRun/1.0.5/javadoc/me/despical/tntrun/arena/Arena.html)
+#     arena - TNT Run arena object (API methods https://javadoc.jitpack.io/com/github/Despical/TNTRun/latest/javadoc/me/despical/tntrun/arena/Arena.html)
 #            server - Bukkit server object (API methods https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Server.html)
 
 # Rewards must be enabled via config.yml first!

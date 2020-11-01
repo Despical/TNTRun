@@ -37,12 +37,16 @@ import me.despical.tntrun.handlers.ChatManager;
 import me.despical.tntrun.handlers.PermissionsManager;
 import me.despical.tntrun.handlers.PlaceholderManager;
 import me.despical.tntrun.handlers.items.SpecialItem;
+import me.despical.tntrun.handlers.language.LanguageManager;
 import me.despical.tntrun.handlers.rewards.RewardsFactory;
 import me.despical.tntrun.handlers.sign.SignManager;
 import me.despical.tntrun.user.User;
 import me.despical.tntrun.user.UserManager;
 import me.despical.tntrun.user.data.MysqlManager;
-import me.despical.tntrun.utils.*;
+import me.despical.tntrun.utils.Debugger;
+import me.despical.tntrun.utils.ExceptionLogHandler;
+import me.despical.tntrun.utils.MessageUtils;
+import me.despical.tntrun.utils.UpdateChecker;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.block.BlockState;
@@ -51,7 +55,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.logging.Level;
@@ -72,6 +75,7 @@ public class Main extends JavaPlugin {
 	private ConfigPreferences configPreferences;
 	private CommandHandler commandHandler;
 	private ChatManager chatManager;
+	private LanguageManager languageManager;
 	private UserManager userManager;
 
 	@Override
@@ -89,10 +93,7 @@ public class Main extends JavaPlugin {
 		if (getConfig().getBoolean("Developer-Mode", false)) {
 			Debugger.deepDebug(true);
 			Debugger.debug("Deep debug enabled");
-
-			for (String listenable : new ArrayList<>(getConfig().getStringList("Listenable-Performances"))) {
-				Debugger.monitorPerformance(listenable);
-			}
+			getConfig().getStringList("Listenable-Performances").forEach(Debugger::monitorPerformance);
 		}
 
 		long start = System.currentTimeMillis();
@@ -186,7 +187,7 @@ public class Main extends JavaPlugin {
 		ScoreboardLib.setPluginInstance(this);
 		chatManager = new ChatManager(this);
 
-		if (getConfig().getBoolean("BungeeActivated", false)) {
+		if (getConfig().getBoolean("BungeeActivated")) {
 			bungeeManager = new BungeeManager(this);
 		}
 
@@ -195,6 +196,7 @@ public class Main extends JavaPlugin {
 			database = new MysqlDatabase(config.getString("user"), config.getString("password"), config.getString("address"));
 		}
 
+		languageManager = new LanguageManager(this);
 		userManager = new UserManager(this);
 		SpecialItem.loadAll();
 		PermissionsManager.init();
@@ -202,14 +204,16 @@ public class Main extends JavaPlugin {
 		new QuitEvent(this);
 		new JoinEvent(this);
 		new ChatEvents(this);
+		signManager = new SignManager(this);
 		ArenaRegistry.registerArenas();
+		signManager.loadSigns();
+		signManager.updateSigns();
 		User.cooldownHandlerTask();
 		new Events(this);
 		new LobbyEvent(this);
 		new SpectatorItemEvents(this);
 		new ArenaEvents(this);
 		rewardsFactory = new RewardsFactory(this);
-		signManager = new SignManager(this);
 		registerSoftDependenciesAndServices();
 		commandHandler = new CommandHandler(this);
 	}
@@ -237,6 +241,7 @@ public class Main extends JavaPlugin {
 
 		metrics.addCustomChart(new Metrics.SimplePie("database_enabled", () -> String.valueOf(configPreferences.getOption(ConfigPreferences.Option.DATABASE_ENABLED))));
 		metrics.addCustomChart(new Metrics.SimplePie("bungeecord_hooked", () -> String.valueOf(configPreferences.getOption(ConfigPreferences.Option.BUNGEE_ENABLED))));
+		metrics.addCustomChart(new Metrics.SimplePie("locale_used", () -> languageManager.getPluginLocale().getPrefix()));
 		metrics.addCustomChart(new Metrics.SimplePie("update_notifier", () -> {
 			if (getConfig().getBoolean("Update-Notifier.Enabled", true)) {
 				return getConfig().getBoolean("Update-Notifier.Notify-Beta-Versions", true) ? "Enabled with beta notifier" : "Enabled";
@@ -310,6 +315,10 @@ public class Main extends JavaPlugin {
 		return commandHandler;
 	}
 
+	public LanguageManager getLanguageManager() {
+		return languageManager;
+	}
+
 	public UserManager getUserManager() {
 		return userManager;
 	}
@@ -323,10 +332,10 @@ public class Main extends JavaPlugin {
 				for (StatsStorage.StatisticType stat : StatsStorage.StatisticType.values()) {
 					if (!stat.isPersistent()) continue;
 					if (update.toString().equalsIgnoreCase(" SET ")) {
-						update.append(stat.getName()).append("=").append(user.getStat(stat));
+						update.append(stat.getName()).append("'='").append(user.getStat(stat));
 					}
 
-					update.append(", ").append(stat.getName()).append("=").append(user.getStat(stat));
+					update.append(", ").append(stat.getName()).append("'='").append(user.getStat(stat));
 				}
 
 				String finalUpdate = update.toString();

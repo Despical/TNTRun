@@ -86,7 +86,9 @@ public class ArenaUtils {
 				team = scoreboard.registerNewTeam("TRHide");
 			}
 
+			team.setAllowFriendlyFire(false);
 			team.setOption(Team.Option.NAME_TAG_VISIBILITY, Team.OptionStatus.NEVER);
+
 			if (arena.getArenaState() == ArenaState.IN_GAME) {
 				team.addEntry(p.getName());
 			} else if (arena.getArenaState() == ArenaState.STARTING || arena.getArenaState() == ArenaState.WAITING_FOR_PLAYERS) {

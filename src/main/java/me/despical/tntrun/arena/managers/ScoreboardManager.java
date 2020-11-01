@@ -19,7 +19,6 @@
 package me.despical.tntrun.arena.managers;
 
 import me.clip.placeholderapi.PlaceholderAPI;
-import me.despical.commonsbox.configuration.ConfigUtils;
 import me.despical.commonsbox.scoreboard.ScoreboardLib;
 import me.despical.commonsbox.scoreboard.common.EntryBuilder;
 import me.despical.commonsbox.scoreboard.type.Entry;
@@ -32,7 +31,6 @@ import me.despical.tntrun.arena.Arena;
 import me.despical.tntrun.arena.ArenaState;
 import me.despical.tntrun.user.User;
 import org.apache.commons.lang.StringUtils;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -49,7 +47,6 @@ public class ScoreboardManager {
 	private static final Main plugin = JavaPlugin.getPlugin(Main.class);
 	private final List<Scoreboard> scoreboards = new ArrayList<>();
 	private final Arena arena;
-	private final FileConfiguration config = ConfigUtils.getConfig(plugin, "messages");
 
 	public ScoreboardManager(Arena arena) {
 		this.arena = arena;
@@ -108,12 +105,12 @@ public class ScoreboardManager {
 		List<String> lines;
 
 		if (arena.getArenaState() == ArenaState.IN_GAME) {
-			lines = config.getStringList("Scoreboard.Content.Playing");
+			lines = plugin.getChatManager().getStringList("Scoreboard.Content.Playing");
 		} else {
 			if (arena.getArenaState() == ArenaState.ENDING) {
-				lines = config.getStringList("Scoreboard.Content.Playing");
+				lines = plugin.getChatManager().getStringList("Scoreboard.Content.Playing");
 			} else {
-				lines = config.getStringList("Scoreboard.Content." + arena.getArenaState().getFormattedName());
+				lines = plugin.getChatManager().getStringList("Scoreboard.Content." + arena.getArenaState().getFormattedName());
 			}
 		}
 
