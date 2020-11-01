@@ -28,6 +28,10 @@ public class LanguageManager {
 	}
 
 	private void init() {
+		if (pluginLocale.getAliases().contains(plugin.getChatManager().colorMessage("Language"))) {
+			return;
+		}
+
 		try {
 			FileUtils.copyURLToFile(new URL("https://raw.githubusercontent.com/Despical/LocaleStorage/main/Minecraft/TNT%20Run/" + pluginLocale.getPrefix() + ".yml"), new File(plugin.getDataFolder() + File.separator + "messages.yml"));
 		} catch (IOException e) {
