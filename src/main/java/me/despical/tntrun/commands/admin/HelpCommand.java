@@ -60,27 +60,26 @@ public class HelpCommand extends SubCommand {
 		sender.sendMessage(plugin.getChatManager().colorRawMessage("&3&l---- TNT Run Admin Commands ----"));
 		sender.sendMessage("");
 
-		plugin.getCommandHandler().getSubCommands().stream().filter(subCommand -> subCommand.getType() == CommandType.GENERIC).forEach(subCommand -> {
-			String usage = "/tr " + subCommand.getName() + (subCommand.getPossibleArguments().length() > 0 ? " " + subCommand.getPossibleArguments() : "");
+		for (SubCommand subCommand : plugin.getCommandHandler().getSubCommands()) {
+			if (subCommand.getType() == CommandType.GENERIC) {
+				String usage = "/tr " + subCommand.getName() + (subCommand.getPossibleArguments().length() > 0 ? " " + subCommand.getPossibleArguments() : "");
 
-			if (sender instanceof Player) {
-				List<String> help = new ArrayList<>();
+				if (sender instanceof Player) {
+					List<String> help = new ArrayList<>();
 
-				help.add(ChatColor.DARK_AQUA + usage);
+					help.add(ChatColor.DARK_AQUA + usage);
+					subCommand.getTutorial().stream().map(tutLine -> ChatColor.AQUA + tutLine).forEach(help::add);
 
-				for (String tutLine : subCommand.getTutorial()) {
-					help.add(ChatColor.AQUA + tutLine);
+					((Player) sender).spigot().sendMessage(new ComponentBuilder(usage)
+						.color(ChatColor.AQUA)
+						.event(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, usage))
+						.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.fromLegacyText(String.join("\n", help))))
+						.create());
+				} else {
+					sender.sendMessage(ChatColor.AQUA + usage);
 				}
-
-				((Player) sender).spigot().sendMessage(new ComponentBuilder(usage)
-					.color(ChatColor.AQUA)
-					.event(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, usage))
-					.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.fromLegacyText(String.join("\n", help))))
-					.create());
-			} else {
-				sender.sendMessage(ChatColor.AQUA + usage);
 			}
-		});
+		}
 
 		if (sender instanceof Player) {
 			sendHoverTip((Player) sender);

@@ -35,6 +35,7 @@ import org.bukkit.entity.Player;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -66,8 +67,10 @@ public class CommandHandler implements CommandExecutor {
 		registerSubCommand(new StatsCommand());
 		registerSubCommand(new LeaderBoardCommand());
 
-		plugin.getCommand("tntrun").setExecutor(this);
-		plugin.getCommand("tntrun").setTabCompleter(new TabCompletion(this));
+		Optional.ofNullable(plugin.getCommand("tntrun")).ifPresent(tntrun -> {
+			tntrun.setExecutor(this);
+			tntrun.setTabCompleter(new TabCompletion(this));
+		});
 	}
 
 	public void registerSubCommand(SubCommand subCommand) {

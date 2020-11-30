@@ -59,7 +59,7 @@ public class TabCompletion implements TabCompleter {
 			if (args[0].equalsIgnoreCase("create") || args[0].equalsIgnoreCase("help") || args[0].equalsIgnoreCase("list") ||
 				args[0].equalsIgnoreCase("reload") || args[0].equalsIgnoreCase("randomjoin") || args[0].equalsIgnoreCase("stop") ||
 				args[0].equalsIgnoreCase("forcestart")) {
-				return Collections.emptyList();
+				return null;
 			}
 
 			if (args[0].equalsIgnoreCase("top")) {

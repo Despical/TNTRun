@@ -49,7 +49,7 @@ public class LobbyEvent implements Listener {
 			return;
 		}
 
-		if (event.getDamage() < 500d) {
+		if (event.getDamage() < 500d && event.getCause() != EntityDamageEvent.DamageCause.VOID) {
 			event.setCancelled(true);
 			player.setFireTicks(0);
 		}

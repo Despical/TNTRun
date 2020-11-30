@@ -1,3 +1,8 @@
+### 1.0.9 Release (30.11.2020)
+* Fixed broken game behaviour.
+* Fixed possible NPE when registering commands.
+* Some addition performance improvements.
+
 ### 1.0.8 Release (01.11.2020)
 * Added new language system.
 * Added enable option for spectator settings.
