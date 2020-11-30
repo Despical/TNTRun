@@ -18,8 +18,8 @@
 
 package me.despical.tntrun.events.spectator;
 
-import com.github.despical.inventoryframework.Gui;
-import com.github.despical.inventoryframework.pane.StaticPane;
+import me.despical.inventoryframework.Gui;
+import me.despical.inventoryframework.pane.StaticPane;
 import me.despical.tntrun.Main;
 import me.despical.tntrun.events.spectator.components.MiscComponents;
 import me.despical.tntrun.events.spectator.components.SpeedComponents;

@@ -18,7 +18,7 @@
 
 package me.despical.tntrun.events.spectator.components;
 
-import com.github.despical.inventoryframework.pane.StaticPane;
+import me.despical.inventoryframework.pane.StaticPane;
 import me.despical.tntrun.events.spectator.SpectatorSettingsMenu;
 
 /**

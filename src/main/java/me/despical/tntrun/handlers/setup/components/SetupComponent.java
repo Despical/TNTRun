@@ -18,7 +18,7 @@
 
 package me.despical.tntrun.handlers.setup.components;
 
-import com.github.despical.inventoryframework.pane.StaticPane;
+import me.despical.inventoryframework.pane.StaticPane;
 import me.despical.tntrun.handlers.setup.SetupInventory;
 
 /**
