@@ -37,3 +37,6 @@ Then add the dependency
         </dependency>
     </dependencies>
 ```
+
+## License
+TNT Run is free and open source software under the [GPL-3.0 License](https://github.com/Despical/TNTRun/blob/master/LICENSE)
