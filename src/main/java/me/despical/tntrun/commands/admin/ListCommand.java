@@ -59,8 +59,7 @@ public class ListCommand extends SubCommand {
 
 		List<String> arenas = ArenaRegistry.getArenas().stream().map(Arena::getId).collect(Collectors.toList());
 
-		sender.sendMessage(plugin.getChatManager().getPrefix() + plugin.getChatManager().colorMessage("Commands.Admin-Commands.List-Command.Format").replace("%list%",
-			arenas.toString().substring(1, arenas.toString().length() - 1)));
+		sender.sendMessage(plugin.getChatManager().getPrefix() + plugin.getChatManager().colorMessage("Commands.Admin-Commands.List-Command.Format").replace("%list%", String.join(", ", arenas)));
 	}
 
 	@Override

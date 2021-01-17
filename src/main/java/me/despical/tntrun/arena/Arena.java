@@ -62,8 +62,7 @@ public class Arena extends BukkitRunnable {
 	private final String id;
 
 	private final Set<Player> players = new HashSet<>();
-
-	private final LinkedList<BlockState> destroyedBlocks = new LinkedList<>();
+	private final Set<BlockState> destroyedBlocks = new HashSet<>();
 
 	private final Map<ArenaOption, Integer> arenaOptions = new EnumMap<>(ArenaOption.class);
 	private final Map<GameLocation, Location> gameLocations = new EnumMap<>(GameLocation.class);
@@ -536,7 +535,7 @@ public class Arena extends BukkitRunnable {
 	 *
 	 * @return destroyed blocks
 	 */
-	public LinkedList<BlockState> getDestroyedBlocks() {
+	public Set<BlockState> getDestroyedBlocks() {
 		return destroyedBlocks;
 	}
 

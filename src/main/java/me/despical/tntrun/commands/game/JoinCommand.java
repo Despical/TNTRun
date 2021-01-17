@@ -55,11 +55,11 @@ public class JoinCommand extends SubCommand {
 			return;
 		}
 
-		for (Arena arena : ArenaRegistry.getArenas()) {
-			if (args[0].equalsIgnoreCase(arena.getId())) {
-				ArenaManager.joinAttempt((Player) sender, arena);
-				return;
-			}
+		Arena arena = ArenaRegistry.getArena(args[0]);
+
+		if (arena != null) {
+			ArenaManager.joinAttempt((Player) sender, arena);
+			return;
 		}
 
 		sender.sendMessage(plugin.getChatManager().getPrefix() + plugin.getChatManager().colorMessage("Commands.No-Arena-Like-That"));

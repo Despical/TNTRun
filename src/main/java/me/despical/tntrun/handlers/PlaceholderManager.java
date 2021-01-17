@@ -19,10 +19,12 @@
 package me.despical.tntrun.handlers;
 
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
+import me.despical.tntrun.Main;
 import me.despical.tntrun.api.StatsStorage;
 import me.despical.tntrun.arena.Arena;
 import me.despical.tntrun.arena.ArenaRegistry;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.java.JavaPlugin;
 
 /**
  * @author Despical
@@ -30,6 +32,8 @@ import org.bukkit.entity.Player;
  * Created at 10.07.2020
  */
 public class PlaceholderManager extends PlaceholderExpansion {
+
+	private final Main plugin = JavaPlugin.getPlugin(Main.class);
 
 	@Override
 	public boolean persist() {
@@ -45,7 +49,7 @@ public class PlaceholderManager extends PlaceholderExpansion {
 	}
 
 	public String getVersion() {
-		return "1.0.8";
+		return plugin.getDescription().getVersion();
 	}
 
 	public String onPlaceholderRequest(Player player, String id) {

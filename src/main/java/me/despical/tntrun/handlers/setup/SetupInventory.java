@@ -58,11 +58,11 @@ public class SetupInventory {
 	}
 
 	private void prepareGui() {
-		this.gui = new Gui(plugin, 1, "TNT Run Arena Editor");
-		this.gui.setOnGlobalClick(e -> e.setCancelled(true));
+		gui = new Gui(plugin, 1, "TNT Run Arena Editor");
+		gui.setOnGlobalClick(e -> e.setCancelled(true));
 
 		StaticPane pane = new StaticPane(9, 1);
-		this.gui.addPane(pane);
+		gui.addPane(pane);
 
 		prepareComponents(pane);
 	}

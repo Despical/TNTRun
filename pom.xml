@@ -2,7 +2,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>me.despical</groupId>
 	<artifactId>tnt-run</artifactId>
-	<version>1.0.9</version>
+	<version>1.1.0</version>
 	<name>TNT Run</name>
 
 	<properties>
@@ -54,19 +54,19 @@
 		<dependency>
 			<groupId>com.destroystokyo.paper</groupId>
 			<artifactId>paper-api</artifactId>
-			<version>1.16.1-R0.1-SNAPSHOT</version>
+			<version>1.16.5-R0.1-SNAPSHOT</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.github.Despical</groupId>
 			<artifactId>commons-box</artifactId>
-			<version>1.1.8</version>
+			<version>1.2.2</version>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.github.Despical</groupId>
 			<artifactId>InventoryFramework</artifactId>
-			<version>1.0.4</version>
+			<version>1.0.7</version>
 		</dependency>
 		<dependency>
 			<groupId>me.clip</groupId>
@@ -140,7 +140,7 @@
 						<configuration>
 							<relocations>
 								<relocation>
-									<pattern>com.github.despical.inventoryframework</pattern>
+									<pattern>me.despical.inventoryframework</pattern>
 									<shadedPattern>me.despical.tntrun.utils.inventoryframework</shadedPattern>
 								</relocation>
 								<relocation>

@@ -18,7 +18,6 @@
 
 package me.despical.tntrun;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -49,7 +48,9 @@ public class ConfigPreferences {
 	}
 
 	private void loadOptions() {
-		Arrays.stream(Option.values()).forEach(option -> options.put(option, plugin.getConfig().getBoolean(option.getPath(), option.getDefault())));
+		for (Option option : Option.values()) {
+			options.put(option, plugin.getConfig().getBoolean(option.getPath(), option.getDefault()));
+		}
 	}
 
 	public enum Option {

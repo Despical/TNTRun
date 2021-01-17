@@ -20,7 +20,6 @@ package me.despical.tntrun.events;
 
 import me.despical.tntrun.Main;
 import me.despical.tntrun.arena.ArenaRegistry;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -39,7 +38,7 @@ public class LobbyEvent implements Listener {
 
 	@EventHandler
 	public void onLobbyDamage(EntityDamageEvent event) {
-		if (event.getEntity().getType() != EntityType.PLAYER) {
+		if (!(event.getEntity() instanceof Player)) {
 			return;
 		}
 

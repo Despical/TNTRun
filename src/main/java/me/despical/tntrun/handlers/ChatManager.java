@@ -47,7 +47,7 @@ public class ChatManager {
 	public ChatManager(Main plugin) {
 		this.plugin = plugin;
 		this.config = ConfigUtils.getConfig(plugin, "messages");
-		this.prefix = colorRawMessage(config.getString("In-Game.Plugin-Prefix"));
+		this.prefix = colorMessage("In-Game.Plugin-Prefix");
 	}
 
 	public String getPrefix() {
@@ -59,7 +59,7 @@ public class ChatManager {
 			return "";
 		}
 
-		if (message.contains("#") && VersionResolver.isCurrentEqualOrHigher(VersionResolver.ServerVersion.v1_16_R1)) {
+		if (VersionResolver.isCurrentEqualOrHigher(VersionResolver.ServerVersion.v1_16_R1) && message.contains("#")) {
 			message = StringMatcher.matchColorRegex(message);
 		}
 
@@ -112,24 +112,24 @@ public class ChatManager {
 		return returnString;
 	}
 
-	public void broadcastAction(Arena a, Player p, ActionType action) {
+	public void broadcastAction(Arena arena, Player player, ActionType action) {
 		String message;
 
 		switch (action) {
 			case JOIN:
-				message = formatMessage(a, colorMessage("In-Game.Messages.Join"), p);
+				message = formatMessage(arena, colorMessage("In-Game.Messages.Join"), player);
 				break;
 			case LEAVE:
-				message = formatMessage(a, colorMessage("In-Game.Messages.Leave"), p);
+				message = formatMessage(arena, colorMessage("In-Game.Messages.Leave"), player);
 				break;
 			case DEATH:
-				message = formatMessage(a, colorMessage("In-Game.Messages.Death"), p);
+				message = formatMessage(arena, colorMessage("In-Game.Messages.Death"), player);
 				break;
 			default:
 				return;
 		}
 
-		a.broadcastMessage(prefix + message);
+		arena.broadcastMessage(prefix + message);
 	}
 
 	public List<String> getStringList(String path) {
@@ -138,7 +138,7 @@ public class ChatManager {
 
 	public void reloadConfig() {
 		config = ConfigUtils.getConfig(plugin, "messages");
-		prefix = colorRawMessage(config.getString("In-Game.Plugin-Prefix"));
+		prefix = colorMessage("In-Game.Plugin-Prefix");
 	}
 
 	public enum ActionType {

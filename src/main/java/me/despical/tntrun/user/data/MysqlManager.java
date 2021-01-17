@@ -26,7 +26,6 @@ import me.despical.tntrun.user.User;
 import me.despical.tntrun.utils.Debugger;
 import me.despical.tntrun.utils.MessageUtils;
 import org.bukkit.Bukkit;
-import org.bukkit.configuration.file.FileConfiguration;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -82,7 +81,6 @@ public class MysqlManager implements UserDatabase {
 
 		for (StatsStorage.StatisticType stat : StatsStorage.StatisticType.values()) {
 			if (!stat.isPersistent()) continue;
-
 			if (update.toString().equalsIgnoreCase(" SET ")) {
 				update.append(stat.getName()).append("=").append(user.getStat(stat));
 			}
@@ -91,7 +89,6 @@ public class MysqlManager implements UserDatabase {
 		}
 
 		String finalUpdate = update.toString();
-
 		Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> database.executeUpdate("UPDATE " + getTableName() + finalUpdate + " WHERE UUID='" + user.getPlayer().getUniqueId().toString() + "';"));
 	}
 
@@ -130,8 +127,7 @@ public class MysqlManager implements UserDatabase {
 	}
 
 	public String getTableName() {
-		FileConfiguration config = ConfigUtils.getConfig(plugin, "mysql");
-		return config.getString("table", "playerstats");
+		return ConfigUtils.getConfig(plugin, "mysql").getString("table", "playerstats");
 	}
 
 	public MysqlDatabase getDatabase() {

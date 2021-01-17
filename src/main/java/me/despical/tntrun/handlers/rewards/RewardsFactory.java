@@ -58,7 +58,9 @@ public class RewardsFactory {
 			return;
 		}
 
-		arena.getPlayers().forEach(p -> performReward(p, type));
+		for (Player player : arena.getPlayers()) {
+			performReward(player, type);
+		}
 	}
 
 	public void performReward(Player player, Reward.RewardType type) {
@@ -67,11 +69,6 @@ public class RewardsFactory {
 		}
 
 		Arena arena = ArenaRegistry.getArena(player);
-		ScriptEngine engine = new ScriptEngine();
-
-		engine.setValue("player", player);
-		engine.setValue("server", Bukkit.getServer());
-		engine.setValue("arena", arena);
 
 		for (Reward reward : rewards) {
 			if (reward.getType() == type) {
@@ -91,6 +88,11 @@ public class RewardsFactory {
 						player.performCommand(command);
 						break;
 					case SCRIPT:
+						ScriptEngine engine = new ScriptEngine();
+
+						engine.setValue("player", player);
+						engine.setValue("server", Bukkit.getServer());
+						engine.setValue("arena", arena);
 						engine.execute(command);
 						break;
 					default:
@@ -125,7 +127,10 @@ public class RewardsFactory {
 			}
 		}
 
-		registeredRewards.keySet().forEach(rewardType -> Debugger.debug("[RewardsFactory] Registered {0} {1} rewards!", registeredRewards.get(rewardType), rewardType.name()));
+		for (Reward.RewardType rewardType : registeredRewards.keySet()) {
+			Debugger.debug("[RewardsFactory] Registered {0} {1} rewards!", registeredRewards.get(rewardType), rewardType.name());
+		}
+
 		Debugger.debug("[RewardsFactory] Registered all rewards took {0} ms", System.currentTimeMillis() - start);
 	}
 }

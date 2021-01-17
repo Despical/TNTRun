@@ -31,7 +31,7 @@ import org.bukkit.plugin.java.JavaPlugin;
  */
 public class SimpleConversationBuilder {
 
-	private static final Main plugin = JavaPlugin.getPlugin(Main.class);
+	private final Main plugin = JavaPlugin.getPlugin(Main.class);
 	private final ConversationFactory conversationFactory;
 
 	public SimpleConversationBuilder() {

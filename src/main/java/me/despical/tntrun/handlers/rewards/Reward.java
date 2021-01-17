@@ -52,7 +52,6 @@ public class Reward {
 
 			if (loc == -1) {
 				Bukkit.getLogger().warning("rewards.yml configuration is broken! Make sure you don't forget using ')' character in chance condition! Command: " + rawCode);
-
 				this.chance = 0.0;
 				return;
 			}

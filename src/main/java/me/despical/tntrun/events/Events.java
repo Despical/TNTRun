@@ -157,21 +157,17 @@ public class Events implements Listener {
 	}
 
 	@EventHandler(priority = EventPriority.HIGH)
-	public void onBlockBreakEvent(BlockBreakEvent event) {
-		if (!ArenaRegistry.isInArena(event.getPlayer())) {
-			return;
+	public void onBlockBreak(BlockBreakEvent event) {
+		if (ArenaRegistry.isInArena(event.getPlayer())) {
+			event.setCancelled(true);
 		}
-
-		event.setCancelled(true);
 	}
 
 	@EventHandler(priority = EventPriority.HIGH)
 	public void onBuild(BlockPlaceEvent event) {
-		if (!ArenaRegistry.isInArena(event.getPlayer())) {
-			return;
+		if (ArenaRegistry.isInArena(event.getPlayer())) {
+			event.setCancelled(true);
 		}
-
-		event.setCancelled(true);
 	}
 
 	@EventHandler(priority = EventPriority.HIGH)
@@ -230,7 +226,7 @@ public class Events implements Listener {
 	@EventHandler(priority = EventPriority.HIGH)
 	public void onItemMove(InventoryClickEvent e) {
 		if (e.getWhoClicked() instanceof Player) {
-			if (ArenaRegistry.getArena((Player) e.getWhoClicked()) != null) {
+			if (ArenaRegistry.isInArena((Player) e.getWhoClicked())) {
 				e.setResult(Event.Result.DENY);
 			}
 		}

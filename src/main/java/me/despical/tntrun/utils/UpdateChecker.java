@@ -46,7 +46,7 @@ import java.util.regex.Pattern;
  * are inconsistent with what is published on SpigotMC, it may be due to SpiGet's cache.
  * Results will be updated in due time.
  *
- * @author Parker Hawke - 2008Choco
+ * @author Despical and 2008Choco
  */
 public final class UpdateChecker {
 
@@ -75,7 +75,7 @@ public final class UpdateChecker {
 	private final JavaPlugin plugin;
 	private final int pluginID;
 	private final VersionScheme versionScheme;
-	private UpdateResult lastResult = null;
+	private UpdateResult lastResult;
 
 	private UpdateChecker(JavaPlugin plugin, int pluginID, VersionScheme versionScheme) {
 		this.plugin = plugin;
@@ -85,6 +85,7 @@ public final class UpdateChecker {
 
 	private static String[] splitVersionInfo(String version) {
 		Matcher matcher = DECIMAL_SCHEME_PATTERN.matcher(version);
+
 		if (!matcher.find()) {
 			return null;
 		}
@@ -202,7 +203,6 @@ public final class UpdateChecker {
 	public UpdateResult getLastResult() {
 		return lastResult;
 	}
-
 
 	/**
 	 * A constant reason for the result of {@link UpdateResult}.

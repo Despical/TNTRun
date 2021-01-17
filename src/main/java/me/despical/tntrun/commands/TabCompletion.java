@@ -32,6 +32,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * @author Despical
@@ -48,17 +49,14 @@ public class TabCompletion implements TabCompleter {
 
 	@Override
 	public List<String> onTabComplete(CommandSender sender, Command cmd, String label, String[] args) {
-		List<String> completions = new ArrayList<>();
-		List<String> commands = commandHandler.getSubCommands().stream().map(command -> command.getName().toLowerCase()).collect(Collectors.toList());
+		List<String> completions = new ArrayList<>(), commands = commandHandler.getSubCommands().stream().map(command -> command.getName().toLowerCase()).collect(Collectors.toList());
 
 		if (args.length == 1) {
 			StringUtil.copyPartialMatches(args[0], commands, completions);
 		}
 
 		if (args.length == 2) {
-			if (args[0].equalsIgnoreCase("create") || args[0].equalsIgnoreCase("help") || args[0].equalsIgnoreCase("list") ||
-				args[0].equalsIgnoreCase("reload") || args[0].equalsIgnoreCase("randomjoin") || args[0].equalsIgnoreCase("stop") ||
-				args[0].equalsIgnoreCase("forcestart")) {
+			if (Stream.of("create", "help", "list", "reload", "randomjoin", "stop", "forcestart").anyMatch(args[0]::equalsIgnoreCase)) {
 				return null;
 			}
 

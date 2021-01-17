@@ -123,7 +123,7 @@ public class ArenaEvents implements Listener {
 
 		Player player = (Player) event.getEntity();
 
-		if (!(ArenaRegistry.isInArena(player))) {
+		if (!ArenaRegistry.isInArena(player)) {
 			return;
 		}
 
@@ -173,7 +173,7 @@ public class ArenaEvents implements Listener {
 
 			player.getInventory().setItem(0, new ItemBuilder(XMaterial.COMPASS.parseItem()).name(plugin.getChatManager().colorMessage("In-Game.Spectator.Spectator-Item-Name", player)).build());
 			player.getInventory().setItem(4, new ItemBuilder(XMaterial.COMPARATOR.parseItem()).name(plugin.getChatManager().colorMessage("In-Game.Spectator.Settings-Menu.Item-Name", player)).build());
-			player.getInventory().setItem(8, SpecialItemManager.getSpecialItem("Leave").getItemStack());
+			player.getInventory().setItem(SpecialItemManager.getSpecialItem("Leave").getSlot(), SpecialItemManager.getSpecialItem("Leave").getItemStack());
 		}
 	}
 }

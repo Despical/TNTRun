@@ -44,11 +44,15 @@ public class ArenaUtils {
 	}
 
 	public static void hidePlayer(Player p, Arena arena) {
-		arena.getPlayers().forEach(player -> player.hidePlayer(plugin, p));
+		for (Player player : arena.getPlayers()) {
+			player.hidePlayer(plugin, p);
+		}
 	}
 
 	public static void showPlayer(Player p, Arena arena) {
-		arena.getPlayers().forEach(player -> player.showPlayer(plugin, p));
+		for (Player player : arena.getPlayers()) {
+			player.showPlayer(plugin, p);
+		}
 	}
 
 	public static void hidePlayersOutsideTheGame(Player player, Arena arena) {
@@ -91,7 +95,7 @@ public class ArenaUtils {
 
 			if (arena.getArenaState() == ArenaState.IN_GAME) {
 				team.addEntry(p.getName());
-			} else if (arena.getArenaState() == ArenaState.STARTING || arena.getArenaState() == ArenaState.WAITING_FOR_PLAYERS) {
+			} else if (arena.getArenaState() == ArenaState.WAITING_FOR_PLAYERS || arena.getArenaState() == ArenaState.STARTING) {
 				team.removeEntry(p.getName());
 			} else if (arena.getArenaState() == ArenaState.ENDING || arena.getArenaState() == ArenaState.RESTARTING) {
 				team.removeEntry(p.getName());

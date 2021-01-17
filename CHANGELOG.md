@@ -1,3 +1,17 @@
+### 1.1.0 Release (17.01.2021)
+* Added 144 character support for scoreboard entries in Minecraft 1.14 and higher versions.
+* Fixed slot for lobby items.
+* Fixed scoreboard color matching in Minecraft 1.14 and higher versions.
+* Fixed default script engine commands in rewards file.
+* Removed duplicated spectator events.
+* Removed default false booleans.
+* Changed some debugger keys.
+* Changed PAPI's version with Bukkit's.
+* Replaced some attribute methods with API methods.
+* Now list command replaces values faster.
+* Improved tab completion.
+* Moved script engine to switch-case.
+
 ### 1.0.9 Release (30.11.2020)
 * Fixed broken game behaviour.
 * Fixed possible NPE when registering commands.

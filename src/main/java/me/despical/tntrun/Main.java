@@ -81,16 +81,18 @@ public class Main extends JavaPlugin {
 	@Override
 	public void onEnable() {
 		if (!validateIfPluginShouldStart()) {
+			forceDisable = true;
+			getServer().getPluginManager().disablePlugin(this);
 			return;
 		}
 
 		exceptionLogHandler = new ExceptionLogHandler(this);
 		saveDefaultConfig();
 
-		Debugger.setEnabled(getDescription().getVersion().contains("d") || getConfig().getBoolean("Debug-Messages", false));
+		Debugger.setEnabled(getDescription().getVersion().contains("debug") || getConfig().getBoolean("Debug-Messages"));
 		Debugger.debug("Initialization start");
 
-		if (getConfig().getBoolean("Developer-Mode", false)) {
+		if (getConfig().getBoolean("Developer-Mode")) {
 			Debugger.deepDebug(true);
 			Debugger.debug("Deep debug enabled");
 			getConfig().getStringList("Listenable-Performances").forEach(Debugger::monitorPerformance);
@@ -116,9 +118,6 @@ public class Main extends JavaPlugin {
 			MessageUtils.thisVersionIsNotSupported();
 			Debugger.sendConsoleMessage("&cYour server version is not supported by TNT Run!");
 			Debugger.sendConsoleMessage("&cSadly, we must shut off. Maybe you consider changing your server version?");
-			forceDisable = true;
-
-			getServer().getPluginManager().disablePlugin(this);
 			return false;
 		}
 
@@ -128,9 +127,6 @@ public class Main extends JavaPlugin {
 			MessageUtils.thisVersionIsNotSupported();
 			Debugger.sendConsoleMessage("&cYour server software is not supported by TNT Run!");
 			Debugger.sendConsoleMessage("&cWe support only Spigot and Spigot forks only! Shutting off...");
-			forceDisable = true;
-
-			getServer().getPluginManager().disablePlugin(this);
 			return false;
 		}
 
@@ -160,6 +156,7 @@ public class Main extends JavaPlugin {
 				arena.doBarAction(Arena.BarAction.REMOVE, player);
 				arena.teleportToEndLocation(player);
 				player.setFlySpeed(0.1f);
+				player.setWalkSpeed(0.2f);
 
 				if (configPreferences.getOption(ConfigPreferences.Option.INVENTORY_MANAGER_ENABLED)) {
 					InventorySerializer.loadInventory(this, player);
@@ -167,7 +164,6 @@ public class Main extends JavaPlugin {
 					player.getInventory().clear();
 					player.getInventory().setArmorContents(null);
 					player.getActivePotionEffects().forEach(effect -> player.removePotionEffect(effect.getType()));
-					player.setWalkSpeed(0.2f);
 				}
 			}
 
@@ -187,7 +183,7 @@ public class Main extends JavaPlugin {
 		ScoreboardLib.setPluginInstance(this);
 		chatManager = new ChatManager(this);
 
-		if (getConfig().getBoolean("BungeeActivated")) {
+		if (configPreferences.getOption(ConfigPreferences.Option.BUNGEE_ENABLED)) {
 			bungeeManager = new BungeeManager(this);
 		}
 
@@ -198,24 +194,24 @@ public class Main extends JavaPlugin {
 
 		languageManager = new LanguageManager(this);
 		userManager = new UserManager(this);
+		User.cooldownHandlerTask();
 		SpecialItem.loadAll();
 		PermissionsManager.init();
 		new SpectatorEvents(this);
 		new QuitEvent(this);
 		new JoinEvent(this);
 		new ChatEvents(this);
-		signManager = new SignManager(this);
-		ArenaRegistry.registerArenas();
-		signManager.loadSigns();
-		signManager.updateSigns();
-		User.cooldownHandlerTask();
 		new Events(this);
 		new LobbyEvent(this);
 		new SpectatorItemEvents(this);
 		new ArenaEvents(this);
+		signManager = new SignManager(this);
+		ArenaRegistry.registerArenas();
+		signManager.loadSigns();
+		signManager.updateSigns();
 		rewardsFactory = new RewardsFactory(this);
-		registerSoftDependenciesAndServices();
 		commandHandler = new CommandHandler(this);
+		registerSoftDependenciesAndServices();
 	}
 
 	private void registerSoftDependenciesAndServices() {
@@ -265,7 +261,7 @@ public class Main extends JavaPlugin {
 				if (getConfig().getBoolean("Update-Notifier.Notify-Beta-Versions", true)) {
 					Bukkit.getConsoleSender().sendMessage("[TNTRun] Found a new beta version available: v" + result.getNewestVersion());
 					Bukkit.getConsoleSender().sendMessage("[TNTRun] Download it on SpigotMC:");
-					Bukkit.getConsoleSender().sendMessage("[TNTRun] spigotmc.org/resources/tnt-run-1-12-1-16-3.83196/");
+					Bukkit.getConsoleSender().sendMessage("[TNTRun] spigotmc.org/resources/tnt-run-1-12-1-16-5.83196/");
 				}
 				return;
 			}
@@ -273,7 +269,7 @@ public class Main extends JavaPlugin {
 			MessageUtils.updateIsHere();
 			Bukkit.getConsoleSender().sendMessage("[TNTRun] Found a new version available: v" + result.getNewestVersion());
 			Bukkit.getConsoleSender().sendMessage("[TNTRun] Download it SpigotMC:");
-			Bukkit.getConsoleSender().sendMessage("[TNTRun] spigotmc.org/resources/tnt-run-1-12-1-16-3.83196/");
+			Bukkit.getConsoleSender().sendMessage("[TNTRun] spigotmc.org/resources/tnt-run-1-12-1-16-5.83196/");
 		});
 	}
 
@@ -343,7 +339,9 @@ public class Main extends JavaPlugin {
 				continue;
 			}
 
-			Arrays.stream(StatsStorage.StatisticType.values()).forEach(stat -> userManager.getDatabase().saveStatistic(user, stat));
+			for (StatsStorage.StatisticType stat : StatsStorage.StatisticType.values()) {
+				userManager.getDatabase().saveStatistic(user, stat);
+			}
 		}
 	}
 }

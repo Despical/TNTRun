@@ -114,12 +114,16 @@ public class ScoreboardManager {
 			}
 		}
 
-		lines.stream().map(line -> formatScoreboardLine(line, user)).forEach(builder::next);
+		for (String line : lines) {
+			builder.next(formatScoreboardLine(line, user));
+		}
+
 		return builder.build();
 	}
 
 	private String formatScoreboardLine(String line, User user) {
 		String formattedLine = line;
+
 		formattedLine = StringUtils.replace(formattedLine, "%time%", String.valueOf(arena.getTimer()));
 		formattedLine = StringUtils.replace(formattedLine, "%formatted_time%", StringFormatUtils.formatIntoMMSS(arena.getTimer()));
 		formattedLine = StringUtils.replace(formattedLine, "%mapname%", arena.getMapName());

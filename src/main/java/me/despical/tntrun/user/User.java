@@ -74,7 +74,6 @@ public class User {
 	public int getStat(StatsStorage.StatisticType stat) {
 		if (!stats.containsKey(stat)) {
 			stats.put(stat, 0);
-
 			return 0;
 		} else if (stats.get(stat) == null) {
 			return 0;

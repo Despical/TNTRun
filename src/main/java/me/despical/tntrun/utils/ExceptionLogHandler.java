@@ -21,7 +21,6 @@ package me.despical.tntrun.utils;
 import me.despical.tntrun.Main;
 import org.bukkit.Bukkit;
 
-import java.util.Arrays;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
@@ -34,6 +33,7 @@ import java.util.logging.LogRecord;
 public class ExceptionLogHandler extends Handler {
 
 	private final Main plugin;
+	private final String[] blacklistedClasses = {"user.data.MysqlManager", "commonsbox.database.MysqlDatabase"};
 
 	public ExceptionLogHandler(Main plugin) {
 		this.plugin = plugin;
@@ -84,19 +84,21 @@ public class ExceptionLogHandler extends Handler {
 
 		stacktrace.append("\n");
 
-		Arrays.stream(exception.getStackTrace()).forEach(str -> stacktrace.append(str.toString()).append("\n"));
+		for (StackTraceElement str : exception.getStackTrace()) {
+			stacktrace.append(str.toString()).append("\n");
+		}
 
-		plugin.getLogger().log(Level.WARNING, "[Reporter service] <<-----------------------------[START]----------------------------->>");
+		plugin.getLogger().log(Level.WARNING, "[Reporter Service] <<-----------------------------[START]----------------------------->>");
 		plugin.getLogger().log(Level.WARNING, stacktrace.toString());
-		plugin.getLogger().log(Level.WARNING, "[Reporter service] <<------------------------------[END]------------------------------>>");
+		plugin.getLogger().log(Level.WARNING, "[Reporter Service] <<------------------------------[END]------------------------------>>");
 
-		record.setMessage("[TNT Run] We have found a bug in the code. Contact us at our official Discord Server (Invite link: https://discordapp.com/invite/Vhyy4HA) with the following error given above!");
+		record.setMessage("[TNT Run] We have found a bug in the code. Contact us at our official Discord server (Invite link: https://discordapp.com/invite/Vhyy4HA) with the following error given above!");
 	}
 
 	private boolean containsBlacklistedClass(Throwable throwable) {
 		for (StackTraceElement element : throwable.getStackTrace()) {
-			for (String blacklist : new String[] {"me.despical.tntrun.user.data.MysqlManager", "me.despical.tntrun.commonsbox.database.MysqlDatabase"}) {
-				if (element.getClassName().contains(blacklist)) {
+			for (String blacklist : blacklistedClasses) {
+				if (element.getClassName().contains("me.despical.tntrun." + blacklist)) {
 					return true;
 				}
 			}

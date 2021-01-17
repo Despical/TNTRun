@@ -22,6 +22,7 @@ import me.clip.placeholderapi.PlaceholderAPI;
 import me.despical.commonsbox.compat.XMaterial;
 import me.despical.commonsbox.configuration.ConfigUtils;
 import me.despical.commonsbox.item.ItemBuilder;
+import me.despical.commonsbox.miscellaneous.AttributeUtils;
 import me.despical.commonsbox.miscellaneous.MiscUtils;
 import me.despical.commonsbox.serializer.InventorySerializer;
 import me.despical.commonsbox.string.StringFormatUtils;
@@ -39,7 +40,6 @@ import me.despical.tntrun.utils.Debugger;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
-import org.bukkit.attribute.Attribute;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -48,7 +48,6 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.Arrays;
-import java.util.List;
 
 /**
  * @author Despical
@@ -59,7 +58,8 @@ public class ArenaManager {
 
 	private static final Main plugin = JavaPlugin.getPlugin(Main.class);
 
-	private ArenaManager() {}
+	private ArenaManager() {
+	}
 
 	/**
 	 * Attempts player to join arena.
@@ -116,7 +116,7 @@ public class ArenaManager {
 					continue;
 				}
 
-				ArenaManager.leaveAttempt(loopPlayer, arena);
+				leaveAttempt(loopPlayer, arena);
 				loopPlayer.sendMessage(plugin.getChatManager().getPrefix() + plugin.getChatManager().colorMessage("In-Game.Messages.Lobby-Messages.You-Were-Kicked-For-Premium-Slot"));
 				arena.broadcastMessage(plugin.getChatManager().formatMessage(arena, plugin.getChatManager().colorMessage("In-Game.Messages.Lobby-Messages.Kicked-For-Premium-Slot"), loopPlayer));
 
@@ -142,7 +142,7 @@ public class ArenaManager {
 
 		player.setLevel(0);
 		player.setExp(1);
-		player.setHealth(player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue());
+		AttributeUtils.healPlayer(player);
 		player.setFoodLevel(20);
 		player.getInventory().setArmorContents(null);
 		player.getInventory().clear();
@@ -154,7 +154,7 @@ public class ArenaManager {
 			player.getInventory().clear();
 			player.getInventory().setItem(0, new ItemBuilder(XMaterial.COMPASS.parseItem()).name(plugin.getChatManager().colorMessage("In-Game.Spectator.Spectator-Item-Name")).build());
 			player.getInventory().setItem(4, new ItemBuilder(XMaterial.COMPARATOR.parseItem()).name(plugin.getChatManager().colorMessage("In-Game.Spectator.Settings-Menu.Item-Name")).build());
-			player.getInventory().setItem(8, SpecialItemManager.getSpecialItem("Leave").getItemStack());
+			player.getInventory().setItem(SpecialItemManager.getSpecialItem("Leave").getSlot(), SpecialItemManager.getSpecialItem("Leave").getItemStack());
 			player.getActivePotionEffects().forEach(effect -> player.removePotionEffect(effect.getType()));
 
 			ArenaUtils.hidePlayer(player, arena);
@@ -228,7 +228,7 @@ public class ArenaManager {
 
 		if (arena.getArenaState() == ArenaState.IN_GAME && !user.isSpectator()) {
 			if (arena.getPlayersLeft().size() - 1 == 1) {
-				ArenaManager.stopGame(false, arena);
+				stopGame(false, arena);
 				return;
 			}
 		}
@@ -251,7 +251,7 @@ public class ArenaManager {
 
 		arena.doBarAction(Arena.BarAction.REMOVE, player);
 
-		player.setHealth(player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue());
+		AttributeUtils.healPlayer(player);
 		player.setFoodLevel(20);
 		player.setLevel(0);
 		player.setExp(0);
@@ -269,7 +269,7 @@ public class ArenaManager {
 		player.setGameMode(GameMode.SURVIVAL);
 
 		for (Player players : plugin.getServer().getOnlinePlayers()) {
-			if (ArenaRegistry.getArena(players) == null) {
+			if (!ArenaRegistry.isInArena(players)) {
 				players.showPlayer(plugin, player);
 			}
 
@@ -311,8 +311,6 @@ public class ArenaManager {
 			Bukkit.getScheduler().runTaskLater(plugin, () -> arena.setArenaState(ArenaState.ENDING), 20L * 10);
 		}
 
-		List<String> summaryMessages = config.getStringList("In-Game.Messages.Game-End-Messages.Summary-Message");
-
 		arena.getScoreboardManager().stopAllScoreboards();
 
 		for (final Player player : arena.getPlayers()) {
@@ -326,7 +324,9 @@ public class ArenaManager {
 			player.getInventory().setItem(SpecialItemManager.getSpecialItem("Leave").getSlot(), SpecialItemManager.getSpecialItem("Leave").getItemStack());
 
 			if (!quickStop) {
-				summaryMessages.forEach(msg -> MiscUtils.sendCenteredMessage(player, formatSummaryPlaceholders(msg, arena, player)));
+				for (String msg : config.getStringList("In-Game.Messages.Game-End-Messages.Summary-Message")) {
+					MiscUtils.sendCenteredMessage(player, formatSummaryPlaceholders(msg, arena, player));
+				}
 			}
 
 			plugin.getUserManager().saveAllStatistic(user);
@@ -353,6 +353,7 @@ public class ArenaManager {
 
 	private static String formatSummaryPlaceholders(String msg, Arena arena, Player player) {
 		String formatted = msg;
+
 		formatted = StringUtils.replace(formatted, "%winner%", arena.getPlayersLeft().get(0).getName());
 		formatted = StringUtils.replace(formatted, "%earned_coins%", String.valueOf(StatsStorage.getUserStats(player, StatsStorage.StatisticType.LOCAL_COINS)));
 		formatted = StringUtils.replace(formatted, "%survive_time%", String.valueOf(StatsStorage.getUserStats(player, StatsStorage.StatisticType.LOCAL_SURVIVE)));

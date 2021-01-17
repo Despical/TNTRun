@@ -46,11 +46,9 @@ public class UserManager {
 	public UserManager(Main plugin) {
 		if (plugin.getConfigPreferences().getOption(ConfigPreferences.Option.DATABASE_ENABLED)) {
 			database = new MysqlManager(plugin);
-
 			Debugger.debug("MySQL Stats enabled");
 		} else {
 			database = new FileStats(plugin);
-
 			Debugger.debug("File Stats enabled");
 		}
 
@@ -71,7 +69,6 @@ public class UserManager {
 		Debugger.debug("Registering new user {0} ({1})", player.getUniqueId(), player.getName());
 
 		User user = new User(player);
-
 		users.add(user);
 		return user;
 	}

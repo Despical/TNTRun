@@ -185,28 +185,6 @@ public class SpectatorEvents implements Listener {
 	}
 
 	@EventHandler(priority = EventPriority.HIGH)
-	public void onSpectate(PlayerDropItemEvent event) {
-		Arena arena = ArenaRegistry.getArena(event.getPlayer());
-
-		if (arena == null) {
-			return;
-		}
-
-		if (plugin.getUserManager().getUser(event.getPlayer()).isSpectator()) {
-			event.setCancelled(true);
-		}
-	}
-
-	@EventHandler(priority = EventPriority.HIGH)
-	public void onInteractEntityInteract(PlayerInteractEntityEvent event) {
-		User user = plugin.getUserManager().getUser(event.getPlayer());
-
-		if (user.isSpectator()) {
-			event.setCancelled(true);
-		}
-	}
-
-	@EventHandler(priority = EventPriority.HIGH)
 	public void onRightClick(PlayerInteractEvent event) {
 		if (ArenaRegistry.isInArena(event.getPlayer()) && plugin.getUserManager().getUser(event.getPlayer()).isSpectator()) {
 			event.setCancelled(true);

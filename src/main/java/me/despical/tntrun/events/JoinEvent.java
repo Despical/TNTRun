@@ -97,7 +97,7 @@ public class JoinEvent implements Listener {
 				event.getPlayer().sendMessage(plugin.getChatManager().colorRawMessage("&3[TNT Run] &bFound an update: v" + result.getNewestVersion() + " Download:"));
 			}
 
-			event.getPlayer().sendMessage(plugin.getChatManager().colorRawMessage("&3>> &bhttps://www.spigotmc.org/resources/tnt-run-1-12-1-16-3.83196/"));
+			event.getPlayer().sendMessage(plugin.getChatManager().colorRawMessage("&3>> &bhttps://www.spigotmc.org/resources/tnt-run-1-12-1-16-5.83196/"));
 		}), 25);
 	}
 }

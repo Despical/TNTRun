@@ -1,5 +1,5 @@
 #
-#             TNT Run rewards configuration
+#             TNT Run Rewards Configuration
 #
 #                    Placeholders list:
 #             %player% - Current player name
@@ -33,13 +33,13 @@
 rewards:
   # Commands performed when game is finished
   endgame:
-    - say %mapname% has ended!
+    - p:say %mapname% has ended!
     - say Ooh and there were playing %players% players
   # Commands executed when player wins the game
   win:
     - eco give %player% 2
-    - say I won the game!
+    - p:say I won the game!
   # Commands executed when player loses the game
   lose:
     - chance(10):eco give %player% 8
-    - say I lost the game!
+    - p:say I lost the game!
