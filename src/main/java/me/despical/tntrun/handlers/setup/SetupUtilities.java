@@ -18,7 +18,7 @@
 
 package me.despical.tntrun.handlers.setup;
 
-import me.despical.commonsbox.serializer.LocationSerializer;
+import me.despical.commons.serializer.LocationSerializer;
 import me.despical.tntrun.arena.Arena;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -48,7 +48,7 @@ public class SetupUtilities {
 
 	public String isOptionDoneBool(String path) {
 		if (config.isSet(path)) {
-			if (Bukkit.getServer().getWorlds().get(0).getSpawnLocation().equals(LocationSerializer.locationFromString(config.getString(path)))) {
+			if (Bukkit.getServer().getWorlds().get(0).getSpawnLocation().equals(LocationSerializer.fromString(config.getString(path)))) {
 				return "&c&l✘ Not Completed";
 			}
 

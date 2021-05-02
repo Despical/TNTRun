@@ -18,7 +18,7 @@
 
 package me.despical.tntrun.handlers.sign;
 
-import me.despical.commonsbox.compat.VersionResolver;
+import me.despical.commons.compat.VersionResolver;
 import me.despical.tntrun.arena.Arena;
 import org.bukkit.Location;
 import org.bukkit.Material;

@@ -18,10 +18,10 @@
 
 package me.despical.tntrun.handlers.setup.components;
 
-import me.despical.commonsbox.compat.XMaterial;
-import me.despical.commonsbox.configuration.ConfigUtils;
-import me.despical.commonsbox.item.ItemBuilder;
-import me.despical.commonsbox.serializer.LocationSerializer;
+import me.despical.commons.compat.XMaterial;
+import me.despical.commons.configuration.ConfigUtils;
+import me.despical.commons.item.ItemBuilder;
+import me.despical.commons.serializer.LocationSerializer;
 import me.despical.inventoryframework.GuiItem;
 import me.despical.inventoryframework.pane.StaticPane;
 import me.despical.tntrun.Main;
@@ -90,7 +90,7 @@ public class ArenaRegisterComponent implements SetupComponent {
 			String[] locations = {"lobbylocation", "Endlocation"};
 
 			for (String s : locations) {
-				if (!config.isSet("instances." + arena.getId() + "." + s) || config.getString("instances." + arena.getId() + "." + s).equals(LocationSerializer.locationToString(Bukkit.getWorlds().get(0).getSpawnLocation()))) {
+				if (!config.isSet("instances." + arena.getId() + "." + s) || config.getString("instances." + arena.getId() + "." + s).equals(LocationSerializer.toString(Bukkit.getWorlds().get(0).getSpawnLocation()))) {
 					e.getWhoClicked().sendMessage(plugin.getChatManager().colorRawMessage("&c&l✘ &cArena validation failed! Please configure following spawn properly: " + s + " (cannot be world spawn location)"));
 					return;
 				}
@@ -115,8 +115,8 @@ public class ArenaRegisterComponent implements SetupComponent {
 			arena.setMinimumPlayers(config.getInt("instances." + arena.getId() + ".minimumplayers"));
 			arena.setMaximumPlayers(config.getInt("instances." + arena.getId() + ".maximumplayers"));
 			arena.setMapName(config.getString("instances." + arena.getId() + ".mapname"));
-			arena.setLobbyLocation(LocationSerializer.locationFromString(config.getString("instances." + arena.getId() + ".lobbylocation")));
-			arena.setEndLocation(LocationSerializer.locationFromString(config.getString("instances." + arena.getId() + ".Endlocation")));
+			arena.setLobbyLocation(LocationSerializer.fromString(config.getString("instances." + arena.getId() + ".lobbylocation")));
+			arena.setEndLocation(LocationSerializer.fromString(config.getString("instances." + arena.getId() + ".Endlocation")));
 			ArenaRegistry.registerArena(arena);
 			arena.start();
 

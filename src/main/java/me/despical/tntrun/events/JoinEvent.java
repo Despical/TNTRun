@@ -18,7 +18,7 @@
 
 package me.despical.tntrun.events;
 
-import me.despical.commonsbox.serializer.InventorySerializer;
+import me.despical.commons.serializer.InventorySerializer;
 import me.despical.tntrun.ConfigPreferences;
 import me.despical.tntrun.Main;
 import me.despical.tntrun.arena.ArenaRegistry;

@@ -18,7 +18,7 @@
 
 package me.despical.tntrun.handlers.setup;
 
-import me.despical.commonsbox.configuration.ConfigUtils;
+import me.despical.commons.configuration.ConfigUtils;
 import me.despical.inventoryframework.Gui;
 import me.despical.inventoryframework.pane.StaticPane;
 import me.despical.tntrun.Main;

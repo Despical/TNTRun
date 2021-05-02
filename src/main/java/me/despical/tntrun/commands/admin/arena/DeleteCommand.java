@@ -18,7 +18,7 @@
 
 package me.despical.tntrun.commands.admin.arena;
 
-import me.despical.commonsbox.configuration.ConfigUtils;
+import me.despical.commons.configuration.ConfigUtils;
 import me.despical.tntrun.arena.Arena;
 import me.despical.tntrun.arena.ArenaManager;
 import me.despical.tntrun.arena.ArenaRegistry;

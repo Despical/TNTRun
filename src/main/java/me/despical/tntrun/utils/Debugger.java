@@ -18,8 +18,8 @@
 
 package me.despical.tntrun.utils;
 
-import me.despical.commonsbox.compat.VersionResolver;
-import me.despical.commonsbox.string.StringMatcher;
+import me.despical.commons.compat.VersionResolver;
+import me.despical.commons.string.StringMatcher;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 

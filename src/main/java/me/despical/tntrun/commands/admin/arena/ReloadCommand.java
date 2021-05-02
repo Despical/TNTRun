@@ -18,7 +18,7 @@
 
 package me.despical.tntrun.commands.admin.arena;
 
-import me.despical.commonsbox.serializer.InventorySerializer;
+import me.despical.commons.serializer.InventorySerializer;
 import me.despical.tntrun.ConfigPreferences;
 import me.despical.tntrun.arena.Arena;
 import me.despical.tntrun.arena.ArenaManager;

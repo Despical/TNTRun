@@ -59,8 +59,8 @@
 		</dependency>
 		<dependency>
 			<groupId>com.github.Despical</groupId>
-			<artifactId>commons-box</artifactId>
-			<version>1.2.2</version>
+			<artifactId>Commons</artifactId>
+			<version>1.2.7</version>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>

@@ -18,10 +18,10 @@
 
 package me.despical.tntrun.handlers.setup.components;
 
-import me.despical.commonsbox.compat.XMaterial;
-import me.despical.commonsbox.configuration.ConfigUtils;
-import me.despical.commonsbox.item.ItemBuilder;
-import me.despical.commonsbox.serializer.LocationSerializer;
+import me.despical.commons.compat.XMaterial;
+import me.despical.commons.configuration.ConfigUtils;
+import me.despical.commons.item.ItemBuilder;
+import me.despical.commons.serializer.LocationSerializer;
 import me.despical.inventoryframework.GuiItem;
 import me.despical.inventoryframework.pane.StaticPane;
 import me.despical.tntrun.ConfigPreferences;
@@ -103,7 +103,7 @@ public class MiscComponents implements SetupComponent {
 			plugin.getSignManager().getArenaSigns().add(new ArenaSign((Sign) location.getBlock().getState(), arena));
 			player.sendMessage(plugin.getChatManager().getPrefix() + plugin.getChatManager().colorMessage("Signs.Sign-Created"));
 
-			String signLoc = LocationSerializer.locationToString(location);
+			String signLoc = LocationSerializer.toString(location);
 			List<String> locs = config.getStringList("instances." + arena.getId() + ".signs");
 
 			locs.add(signLoc);

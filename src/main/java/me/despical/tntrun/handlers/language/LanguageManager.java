@@ -1,6 +1,6 @@
 package me.despical.tntrun.handlers.language;
 
-import me.despical.commonsbox.file.FileUtils;
+import me.despical.commons.file.FileUtils;
 import me.despical.tntrun.Main;
 import me.despical.tntrun.utils.Debugger;
 

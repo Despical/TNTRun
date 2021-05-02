@@ -18,8 +18,8 @@
 
 package me.despical.tntrun.api;
 
-import me.despical.commonsbox.configuration.ConfigUtils;
-import me.despical.commonsbox.sorter.SortUtils;
+import me.despical.commons.configuration.ConfigUtils;
+import me.despical.commons.sorter.SortUtils;
 import me.despical.tntrun.ConfigPreferences;
 import me.despical.tntrun.Main;
 import me.despical.tntrun.user.data.MysqlManager;

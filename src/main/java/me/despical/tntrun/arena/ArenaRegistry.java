@@ -18,8 +18,8 @@
 
 package me.despical.tntrun.arena;
 
-import me.despical.commonsbox.configuration.ConfigUtils;
-import me.despical.commonsbox.serializer.LocationSerializer;
+import me.despical.commons.configuration.ConfigUtils;
+import me.despical.commons.serializer.LocationSerializer;
 import me.despical.tntrun.Main;
 import me.despical.tntrun.utils.Debugger;
 import org.bukkit.Bukkit;
@@ -145,8 +145,8 @@ public class ArenaRegistry {
 			arena.setMinimumPlayers(config.getInt(s + "minimumplayers", 2));
 			arena.setMaximumPlayers(config.getInt(s + "maximumplayers", 10));
 			arena.setMapName(config.getString(s + "mapname", "undefined"));
-			arena.setLobbyLocation(LocationSerializer.locationFromString(config.getString(s + "lobbylocation", "world, -994.000, 4.000, 853.000, 0.000, 0.000")));
-			arena.setEndLocation(LocationSerializer.locationFromString(config.getString(s + "Endlocation", "world, -994.000, 4.000, 853.000, 0.000, 0.000")));
+			arena.setLobbyLocation(LocationSerializer.fromString(config.getString(s + "lobbylocation", "world, -994.000, 4.000, 853.000, 0.000, 0.000")));
+			arena.setEndLocation(LocationSerializer.fromString(config.getString(s + "Endlocation", "world, -994.000, 4.000, 853.000, 0.000, 0.000")));
 
 			if (!config.getBoolean(s + "isdone", false)) {
 				Bukkit.getConsoleSender().sendMessage(plugin.getChatManager().colorMessage("Validator.Invalid-Arena-Configuration").replace("%arena%", id).replace("%error%", "NOT VALIDATED"));

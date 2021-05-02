@@ -18,9 +18,9 @@
 
 package me.despical.tntrun.events.spectator;
 
-import me.despical.commonsbox.compat.XMaterial;
-import me.despical.commonsbox.item.ItemUtils;
-import me.despical.commonsbox.number.NumberUtils;
+import me.despical.commons.compat.XMaterial;
+import me.despical.commons.item.ItemUtils;
+import me.despical.commons.number.NumberUtils;
 import me.despical.tntrun.Main;
 import me.despical.tntrun.api.StatsStorage;
 import me.despical.tntrun.arena.Arena;
@@ -81,7 +81,7 @@ public class SpectatorItemEvents implements Listener {
 	}
 
 	private void openSpectatorMenu(World world, Player p) {
-		Inventory inventory = plugin.getServer().createInventory(null, NumberUtils.serializeInt(ArenaRegistry.getArena(p).getPlayers().size()),
+		Inventory inventory = plugin.getServer().createInventory(null, NumberUtils.roundInteger(ArenaRegistry.getArena(p).getPlayers().size(), 9),
 			plugin.getChatManager().colorMessage("In-Game.Spectator.Spectator-Menu-Name"));
 		Set<Player> players = ArenaRegistry.getArena(p).getPlayers();
 

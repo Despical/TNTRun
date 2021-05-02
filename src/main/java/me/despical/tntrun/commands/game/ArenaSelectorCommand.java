@@ -18,8 +18,8 @@
 
 package me.despical.tntrun.commands.game;
 
-import me.despical.commonsbox.compat.XMaterial;
-import me.despical.commonsbox.number.NumberUtils;
+import me.despical.commons.compat.XMaterial;
+import me.despical.commons.number.NumberUtils;
 import me.despical.tntrun.Main;
 import me.despical.tntrun.arena.Arena;
 import me.despical.tntrun.arena.ArenaManager;
@@ -72,7 +72,7 @@ public class ArenaSelectorCommand extends SubCommand implements Listener {
 			return;
 		}
 
-		Inventory inventory = Bukkit.createInventory(player, NumberUtils.serializeInt(ArenaRegistry.getArenas().size()), chatManager.colorMessage("Arena-Selector.Inventory-Title"));
+		Inventory inventory = Bukkit.createInventory(player, NumberUtils.roundInteger(ArenaRegistry.getArenas().size(), 9), chatManager.colorMessage("Arena-Selector.Inventory-Title"));
 
 		for (Arena arena : ArenaRegistry.getArenas()) {
 			ItemStack itemStack;

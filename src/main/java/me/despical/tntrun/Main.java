@@ -18,11 +18,11 @@
 
 package me.despical.tntrun;
 
-import me.despical.commonsbox.compat.VersionResolver;
-import me.despical.commonsbox.configuration.ConfigUtils;
-import me.despical.commonsbox.database.MysqlDatabase;
-import me.despical.commonsbox.scoreboard.ScoreboardLib;
-import me.despical.commonsbox.serializer.InventorySerializer;
+import me.despical.commons.compat.VersionResolver;
+import me.despical.commons.configuration.ConfigUtils;
+import me.despical.commons.database.MysqlDatabase;
+import me.despical.commons.scoreboard.ScoreboardLib;
+import me.despical.commons.serializer.InventorySerializer;
 import me.despical.tntrun.api.StatsStorage;
 import me.despical.tntrun.arena.Arena;
 import me.despical.tntrun.arena.ArenaEvents;
@@ -89,7 +89,7 @@ public class Main extends JavaPlugin {
 		exceptionLogHandler = new ExceptionLogHandler(this);
 		saveDefaultConfig();
 
-		Debugger.setEnabled(getDescription().getVersion().contains("debug") || getConfig().getBoolean("Debug-Messages"));
+		Debugger.setEnabled(true);
 		Debugger.debug("Initialization start");
 
 		if (getConfig().getBoolean("Developer-Mode")) {

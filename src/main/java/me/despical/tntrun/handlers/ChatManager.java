@@ -19,10 +19,10 @@
 package me.despical.tntrun.handlers;
 
 import me.clip.placeholderapi.PlaceholderAPI;
-import me.despical.commonsbox.compat.VersionResolver;
-import me.despical.commonsbox.configuration.ConfigUtils;
-import me.despical.commonsbox.string.StringFormatUtils;
-import me.despical.commonsbox.string.StringMatcher;
+import me.despical.commons.compat.VersionResolver;
+import me.despical.commons.configuration.ConfigUtils;
+import me.despical.commons.string.StringFormatUtils;
+import me.despical.commons.string.StringMatcher;
 import me.despical.tntrun.Main;
 import me.despical.tntrun.arena.Arena;
 import org.apache.commons.lang.StringUtils;

@@ -18,8 +18,8 @@
 
 package me.despical.tntrun.handlers.items;
 
-import me.despical.commonsbox.compat.XMaterial;
-import me.despical.commonsbox.configuration.ConfigUtils;
+import me.despical.commons.compat.XMaterial;
+import me.despical.commons.configuration.ConfigUtils;
 import me.despical.tntrun.Main;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;

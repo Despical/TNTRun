@@ -53,10 +53,6 @@ public class ForceStartCommand extends SubCommand {
 
 	@Override
 	public void execute(CommandSender sender, String[] args) {
-		if (!checkIsInGameInstance((Player) sender)) {
-			return;
-		}
-
 		Arena arena = ArenaRegistry.getArena((Player) sender);
 
 		if (arena.getPlayers().size() < 2) {

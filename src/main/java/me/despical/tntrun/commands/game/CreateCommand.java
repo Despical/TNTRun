@@ -18,8 +18,8 @@
 
 package me.despical.tntrun.commands.game;
 
-import me.despical.commonsbox.configuration.ConfigUtils;
-import me.despical.commonsbox.serializer.LocationSerializer;
+import me.despical.commons.configuration.ConfigUtils;
+import me.despical.commons.serializer.LocationSerializer;
 import me.despical.tntrun.arena.Arena;
 import me.despical.tntrun.arena.ArenaRegistry;
 import me.despical.tntrun.commands.SubCommand;
@@ -90,8 +90,8 @@ public class CreateCommand extends SubCommand {
 		String path = "instances." + id + ".";
 		FileConfiguration config = ConfigUtils.getConfig(plugin, "arenas");
 
-		config.set(path + "lobbylocation", LocationSerializer.locationToString(Bukkit.getServer().getWorlds().get(0).getSpawnLocation()));
-		config.set(path + "Endlocation", LocationSerializer.locationToString(Bukkit.getServer().getWorlds().get(0).getSpawnLocation()));
+		config.set(path + "lobbylocation", LocationSerializer.toString(Bukkit.getServer().getWorlds().get(0).getSpawnLocation()));
+		config.set(path + "Endlocation", LocationSerializer.toString(Bukkit.getServer().getWorlds().get(0).getSpawnLocation()));
 		config.set(path + "minimumplayers", 2);
 		config.set(path + "maximumplayers", 12);
 		config.set(path + "mapname", id);
@@ -102,8 +102,8 @@ public class CreateCommand extends SubCommand {
 		Arena arena = new Arena(id);
 
 		arena.setMapName(config.getString(path + "mapname"));
-		arena.setLobbyLocation(LocationSerializer.locationFromString(config.getString(path + "lobbylocation")));
-		arena.setEndLocation(LocationSerializer.locationFromString(config.getString(path + "Endlocation")));
+		arena.setLobbyLocation(LocationSerializer.fromString(config.getString(path + "lobbylocation")));
+		arena.setEndLocation(LocationSerializer.fromString(config.getString(path + "Endlocation")));
 		arena.setReady(false);
 
 		ArenaRegistry.registerArena(arena);

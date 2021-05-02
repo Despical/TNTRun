@@ -19,12 +19,12 @@
 package me.despical.tntrun.arena.managers;
 
 import me.clip.placeholderapi.PlaceholderAPI;
-import me.despical.commonsbox.scoreboard.ScoreboardLib;
-import me.despical.commonsbox.scoreboard.common.EntryBuilder;
-import me.despical.commonsbox.scoreboard.type.Entry;
-import me.despical.commonsbox.scoreboard.type.Scoreboard;
-import me.despical.commonsbox.scoreboard.type.ScoreboardHandler;
-import me.despical.commonsbox.string.StringFormatUtils;
+import me.despical.commons.scoreboard.ScoreboardLib;
+import me.despical.commons.scoreboard.common.EntryBuilder;
+import me.despical.commons.scoreboard.type.Entry;
+import me.despical.commons.scoreboard.type.Scoreboard;
+import me.despical.commons.scoreboard.type.ScoreboardHandler;
+import me.despical.commons.string.StringFormatUtils;
 import me.despical.tntrun.Main;
 import me.despical.tntrun.api.StatsStorage;
 import me.despical.tntrun.arena.Arena;

@@ -18,7 +18,7 @@
 
 package me.despical.tntrun.user.data;
 
-import me.despical.commonsbox.configuration.ConfigUtils;
+import me.despical.commons.configuration.ConfigUtils;
 import me.despical.tntrun.Main;
 import me.despical.tntrun.api.StatsStorage;
 import me.despical.tntrun.user.User;

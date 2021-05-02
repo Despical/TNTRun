@@ -18,8 +18,8 @@
 
 package me.despical.tntrun.handlers.rewards;
 
-import me.despical.commonsbox.configuration.ConfigUtils;
-import me.despical.commonsbox.engine.ScriptEngine;
+import me.despical.commons.configuration.ConfigUtils;
+import me.despical.commons.engine.ScriptEngine;
 import me.despical.tntrun.Main;
 import me.despical.tntrun.arena.Arena;
 import me.despical.tntrun.arena.ArenaRegistry;

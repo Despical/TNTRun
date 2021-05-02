@@ -18,9 +18,9 @@
 
 package me.despical.tntrun.arena;
 
-import me.despical.commonsbox.compat.XMaterial;
-import me.despical.commonsbox.item.ItemBuilder;
-import me.despical.commonsbox.item.ItemUtils;
+import me.despical.commons.compat.XMaterial;
+import me.despical.commons.item.ItemBuilder;
+import me.despical.commons.item.ItemUtils;
 import me.despical.tntrun.Main;
 import me.despical.tntrun.api.StatsStorage;
 import me.despical.tntrun.handlers.ChatManager;

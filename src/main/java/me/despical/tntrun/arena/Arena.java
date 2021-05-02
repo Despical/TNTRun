@@ -18,8 +18,8 @@
 
 package me.despical.tntrun.arena;
 
-import me.despical.commonsbox.configuration.ConfigUtils;
-import me.despical.commonsbox.serializer.InventorySerializer;
+import me.despical.commons.configuration.ConfigUtils;
+import me.despical.commons.serializer.InventorySerializer;
 import me.despical.tntrun.ConfigPreferences;
 import me.despical.tntrun.Main;
 import me.despical.tntrun.api.StatsStorage;

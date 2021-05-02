@@ -20,7 +20,7 @@ package me.despical.tntrun.handlers;
 
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
-import me.despical.commonsbox.configuration.ConfigUtils;
+import me.despical.commons.configuration.ConfigUtils;
 import me.despical.tntrun.Main;
 import me.despical.tntrun.arena.Arena;
 import me.despical.tntrun.arena.ArenaManager;

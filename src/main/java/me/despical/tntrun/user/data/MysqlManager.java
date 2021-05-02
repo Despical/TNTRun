@@ -18,8 +18,8 @@
 
 package me.despical.tntrun.user.data;
 
-import me.despical.commonsbox.configuration.ConfigUtils;
-import me.despical.commonsbox.database.MysqlDatabase;
+import me.despical.commons.configuration.ConfigUtils;
+import me.despical.commons.database.MysqlDatabase;
 import me.despical.tntrun.Main;
 import me.despical.tntrun.api.StatsStorage;
 import me.despical.tntrun.user.User;

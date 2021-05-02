@@ -18,7 +18,7 @@
 
 package me.despical.tntrun.commands.game;
 
-import me.despical.commonsbox.string.StringFormatUtils;
+import me.despical.commons.string.StringFormatUtils;
 import me.despical.tntrun.api.StatsStorage;
 import me.despical.tntrun.commands.SubCommand;
 import me.despical.tntrun.handlers.ChatManager;

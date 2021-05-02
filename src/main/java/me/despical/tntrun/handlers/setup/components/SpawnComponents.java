@@ -18,9 +18,9 @@
 
 package me.despical.tntrun.handlers.setup.components;
 
-import me.despical.commonsbox.configuration.ConfigUtils;
-import me.despical.commonsbox.item.ItemBuilder;
-import me.despical.commonsbox.serializer.LocationSerializer;
+import me.despical.commons.configuration.ConfigUtils;
+import me.despical.commons.item.ItemBuilder;
+import me.despical.commons.serializer.LocationSerializer;
 import me.despical.inventoryframework.GuiItem;
 import me.despical.inventoryframework.pane.StaticPane;
 import me.despical.tntrun.Main;
@@ -50,7 +50,7 @@ public class SpawnComponents implements SetupComponent {
 		FileConfiguration config = setupInventory.getConfig();
 		Arena arena = setupInventory.getArena();
 		Main plugin = setupInventory.getPlugin();
-		String serializedLocation = LocationSerializer.locationToString(player.getLocation());
+		String serializedLocation = LocationSerializer.toString(player.getLocation());
 
 		pane.addItem(new GuiItem(new ItemBuilder(Material.REDSTONE_BLOCK)
 			.name(plugin.getChatManager().colorRawMessage("&e&lSet Ending Location"))

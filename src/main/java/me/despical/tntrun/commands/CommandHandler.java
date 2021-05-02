@@ -18,7 +18,7 @@
 
 package me.despical.tntrun.commands;
 
-import me.despical.commonsbox.string.StringMatcher;
+import me.despical.commons.string.StringMatcher;
 import me.despical.tntrun.Main;
 import me.despical.tntrun.commands.SubCommand.SenderType;
 import me.despical.tntrun.commands.admin.HelpCommand;

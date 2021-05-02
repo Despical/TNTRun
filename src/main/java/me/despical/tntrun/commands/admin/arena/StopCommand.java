@@ -56,10 +56,6 @@ public class StopCommand extends SubCommand {
 	public void execute(CommandSender sender, String[] args) {
 		Player player = (Player) sender;
 
-		if (!checkIsInGameInstance(player)) {
-			return;
-		}
-
 		Arena arena = ArenaRegistry.getArena(player);
 
 		if (arena.getArenaState() != ArenaState.ENDING) {

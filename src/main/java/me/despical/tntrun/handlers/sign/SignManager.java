@@ -18,10 +18,10 @@
 
 package me.despical.tntrun.handlers.sign;
 
-import me.despical.commonsbox.compat.VersionResolver;
-import me.despical.commonsbox.compat.XMaterial;
-import me.despical.commonsbox.configuration.ConfigUtils;
-import me.despical.commonsbox.serializer.LocationSerializer;
+import me.despical.commons.compat.VersionResolver;
+import me.despical.commons.compat.XMaterial;
+import me.despical.commons.configuration.ConfigUtils;
+import me.despical.commons.serializer.LocationSerializer;
 import me.despical.tntrun.Main;
 import me.despical.tntrun.arena.Arena;
 import me.despical.tntrun.arena.ArenaManager;
@@ -99,7 +99,7 @@ public class SignManager implements Listener {
 			arenaSigns.add(new ArenaSign((Sign) e.getBlock().getState(), arena));
 			e.getPlayer().sendMessage(plugin.getChatManager().getPrefix() + plugin.getChatManager().colorMessage("Signs.Sign-Created"));
 
-			String location = LocationSerializer.locationToString(e.getBlock().getLocation());
+			String location = LocationSerializer.toString(e.getBlock().getLocation());
 			FileConfiguration config = ConfigUtils.getConfig(plugin, "arenas");
 			List<String> locs = config.getStringList("instances." + arena.getId() + ".signs");
 
@@ -145,7 +145,7 @@ public class SignManager implements Listener {
 		arenaSigns.remove(arenaSign);
 
 		FileConfiguration config = ConfigUtils.getConfig(plugin, "arenas");
-		String location = LocationSerializer.locationToString(e.getBlock().getLocation());
+		String location = LocationSerializer.toString(e.getBlock().getLocation());
 
 		for (String arena : config.getConfigurationSection("instances").getKeys(false)) {
 			for (String sign : config.getStringList("instances." + arena + ".signs")) {
@@ -220,7 +220,7 @@ public class SignManager implements Listener {
 
 		for (String path : config.getConfigurationSection("instances").getKeys(false)) {
 			for (String sign : config.getStringList("instances." + path + ".signs")) {
-				Location loc = LocationSerializer.locationFromString(sign);
+				Location loc = LocationSerializer.fromString(sign);
 
 				if (loc.getBlock().getState() instanceof Sign) {
 					arenaSigns.add(new ArenaSign((Sign) loc.getBlock().getState(), ArenaRegistry.getArena(path)));

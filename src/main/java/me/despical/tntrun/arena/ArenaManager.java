@@ -19,13 +19,13 @@
 package me.despical.tntrun.arena;
 
 import me.clip.placeholderapi.PlaceholderAPI;
-import me.despical.commonsbox.compat.XMaterial;
-import me.despical.commonsbox.configuration.ConfigUtils;
-import me.despical.commonsbox.item.ItemBuilder;
-import me.despical.commonsbox.miscellaneous.AttributeUtils;
-import me.despical.commonsbox.miscellaneous.MiscUtils;
-import me.despical.commonsbox.serializer.InventorySerializer;
-import me.despical.commonsbox.string.StringFormatUtils;
+import me.despical.commons.compat.XMaterial;
+import me.despical.commons.configuration.ConfigUtils;
+import me.despical.commons.item.ItemBuilder;
+import me.despical.commons.miscellaneous.AttributeUtils;
+import me.despical.commons.miscellaneous.MiscUtils;
+import me.despical.commons.serializer.InventorySerializer;
+import me.despical.commons.string.StringFormatUtils;
 import me.despical.tntrun.ConfigPreferences;
 import me.despical.tntrun.Main;
 import me.despical.tntrun.api.StatsStorage;

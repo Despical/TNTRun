@@ -18,8 +18,8 @@
 
 package me.despical.tntrun.events;
 
-import me.despical.commonsbox.compat.XMaterial;
-import me.despical.commonsbox.item.ItemUtils;
+import me.despical.commons.compat.XMaterial;
+import me.despical.commons.item.ItemUtils;
 import me.despical.tntrun.ConfigPreferences;
 import me.despical.tntrun.Main;
 import me.despical.tntrun.arena.Arena;
