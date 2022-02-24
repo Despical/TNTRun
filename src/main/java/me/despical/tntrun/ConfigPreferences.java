@@ -29,12 +29,19 @@ import java.util.Map;
 public class ConfigPreferences {
 
 	private final Main plugin;
-	private final Map<Option, Boolean> options = new HashMap<>();
+	private final boolean papi;
+	private final Map<Option, Boolean> options;
 
 	public ConfigPreferences(Main plugin) {
 		this.plugin = plugin;
+		this.papi = plugin.getServer().getPluginManager().isPluginEnabled("PlaceholderAPI");
+		this.options = new HashMap<>();
 
 		loadOptions();
+	}
+
+	public boolean isPapiEnabled() {
+		return papi;
 	}
 
 	/**
@@ -54,10 +61,10 @@ public class ConfigPreferences {
 	}
 
 	public enum Option {
-		BOSSBAR_ENABLED("Bossbar-Enabled", true), BUNGEE_ENABLED("BungeeActivated", false),
-		CHAT_FORMAT_ENABLED("ChatFormat-Enabled", true), DATABASE_ENABLED("DatabaseActivated", false),
+		BOSS_BAR_ENABLED("Boss-Bar-Enabled", true), BUNGEE_ENABLED("Bungee-Activated", false),
+		CHAT_FORMAT_ENABLED("Chat-Format-Enabled", true), DATABASE_ENABLED("Database-Activated", false),
 		DISABLE_SEPARATE_CHAT("Disable-Separate-Chat", false), ENABLE_SHORT_COMMANDS("Enable-Short-Commands", false),
-		INVENTORY_MANAGER_ENABLED("InventoryManager", true), NAMETAGS_HIDDEN("Nametags-Hidden", false);
+		INVENTORY_MANAGER_ENABLED("Inventory-Manager", true), NAME_TAGS_HIDDEN("Name-Tags-Hidden", false);
 
 		private final String path;
 		private final boolean def;
@@ -71,9 +78,6 @@ public class ConfigPreferences {
 			return path;
 		}
 
-		/**
-		 * @return default value of option if absent in config
-		 */
 		public boolean getDefault() {
 			return def;
 		}

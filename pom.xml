@@ -2,7 +2,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>me.despical</groupId>
 	<artifactId>tnt-run</artifactId>
-	<version>1.1.0</version>
+	<version>2.0.0</version>
 	<name>TNT Run</name>
 
 	<properties>
@@ -44,10 +44,6 @@
 			<id>codemc-repo</id>
 			<url>https://repo.codemc.org/repository/maven-public/</url>
 		</repository>
-		<repository>
-			<id>spigot-repo</id>
-			<url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
-		</repository>
 	</repositories>
 
 	<dependencies>
@@ -60,12 +56,16 @@
 		<dependency>
 			<groupId>com.github.Despical</groupId>
 			<artifactId>Commons</artifactId>
-			<version>1.2.7</version>
-			<scope>compile</scope>
+			<version>1.4.4</version>
 		</dependency>
 		<dependency>
 			<groupId>com.github.Despical</groupId>
 			<artifactId>InventoryFramework</artifactId>
+			<version>2.0.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.github.Despical</groupId>
+			<artifactId>CommandFramework</artifactId>
 			<version>1.0.7</version>
 		</dependency>
 		<dependency>
@@ -78,13 +78,6 @@
 			<groupId>org.bstats</groupId>
 			<artifactId>bstats-bukkit</artifactId>
 			<version>1.7</version>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.jetbrains</groupId>
-			<artifactId>annotations</artifactId>
-			<version>13.0</version>
-			<scope>compile</scope>
 		</dependency>
 	</dependencies>
 
@@ -139,14 +132,6 @@
 						</goals>
 						<configuration>
 							<relocations>
-								<relocation>
-									<pattern>me.despical.inventoryframework</pattern>
-									<shadedPattern>me.despical.tntrun.utils.inventoryframework</shadedPattern>
-								</relocation>
-								<relocation>
-									<pattern>me.despical.commonsbox</pattern>
-									<shadedPattern>me.despical.tntrun.commonsbox</shadedPattern>
-								</relocation>
 								<relocation>
 									<pattern>org.bstats</pattern>
 									<shadedPattern>me.despical.tntrun.utils</shadedPattern>

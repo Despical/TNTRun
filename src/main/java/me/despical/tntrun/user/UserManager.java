@@ -18,6 +18,7 @@
 
 package me.despical.tntrun.user;
 
+import me.despical.commons.util.LogUtils;
 import me.despical.tntrun.ConfigPreferences;
 import me.despical.tntrun.Main;
 import me.despical.tntrun.api.StatsStorage;
@@ -25,7 +26,6 @@ import me.despical.tntrun.arena.Arena;
 import me.despical.tntrun.user.data.FileStats;
 import me.despical.tntrun.user.data.MysqlManager;
 import me.despical.tntrun.user.data.UserDatabase;
-import me.despical.tntrun.utils.Debugger;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -44,13 +44,7 @@ public class UserManager {
 	private final List<User> users = new ArrayList<>();
 
 	public UserManager(Main plugin) {
-		if (plugin.getConfigPreferences().getOption(ConfigPreferences.Option.DATABASE_ENABLED)) {
-			database = new MysqlManager(plugin);
-			Debugger.debug("MySQL Stats enabled");
-		} else {
-			database = new FileStats(plugin);
-			Debugger.debug("File Stats enabled");
-		}
+		this.database = plugin.getConfigPreferences().getOption(ConfigPreferences.Option.DATABASE_ENABLED) ? new MysqlManager(plugin) : new FileStats(plugin);
 
 		loadStatsForPlayersOnline();
 	}
@@ -66,7 +60,7 @@ public class UserManager {
 			}
 		}
 
-		Debugger.debug("Registering new user {0} ({1})", player.getUniqueId(), player.getName());
+		LogUtils.log("Registering new user {0} ({1})", player.getUniqueId(), player.getName());
 
 		User user = new User(player);
 		users.add(user);

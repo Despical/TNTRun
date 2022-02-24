@@ -23,10 +23,8 @@ import me.despical.tntrun.api.StatsStorage;
 import me.despical.tntrun.api.events.player.TRPlayerStatisticChangeEvent;
 import me.despical.tntrun.arena.Arena;
 import me.despical.tntrun.arena.ArenaRegistry;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scoreboard.ScoreboardManager;
 
 import java.util.EnumMap;
 import java.util.HashMap;
@@ -41,7 +39,6 @@ public class User {
 
 	private static final Main plugin = JavaPlugin.getPlugin(Main.class);
 	private static long cooldownCounter = 0;
-	private final ScoreboardManager scoreboardManager = Bukkit.getScoreboardManager();
 	private final Player player;
 	private boolean spectator = false;
 	private final Map<StatsStorage.StatisticType, Integer> stats = new EnumMap<>(StatsStorage.StatisticType.class);
@@ -52,7 +49,7 @@ public class User {
 	}
 
 	public static void cooldownHandlerTask() {
-		Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, () -> cooldownCounter++, 20, 20);
+		plugin.getServer().getScheduler().runTaskTimerAsynchronously(plugin, () -> cooldownCounter++, 20, 20);
 	}
 
 	public Arena getArena() {
@@ -72,36 +69,19 @@ public class User {
 	}
 
 	public int getStat(StatsStorage.StatisticType stat) {
-		if (!stats.containsKey(stat)) {
-			stats.put(stat, 0);
-			return 0;
-		} else if (stats.get(stat) == null) {
-			return 0;
-		}
+		Integer statistic = stats.get(stat);
 
-		return stats.get(stat);
+		return statistic == null ? 0 : statistic;
 	}
 
-	public void removeScoreboard() {
-		player.setScoreboard(scoreboardManager.getNewScoreboard());
+	public void setStat(StatsStorage.StatisticType stat, int amount) {
+		stats.put(stat, amount);
+
+		plugin.getServer().getScheduler().runTask(plugin, () -> plugin.getServer().getPluginManager().callEvent(new TRPlayerStatisticChangeEvent(getArena(), player, stat, amount)));
 	}
 
-	public void setStat(StatsStorage.StatisticType stat, int i) {
-		stats.put(stat, i);
-
-		Bukkit.getScheduler().runTask(plugin, () -> {
-			TRPlayerStatisticChangeEvent playerStatisticChangeEvent = new TRPlayerStatisticChangeEvent(getArena(), player, stat, i);
-			Bukkit.getPluginManager().callEvent(playerStatisticChangeEvent);
-		});
-	}
-
-	public void addStat(StatsStorage.StatisticType stat, int i) {
-		stats.put(stat, getStat(stat) + i);
-
-		Bukkit.getScheduler().runTask(plugin, () -> {
-			TRPlayerStatisticChangeEvent playerStatisticChangeEvent = new TRPlayerStatisticChangeEvent(getArena(), player, stat, getStat(stat));
-			Bukkit.getPluginManager().callEvent(playerStatisticChangeEvent);
-		});
+	public void addStat(StatsStorage.StatisticType stat, int amount) {
+		setStat(stat, getStat(stat) + amount);
 	}
 
 	public void setCooldown(String s, double seconds) {

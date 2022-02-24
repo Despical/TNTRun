@@ -21,8 +21,11 @@ package me.despical.tntrun;
 import me.despical.commons.compat.VersionResolver;
 import me.despical.commons.configuration.ConfigUtils;
 import me.despical.commons.database.MysqlDatabase;
+import me.despical.commons.exception.ExceptionLogHandler;
 import me.despical.commons.scoreboard.ScoreboardLib;
 import me.despical.commons.serializer.InventorySerializer;
+import me.despical.commons.util.LogUtils;
+import me.despical.commons.util.UpdateChecker;
 import me.despical.tntrun.api.StatsStorage;
 import me.despical.tntrun.arena.Arena;
 import me.despical.tntrun.arena.ArenaEvents;
@@ -43,12 +46,7 @@ import me.despical.tntrun.handlers.sign.SignManager;
 import me.despical.tntrun.user.User;
 import me.despical.tntrun.user.UserManager;
 import me.despical.tntrun.user.data.MysqlManager;
-import me.despical.tntrun.utils.Debugger;
-import me.despical.tntrun.utils.ExceptionLogHandler;
-import me.despical.tntrun.utils.MessageUtils;
-import me.despical.tntrun.utils.UpdateChecker;
 import org.bstats.bukkit.Metrics;
-import org.bukkit.Bukkit;
 import org.bukkit.block.BlockState;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
@@ -57,7 +55,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.io.File;
 import java.util.Arrays;
 import java.util.Iterator;
-import java.util.logging.Level;
 
 /**
  * @author Despical
@@ -87,15 +84,14 @@ public class Main extends JavaPlugin {
 		}
 
 		exceptionLogHandler = new ExceptionLogHandler(this);
+		exceptionLogHandler.setMainPackage("me.despical.tntrun");
+		exceptionLogHandler.setRecordMessage("[TNT Run] We have found a bug in the code. Contact us at our official repo on GitHub with the following error above.");
+		exceptionLogHandler.addBlacklistedClass("me.despical.tntrun.user.data.MysqlManager", "me.despical.commons.database.MysqlDatabase");
+
 		saveDefaultConfig();
 
-		Debugger.setEnabled(true);
-		Debugger.debug("Initialization start");
-
 		if (getConfig().getBoolean("Developer-Mode")) {
-			Debugger.deepDebug(true);
-			Debugger.debug("Deep debug enabled");
-			getConfig().getStringList("Listenable-Performances").forEach(Debugger::monitorPerformance);
+			LogUtils.enableLogging();
 		}
 
 		long start = System.currentTimeMillis();
@@ -105,28 +101,26 @@ public class Main extends JavaPlugin {
 		initializeClasses();
 		checkUpdate();
 
-		Debugger.debug(Level.INFO, "Initialization finished took {0} ms", System.currentTimeMillis() - start);
+		LogUtils.log("Initialization finished took {0} ms", System.currentTimeMillis() - start);
 
-		if (configPreferences.getOption(ConfigPreferences.Option.NAMETAGS_HIDDEN)) {
-			Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(this, () ->
-				Bukkit.getOnlinePlayers().forEach(ArenaUtils::updateNameTagsVisibility), 60, 140);
+		if (configPreferences.getOption(ConfigPreferences.Option.NAME_TAGS_HIDDEN)) {
+			getServer().getScheduler().scheduleSyncRepeatingTask(this, () ->
+				getServer().getOnlinePlayers().forEach(ArenaUtils::updateNameTagsVisibility), 60, 140);
 		}
 	}
 
 	private boolean validateIfPluginShouldStart() {
 		if (VersionResolver.isCurrentLower(VersionResolver.ServerVersion.v1_12_R1)) {
-			MessageUtils.thisVersionIsNotSupported();
-			Debugger.sendConsoleMessage("&cYour server version is not supported by TNT Run!");
-			Debugger.sendConsoleMessage("&cSadly, we must shut off. Maybe you consider changing your server version?");
+			LogUtils.sendConsoleMessage("&cYour server version is not supported by TNT Run!");
+			LogUtils.sendConsoleMessage("&cSadly, we must shut off. Maybe you consider changing your server version?");
 			return false;
 		}
 
 		try {
 			Class.forName("org.spigotmc.SpigotConfig");
 		} catch (Exception e) {
-			MessageUtils.thisVersionIsNotSupported();
-			Debugger.sendConsoleMessage("&cYour server software is not supported by TNT Run!");
-			Debugger.sendConsoleMessage("&cWe support only Spigot and Spigot forks only! Shutting off...");
+			LogUtils.sendConsoleMessage("&cYour server software is not supported by TNT Run!");
+			LogUtils.sendConsoleMessage("&cWe support only Spigot and Spigot forks only! Shutting off...");
 			return false;
 		}
 
@@ -139,10 +133,10 @@ public class Main extends JavaPlugin {
 			return;
 		}
 
-		Debugger.debug("System disable initialized");
+		LogUtils.log("System disable initialized");
 		long start = System.currentTimeMillis();
 
-		Bukkit.getLogger().removeHandler(exceptionLogHandler);
+		getServer().getLogger().removeHandler(exceptionLogHandler);
 		saveAllUserStatistics();
 
 		if (configPreferences.getOption(ConfigPreferences.Option.DATABASE_ENABLED)) {
@@ -176,7 +170,7 @@ public class Main extends JavaPlugin {
 			}
 		}
 
-		Debugger.debug("System disable finished took {0} ms", System.currentTimeMillis() - start);
+		LogUtils.log("System disable finished took {0} ms", System.currentTimeMillis() - start);
 	}
 
 	private void initializeClasses() {
@@ -215,17 +209,17 @@ public class Main extends JavaPlugin {
 	}
 
 	private void registerSoftDependenciesAndServices() {
-		Debugger.debug("Hooking into soft dependencies");
+		LogUtils.log("Hooking into soft dependencies");
 		long start = System.currentTimeMillis();
 
 		startPluginMetrics();
 
-		if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
-			Debugger.debug("Hooking into PlaceholderAPI");
+		if (configPreferences.isPapiEnabled()) {
+			LogUtils.log("Hooking into PlaceholderAPI");
 			new PlaceholderManager().register();
 		}
 
-		Debugger.debug("Hooked into soft dependencies took {0} ms", System.currentTimeMillis() - start);
+		LogUtils.log("Hooked into PAPI, took {0] ms.", System.currentTimeMillis() - start);
 	}
 
 	private void startPluginMetrics() {
@@ -238,13 +232,7 @@ public class Main extends JavaPlugin {
 		metrics.addCustomChart(new Metrics.SimplePie("database_enabled", () -> String.valueOf(configPreferences.getOption(ConfigPreferences.Option.DATABASE_ENABLED))));
 		metrics.addCustomChart(new Metrics.SimplePie("bungeecord_hooked", () -> String.valueOf(configPreferences.getOption(ConfigPreferences.Option.BUNGEE_ENABLED))));
 		metrics.addCustomChart(new Metrics.SimplePie("locale_used", () -> languageManager.getPluginLocale().getPrefix()));
-		metrics.addCustomChart(new Metrics.SimplePie("update_notifier", () -> {
-			if (getConfig().getBoolean("Update-Notifier.Enabled", true)) {
-				return getConfig().getBoolean("Update-Notifier.Notify-Beta-Versions", true) ? "Enabled with beta notifier" : "Enabled";
-			}
-
-			return getConfig().getBoolean("Update-Notifier.Notify-Beta-Versions", true) ? "Beta notifier only" : "Disabled";
-		}));
+		metrics.addCustomChart(new Metrics.SimplePie("update_notifier", () -> getConfig().getBoolean("Update-Notifier.Enabled", true) ? "Enabled" : "Disabled"));
 	}
 
 	private void checkUpdate() {
@@ -257,19 +245,9 @@ public class Main extends JavaPlugin {
 				return;
 			}
 
-			if (result.getNewestVersion().contains("b")) {
-				if (getConfig().getBoolean("Update-Notifier.Notify-Beta-Versions", true)) {
-					Bukkit.getConsoleSender().sendMessage("[TNTRun] Found a new beta version available: v" + result.getNewestVersion());
-					Bukkit.getConsoleSender().sendMessage("[TNTRun] Download it on SpigotMC:");
-					Bukkit.getConsoleSender().sendMessage("[TNTRun] spigotmc.org/resources/tnt-run-1-12-1-16-5.83196/");
-				}
-				return;
-			}
-
-			MessageUtils.updateIsHere();
-			Bukkit.getConsoleSender().sendMessage("[TNTRun] Found a new version available: v" + result.getNewestVersion());
-			Bukkit.getConsoleSender().sendMessage("[TNTRun] Download it SpigotMC:");
-			Bukkit.getConsoleSender().sendMessage("[TNTRun] spigotmc.org/resources/tnt-run-1-12-1-16-5.83196/");
+			LogUtils.sendConsoleMessage("[TNTRun] Found a new version available: v" + result.getNewestVersion());
+			LogUtils.sendConsoleMessage("[TNTRun] Download it SpigotMC:");
+			LogUtils.sendConsoleMessage("[TNTRun] spigotmc.org/resources/tnt-run-1-12-1-16-5.83196/");
 		});
 	}
 

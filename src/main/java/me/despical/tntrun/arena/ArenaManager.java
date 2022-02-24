@@ -26,6 +26,7 @@ import me.despical.commons.miscellaneous.AttributeUtils;
 import me.despical.commons.miscellaneous.MiscUtils;
 import me.despical.commons.serializer.InventorySerializer;
 import me.despical.commons.string.StringFormatUtils;
+import me.despical.commons.util.LogUtils;
 import me.despical.tntrun.ConfigPreferences;
 import me.despical.tntrun.Main;
 import me.despical.tntrun.api.StatsStorage;
@@ -36,7 +37,6 @@ import me.despical.tntrun.handlers.ChatManager.ActionType;
 import me.despical.tntrun.handlers.PermissionsManager;
 import me.despical.tntrun.handlers.items.SpecialItemManager;
 import me.despical.tntrun.user.User;
-import me.despical.tntrun.utils.Debugger;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
@@ -71,7 +71,7 @@ public class ArenaManager {
 	 * @see TRGameJoinAttemptEvent
 	 */
 	public static void joinAttempt(Player player, Arena arena) {
-		Debugger.debug("[{0}] Initial join attempt for {1}", arena.getId(), player.getName());
+		LogUtils.log("[{0}] Initial join attempt for {1}", arena.getId(), player.getName());
 		long start = System.currentTimeMillis();
 		TRGameJoinAttemptEvent gameJoinAttemptEvent = new TRGameJoinAttemptEvent(player, arena);
 
@@ -130,9 +130,8 @@ public class ArenaManager {
 			}
 		}
 
-		Debugger.debug("[{0}] Checked join attempt for {1} initialized", arena.getId(), player.getName());
-		User user = plugin.getUserManager().getUser(player);
-		arena.getScoreboardManager().createScoreboard(user);
+		LogUtils.log("[{0}] Checked join attempt for {1} initialized", arena.getId(), player.getName());
+		arena.getScoreboardManager().createScoreboard(player);
 
 		if (plugin.getConfigPreferences().getOption(ConfigPreferences.Option.INVENTORY_MANAGER_ENABLED)) {
 			InventorySerializer.saveInventoryToFile(plugin, player);
@@ -142,11 +141,13 @@ public class ArenaManager {
 
 		player.setLevel(0);
 		player.setExp(1);
-		AttributeUtils.healPlayer(player);
 		player.setFoodLevel(20);
 		player.getInventory().setArmorContents(null);
 		player.getInventory().clear();
 		player.setGameMode(GameMode.ADVENTURE);
+		AttributeUtils.healPlayer(player);
+
+		User user = plugin.getUserManager().getUser(player);
 
 		if (arena.getArenaState() == ArenaState.IN_GAME || arena.getArenaState() == ArenaState.ENDING) {
 			arena.teleportToStartLocation(player);
@@ -178,7 +179,7 @@ public class ArenaManager {
 			}
 
 			ArenaUtils.hidePlayersOutsideTheGame(player, arena);
-			Debugger.debug("[{0}] Join attempt as spectator finished for {1} took {2} ms", arena.getId(), player.getName(), System.currentTimeMillis() - start);
+			LogUtils.log("[{0}] Join attempt as spectator finished for {1} took {2} ms", arena.getId(), player.getName(), System.currentTimeMillis() - start);
 			return;
 		}
 
@@ -201,7 +202,7 @@ public class ArenaManager {
 		arena.showPlayers();
 
 		ArenaUtils.updateNameTagsVisibility(player);
-		Debugger.debug("[{0}] Join attempt as player for {1} took {2} ms", arena.getId(), player.getName(), System.currentTimeMillis() - start);
+		LogUtils.log("[{0}] Join attempt as player for {1} took {2} ms", arena.getId(), player.getName(), System.currentTimeMillis() - start);
 	}
 
 	/**
@@ -213,7 +214,7 @@ public class ArenaManager {
 	 * @see TRGameLeaveAttemptEvent
 	 */
 	public static void leaveAttempt(Player player, Arena arena) {
-		Debugger.debug("[{0}] Initial leave attempt for {1}", arena.getId(), player.getName());
+		LogUtils.log("[{0}] Initial leave attempt for {1}", arena.getId(), player.getName());
 		long start = System.currentTimeMillis();
 
 		TRGameLeaveAttemptEvent event = new TRGameLeaveAttemptEvent(player, arena);
@@ -224,7 +225,7 @@ public class ArenaManager {
 			user.setStat(StatsStorage.StatisticType.LONGEST_SURVIVE, user.getStat(StatsStorage.StatisticType.LOCAL_SURVIVE));
 		}
 
-		arena.getScoreboardManager().removeScoreboard(user);
+		arena.getScoreboardManager().removeScoreboard(player);
 
 		if (arena.getArenaState() == ArenaState.IN_GAME && !user.isSpectator()) {
 			if (arena.getPlayersLeft().size() - 1 == 1) {
@@ -247,8 +248,8 @@ public class ArenaManager {
 		player.setCollidable(true);
 
 		user.setSpectator(false);
-		user.removeScoreboard();
 
+		arena.getScoreboardManager().removeScoreboard(player);
 		arena.doBarAction(Arena.BarAction.REMOVE, player);
 
 		AttributeUtils.healPlayer(player);
@@ -283,7 +284,7 @@ public class ArenaManager {
 		}
 
 		plugin.getUserManager().saveAllStatistic(user);
-		Debugger.debug("[{0}] Game leave finished for {1} took {2} ms", arena.getId(), player.getName(), System.currentTimeMillis() - start);
+		LogUtils.log("[{0}] Game leave finished for {1} took {2} ms", arena.getId(), player.getName(), System.currentTimeMillis() - start);
 	}
 
 	/**
@@ -295,7 +296,7 @@ public class ArenaManager {
 	 * @see TRGameStopEvent
 	 */
 	public static void stopGame(boolean quickStop, Arena arena) {
-		Debugger.debug("[{0}] Stop game event initialized with quickStop {1}", arena.getId(), quickStop);
+		LogUtils.log("[{0}] Stop game event initialized with quickStop {1}", arena.getId(), quickStop);
 		FileConfiguration config = ConfigUtils.getConfig(plugin, "messages");
 		long start = System.currentTimeMillis();
 
@@ -330,7 +331,8 @@ public class ArenaManager {
 			}
 
 			plugin.getUserManager().saveAllStatistic(user);
-			user.removeScoreboard();
+			
+			arena.getScoreboardManager().removeScoreboard(player);
 
 			if (!quickStop && plugin.getConfig().getBoolean("Firework-When-Game-Ends", true)) {
 				new BukkitRunnable() {
@@ -348,7 +350,7 @@ public class ArenaManager {
 			}
 		}
 
-		Debugger.debug("[{0}] Stop game event finished took {1} ms", arena.getId(), System.currentTimeMillis() - start);
+		LogUtils.log("[{0}] Stop game event finished took {1} ms", arena.getId(), System.currentTimeMillis() - start);
 	}
 
 	private static String formatSummaryPlaceholders(String msg, Arena arena, Player player) {

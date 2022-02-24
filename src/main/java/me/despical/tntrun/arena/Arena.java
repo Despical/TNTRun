@@ -20,6 +20,7 @@ package me.despical.tntrun.arena;
 
 import me.despical.commons.configuration.ConfigUtils;
 import me.despical.commons.serializer.InventorySerializer;
+import me.despical.commons.util.LogUtils;
 import me.despical.tntrun.ConfigPreferences;
 import me.despical.tntrun.Main;
 import me.despical.tntrun.api.StatsStorage;
@@ -31,7 +32,6 @@ import me.despical.tntrun.handlers.PermissionsManager;
 import me.despical.tntrun.handlers.items.SpecialItemManager;
 import me.despical.tntrun.handlers.rewards.Reward;
 import me.despical.tntrun.user.User;
-import me.despical.tntrun.utils.Debugger;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -49,7 +49,6 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.*;
-import java.util.logging.Level;
 
 /**
  * @author Despical
@@ -82,11 +81,11 @@ public class Arena extends BukkitRunnable {
 			arenaOptions.put(option, option.getDefaultValue());
 		}
 
-		if (plugin.getConfigPreferences().getOption(ConfigPreferences.Option.BOSSBAR_ENABLED)) {
+		if (plugin.getConfigPreferences().getOption(ConfigPreferences.Option.BOSS_BAR_ENABLED)) {
 			gameBar = Bukkit.createBossBar(plugin.getChatManager().colorMessage("Bossbar.Main-Title"), BarColor.BLUE, BarStyle.SOLID);
 		}
 
-		scoreboardManager = new ScoreboardManager(this);
+		scoreboardManager = new ScoreboardManager(plugin, this);
 	}
 
 	public boolean isReady() {
@@ -103,9 +102,6 @@ public class Arena extends BukkitRunnable {
 			return;
 		}
 
-		Debugger.performance("ArenaTask", "[PerformanceMonitor] [{0}] Running game task", getId());
-		long start = System.currentTimeMillis();
-
 		switch (getArenaState()) {
 			case WAITING_FOR_PLAYERS:
 				if (plugin.getConfigPreferences().getOption(ConfigPreferences.Option.BUNGEE_ENABLED)) {
@@ -119,7 +115,7 @@ public class Arena extends BukkitRunnable {
 						break;
 					}
 				} else {
-					if (plugin.getConfigPreferences().getOption(ConfigPreferences.Option.BOSSBAR_ENABLED)) {
+					if (plugin.getConfigPreferences().getOption(ConfigPreferences.Option.BOSS_BAR_ENABLED)) {
 						gameBar.setTitle(plugin.getChatManager().colorMessage("Bossbar.Waiting-For-Players"));
 					}
 
@@ -138,7 +134,7 @@ public class Arena extends BukkitRunnable {
 					broadcastMessage(plugin.getChatManager().getPrefix() + plugin.getChatManager().colorMessage("In-Game.Messages.Lobby-Messages.Start-In").replace("%time%", String.valueOf(getTimer())));
 				}
 
-				if (plugin.getConfigPreferences().getOption(ConfigPreferences.Option.BOSSBAR_ENABLED)) {
+				if (plugin.getConfigPreferences().getOption(ConfigPreferences.Option.BOSS_BAR_ENABLED)) {
 					gameBar.setTitle(plugin.getChatManager().colorMessage("Bossbar.Starting-In").replace("%time%", String.valueOf(getTimer())));
 					gameBar.setProgress(getTimer() / plugin.getConfig().getDouble("Starting-Waiting-Time", 60));
 				}
@@ -149,7 +145,7 @@ public class Arena extends BukkitRunnable {
 				}
 
 				if (getPlayers().size() < getMinimumPlayers() && !forceStart) {
-					if (plugin.getConfigPreferences().getOption(ConfigPreferences.Option.BOSSBAR_ENABLED)) {
+					if (plugin.getConfigPreferences().getOption(ConfigPreferences.Option.BOSS_BAR_ENABLED)) {
 						gameBar.setTitle(plugin.getChatManager().colorMessage("Bossbar.Waiting-For-Players"));
 						gameBar.setProgress(1.0);
 					}
@@ -178,7 +174,7 @@ public class Arena extends BukkitRunnable {
 					Bukkit.getPluginManager().callEvent(gameStartEvent);
 					setArenaState(ArenaState.IN_GAME);
 
-					if (plugin.getConfigPreferences().getOption(ConfigPreferences.Option.BOSSBAR_ENABLED)) {
+					if (plugin.getConfigPreferences().getOption(ConfigPreferences.Option.BOSS_BAR_ENABLED)) {
 						gameBar.setProgress(1.0);
 					}
 
@@ -211,7 +207,7 @@ public class Arena extends BukkitRunnable {
 					}
 				}
 
-				if (plugin.getConfigPreferences().getOption(ConfigPreferences.Option.BOSSBAR_ENABLED)) {
+				if (plugin.getConfigPreferences().getOption(ConfigPreferences.Option.BOSS_BAR_ENABLED)) {
 					gameBar.setTitle(plugin.getChatManager().colorMessage("Bossbar.In-Game-Info"));
 				}
 
@@ -254,14 +250,14 @@ public class Arena extends BukkitRunnable {
 					plugin.getServer().setWhitelist(false);
 				}
 
-				if (plugin.getConfigPreferences().getOption(ConfigPreferences.Option.BOSSBAR_ENABLED)) {
+				if (plugin.getConfigPreferences().getOption(ConfigPreferences.Option.BOSS_BAR_ENABLED)) {
 					gameBar.setTitle(plugin.getChatManager().colorMessage("Bossbar.Game-Ended"));
 				}
 
 				List<Player> playersToQuit = new ArrayList<>(getPlayers());
 
 				for (Player player : playersToQuit) {
-					plugin.getUserManager().getUser(player).removeScoreboard();
+					scoreboardManager.removeScoreboard(player);
 					player.setGameMode(GameMode.SURVIVAL);
 
 					for (Player players : Bukkit.getOnlinePlayers()) {
@@ -332,7 +328,7 @@ public class Arena extends BukkitRunnable {
 					}
 				}
 
-				if (plugin.getConfigPreferences().getOption(ConfigPreferences.Option.BOSSBAR_ENABLED)) {
+				if (plugin.getConfigPreferences().getOption(ConfigPreferences.Option.BOSS_BAR_ENABLED)) {
 					gameBar.setTitle(plugin.getChatManager().colorMessage("Bossbar.Waiting-For-Players"));
 				}
 
@@ -340,8 +336,6 @@ public class Arena extends BukkitRunnable {
 			default:
 				break;
 		}
-
-		Debugger.performance("ArenaTask", "[PerformanceMonitor] [{0}] Game task finished took {1} ms", getId(), System.currentTimeMillis() - start);
 	}
 
 	public void setForceStart(boolean forceStart) {
@@ -377,13 +371,7 @@ public class Arena extends BukkitRunnable {
 	 * @param minimumPlayers players needed to start arena
 	 */
 	public void setMinimumPlayers(int minimumPlayers) {
-		if (minimumPlayers < 2) {
-			Debugger.debug(Level.WARNING, "Minimum players amount for arena cannot be less than 2! Got {0}", minimumPlayers);
-			setOptionValue(ArenaOption.MINIMUM_PLAYERS, 2);
-			return;
-		}
-
-		setOptionValue(ArenaOption.MINIMUM_PLAYERS, minimumPlayers);
+		setOptionValue(ArenaOption.MINIMUM_PLAYERS, Math.min(2, minimumPlayers));
 	}
 
 	/**
@@ -459,7 +447,7 @@ public class Arena extends BukkitRunnable {
 	 */
 	public void setArenaState(ArenaState arenaState) {
 		this.arenaState = arenaState;
-		TRGameStateChangeEvent gameStateChangeEvent = new TRGameStateChangeEvent(this, getArenaState());
+		TRGameStateChangeEvent gameStateChangeEvent = new TRGameStateChangeEvent(this, arenaState);
 		Bukkit.getPluginManager().callEvent(gameStateChangeEvent);
 	}
 
@@ -496,7 +484,7 @@ public class Arena extends BukkitRunnable {
 	 * @param p      player
 	 */
 	public void doBarAction(BarAction action, Player p) {
-		if (!plugin.getConfigPreferences().getOption(ConfigPreferences.Option.BOSSBAR_ENABLED)) {
+		if (!plugin.getConfigPreferences().getOption(ConfigPreferences.Option.BOSS_BAR_ENABLED)) {
 			return;
 		}
 
@@ -586,41 +574,27 @@ public class Arena extends BukkitRunnable {
 		player.teleport(location);
 	}
 
-	/**
-	 * Get end location of arena.
-	 *
-	 * @return end location of arena
-	 */
 	public Location getEndLocation() {
 		return gameLocations.get(GameLocation.END);
 	}
 
-	/**
-	 * Set end location of arena.
-	 *
-	 * @param endLoc new end location of arena
-	 */
 	public void setEndLocation(Location endLoc) {
 		gameLocations.put(GameLocation.END, endLoc);
 	}
 
 	public void start() {
-		Debugger.debug("[{0}] Game instance started", getId());
+		LogUtils.log("[{0}] Game instance started", getId());
 
 		startRemovingBlock();
 		runTaskTimer(plugin, 20L, 20L);
 		setArenaState(ArenaState.RESTARTING);
 	}
 
-	void addPlayer(Player player) {
+	public void addPlayer(Player player) {
 		players.add(player);
 	}
 
-	void removePlayer(Player player) {
-		if (player == null) {
-			return;
-		}
-
+	public void removePlayer(Player player) {
 		players.remove(player);
 	}
 
@@ -636,9 +610,9 @@ public class Arena extends BukkitRunnable {
 		return players;
 	}
 
-	void showPlayers() {
-		for (Player player : getPlayers()) {
-			for (Player p : getPlayers()) {
+	public void showPlayers() {
+		for (Player player : players) {
+			for (Player p : players) {
 				player.showPlayer(plugin, p);
 				p.showPlayer(plugin, player);
 			}
@@ -651,12 +625,8 @@ public class Arena extends BukkitRunnable {
 
 	public void startRemovingBlock() {
 		Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, () -> {
-			for (Player player : getPlayers()) {
+			for (Player player : getPlayersLeft()) {
 				if (arenaState != ArenaState.IN_GAME) {
-					return;
-				}
-
-				if (plugin.getUserManager().getUser(player).isSpectator()) {
 					return;
 				}
 

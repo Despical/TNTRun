@@ -29,13 +29,12 @@ import me.despical.tntrun.Main;
 import me.despical.tntrun.api.StatsStorage;
 import me.despical.tntrun.arena.Arena;
 import me.despical.tntrun.arena.ArenaState;
-import me.despical.tntrun.user.User;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author Despical
@@ -44,22 +43,18 @@ import java.util.List;
  */
 public class ScoreboardManager {
 
-	private static final Main plugin = JavaPlugin.getPlugin(Main.class);
-	private final List<Scoreboard> scoreboards = new ArrayList<>();
+	private final Main plugin;
 	private final Arena arena;
+	private final Set<Scoreboard> scoreboards;
 
-	public ScoreboardManager(Arena arena) {
+	public ScoreboardManager(Main plugin, Arena arena) {
+		this.plugin = plugin;
 		this.arena = arena;
+		this.scoreboards = new HashSet<>();
 	}
 
-	/**
-	 * Creates arena scoreboard for target user
-	 *
-	 * @param user user that represents game player
-	 * @see User
-	 */
-	public void createScoreboard(User user) {
-		Scoreboard scoreboard = ScoreboardLib.createScoreboard(user.getPlayer()).setHandler(new ScoreboardHandler() {
+	public void createScoreboard(Player player) {
+		Scoreboard scoreboard = ScoreboardLib.createScoreboard(player).setHandler(new ScoreboardHandler() {
 
 			@Override
 			public String getTitle(Player player) {
@@ -68,7 +63,7 @@ public class ScoreboardManager {
 
 			@Override
 			public List<Entry> getEntries(Player player) {
-				return formatScoreboard(user);
+				return formatScoreboard(player);
 			}
 		});
 
@@ -76,15 +71,9 @@ public class ScoreboardManager {
 		scoreboards.add(scoreboard);
 	}
 
-	/**
-	 * Removes scoreboard of user
-	 *
-	 * @param user user that represents game player
-	 * @see User
-	 */
-	public void removeScoreboard(User user) {
+	public void removeScoreboard(Player player) {
 		for (Scoreboard board : scoreboards) {
-			if (board.getHolder().equals(user.getPlayer())) {
+			if (board.getHolder().equals(player)) {
 				scoreboards.remove(board);
 				board.deactivate();
 				return;
@@ -92,36 +81,23 @@ public class ScoreboardManager {
 		}
 	}
 
-	/**
-	 * Forces all scoreboards to deactivate.
-	 */
 	public void stopAllScoreboards() {
 		scoreboards.forEach(Scoreboard::deactivate);
 		scoreboards.clear();
 	}
 
-	private List<Entry> formatScoreboard(User user) {
+	private List<Entry> formatScoreboard(Player player) {
 		EntryBuilder builder = new EntryBuilder();
-		List<String> lines;
+		String path = arena.getArenaState() == ArenaState.IN_GAME || arena.getArenaState() == ArenaState.ENDING ? "Scoreboard.Content.Playing" :  "Scoreboard.Content." + arena.getArenaState().getFormattedName();
 
-		if (arena.getArenaState() == ArenaState.IN_GAME) {
-			lines = plugin.getChatManager().getStringList("Scoreboard.Content.Playing");
-		} else {
-			if (arena.getArenaState() == ArenaState.ENDING) {
-				lines = plugin.getChatManager().getStringList("Scoreboard.Content.Playing");
-			} else {
-				lines = plugin.getChatManager().getStringList("Scoreboard.Content." + arena.getArenaState().getFormattedName());
-			}
-		}
-
-		for (String line : lines) {
-			builder.next(formatScoreboardLine(line, user));
+		for (String line : plugin.getChatManager().getStringList(path)) {
+			builder.next(formatScoreboardLine(line, player));
 		}
 
 		return builder.build();
 	}
 
-	private String formatScoreboardLine(String line, User user) {
+	private String formatScoreboardLine(String line, Player player) {
 		String formattedLine = line;
 
 		formattedLine = StringUtils.replace(formattedLine, "%time%", String.valueOf(arena.getTimer()));
@@ -130,12 +106,12 @@ public class ScoreboardManager {
 		formattedLine = StringUtils.replace(formattedLine, "%players%", String.valueOf(arena.getPlayers().size()));
 		formattedLine = StringUtils.replace(formattedLine, "%max_players%", String.valueOf(arena.getMaximumPlayers()));
 		formattedLine = StringUtils.replace(formattedLine, "%min_players%", String.valueOf(arena.getMinimumPlayers()));
-		formattedLine = StringUtils.replace(formattedLine, "%coins_earned%", String.valueOf(StatsStorage.getUserStats(user.getPlayer(), StatsStorage.StatisticType.LOCAL_COINS)));
-		formattedLine = StringUtils.replace(formattedLine, "%double_jumps%", String.valueOf(StatsStorage.getUserStats(user.getPlayer(), StatsStorage.StatisticType.LOCAL_DOUBLE_JUMPS)));
+		formattedLine = StringUtils.replace(formattedLine, "%coins_earned%", String.valueOf(StatsStorage.getUserStats(player, StatsStorage.StatisticType.LOCAL_COINS)));
+		formattedLine = StringUtils.replace(formattedLine, "%double_jumps%", String.valueOf(StatsStorage.getUserStats(player, StatsStorage.StatisticType.LOCAL_DOUBLE_JUMPS)));
 		formattedLine = plugin.getChatManager().colorRawMessage(formattedLine);
 
-		if (plugin.getServer().getPluginManager().isPluginEnabled("PlaceholderAPI")) {
-			formattedLine = PlaceholderAPI.setPlaceholders(user.getPlayer(), formattedLine);
+		if (plugin.getConfigPreferences().isPapiEnabled()) {
+			formattedLine = PlaceholderAPI.setPlaceholders(player, formattedLine);
 		}
 
 		return formattedLine;

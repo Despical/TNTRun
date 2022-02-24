@@ -27,7 +27,12 @@ package me.despical.tntrun.arena;
  */
 public enum ArenaState {
 
-	WAITING_FOR_PLAYERS("Waiting"), STARTING("Starting"), IN_GAME("Playing"), ENDING("Finishing"), RESTARTING("Restarting"), INACTIVE("Inactive");
+	WAITING_FOR_PLAYERS("Waiting"),
+	STARTING("Starting"),
+	IN_GAME("Playing"),
+	ENDING("Finishing"),
+	RESTARTING("Restarting"),
+	INACTIVE("Inactive");
 
 	String formattedName;
 

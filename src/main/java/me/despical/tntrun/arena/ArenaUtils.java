@@ -67,7 +67,7 @@ public class ArenaUtils {
 	}
 
 	public static void updateNameTagsVisibility(final Player p) {
-		if (!plugin.getConfigPreferences().getOption(ConfigPreferences.Option.NAMETAGS_HIDDEN)) {
+		if (!plugin.getConfigPreferences().getOption(ConfigPreferences.Option.NAME_TAGS_HIDDEN)) {
 			return;
 		}
 

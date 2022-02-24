@@ -19,14 +19,12 @@
 package me.despical.tntrun.handlers;
 
 import me.clip.placeholderapi.PlaceholderAPI;
-import me.despical.commons.compat.VersionResolver;
 import me.despical.commons.configuration.ConfigUtils;
 import me.despical.commons.string.StringFormatUtils;
-import me.despical.commons.string.StringMatcher;
+import me.despical.commons.util.Strings;
 import me.despical.tntrun.Main;
 import me.despical.tntrun.arena.Arena;
 import org.apache.commons.lang.StringUtils;
-import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 
@@ -55,15 +53,7 @@ public class ChatManager {
 	}
 
 	public String colorRawMessage(String message) {
-		if (message == null) {
-			return "";
-		}
-
-		if (VersionResolver.isCurrentEqualOrHigher(VersionResolver.ServerVersion.v1_16_R1) && message.contains("#")) {
-			message = StringMatcher.matchColorRegex(message);
-		}
-
-		return ChatColor.translateAlternateColorCodes('&', message);
+		return Strings.format(message);
 	}
 
 	public String colorMessage(String message) {
