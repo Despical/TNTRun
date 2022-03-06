@@ -19,11 +19,11 @@
 package me.despical.tntrun.events;
 
 import me.despical.commons.serializer.InventorySerializer;
+import me.despical.commons.util.UpdateChecker;
 import me.despical.tntrun.ConfigPreferences;
 import me.despical.tntrun.Main;
 import me.despical.tntrun.arena.ArenaRegistry;
 import me.despical.tntrun.handlers.PermissionsManager;
-import me.despical.tntrun.utils.UpdateChecker;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;

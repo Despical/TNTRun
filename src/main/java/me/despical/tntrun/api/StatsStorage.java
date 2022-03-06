@@ -20,11 +20,10 @@ package me.despical.tntrun.api;
 
 import me.despical.commons.configuration.ConfigUtils;
 import me.despical.commons.sorter.SortUtils;
+import me.despical.commons.util.LogUtils;
 import me.despical.tntrun.ConfigPreferences;
 import me.despical.tntrun.Main;
 import me.despical.tntrun.user.data.MysqlManager;
-import me.despical.tntrun.utils.Debugger;
-import me.despical.tntrun.utils.MessageUtils;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -72,9 +71,8 @@ public class StatsStorage {
 				return column;
 			} catch (SQLException e) {
 				plugin.getLogger().log(Level.WARNING, "SQL Exception occurred! " + e.getSQLState() + " (" + e.getErrorCode() + ")");
-				MessageUtils.errorOccurred();
-				Debugger.sendConsoleMessage("&cCannot get contents from MySQL database!");
-				Debugger.sendConsoleMessage("&cCheck configuration of mysql.yml file or disable mysql option in config.yml");
+				LogUtils.sendConsoleMessage("&cCannot get contents from MySQL database!");
+				LogUtils.sendConsoleMessage("&cCheck configuration of mysql.yml file or disable mysql option in config.yml");
 				return Collections.emptyMap();
 			}
 		}

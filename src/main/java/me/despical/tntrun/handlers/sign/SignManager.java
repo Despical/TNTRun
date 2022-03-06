@@ -22,12 +22,12 @@ import me.despical.commons.compat.VersionResolver;
 import me.despical.commons.compat.XMaterial;
 import me.despical.commons.configuration.ConfigUtils;
 import me.despical.commons.serializer.LocationSerializer;
+import me.despical.commons.util.LogUtils;
 import me.despical.tntrun.Main;
 import me.despical.tntrun.arena.Arena;
 import me.despical.tntrun.arena.ArenaManager;
 import me.despical.tntrun.arena.ArenaRegistry;
 import me.despical.tntrun.arena.ArenaState;
-import me.despical.tntrun.utils.Debugger;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -211,7 +211,7 @@ public class SignManager implements Listener {
 	}
 
 	public void loadSigns() {
-		Debugger.debug("Signs load event started");
+		LogUtils.log("Signs load event started");
 		long start = System.currentTimeMillis();
 
 		arenaSigns.clear();
@@ -225,20 +225,16 @@ public class SignManager implements Listener {
 				if (loc.getBlock().getState() instanceof Sign) {
 					arenaSigns.add(new ArenaSign((Sign) loc.getBlock().getState(), ArenaRegistry.getArena(path)));
 				} else {
-					Debugger.debug(Level.WARNING, "Block at location {0} for arena {1} not a sign", loc, path);
+					LogUtils.log(Level.WARNING, "Block at location {0} for arena {1} not a sign", loc, path);
 				}
 			}
 		}
 
-		Debugger.debug("Sign load event finished took {0} ms", System.currentTimeMillis() - start);
+		LogUtils.log("Sign load event finished took {0} ms", System.currentTimeMillis() - start);
 	}
 
 	public void updateSigns() {
 		Bukkit.getScheduler().runTaskTimer(plugin, () -> {
-			Debugger.performance("SignUpdate", "[PerformanceMonitor] [SignUpdate] Updating signs");
-
-			long start = System.currentTimeMillis();
-
 			for (ArenaSign arenaSign : arenaSigns) {
 				if (arenaSign.getArena() == null) {
 					arenaSigns.remove(arenaSign);
@@ -310,8 +306,6 @@ public class SignManager implements Listener {
 
 				sign.update();
 			}
-
-			Debugger.performance("SignUpdate", "[PerformanceMonitor] [SignUpdate] Updated signs took {0} ms", System.currentTimeMillis() - start);
 		}, 10, 10);
 	}
 

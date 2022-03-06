@@ -19,12 +19,12 @@
 package me.despical.tntrun.commands.admin.arena;
 
 import me.despical.commons.serializer.InventorySerializer;
+import me.despical.commons.util.LogUtils;
 import me.despical.tntrun.ConfigPreferences;
 import me.despical.tntrun.arena.Arena;
 import me.despical.tntrun.arena.ArenaManager;
 import me.despical.tntrun.arena.ArenaRegistry;
 import me.despical.tntrun.commands.SubCommand;
-import me.despical.tntrun.utils.Debugger;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -70,7 +70,7 @@ public class ReloadCommand extends SubCommand {
 		}
 
 		confirmations.remove(sender);
-		Debugger.debug("Initiated plugin reload by {0}", sender.getName());
+		LogUtils.log("Initiated plugin reload by {0}", sender.getName());
 
 		long start = System.currentTimeMillis();
 
@@ -78,7 +78,7 @@ public class ReloadCommand extends SubCommand {
 		plugin.getChatManager().reloadConfig();
 
 		for (Arena arena : ArenaRegistry.getArenas()) {
-			Debugger.debug("[Reloader] Stopping {0} instance.");
+			LogUtils.log("[Reloader] Stopping {0} instance.");
 
 			long stopTime = System.currentTimeMillis();
 
@@ -96,13 +96,13 @@ public class ReloadCommand extends SubCommand {
 			}
 
 			ArenaManager.stopGame(true, arena);
-			Debugger.debug("[Reloader] Instance {0} stopped took {1} ms", arena.getId(), System.currentTimeMillis() - stopTime);
+			LogUtils.log("[Reloader] Instance {0} stopped took {1} ms", arena.getId(), System.currentTimeMillis() - stopTime);
 		}
 
 		ArenaRegistry.registerArenas();
 
 		sender.sendMessage(plugin.getChatManager().getPrefix() + plugin.getChatManager().colorMessage("Commands.Admin-Commands.Success-Reload"));
-		Debugger.debug("[Reloader] Finished reloading took {0} ms", System.currentTimeMillis() - start);
+		LogUtils.log("[Reloader] Finished reloading took {0} ms", System.currentTimeMillis() - start);
 	}
 
 	@Override

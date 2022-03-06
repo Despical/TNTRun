@@ -20,8 +20,8 @@ package me.despical.tntrun.arena;
 
 import me.despical.commons.configuration.ConfigUtils;
 import me.despical.commons.serializer.LocationSerializer;
+import me.despical.commons.util.LogUtils;
 import me.despical.tntrun.Main;
-import me.despical.tntrun.utils.Debugger;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -99,17 +99,17 @@ public class ArenaRegistry {
 	}
 
 	public static void registerArena(Arena arena) {
-		Debugger.debug("Registering new game instance {0}", arena.getId());
+		LogUtils.log("Registering new game instance {0}", arena.getId());
 		arenas.add(arena);
 	}
 
 	public static void unregisterArena(Arena arena) {
-		Debugger.debug("Unregistering game instance {0}", arena.getId());
+		LogUtils.log("Unregistering game instance {0}", arena.getId());
 		arenas.remove(arena);
 	}
 
 	public static void registerArenas() {
-		Debugger.debug("Initial arenas registration");
+		LogUtils.log("Initial arenas registration");
 		long start = System.currentTimeMillis();
 
 		if (ArenaRegistry.getArenas().size() > 0) {
@@ -162,7 +162,7 @@ public class ArenaRegistry {
 			Bukkit.getConsoleSender().sendMessage(plugin.getChatManager().colorMessage("Validator.Instance-Started").replace("%arena%", id));
 		}
 
-		Debugger.debug("Arenas registration completed, took {0} ms", System.currentTimeMillis() - start);
+		LogUtils.log("Arenas registration completed, took {0} ms", System.currentTimeMillis() - start);
 	}
 
 	public static List<Arena> getArenas() {

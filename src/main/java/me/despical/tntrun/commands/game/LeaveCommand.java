@@ -18,12 +18,12 @@
 
 package me.despical.tntrun.commands.game;
 
+import me.despical.commons.util.LogUtils;
 import me.despical.tntrun.ConfigPreferences;
 import me.despical.tntrun.arena.Arena;
 import me.despical.tntrun.arena.ArenaManager;
 import me.despical.tntrun.arena.ArenaRegistry;
 import me.despical.tntrun.commands.SubCommand;
-import me.despical.tntrun.utils.Debugger;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -63,14 +63,14 @@ public class LeaveCommand extends SubCommand {
 
 			if (plugin.getConfigPreferences().getOption(ConfigPreferences.Option.BUNGEE_ENABLED)) {
 				plugin.getBungeeManager().connectToHub(player);
-				Debugger.debug("{0} was teleported to the Hub server", player.getName());
+				LogUtils.log("{0} was teleported to the Hub server", player.getName());
 				return;
 			}
 
 			Arena arena = ArenaRegistry.getArena(player);
 
 			ArenaManager.leaveAttempt(player, arena);
-			Debugger.debug("{0} has left the arena {1}! Teleported to end location.", player.getName(), arena.getId());
+			LogUtils.log("{0} has left the arena {1}! Teleported to end location.", player.getName(), arena.getId());
 		}
 	}
 

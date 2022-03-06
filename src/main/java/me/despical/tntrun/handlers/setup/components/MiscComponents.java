@@ -22,6 +22,7 @@ import me.despical.commons.compat.XMaterial;
 import me.despical.commons.configuration.ConfigUtils;
 import me.despical.commons.item.ItemBuilder;
 import me.despical.commons.serializer.LocationSerializer;
+import me.despical.commons.util.conversation.ConversationBuilder;
 import me.despical.inventoryframework.GuiItem;
 import me.despical.inventoryframework.pane.StaticPane;
 import me.despical.tntrun.ConfigPreferences;
@@ -29,7 +30,6 @@ import me.despical.tntrun.Main;
 import me.despical.tntrun.arena.Arena;
 import me.despical.tntrun.handlers.setup.SetupInventory;
 import me.despical.tntrun.handlers.sign.ArenaSign;
-import me.despical.tntrun.utils.conversation.SimpleConversationBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -118,7 +118,7 @@ public class MiscComponents implements SetupComponent {
 			.build(), e -> {
 			e.getWhoClicked().closeInventory();
 
-			new SimpleConversationBuilder().withPrompt(new StringPrompt() {
+			new ConversationBuilder(plugin).withPrompt(new StringPrompt() {
 
 				@Override
 				public String getPromptText(ConversationContext context) {

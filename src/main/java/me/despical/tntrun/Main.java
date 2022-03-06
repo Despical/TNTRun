@@ -231,7 +231,7 @@ public class Main extends JavaPlugin {
 
 		metrics.addCustomChart(new Metrics.SimplePie("database_enabled", () -> String.valueOf(configPreferences.getOption(ConfigPreferences.Option.DATABASE_ENABLED))));
 		metrics.addCustomChart(new Metrics.SimplePie("bungeecord_hooked", () -> String.valueOf(configPreferences.getOption(ConfigPreferences.Option.BUNGEE_ENABLED))));
-		metrics.addCustomChart(new Metrics.SimplePie("locale_used", () -> languageManager.getPluginLocale().getPrefix()));
+		metrics.addCustomChart(new Metrics.SimplePie("locale_used", () -> languageManager.getPluginLocale().prefix));
 		metrics.addCustomChart(new Metrics.SimplePie("update_notifier", () -> getConfig().getBoolean("Update-Notifier.Enabled", true) ? "Enabled" : "Disabled"));
 	}
 

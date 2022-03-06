@@ -18,6 +18,8 @@
 
 package me.despical.tntrun;
 
+import me.despical.commons.string.StringUtils;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -28,58 +30,34 @@ import java.util.Map;
  */
 public class ConfigPreferences {
 
-	private final Main plugin;
-	private final boolean papi;
 	private final Map<Option, Boolean> options;
 
 	public ConfigPreferences(Main plugin) {
-		this.plugin = plugin;
-		this.papi = plugin.getServer().getPluginManager().isPluginEnabled("PlaceholderAPI");
 		this.options = new HashMap<>();
 
-		loadOptions();
+		for (Option option : Option.values()) {
+			options.put(option, plugin.getConfig().getBoolean(option.path, option.def));
+		}
 	}
 
-	public boolean isPapiEnabled() {
-		return papi;
-	}
-
-	/**
-	 * Returns whether option value is true or false
-	 *
-	 * @param option option to get value from
-	 * @return true or false based on user configuration
-	 */
 	public boolean getOption(Option option) {
 		return options.get(option);
 	}
 
-	private void loadOptions() {
-		for (Option option : Option.values()) {
-			options.put(option, plugin.getConfig().getBoolean(option.getPath(), option.getDefault()));
-		}
-	}
-
 	public enum Option {
-		BOSS_BAR_ENABLED("Boss-Bar-Enabled", true), BUNGEE_ENABLED("Bungee-Activated", false),
-		CHAT_FORMAT_ENABLED("Chat-Format-Enabled", true), DATABASE_ENABLED("Database-Activated", false),
-		DISABLE_SEPARATE_CHAT("Disable-Separate-Chat", false), ENABLE_SHORT_COMMANDS("Enable-Short-Commands", false),
-		INVENTORY_MANAGER_ENABLED("Inventory-Manager", true), NAME_TAGS_HIDDEN("Name-Tags-Hidden", false);
+		BOSS_BAR_ENABLED( true), BUNGEE_ENABLED, CHAT_FORMAT_ENABLED(true), DATABASE_ENABLED,
+		DISABLE_SEPARATE_CHAT, ENABLE_SHORT_COMMANDS, INVENTORY_MANAGER_ENABLED(true), NAME_TAGS_HIDDEN;
 
 		private final String path;
 		private final boolean def;
 
-		Option(String path, boolean def) {
-			this.path = path;
+		Option() {
+			this(false);
+		}
+
+		Option(boolean def) {
+			this.path = StringUtils.capitalize(name().replace('_', '-').toLowerCase(), '_');
 			this.def = def;
-		}
-
-		public String getPath() {
-			return path;
-		}
-
-		public boolean getDefault() {
-			return def;
 		}
 	}
 }

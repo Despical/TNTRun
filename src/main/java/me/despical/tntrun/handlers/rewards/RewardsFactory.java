@@ -20,10 +20,10 @@ package me.despical.tntrun.handlers.rewards;
 
 import me.despical.commons.configuration.ConfigUtils;
 import me.despical.commons.engine.ScriptEngine;
+import me.despical.commons.util.LogUtils;
 import me.despical.tntrun.Main;
 import me.despical.tntrun.arena.Arena;
 import me.despical.tntrun.arena.ArenaRegistry;
-import me.despical.tntrun.utils.Debugger;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -116,7 +116,7 @@ public class RewardsFactory {
 			return;
 		}
 
-		Debugger.debug("[RewardsFactory] Starting rewards registration");
+		LogUtils.log("[RewardsFactory] Starting rewards registration");
 		long start = System.currentTimeMillis();
 		Map<Reward.RewardType, Integer> registeredRewards = new HashMap<>();
 
@@ -128,9 +128,9 @@ public class RewardsFactory {
 		}
 
 		for (Reward.RewardType rewardType : registeredRewards.keySet()) {
-			Debugger.debug("[RewardsFactory] Registered {0} {1} rewards!", registeredRewards.get(rewardType), rewardType.name());
+			LogUtils.log("[RewardsFactory] Registered {0} {1} rewards!", registeredRewards.get(rewardType), rewardType.name());
 		}
 
-		Debugger.debug("[RewardsFactory] Registered all rewards took {0} ms", System.currentTimeMillis() - start);
+		LogUtils.log("[RewardsFactory] Registered all rewards took {0} ms", System.currentTimeMillis() - start);
 	}
 }

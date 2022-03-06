@@ -40,12 +40,14 @@ public class ChatManager {
 	private String prefix;
 
 	private final Main plugin;
+	private final boolean papi;
 	private FileConfiguration config;
 
 	public ChatManager(Main plugin) {
 		this.plugin = plugin;
 		this.config = ConfigUtils.getConfig(plugin, "messages");
-		this.prefix = colorMessage("In-Game.Plugin-Prefix");
+		this.papi = plugin.getServer().getPluginManager().isPluginEnabled("PlaceholdersAPI");
+		this.prefix = colorMessage("in-game.plugin-prefix");
 	}
 
 	public String getPrefix() {
@@ -56,14 +58,14 @@ public class ChatManager {
 		return Strings.format(message);
 	}
 
-	public String colorMessage(String message) {
-		return colorRawMessage(config.getString(message));
+	public String colorMessage(String path) {
+		return colorRawMessage(config.getString(me.despical.commons.string.StringUtils.capitalize(path, '-', '.')));
 	}
 
-	public String colorMessage(String message, Player player) {
-		String returnString = config.getString(message);
+	public String colorMessage(String path, Player player) {
+		String returnString = colorMessage(path);
 
-		if (plugin.getServer().getPluginManager().isPluginEnabled("PlaceholderAPI")) {
+		if (plugin.getConfigPreferences().isPapiEnabled()) {
 			returnString = PlaceholderAPI.setPlaceholders(player, returnString);
 		}
 
@@ -73,13 +75,12 @@ public class ChatManager {
 	public String formatMessage(Arena arena, String message, Player player) {
 		String returnString = message;
 		returnString = StringUtils.replace(returnString, "%player%", player.getName());
-		returnString = colorRawMessage(formatPlaceholders(returnString, arena));
 
-		if (plugin.getServer().getPluginManager().isPluginEnabled("PlaceholderAPI")) {
+		if (plugin.getConfigPreferences().isPapiEnabled()) {
 			returnString = PlaceholderAPI.setPlaceholders(player, returnString);
 		}
 
-		return returnString;
+		return colorRawMessage(formatPlaceholders(returnString, arena));
 	}
 
 	private String formatPlaceholders(String message, Arena arena) {
@@ -103,23 +104,7 @@ public class ChatManager {
 	}
 
 	public void broadcastAction(Arena arena, Player player, ActionType action) {
-		String message;
-
-		switch (action) {
-			case JOIN:
-				message = formatMessage(arena, colorMessage("In-Game.Messages.Join"), player);
-				break;
-			case LEAVE:
-				message = formatMessage(arena, colorMessage("In-Game.Messages.Leave"), player);
-				break;
-			case DEATH:
-				message = formatMessage(arena, colorMessage("In-Game.Messages.Death"), player);
-				break;
-			default:
-				return;
-		}
-
-		arena.broadcastMessage(prefix + message);
+		arena.broadcastMessage(prefix + formatMessage(arena, colorMessage("in-game.messages." + action.name().toLowerCase()), player));
 	}
 
 	public List<String> getStringList(String path) {
@@ -128,7 +113,7 @@ public class ChatManager {
 
 	public void reloadConfig() {
 		config = ConfigUtils.getConfig(plugin, "messages");
-		prefix = colorMessage("In-Game.Plugin-Prefix");
+		prefix = colorMessage("in-game.plugin-prefix");
 	}
 
 	public enum ActionType {
