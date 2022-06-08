@@ -31,7 +31,7 @@ public enum ArenaOption {
 
 	MAXIMUM_PLAYERS(12);
 
-	private final int defaultValue;
+	int defaultValue;
 
 	ArenaOption(int defaultValue) {
 		this.defaultValue = defaultValue;

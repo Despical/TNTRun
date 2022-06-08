@@ -22,7 +22,9 @@ import me.despical.tntrun.arena.Arena;
 import org.bukkit.event.Event;
 
 /**
- * Represents TNT Run game related events.
+ * @author Despical
+ * <p>
+ * Created at 10.07.2020
  */
 public abstract class TREvent extends Event {
 
@@ -32,11 +34,6 @@ public abstract class TREvent extends Event {
 		arena = eventArena;
 	}
 
-	/**
-	 * Returns event arena
-	 *
-	 * @return event arena
-	 */
 	public Arena getArena() {
 		return arena;
 	}

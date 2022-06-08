@@ -64,12 +64,12 @@ public class SignManager implements Listener {
 	public SignManager(Main plugin) {
 		this.plugin = plugin;
 
-		gameStateToString.put(ArenaState.WAITING_FOR_PLAYERS, plugin.getChatManager().colorMessage("Signs.Game-States.Waiting"));
-		gameStateToString.put(ArenaState.STARTING, plugin.getChatManager().colorMessage("Signs.Game-States.Starting"));
-		gameStateToString.put(ArenaState.IN_GAME, plugin.getChatManager().colorMessage("Signs.Game-States.In-Game"));
-		gameStateToString.put(ArenaState.ENDING, plugin.getChatManager().colorMessage("Signs.Game-States.Ending"));
-		gameStateToString.put(ArenaState.RESTARTING, plugin.getChatManager().colorMessage("Signs.Game-States.Restarting"));
-		gameStateToString.put(ArenaState.INACTIVE, plugin.getChatManager().colorMessage("Signs.Game-States.Inactive"));
+		gameStateToString.put(ArenaState.WAITING_FOR_PLAYERS, plugin.getChatManager().message("Signs.Game-States.Waiting"));
+		gameStateToString.put(ArenaState.STARTING, plugin.getChatManager().message("Signs.Game-States.Starting"));
+		gameStateToString.put(ArenaState.IN_GAME, plugin.getChatManager().message("Signs.Game-States.In-Game"));
+		gameStateToString.put(ArenaState.ENDING, plugin.getChatManager().message("Signs.Game-States.Ending"));
+		gameStateToString.put(ArenaState.RESTARTING, plugin.getChatManager().message("Signs.Game-States.Restarting"));
+		gameStateToString.put(ArenaState.INACTIVE, plugin.getChatManager().message("Signs.Game-States.Inactive"));
 
 		signLines = plugin.getChatManager().getStringList("Signs.Lines");
 
@@ -83,7 +83,7 @@ public class SignManager implements Listener {
 		}
 
 		if (e.getLine(1).isEmpty()) {
-			e.getPlayer().sendMessage(plugin.getChatManager().getPrefix() + plugin.getChatManager().colorMessage("Signs.Please-Type-Arena-Name"));
+			e.getPlayer().sendMessage(plugin.getChatManager().getPrefix() + plugin.getChatManager().message("Signs.Please-Type-Arena-Name"));
 			return;
 		}
 
@@ -97,7 +97,7 @@ public class SignManager implements Listener {
 			}
 
 			arenaSigns.add(new ArenaSign((Sign) e.getBlock().getState(), arena));
-			e.getPlayer().sendMessage(plugin.getChatManager().getPrefix() + plugin.getChatManager().colorMessage("Signs.Sign-Created"));
+			e.getPlayer().sendMessage(plugin.getChatManager().getPrefix() + plugin.getChatManager().message("Signs.Sign-Created"));
 
 			String location = LocationSerializer.toString(e.getBlock().getLocation());
 			FileConfiguration config = ConfigUtils.getConfig(plugin, "arenas");
@@ -109,7 +109,7 @@ public class SignManager implements Listener {
 			return;
 		}
 
-		e.getPlayer().sendMessage(plugin.getChatManager().getPrefix() + plugin.getChatManager().colorMessage("Signs.Arena-Doesnt-Exists"));
+		e.getPlayer().sendMessage(plugin.getChatManager().getPrefix() + plugin.getChatManager().message("Signs.Arena-Doesnt-Exists"));
 	}
 
 	private String formatSign(String msg, Arena a) {
@@ -117,14 +117,14 @@ public class SignManager implements Listener {
 		formatted = StringUtils.replace(formatted, "%mapname%", a.getMapName());
 
 		if (a.getPlayers().size() >= a.getMaximumPlayers()) {
-			formatted = StringUtils.replace(formatted, "%state%", plugin.getChatManager().colorMessage("Signs.Game-States.Full-Game"));
+			formatted = StringUtils.replace(formatted, "%state%", plugin.getChatManager().message("Signs.Game-States.Full-Game"));
 		} else {
 			formatted = StringUtils.replace(formatted, "%state%", gameStateToString.get(a.getArenaState()));
 		}
 
 		formatted = StringUtils.replace(formatted, "%players%", String.valueOf(a.getPlayers().size()));
 		formatted = StringUtils.replace(formatted, "%maxplayers%", String.valueOf(a.getMaximumPlayers()));
-		formatted = plugin.getChatManager().colorRawMessage(formatted);
+		formatted = plugin.getChatManager().color(formatted);
 		return formatted;
 	}
 
@@ -138,7 +138,7 @@ public class SignManager implements Listener {
 
 		if (!e.getPlayer().hasPermission("tntrun.admin.sign.break")) {
 			e.setCancelled(true);
-			e.getPlayer().sendMessage(plugin.getChatManager().getPrefix() + plugin.getChatManager().colorMessage("Signs.Doesnt-Have-Permission"));
+			e.getPlayer().sendMessage(plugin.getChatManager().getPrefix() + plugin.getChatManager().message("Signs.Doesnt-Have-Permission"));
 			return;
 		}
 
@@ -159,7 +159,7 @@ public class SignManager implements Listener {
 				config.set("instances." + arena + ".signs", signs);
 				ConfigUtils.saveConfig(plugin, config, "arenas");
 
-				e.getPlayer().sendMessage(plugin.getChatManager().getPrefix() + plugin.getChatManager().colorMessage("Signs.Sign-Removed"));
+				e.getPlayer().sendMessage(plugin.getChatManager().getPrefix() + plugin.getChatManager().message("Signs.Sign-Removed"));
 				return;
 			}
 		}
@@ -231,6 +231,11 @@ public class SignManager implements Listener {
 		}
 
 		LogUtils.log("Sign load event finished took {0} ms", System.currentTimeMillis() - start);
+	}
+
+	public void addArenaSign(Block block, Arena arena) {
+		arenaSigns.add(new ArenaSign((Sign) block.getState(), arena));
+		updateSigns();
 	}
 
 	public void updateSigns() {

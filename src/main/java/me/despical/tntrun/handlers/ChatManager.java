@@ -29,6 +29,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 
 import java.util.List;
+import java.util.Locale;
 
 /**
  * @author Despical
@@ -40,36 +41,46 @@ public class ChatManager {
 	private String prefix;
 
 	private final Main plugin;
-	private final boolean papi;
 	private FileConfiguration config;
 
 	public ChatManager(Main plugin) {
 		this.plugin = plugin;
 		this.config = ConfigUtils.getConfig(plugin, "messages");
-		this.papi = plugin.getServer().getPluginManager().isPluginEnabled("PlaceholdersAPI");
-		this.prefix = colorMessage("in-game.plugin-prefix");
+		this.prefix = message("in-game.plugin-prefix");
 	}
 
 	public String getPrefix() {
 		return prefix;
 	}
 
-	public String colorRawMessage(String message) {
+	public String prefixedRawMessage(String message) {
+		return prefix + color(message);
+	}
+
+	public String color(String message) {
 		return Strings.format(message);
 	}
 
-	public String colorMessage(String path) {
-		return colorRawMessage(config.getString(me.despical.commons.string.StringUtils.capitalize(path, '-', '.')));
+	public String prefixedMessage(String path) {
+		return prefix + message(path);
 	}
 
-	public String colorMessage(String path, Player player) {
-		String returnString = colorMessage(path);
+	public String message(String path) {
+		return color(config.getString(me.despical.commons.string.StringUtils.capitalize(path, '-', '.')));
+	}
+
+	public String prefixedMessage(String path, Player player) {
+		return prefix + message(path, player);
+	}
+
+	public String message(String path, Player player) {
+		String returnString = message(path);
 
 		if (plugin.getConfigPreferences().isPapiEnabled()) {
 			returnString = PlaceholderAPI.setPlaceholders(player, returnString);
 		}
 
-		return colorRawMessage(returnString);
+		return color(returnString);
 	}
 
 	public String formatMessage(Arena arena, String message, Player player) {
@@ -80,31 +91,31 @@ public class ChatManager {
 			returnString = PlaceholderAPI.setPlaceholders(player, returnString);
 		}
 
-		return colorRawMessage(formatPlaceholders(returnString, arena));
+		return color(formatPlaceholders(returnString, arena));
 	}
 
 	private String formatPlaceholders(String message, Arena arena) {
-		String returnString = message;
+		String formatted = message;
 
-		returnString = StringUtils.replace(returnString, "%arena%", arena.getMapName());
-		returnString = StringUtils.replace(returnString, "%time%", Integer.toString(arena.getTimer()));
-		returnString = StringUtils.replace(returnString, "%formatted_time%", StringFormatUtils.formatIntoMMSS((arena.getTimer())));
-		returnString = StringUtils.replace(returnString, "%players%", Integer.toString(arena.getPlayersLeft().size()));
-		returnString = StringUtils.replace(returnString, "%maxplayers%", Integer.toString(arena.getMaximumPlayers()));
-		returnString = StringUtils.replace(returnString, "%minplayers%", Integer.toString(arena.getMinimumPlayers()));
-		return returnString;
+		formatted = StringUtils.replace(formatted, "%arena%", arena.getMapName());
+		formatted = StringUtils.replace(formatted, "%time%", Integer.toString(arena.getTimer()));
+		formatted = StringUtils.replace(formatted, "%formatted_time%", StringFormatUtils.formatIntoMMSS(arena.getTimer()));
+		formatted = StringUtils.replace(formatted, "%players%", Integer.toString(arena.getPlayersLeft().size()));
+		formatted = StringUtils.replace(formatted, "%maxplayers%", Integer.toString(arena.getMaximumPlayers()));
+		formatted = StringUtils.replace(formatted, "%minplayers%", Integer.toString(arena.getMinimumPlayers()));
+		return formatted;
 	}
 
 	public String formatMessage(Arena arena, String message, int integer) {
 		String returnString = message;
 
 		returnString = StringUtils.replace(returnString, "%number%", Integer.toString(integer));
-		returnString = colorRawMessage(formatPlaceholders(returnString, arena));
+		returnString = color(formatPlaceholders(returnString, arena));
 		return returnString;
 	}
 
 	public void broadcastAction(Arena arena, Player player, ActionType action) {
-		arena.broadcastMessage(prefix + formatMessage(arena, colorMessage("in-game.messages." + action.name().toLowerCase()), player));
+		arena.broadcastMessage(prefix + formatMessage(arena, message("in-game.messages." + action.name().toLowerCase(Locale.ENGLISH)), player));
 	}
 
 	public List<String> getStringList(String path) {
@@ -113,7 +124,7 @@ public class ChatManager {
 
 	public void reloadConfig() {
 		config = ConfigUtils.getConfig(plugin, "messages");
-		prefix = colorMessage("in-game.plugin-prefix");
+		prefix = message("in-game.plugin-prefix");
 	}
 
 	public enum ActionType {

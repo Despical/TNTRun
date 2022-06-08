@@ -18,15 +18,14 @@
 
 package me.despical.tntrun.handlers.setup.components;
 
+import me.despical.commons.compat.XMaterial;
 import me.despical.commons.configuration.ConfigUtils;
 import me.despical.commons.item.ItemBuilder;
 import me.despical.commons.serializer.LocationSerializer;
 import me.despical.inventoryframework.GuiItem;
 import me.despical.inventoryframework.pane.StaticPane;
-import me.despical.tntrun.Main;
 import me.despical.tntrun.arena.Arena;
 import me.despical.tntrun.handlers.setup.SetupInventory;
-import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 
@@ -37,47 +36,45 @@ import org.bukkit.entity.Player;
  */
 public class SpawnComponents implements SetupComponent {
 
-	private SetupInventory setupInventory;
-
 	@Override
-	public void prepare(SetupInventory setupInventory) {
-		this.setupInventory = setupInventory;
-	}
-
-	@Override
-	public void injectComponents(StaticPane pane) {
+	public void registerComponent(SetupInventory setupInventory, StaticPane pane) {
 		Player player = setupInventory.getPlayer();
 		FileConfiguration config = setupInventory.getConfig();
 		Arena arena = setupInventory.getArena();
-		Main plugin = setupInventory.getPlugin();
 		String serializedLocation = LocationSerializer.toString(player.getLocation());
 
-		pane.addItem(new GuiItem(new ItemBuilder(Material.REDSTONE_BLOCK)
-			.name(plugin.getChatManager().colorRawMessage("&e&lSet Ending Location"))
+		pane.addItem(GuiItem.of(new ItemBuilder(XMaterial.REDSTONE_BLOCK)
+			.name("&e&lSet Ending Location")
 			.lore("&7Click to set the ending location")
 			.lore("&7on the place where you are standing.")
 			.lore("&8(location where players will be")
 			.lore("&8teleported after the game)")
-			.lore("", setupInventory.getSetupUtilities().isOptionDoneBool("instances." + arena.getId() + ".Endlocation"))
+			.lore("", setupInventory.getSetupUtilities().isOptionDoneBool(arena.getId() + ".endLocation"))
 			.build(), e -> {
-			e.getWhoClicked().closeInventory();
-			config.set("instances." + arena.getId() + ".Endlocation", serializedLocation);
-			arena.setEndLocation(player.getLocation());
-			player.sendMessage(plugin.getChatManager().colorRawMessage("&e✔ Completed | &aEnding location for arena " + arena.getId() + " set at your location!"));
-			ConfigUtils.saveConfig(plugin, config, "arenas");
-		}), 0, 0);
 
-		pane.addItem(new GuiItem(new ItemBuilder(Material.LAPIS_BLOCK)
-			.name(plugin.getChatManager().colorRawMessage("&e&lSet Lobby Location"))
+			arena.setEndLocation(player.getLocation());
+
+			player.closeInventory();
+			player.sendMessage(chatManager.color("&e✔ Completed | &aEnding location for arena " + arena.getId() + " set at your location!"));
+
+			config.set("instances." + arena.getId() + ".endLocation", serializedLocation);
+			ConfigUtils.saveConfig(plugin, config, "arenas");
+		}), 1, 1);
+
+		pane.addItem(GuiItem.of(new ItemBuilder(XMaterial.LAPIS_BLOCK)
+			.name(chatManager.color("&e&lSet Lobby Location"))
 			.lore("&7Click to set the lobby location")
 			.lore("&7on the place where you are standing")
-			.lore("", setupInventory.getSetupUtilities().isOptionDoneBool("instances." + arena.getId() + ".lobbylocation"))
+			.lore("", setupInventory.getSetupUtilities().isOptionDoneBool(arena.getId() + ".lobbyLocation"))
 			.build(), e -> {
-			e.getWhoClicked().closeInventory();
-			config.set("instances." + arena.getId() + ".lobbylocation", serializedLocation);
+
 			arena.setLobbyLocation(player.getLocation());
-			player.sendMessage(plugin.getChatManager().colorRawMessage("&e✔ Completed | &aLobby location for arena " + arena.getId() + " set at your location!"));
+
+			player.closeInventory();
+			player.sendMessage(chatManager.color("&e✔ Completed | &aLobby location for arena " + arena.getId() + " set at your location!"));
+
+			config.set("instances." + arena.getId() + ".lobbyLocation", serializedLocation);
 			ConfigUtils.saveConfig(plugin, config, "arenas");
-		}), 1, 0);
+		}), 2, 1);
 	}
 }

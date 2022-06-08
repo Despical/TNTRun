@@ -29,6 +29,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 /**
  * @author Despical
@@ -38,57 +39,70 @@ import java.util.Map;
 public class User {
 
 	private static final Main plugin = JavaPlugin.getPlugin(Main.class);
-	private static long cooldownCounter = 0;
+
+	private boolean spectator;
+	private static long cooldownCounter;
+
 	private final Player player;
-	private boolean spectator = false;
-	private final Map<StatsStorage.StatisticType, Integer> stats = new EnumMap<>(StatsStorage.StatisticType.class);
-	private final Map<String, Double> cooldowns = new HashMap<>();
+	private final Map<String, Double> cooldowns;
+	private final Map<StatsStorage.StatisticType, Integer> stats;
 
 	public User(Player player) {
 		this.player = player;
-	}
-
-	public static void cooldownHandlerTask() {
-		plugin.getServer().getScheduler().runTaskTimerAsynchronously(plugin, () -> cooldownCounter++, 20, 20);
-	}
-
-	public Arena getArena() {
-		return ArenaRegistry.getArena(player);
+		this.cooldowns = new HashMap<>();
+		this.stats = new EnumMap<>(StatsStorage.StatisticType.class);
 	}
 
 	public Player getPlayer() {
 		return player;
 	}
 
+	public UUID getUniqueId() {
+		return player.getUniqueId();
+	}
+
+	public Arena getArena() {
+		return ArenaRegistry.getArena(player);
+	}
+
 	public boolean isSpectator() {
 		return spectator;
 	}
 
-	public void setSpectator(boolean b) {
-		spectator = b;
+	public void setSpectator(boolean spectator) {
+		this.spectator = spectator;
 	}
 
 	public int getStat(StatsStorage.StatisticType stat) {
 		Integer statistic = stats.get(stat);
 
-		return statistic == null ? 0 : statistic;
+		if (statistic == null) {
+			stats.put(stat, 0);
+			return 0;
+		}
+
+		return statistic;
 	}
 
-	public void setStat(StatsStorage.StatisticType stat, int amount) {
-		stats.put(stat, amount);
+	public void setStat(StatsStorage.StatisticType stat, int value) {
+		stats.put(stat, value);
 
-		plugin.getServer().getScheduler().runTask(plugin, () -> plugin.getServer().getPluginManager().callEvent(new TRPlayerStatisticChangeEvent(getArena(), player, stat, amount)));
+		plugin.getServer().getScheduler().runTask(plugin, () -> plugin.getServer().getPluginManager().callEvent(new TRPlayerStatisticChangeEvent(getArena(), player, stat, value)));
 	}
 
-	public void addStat(StatsStorage.StatisticType stat, int amount) {
-		setStat(stat, getStat(stat) + amount);
+	public void addStat(StatsStorage.StatisticType stat, int value) {
+		setStat(stat, getStat(stat) + value);
 	}
 
-	public void setCooldown(String s, double seconds) {
-		cooldowns.put(s, seconds + cooldownCounter);
+	public void setCooldown(String key, double seconds) {
+		cooldowns.put(key, seconds + cooldownCounter);
 	}
 
-	public double getCooldown(String s) {
-		return !cooldowns.containsKey(s) || cooldowns.get(s) <= cooldownCounter ? 0 : cooldowns.get(s) - cooldownCounter;
+	public double getCooldown(String key) {
+		return !cooldowns.containsKey(key) || cooldowns.get(key) <= cooldownCounter ? 0 : cooldowns.get(key) - cooldownCounter;
+	}
+
+	public static void cooldownHandlerTask() {
+		plugin.getServer().getScheduler().runTaskTimerAsynchronously(plugin, () -> cooldownCounter++, 20, 20);
 	}
 }

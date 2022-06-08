@@ -23,6 +23,7 @@ import me.despical.tntrun.arena.ArenaRegistry;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 
 /**
@@ -38,9 +39,7 @@ public class LobbyEvent implements Listener {
 
 	@EventHandler
 	public void onLobbyDamage(EntityDamageEvent event) {
-		if (!(event.getEntity() instanceof Player)) {
-			return;
-		}
+		if (!(event.getEntity() instanceof Player)) return;
 
 		Player player = (Player) event.getEntity();
 
@@ -50,7 +49,17 @@ public class LobbyEvent implements Listener {
 
 		if (event.getDamage() < 500d && event.getCause() != EntityDamageEvent.DamageCause.VOID) {
 			event.setCancelled(true);
-			player.setFireTicks(0);
 		}
+	}
+
+	@EventHandler
+	public void onEntityDamageToEntity(EntityDamageByEntityEvent event) {
+		if (!(event.getEntity() instanceof Player) || !(event.getDamager() instanceof Player)) return;
+
+		Player player = (Player) event.getEntity();
+
+		if (!ArenaRegistry.isInArena(player)) return;
+
+		event.setCancelled(true);
 	}
 }

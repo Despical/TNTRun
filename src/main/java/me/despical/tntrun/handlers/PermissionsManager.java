@@ -18,10 +18,8 @@
 
 package me.despical.tntrun.handlers;
 
-import me.despical.commons.util.LogUtils;
 import me.despical.tntrun.Main;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.java.JavaPlugin;
 
 /**
  * @author Despical
@@ -30,38 +28,32 @@ import org.bukkit.plugin.java.JavaPlugin;
  */
 public class PermissionsManager {
 
-	private static final Main plugin = JavaPlugin.getPlugin(Main.class);
-	private static String joinFullPerm = "tntrun.fullgames";
-	private static String joinPerm = "tntrun.join.<arena>";
+	private final Main plugin;
+	private final String joinPerm, joinFullPerm;
 
-	public static void init() {
-		setupPermissions();
+	public PermissionsManager(Main plugin) {
+		this.plugin = plugin;
+		this.joinPerm = plugin.getConfig().getString("Basic-Permissions.Join-Permission", "tntrun.join.<arena>");
+		this.joinFullPerm = plugin.getConfig().getString("Basic-Permissions.Full-Games-Permission", "tntrun.fullgames");
 	}
 
-	public static String getJoinFullGames() {
-		return joinFullPerm;
+	public boolean hasJoinPerm(Player player, String replacement) {
+		return player.hasPermission(this.joinPerm.replace("<arena>", replacement));
 	}
 
-	private static void setJoinFullGames(String joinFullGames) {
-		PermissionsManager.joinFullPerm = joinFullGames;
+	public boolean hasFullPerm(Player player) {
+		return player.hasPermission(this.joinFullPerm);
 	}
 
-	public static String getJoinPerm() {
-		return joinPerm;
+	public boolean hasNotifyPerm(Player player) {
+		return plugin.getConfig().getBoolean("Update-Notifier.Enabled", true) && player.hasPermission("tntrun.updatenotify");
 	}
 
-	private static void setJoinPerm(String joinPerm) {
-		PermissionsManager.joinPerm = joinPerm;
+	public String getJoinPerm() {
+		return this.joinPerm;
 	}
 
-	private static void setupPermissions() {
-		PermissionsManager.setJoinFullGames(plugin.getConfig().getString("Basic-Permissions.Full-Games-Permission", "tntrun.fullgames"));
-		PermissionsManager.setJoinPerm(plugin.getConfig().getString("Basic-Permissions.Join-Permission", "tntrun.join.<arena>"));
-
-		LogUtils.log("Basic permissions registered");
-	}
-
-	public static int getDoubleJumps(Player player) {
+	public int getDoubleJumps(Player player) {
 		for (String perm : plugin.getConfig().getStringList("Double-Jumps")) {
 			if (perm.startsWith("tntrun") && player.hasPermission(perm)) {
 				return Integer.parseInt(perm.substring(perm.lastIndexOf('.') + 1));

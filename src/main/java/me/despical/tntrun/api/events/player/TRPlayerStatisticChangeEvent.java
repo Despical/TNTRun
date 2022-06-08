@@ -26,10 +26,8 @@ import org.bukkit.event.HandlerList;
 
 /**
  * @author Despical
- * @see StatsStorage.StatisticType
- * @since 1.0.0
  * <p>
- * Called when player receive new statistic.
+ * Created at 10.07.2020
  */
 public class TRPlayerStatisticChangeEvent extends TREvent {
 

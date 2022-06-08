@@ -35,10 +35,8 @@ import me.despical.tntrun.api.events.game.TRGameLeaveAttemptEvent;
 import me.despical.tntrun.api.events.game.TRGameStopEvent;
 import me.despical.tntrun.handlers.ChatManager.ActionType;
 import me.despical.tntrun.handlers.PermissionsManager;
-import me.despical.tntrun.handlers.items.SpecialItemManager;
 import me.despical.tntrun.user.User;
 import org.apache.commons.lang.StringUtils;
-import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
@@ -58,43 +56,35 @@ public class ArenaManager {
 
 	private static final Main plugin = JavaPlugin.getPlugin(Main.class);
 
-	private ArenaManager() {
-	}
+	private ArenaManager() {}
 
-	/**
-	 * Attempts player to join arena.
-	 * Calls TRGameJoinAttemptEvent.
-	 * Can be cancelled only via above-mentioned event
-	 *
-	 * @param player player to join
-	 * @param arena  target arena
-	 * @see TRGameJoinAttemptEvent
-	 */
 	public static void joinAttempt(Player player, Arena arena) {
 		LogUtils.log("[{0}] Initial join attempt for {1}", arena.getId(), player.getName());
 		long start = System.currentTimeMillis();
-		TRGameJoinAttemptEvent gameJoinAttemptEvent = new TRGameJoinAttemptEvent(player, arena);
 
-		Bukkit.getPluginManager().callEvent(gameJoinAttemptEvent);
+		TRGameJoinAttemptEvent gameJoinAttemptEvent = new TRGameJoinAttemptEvent(player, arena);
+		plugin.getServer().getPluginManager().callEvent(gameJoinAttemptEvent);
 
 		if (!arena.isReady()) {
-			player.sendMessage(plugin.getChatManager().getPrefix() + plugin.getChatManager().colorMessage("In-Game.Arena-Not-Configured"));
+			player.sendMessage(plugin.getChatManager().getPrefix() + plugin.getChatManager().message("In-Game.Arena-Not-Configured"));
 			return;
 		}
 
 		if (gameJoinAttemptEvent.isCancelled()) {
-			player.sendMessage(plugin.getChatManager().getPrefix() + plugin.getChatManager().colorMessage("In-Game.Join-Cancelled-Via-API"));
+			player.sendMessage(plugin.getChatManager().getPrefix() + plugin.getChatManager().message("In-Game.Join-Cancelled-Via-API"));
 			return;
 		}
 
 		if (ArenaRegistry.isInArena(player)) {
-			player.sendMessage(plugin.getChatManager().getPrefix() + plugin.getChatManager().colorMessage("In-Game.Already-Playing"));
+			player.sendMessage(plugin.getChatManager().getPrefix() + plugin.getChatManager().message("In-Game.Already-Playing"));
 			return;
 		}
 
+		PermissionsManager permManager = plugin.getPermissionManager();
+
 		if (!plugin.getConfigPreferences().getOption(ConfigPreferences.Option.BUNGEE_ENABLED)) {
-			if (!player.hasPermission(PermissionsManager.getJoinPerm().replace("<arena>", "*")) || !player.hasPermission(PermissionsManager.getJoinPerm().replace("<arena>", arena.getId()))) {
-				player.sendMessage(plugin.getChatManager().getPrefix() + plugin.getChatManager().colorMessage("In-Game.Join-No-Permission").replace("%permission%", PermissionsManager.getJoinPerm().replace("<arena>", arena.getId())));
+			if (!permManager.hasJoinPerm(player, "*") || !permManager.hasJoinPerm(player, arena.getId())) {
+				player.sendMessage(plugin.getChatManager().getPrefix() + plugin.getChatManager().message("In-Game.Join-No-Permission").replace("%permission%", permManager.getJoinPerm().replace("<arena>", arena.getId())));
 				return;
 			}
 		}
@@ -104,28 +94,28 @@ public class ArenaManager {
 		}
 
 		if (arena.getPlayers().size() >= arena.getMaximumPlayers() && arena.getArenaState() == ArenaState.STARTING) {
-			if (!player.hasPermission(PermissionsManager.getJoinFullGames())) {
-				player.sendMessage(plugin.getChatManager().getPrefix() + plugin.getChatManager().colorMessage("In-Game.Full-Game-No-Permission"));
+			if (!permManager.hasFullPerm(player)) {
+				player.sendMessage(plugin.getChatManager().getPrefix() + plugin.getChatManager().message("In-Game.Full-Game-No-Permission"));
 				return;
 			}
 
 			boolean foundSlot = false;
 
 			for (Player loopPlayer : arena.getPlayers()) {
-				if (loopPlayer.hasPermission(PermissionsManager.getJoinFullGames())) {
+				if (permManager.hasFullPerm(loopPlayer)) {
 					continue;
 				}
 
 				leaveAttempt(loopPlayer, arena);
-				loopPlayer.sendMessage(plugin.getChatManager().getPrefix() + plugin.getChatManager().colorMessage("In-Game.Messages.Lobby-Messages.You-Were-Kicked-For-Premium-Slot"));
-				arena.broadcastMessage(plugin.getChatManager().formatMessage(arena, plugin.getChatManager().colorMessage("In-Game.Messages.Lobby-Messages.Kicked-For-Premium-Slot"), loopPlayer));
+				loopPlayer.sendMessage(plugin.getChatManager().getPrefix() + plugin.getChatManager().message("In-Game.Messages.Lobby-Messages.You-Were-Kicked-For-Premium-Slot"));
+				arena.broadcastMessage(plugin.getChatManager().formatMessage(arena, plugin.getChatManager().message("In-Game.Messages.Lobby-Messages.Kicked-For-Premium-Slot"), loopPlayer));
 
 				foundSlot = true;
 				break;
 			}
 
 			if (!foundSlot) {
-				player.sendMessage(plugin.getChatManager().getPrefix() + plugin.getChatManager().colorMessage("In-Game.No-Slots-For-Premium"));
+				player.sendMessage(plugin.getChatManager().getPrefix() + plugin.getChatManager().message("In-Game.No-Slots-For-Premium"));
 				return;
 			}
 		}
@@ -151,11 +141,11 @@ public class ArenaManager {
 
 		if (arena.getArenaState() == ArenaState.IN_GAME || arena.getArenaState() == ArenaState.ENDING) {
 			arena.teleportToStartLocation(player);
-			player.sendMessage(plugin.getChatManager().getPrefix() + plugin.getChatManager().colorMessage("In-Game.You-Are-Spectator"));
+			player.sendMessage(plugin.getChatManager().getPrefix() + plugin.getChatManager().message("In-Game.You-Are-Spectator"));
 			player.getInventory().clear();
-			player.getInventory().setItem(0, new ItemBuilder(XMaterial.COMPASS.parseItem()).name(plugin.getChatManager().colorMessage("In-Game.Spectator.Spectator-Item-Name")).build());
-			player.getInventory().setItem(4, new ItemBuilder(XMaterial.COMPARATOR.parseItem()).name(plugin.getChatManager().colorMessage("In-Game.Spectator.Settings-Menu.Item-Name")).build());
-			player.getInventory().setItem(SpecialItemManager.getSpecialItem("Leave").getSlot(), SpecialItemManager.getSpecialItem("Leave").getItemStack());
+			player.getInventory().setItem(0, new ItemBuilder(XMaterial.COMPASS.parseItem()).name(plugin.getChatManager().message("In-Game.Spectator.Spectator-Item-Name")).build());
+			player.getInventory().setItem(4, new ItemBuilder(XMaterial.COMPARATOR.parseItem()).name(plugin.getChatManager().message("In-Game.Spectator.Settings-Menu.Item-Name")).build());
+			player.getInventory().setItem(plugin.getItemManager().getSpecialItem("Leave").getSlot(), plugin.getItemManager().getSpecialItem("Leave").getItemStack());
 			player.getActivePotionEffects().forEach(effect -> player.removePotionEffect(effect.getType()));
 
 			ArenaUtils.hidePlayer(player, arena);
@@ -193,7 +183,7 @@ public class ArenaManager {
 		}
 
 		if (arena.getArenaState() == ArenaState.STARTING || arena.getArenaState() == ArenaState.WAITING_FOR_PLAYERS) {
-			player.getInventory().setItem(SpecialItemManager.getSpecialItem("Leave").getSlot(), SpecialItemManager.getSpecialItem("Leave").getItemStack());
+			player.getInventory().setItem(plugin.getItemManager().getSpecialItem("Leave").getSlot(), plugin.getItemManager().getSpecialItem("Leave").getItemStack());
 		}
 
 		player.updateInventory();
@@ -218,7 +208,7 @@ public class ArenaManager {
 		long start = System.currentTimeMillis();
 
 		TRGameLeaveAttemptEvent event = new TRGameLeaveAttemptEvent(player, arena);
-		Bukkit.getPluginManager().callEvent(event);
+		plugin.getServer().getPluginManager().callEvent(event);
 		User user = plugin.getUserManager().getUser(player);
 
 		if (user.getStat(StatsStorage.StatisticType.LOCAL_SURVIVE) > user.getStat(StatsStorage.StatisticType.LONGEST_SURVIVE)) {
@@ -235,17 +225,17 @@ public class ArenaManager {
 		}
 
 		player.setFlySpeed(0.1f);
+		player.setGlowing(false);
+		player.setCollidable(true);
 		player.getInventory().clear();
 		player.getInventory().setArmorContents(null);
+
 		arena.removePlayer(player);
 		arena.teleportToEndLocation(player);
 
 		if (!user.isSpectator()) {
 			plugin.getChatManager().broadcastAction(arena, player, ActionType.LEAVE);
 		}
-
-		player.setGlowing(false);
-		player.setCollidable(true);
 
 		user.setSpectator(false);
 
@@ -300,21 +290,20 @@ public class ArenaManager {
 		FileConfiguration config = ConfigUtils.getConfig(plugin, "messages");
 		long start = System.currentTimeMillis();
 
-		TRGameStopEvent gameStopEvent = new TRGameStopEvent(arena);
-		Bukkit.getPluginManager().callEvent(gameStopEvent);
+		plugin.getServer().getPluginManager().callEvent(new TRGameStopEvent(arena));
 
 		arena.setArenaState(ArenaState.ENDING);
 
 		if (quickStop) {
-			Bukkit.getScheduler().runTaskLater(plugin, () -> arena.setArenaState(ArenaState.ENDING), 20L * 2);
-			arena.broadcastMessage(plugin.getChatManager().colorMessage("In-Game.Messages.Admin-Messages.Stopped-Game"));
+			plugin.getServer().getScheduler().runTaskLater(plugin, () -> arena.setArenaState(ArenaState.ENDING), 20L * 2);
+			arena.broadcastMessage(plugin.getChatManager().message("In-Game.Messages.Admin-Messages.Stopped-Game"));
 		} else {
-			Bukkit.getScheduler().runTaskLater(plugin, () -> arena.setArenaState(ArenaState.ENDING), 20L * 10);
+			plugin.getServer().getScheduler().runTaskLater(plugin, () -> arena.setArenaState(ArenaState.ENDING), 20L * 10);
 		}
 
 		arena.getScoreboardManager().stopAllScoreboards();
 
-		for (final Player player : arena.getPlayers()) {
+		for (Player player : arena.getPlayers()) {
 			User user = plugin.getUserManager().getUser(player);
 
 			if (user.getStat(StatsStorage.StatisticType.LOCAL_SURVIVE) > user.getStat(StatsStorage.StatisticType.LONGEST_SURVIVE)) {
@@ -322,7 +311,7 @@ public class ArenaManager {
 			}
 
 			player.getInventory().clear();
-			player.getInventory().setItem(SpecialItemManager.getSpecialItem("Leave").getSlot(), SpecialItemManager.getSpecialItem("Leave").getItemStack());
+			player.getInventory().setItem(plugin.getItemManager().getSpecialItem("Leave").getSlot(), plugin.getItemManager().getSpecialItem("Leave").getItemStack());
 
 			if (!quickStop) {
 				for (String msg : config.getStringList("In-Game.Messages.Game-End-Messages.Summary-Message")) {

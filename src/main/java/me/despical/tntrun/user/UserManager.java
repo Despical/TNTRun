@@ -26,11 +26,11 @@ import me.despical.tntrun.arena.Arena;
 import me.despical.tntrun.user.data.FileStats;
 import me.despical.tntrun.user.data.MysqlManager;
 import me.despical.tntrun.user.data.UserDatabase;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 /**
@@ -40,41 +40,40 @@ import java.util.stream.Collectors;
  */
 public class UserManager {
 
+	private final Set<User> users;
 	private final UserDatabase database;
-	private final List<User> users = new ArrayList<>();
 
 	public UserManager(Main plugin) {
+		this.users = new HashSet<>();
 		this.database = plugin.getConfigPreferences().getOption(ConfigPreferences.Option.DATABASE_ENABLED) ? new MysqlManager(plugin) : new FileStats(plugin);
 
-		loadStatsForPlayersOnline();
-	}
-
-	private void loadStatsForPlayersOnline() {
-		Bukkit.getServer().getOnlinePlayers().stream().map(this::getUser).forEach(this::loadStatistics);
+		plugin.getServer().getOnlinePlayers().forEach(this::getUser);
 	}
 
 	public User getUser(Player player) {
+		final UUID uuid = player.getUniqueId();
+
 		for (User user : users) {
-			if (user.getPlayer().equals(player)) {
+			if (user.getUniqueId().equals(uuid)) {
 				return user;
 			}
 		}
 
-		LogUtils.log("Registering new user {0} ({1})", player.getUniqueId(), player.getName());
+		LogUtils.log("Registering new user {0} ({1})", uuid, player.getName());
 
-		User user = new User(player);
+		final User user = new User(player);
+
+		database.loadStatistics(user);
 		users.add(user);
 		return user;
 	}
 
-	public List<User> getUsers(Arena arena) {
-		return arena.getPlayers().stream().map(this::getUser).collect(Collectors.toList());
+	public Set<User> getUsers(Arena arena) {
+		return arena.getPlayers().stream().map(this::getUser).collect(Collectors.toSet());
 	}
 
 	public void saveStatistic(User user, StatsStorage.StatisticType stat) {
-		if (!stat.isPersistent()) {
-			return;
-		}
+		if (!stat.isPersistent()) return;
 
 		database.saveStatistic(user, stat);
 	}

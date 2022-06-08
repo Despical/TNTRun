@@ -18,63 +18,67 @@
 
 package me.despical.tntrun.commands;
 
+import me.despical.commandframework.CommandArguments;
+import me.despical.commandframework.Completer;
+import me.despical.commons.util.Collections;
+import me.despical.tntrun.Main;
+import me.despical.tntrun.api.StatsStorage;
 import me.despical.tntrun.arena.Arena;
 import me.despical.tntrun.arena.ArenaRegistry;
-import org.bukkit.Bukkit;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
-import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import org.bukkit.util.StringUtil;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * @author Despical
  * <p>
  * Created at 10.07.2020
  */
-public class TabCompletion implements TabCompleter {
+public class TabCompletion {
 
-	public CommandHandler commandHandler;
+	public Main plugin;
 
-	public TabCompletion(CommandHandler commandHandler) {
-		this.commandHandler = commandHandler;
+	public TabCompletion(Main plugin) {
+		this.plugin = plugin;
+		this.plugin.getCommandFramework().registerCommands(this);
 	}
 
-	@Override
-	public List<String> onTabComplete(CommandSender sender, Command cmd, String label, String[] args) {
-		List<String> completions = new ArrayList<>(), commands = commandHandler.getSubCommands().stream().map(command -> command.getName().toLowerCase()).collect(Collectors.toList());
+	@Completer(
+		name = "tntrun"
+	)
+	public List<String> onTabComplete(CommandArguments arguments) {
+		List<String> completions = new ArrayList<>(), commands = plugin.getCommandFramework().getCommands().stream().map(cmd -> cmd.name().replace(arguments.getLabel() + '.', "")).collect(Collectors.toList());
+		String[] args = arguments.getArguments();
 
 		if (args.length == 1) {
 			StringUtil.copyPartialMatches(args[0], commands, completions);
 		}
 
 		if (args.length == 2) {
-			if (Stream.of("create", "help", "list", "reload", "randomjoin", "stop", "forcestart").anyMatch(args[0]::equalsIgnoreCase)) {
+			if (Collections.contains(args[0], "create", "help", "list", "reload", "randomjoin", "stop", "forcestart", "stats", "arenas")) {
 				return null;
 			}
 
 			if (args[0].equalsIgnoreCase("top")) {
-				return Arrays.asList("games_played", "wins", "loses", "longest_survive", "coins");
+				return Collections.streamOf(StatsStorage.StatisticType.values()).filter(StatsStorage.StatisticType::isPersistent).map(statistic -> statistic.name().toLowerCase(Locale.ENGLISH)).collect(Collectors.toList());
 			}
 
 			if (args[0].equalsIgnoreCase("stats")) {
-				return Bukkit.getOnlinePlayers().stream().map(Player::getName).collect(Collectors.toList());
+				return plugin.getServer().getOnlinePlayers().stream().map(Player::getName).collect(Collectors.toList());
 			}
 
 			List<String> arenas = ArenaRegistry.getArenas().stream().map(Arena::getId).collect(Collectors.toList());
+
 			StringUtil.copyPartialMatches(args[1], arenas, completions);
-			Collections.sort(arenas);
+			arenas.sort(null);
 			return arenas;
 		}
 
-		Collections.sort(completions);
+		completions.sort(null);
 		return completions;
 	}
 }

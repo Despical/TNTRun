@@ -23,8 +23,8 @@ import me.despical.tntrun.Main;
 import me.despical.tntrun.api.StatsStorage;
 import me.despical.tntrun.arena.Arena;
 import me.despical.tntrun.arena.ArenaRegistry;
+import me.despical.tntrun.user.User;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.java.JavaPlugin;
 
 /**
  * @author Despical
@@ -33,9 +33,13 @@ import org.bukkit.plugin.java.JavaPlugin;
  */
 public class PlaceholderManager extends PlaceholderExpansion {
 
-	private final Main plugin = JavaPlugin.getPlugin(Main.class);
+	private final Main plugin;
 
-	@Override
+	public PlaceholderManager(Main plugin) {
+		this.plugin = plugin;
+		this.register();
+	}
+
 	public boolean persist() {
 		return true;
 	}
@@ -57,17 +61,19 @@ public class PlaceholderManager extends PlaceholderExpansion {
 			return null;
 		}
 
+		User user = plugin.getUserManager().getUser(player);
+
 		switch (id.toLowerCase()) {
 			case "wins":
-				return String.valueOf(StatsStorage.getUserStats(player, StatsStorage.StatisticType.WINS));
+				return Integer.toString(user.getStat(StatsStorage.StatisticType.WINS));
 			case "loses":
-				return String.valueOf(StatsStorage.getUserStats(player, StatsStorage.StatisticType.LOSES));
+				return Integer.toString(user.getStat(StatsStorage.StatisticType.LOSES));
 			case "games_played":
-				return String.valueOf(StatsStorage.getUserStats(player, StatsStorage.StatisticType.GAMES_PLAYED));
+				return Integer.toString(user.getStat(StatsStorage.StatisticType.GAMES_PLAYED));
 			case "longest_survive":
-				return String.valueOf(StatsStorage.getUserStats(player, StatsStorage.StatisticType.LONGEST_SURVIVE));
+				return Integer.toString(user.getStat(StatsStorage.StatisticType.LONGEST_SURVIVE));
 			case "coins":
-				return String.valueOf(StatsStorage.getUserStats(player, StatsStorage.StatisticType.COINS));
+				return Integer.toString(user.getStat(StatsStorage.StatisticType.COINS));
 			default:
 				return handleArenaPlaceholderRequest(id);
 		}
@@ -95,10 +101,10 @@ public class PlaceholderManager extends PlaceholderExpansion {
 			case "min_players":
 				return Integer.toString(arena.getMinimumPlayers());
 			case "state":
-				return String.valueOf(arena.getArenaState());
+				return arena.getArenaState().name();
 			case "state_pretty":
 				return arena.getArenaState().getFormattedName();
-			case "mapname":
+			case "map_name":
 				return arena.getMapName();
 			default:
 				return null;

@@ -89,7 +89,6 @@ public class RewardsFactory {
 						break;
 					case SCRIPT:
 						ScriptEngine engine = new ScriptEngine();
-
 						engine.setValue("player", player);
 						engine.setValue("server", Bukkit.getServer());
 						engine.setValue("arena", arena);
@@ -107,27 +106,25 @@ public class RewardsFactory {
 
 		formatted = StringUtils.replace(formatted, "%arena-id%", arena.getId());
 		formatted = StringUtils.replace(formatted, "%mapname%", arena.getMapName());
-		formatted = StringUtils.replace(formatted, "%players%", String.valueOf(arena.getPlayers().size()));
+		formatted = StringUtils.replace(formatted, "%players%", Integer.toString(arena.getPlayers().size()));
 		return formatted;
 	}
 
 	private void registerRewards() {
-		if (!enabled) {
-			return;
-		}
+		if (!enabled) return;
 
-		LogUtils.log("[RewardsFactory] Starting rewards registration");
+		LogUtils.log("[RewardsFactory] Starting rewards registration.");
+
 		long start = System.currentTimeMillis();
+
 		Map<Reward.RewardType, Integer> registeredRewards = new HashMap<>();
 
 		for (Reward.RewardType rewardType : Reward.RewardType.values()) {
-			for (String reward : config.getStringList("rewards." + rewardType.getPath())) {
+			for (String reward : config.getStringList("rewards." + rewardType.path)) {
 				rewards.add(new Reward(rewardType, reward));
 				registeredRewards.put(rewardType, registeredRewards.getOrDefault(rewardType, 0) + 1);
 			}
-		}
 
-		for (Reward.RewardType rewardType : registeredRewards.keySet()) {
 			LogUtils.log("[RewardsFactory] Registered {0} {1} rewards!", registeredRewards.get(rewardType), rewardType.name());
 		}
 

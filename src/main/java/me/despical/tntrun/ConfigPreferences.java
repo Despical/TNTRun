@@ -30,9 +30,11 @@ import java.util.Map;
  */
 public class ConfigPreferences {
 
+	private final boolean papiEnabled;
 	private final Map<Option, Boolean> options;
 
 	public ConfigPreferences(Main plugin) {
+		this.papiEnabled = plugin.getServer().getPluginManager().isPluginEnabled("PlaceholderAPI");
 		this.options = new HashMap<>();
 
 		for (Option option : Option.values()) {
@@ -44,12 +46,17 @@ public class ConfigPreferences {
 		return options.get(option);
 	}
 
+	public boolean isPapiEnabled() {
+		return papiEnabled;
+	}
+
 	public enum Option {
 		BOSS_BAR_ENABLED( true), BUNGEE_ENABLED, CHAT_FORMAT_ENABLED(true), DATABASE_ENABLED,
-		DISABLE_SEPARATE_CHAT, ENABLE_SHORT_COMMANDS, INVENTORY_MANAGER_ENABLED(true), NAME_TAGS_HIDDEN;
+		DISABLE_SEPARATE_CHAT, ENABLE_SHORT_COMMANDS, INVENTORY_MANAGER_ENABLED(true), NAME_TAGS_HIDDEN,
+		DISABLE_LEAVE_COMMAND;
 
-		private final String path;
-		private final boolean def;
+		String path;
+		boolean def;
 
 		Option() {
 			this(false);

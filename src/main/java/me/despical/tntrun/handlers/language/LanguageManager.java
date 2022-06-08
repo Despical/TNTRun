@@ -29,7 +29,7 @@ public class LanguageManager {
 	}
 
 	private void init() {
-		if (Collections.contains(pluginLocale.aliases, plugin.getChatManager().colorMessage("Language"))) {
+		if (Collections.contains(pluginLocale.aliases, plugin.getChatManager().message("Language"))) {
 			return;
 		}
 
@@ -71,9 +71,5 @@ public class LanguageManager {
 		}
 
 		LogUtils.sendConsoleMessage("[TNTRun] Loaded locale " + pluginLocale.name + " (ID: " + pluginLocale.prefix + ")");
-	}
-
-	public Locale getPluginLocale() {
-		return pluginLocale;
 	}
 }

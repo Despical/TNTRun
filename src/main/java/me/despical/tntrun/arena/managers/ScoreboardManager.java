@@ -58,7 +58,7 @@ public class ScoreboardManager {
 
 			@Override
 			public String getTitle(Player player) {
-				return plugin.getChatManager().colorMessage("Scoreboard.Title");
+				return plugin.getChatManager().message("Scoreboard.Title");
 			}
 
 			@Override
@@ -108,7 +108,7 @@ public class ScoreboardManager {
 		formattedLine = StringUtils.replace(formattedLine, "%min_players%", String.valueOf(arena.getMinimumPlayers()));
 		formattedLine = StringUtils.replace(formattedLine, "%coins_earned%", String.valueOf(StatsStorage.getUserStats(player, StatsStorage.StatisticType.LOCAL_COINS)));
 		formattedLine = StringUtils.replace(formattedLine, "%double_jumps%", String.valueOf(StatsStorage.getUserStats(player, StatsStorage.StatisticType.LOCAL_DOUBLE_JUMPS)));
-		formattedLine = plugin.getChatManager().colorRawMessage(formattedLine);
+		formattedLine = plugin.getChatManager().color(formattedLine);
 
 		if (plugin.getConfigPreferences().isPapiEnabled()) {
 			formattedLine = PlaceholderAPI.setPlaceholders(player, formattedLine);

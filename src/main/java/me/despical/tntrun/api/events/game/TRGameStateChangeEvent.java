@@ -25,10 +25,8 @@ import org.bukkit.event.HandlerList;
 
 /**
  * @author Despical
- * @since 1.0.0
  * <p>
- * <p>
- * Called when arena game state has changed.
+ * Created at 10.07.2020
  */
 public class TRGameStateChangeEvent extends TREvent {
 

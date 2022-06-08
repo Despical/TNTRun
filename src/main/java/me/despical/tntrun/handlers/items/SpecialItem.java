@@ -20,16 +20,13 @@ package me.despical.tntrun.handlers.items;
 
 import me.despical.commons.compat.XMaterial;
 import me.despical.commons.configuration.ConfigUtils;
+import me.despical.commons.util.Collections;
 import me.despical.tntrun.Main;
-import org.bukkit.ChatColor;
-import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.stream.Collectors;
 
 /**
@@ -39,57 +36,41 @@ import java.util.stream.Collectors;
  */
 public class SpecialItem {
 
-	private final Main plugin = JavaPlugin.getPlugin(Main.class);
-	private ItemStack itemStack;
-	private int slot;
-	private final String name;
+	private static final Main plugin = JavaPlugin.getPlugin(Main.class);
 
-	public SpecialItem(String name) {
-		this.name = name;
-	}
+	private final int slot;
+	private final ItemStack itemStack;
 
-	public static void loadAll() {
-		new SpecialItem("Leave").load(ChatColor.RED + "Leave", new String[]{
-			ChatColor.GRAY + "Click to teleport to hub"
-		}, XMaterial.WHITE_BED.parseMaterial(), 8);
+	public SpecialItem(String key, String displayName, int slot, XMaterial material, String... lore) {
+		this.slot = slot;
 
-		new SpecialItem("Double-Jump").load(ChatColor.RED + "Double Jump", new String[]{
-			ChatColor.GRAY + "Click to double jump"
-		}, XMaterial.FEATHER.parseMaterial(), 0);
-	}
-
-	public void load(String displayName, String[] lore, Material material, int slot) {
 		FileConfiguration config = ConfigUtils.getConfig(plugin, "lobbyitems");
 
-		if (!config.contains(name)) {
-			config.set(name + ".displayname", displayName);
-			config.set(name + ".lore", Arrays.asList(lore));
-			config.set(name + ".material-name", material.toString());
-			config.set(name + ".slot", slot);
+		if (!config.contains(key)) {
+			config.set(key + ".displayName", displayName);
+			config.set(key + ".slot", slot);
+			config.set(key + ".materialName", material);
+			config.set(key + ".lore", Collections.listOf(lore));
+
+			ConfigUtils.saveConfig(plugin, config, "items");
 		}
 
-		ConfigUtils.saveConfig(JavaPlugin.getPlugin(Main.class), config, "lobbyitems");
-		ItemStack stack = XMaterial.matchXMaterial(config.getString(name + ".material-name", "STONE").toUpperCase()).orElse(XMaterial.STONE).parseItem();
-		ItemMeta meta = stack.getItemMeta();
-		meta.setDisplayName(plugin.getChatManager().colorRawMessage(config.getString(name + ".displayname")));
 
-		List<String> colorizedLore = config.getStringList(name + ".lore").stream().map(str -> plugin.getChatManager().colorRawMessage(str)).collect(Collectors.toList());
+		final ItemStack itemStack = XMaterial.matchXMaterial(material.toString()).orElse(XMaterial.STONE).parseItem();
+		final ItemMeta meta = itemStack.getItemMeta();
+		meta.setDisplayName(plugin.getChatManager().color(displayName));
+		meta.setLore(Collections.listOf(lore).stream().map(plugin.getChatManager()::color).collect(Collectors.toList()));
 
-		meta.setLore(colorizedLore);
-		stack.setItemMeta(meta);
+		itemStack.setItemMeta(meta);
 
-		SpecialItem item = new SpecialItem(name);
-		item.itemStack = stack;
-		item.slot = config.getInt(name + ".slot");
-
-		SpecialItemManager.addItem(name, item);
-	}
-
-	public int getSlot() {
-		return slot;
+		this.itemStack = itemStack;
 	}
 
 	public ItemStack getItemStack() {
 		return itemStack;
+	}
+
+	public int getSlot() {
+		return slot;
 	}
 }

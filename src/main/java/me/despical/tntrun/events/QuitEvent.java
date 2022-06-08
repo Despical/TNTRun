@@ -19,8 +19,8 @@
 package me.despical.tntrun.events;
 
 import me.despical.tntrun.Main;
+import me.despical.tntrun.arena.Arena;
 import me.despical.tntrun.arena.ArenaManager;
-import me.despical.tntrun.arena.ArenaRegistry;
 import me.despical.tntrun.user.User;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -45,12 +45,13 @@ public class QuitEvent implements Listener {
 	@EventHandler
 	public void onQuit(PlayerQuitEvent event) {
 		Player player = event.getPlayer();
+		User user = plugin.getUserManager().getUser(player);
+		Arena arena = user.getArena();
 
-		if (ArenaRegistry.isInArena(player)) {
-			ArenaManager.leaveAttempt(player, ArenaRegistry.getArena(player));
+		if (arena != null) {
+			ArenaManager.leaveAttempt(player, arena);
 		}
 
-		User user = plugin.getUserManager().getUser(player);
 		plugin.getUserManager().removeUser(user);
 	}
 }

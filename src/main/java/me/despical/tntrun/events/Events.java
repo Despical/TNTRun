@@ -26,7 +26,6 @@ import me.despical.tntrun.arena.Arena;
 import me.despical.tntrun.arena.ArenaManager;
 import me.despical.tntrun.arena.ArenaRegistry;
 import me.despical.tntrun.arena.ArenaUtils;
-import me.despical.tntrun.handlers.items.SpecialItemManager;
 import org.bukkit.entity.*;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
@@ -97,7 +96,7 @@ public class Events implements Listener {
 		}
 
 		event.setCancelled(true);
-		event.getPlayer().sendMessage(plugin.getChatManager().getPrefix() + plugin.getChatManager().colorMessage("In-Game.Only-Command-Ingame-Is-Leave"));
+		event.getPlayer().sendMessage(plugin.getChatManager().getPrefix() + plugin.getChatManager().message("In-Game.Only-Command-Ingame-Is-Leave"));
 	}
 
 	@EventHandler(priority = EventPriority.HIGH)
@@ -131,13 +130,13 @@ public class Events implements Listener {
 			return;
 		}
 
-		String key = SpecialItemManager.getRelatedSpecialItem(itemStack);
+		String key = plugin.getItemManager().getRelatedSpecialItem(itemStack);
 
 		if (key == null) {
 			return;
 		}
 
-		if (SpecialItemManager.getRelatedSpecialItem(itemStack).equalsIgnoreCase("Leave")) {
+		if (plugin.getItemManager().getRelatedSpecialItem(itemStack).equalsIgnoreCase("Leave")) {
 			event.setCancelled(true);
 
 			if (plugin.getConfigPreferences().getOption(ConfigPreferences.Option.BUNGEE_ENABLED)) {

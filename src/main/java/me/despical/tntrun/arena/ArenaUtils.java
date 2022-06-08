@@ -20,7 +20,6 @@ package me.despical.tntrun.arena;
 
 import me.despical.tntrun.ConfigPreferences;
 import me.despical.tntrun.Main;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scoreboard.Scoreboard;
@@ -80,8 +79,8 @@ public class ArenaUtils {
 
 			Scoreboard scoreboard = players.getScoreboard();
 
-			if (scoreboard == Bukkit.getScoreboardManager().getMainScoreboard()) {
-				scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
+			if (scoreboard == plugin.getServer().getScoreboardManager().getMainScoreboard()) {
+				scoreboard = plugin.getServer().getScoreboardManager().getNewScoreboard();
 			}
 
 			Team team = scoreboard.getTeam("TRHide");

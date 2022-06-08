@@ -18,8 +18,10 @@
 
 package me.despical.tntrun.handlers.rewards;
 
+import me.despical.commons.util.LogUtils;
 import org.apache.commons.lang.StringUtils;
-import org.bukkit.Bukkit;
+
+import java.util.logging.Level;
 
 /**
  * @author Despical
@@ -51,7 +53,7 @@ public class Reward {
 			int loc = processedCode.indexOf(")");
 
 			if (loc == -1) {
-				Bukkit.getLogger().warning("rewards.yml configuration is broken! Make sure you don't forget using ')' character in chance condition! Command: " + rawCode);
+				LogUtils.log(Level.WARNING, "rewards.yml configuration is broken! Make sure you don't forget using ')' character in chance condition! Command: " + rawCode);
 				this.chance = 0.0;
 				return;
 			}
@@ -88,14 +90,10 @@ public class Reward {
 	public enum RewardType {
 		END_GAME("endgame"), LOSE("lose"), WIN("win");
 
-		private final String path;
+		String path;
 
 		RewardType(String path) {
 			this.path = path;
-		}
-
-		public String getPath() {
-			return path;
 		}
 	}
 

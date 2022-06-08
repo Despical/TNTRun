@@ -47,10 +47,10 @@ public class SpeedComponents implements SpectatorSettingComponent {
 	public void injectComponents(StaticPane pane) {
 		Main plugin = spectatorSettingsMenu.getPlugin();
 		Player player = spectatorSettingsMenu.getPlayer();
-		String speedPrefix = plugin.getChatManager().colorMessage("In-Game.Spectator.Settings-Menu.Speed-Name");
+		String speedPrefix = plugin.getChatManager().message("In-Game.Spectator.Settings-Menu.Speed-Name");
 
 		pane.addItem(new GuiItem(new ItemBuilder(Material.LEATHER_BOOTS)
-			.name(plugin.getChatManager().colorMessage("In-Game.Spectator.Settings-Menu.No-Speed"))
+			.name(plugin.getChatManager().message("In-Game.Spectator.Settings-Menu.No-Speed"))
 			.build(), e -> {
 			player.closeInventory();
 			player.removePotionEffect(PotionEffectType.SPEED);

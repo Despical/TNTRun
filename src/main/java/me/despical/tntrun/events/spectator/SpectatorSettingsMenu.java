@@ -45,7 +45,7 @@ public class SpectatorSettingsMenu implements Listener {
 	}
 
 	private void prepareGui() {
-		this.gui = new Gui(plugin, 4, plugin.getChatManager().colorMessage("In-Game.Spectator.Settings-Menu.Inventory-Name"));
+		this.gui = new Gui(plugin, 4, plugin.getChatManager().message("In-Game.Spectator.Settings-Menu.Inventory-Name"));
 		this.gui.setOnGlobalClick(e -> e.setCancelled(true));
 
 		StaticPane pane = new StaticPane(9, 4);

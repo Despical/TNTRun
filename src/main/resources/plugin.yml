@@ -5,11 +5,6 @@ version: ${project.version}
 api-version: 1.13
 softdepend: [PlaceholderAPI]
 
-commands:
-  TNTRun:
-    description: TNT Run commands
-    aliases: [tr, trun]
-
 permissions:
   tntrun.admin.*:
     default: op

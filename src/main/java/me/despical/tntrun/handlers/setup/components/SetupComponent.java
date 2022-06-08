@@ -19,7 +19,10 @@
 package me.despical.tntrun.handlers.setup.components;
 
 import me.despical.inventoryframework.pane.StaticPane;
+import me.despical.tntrun.Main;
+import me.despical.tntrun.handlers.ChatManager;
 import me.despical.tntrun.handlers.setup.SetupInventory;
+import org.bukkit.plugin.java.JavaPlugin;
 
 /**
  * @author Despical
@@ -28,7 +31,8 @@ import me.despical.tntrun.handlers.setup.SetupInventory;
  */
 public interface SetupComponent {
 
-	void prepare(SetupInventory setupInventory);
+	Main plugin = JavaPlugin.getPlugin(Main.class);
+	ChatManager chatManager = plugin.getChatManager();
 
-	void injectComponents(StaticPane pane);
+	void registerComponent(SetupInventory setupInventory, StaticPane pane);
 }

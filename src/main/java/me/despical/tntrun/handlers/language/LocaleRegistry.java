@@ -5,7 +5,6 @@ import java.util.Set;
 
 /**
  * @author Despical
- * @since 1.0.8
  * <p>
  * Created at 01.11.2020
  */

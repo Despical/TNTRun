@@ -1,21 +1,17 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+		 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
+
 	<groupId>me.despical</groupId>
 	<artifactId>tnt-run</artifactId>
-	<version>2.0.0</version>
+	<version>1.0.0-debug</version>
 	<name>TNT Run</name>
 
 	<properties>
 		<java.version>1.8</java.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
-
-	<licenses>
-		<license>
-			<name>GNU General Public License v3</name>
-			<url>https://www.gnu.org/licenses/gpl-3.0.en.html</url>
-		</license>
-	</licenses>
 
 	<developers>
 		<developer>
@@ -56,7 +52,7 @@
 		<dependency>
 			<groupId>com.github.Despical</groupId>
 			<artifactId>Commons</artifactId>
-			<version>1.4.5</version>
+			<version>1.4.7.0</version>
 		</dependency>
 		<dependency>
 			<groupId>com.github.Despical</groupId>
@@ -74,11 +70,6 @@
 			<version>2.10.1</version>
 			<scope>provided</scope>
 		</dependency>
-		<dependency>
-			<groupId>org.bstats</groupId>
-			<artifactId>bstats-bukkit</artifactId>
-			<version>1.7</version>
-		</dependency>
 	</dependencies>
 
 	<build>
@@ -93,7 +84,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.8.0</version>
+				<version>3.8.1</version>
 				<goals>
 					<goal>compile</goal>
 				</goals>
@@ -119,11 +110,14 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
 				<version>3.1.0</version>
+				<configuration>
+					<outputDirectory>C:\Users\pc\Desktop\Sunucu\plugins</outputDirectory>
+				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-shade-plugin</artifactId>
-				<version>3.1.1</version>
+				<version>3.2.4</version>
 				<executions>
 					<execution>
 						<phase>package</phase>
@@ -134,7 +128,7 @@
 							<relocations>
 								<relocation>
 									<pattern>org.bstats</pattern>
-									<shadedPattern>me.despical.tntrun.utils</shadedPattern>
+									<shadedPattern>me.despical.tntrun.util</shadedPattern>
 								</relocation>
 							</relocations>
 							<createDependencyReducedPom>false</createDependencyReducedPom>

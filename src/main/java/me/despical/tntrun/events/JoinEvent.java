@@ -23,13 +23,10 @@ import me.despical.commons.util.UpdateChecker;
 import me.despical.tntrun.ConfigPreferences;
 import me.despical.tntrun.Main;
 import me.despical.tntrun.arena.ArenaRegistry;
-import me.despical.tntrun.handlers.PermissionsManager;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerLoginEvent;
 
 /**
  * @author Despical
@@ -47,22 +44,11 @@ public class JoinEvent implements Listener {
 	}
 
 	@EventHandler
-	public void onLogin(PlayerLoginEvent e) {
-		if (!plugin.getConfigPreferences().getOption(ConfigPreferences.Option.BUNGEE_ENABLED) && !plugin.getServer().hasWhitelist() || e.getResult() != PlayerLoginEvent.Result.KICK_WHITELIST) {
-			return;
-		}
-
-		if (e.getPlayer().hasPermission(PermissionsManager.getJoinFullGames())) {
-			e.setResult(PlayerLoginEvent.Result.ALLOWED);
-		}
-	}
-
-	@EventHandler
 	public void onJoin(PlayerJoinEvent event) {
 		plugin.getUserManager().loadStatistics(plugin.getUserManager().getUser(event.getPlayer()));
 
 		if (plugin.getConfigPreferences().getOption(ConfigPreferences.Option.BUNGEE_ENABLED)) {
-			ArenaRegistry.getArenas().get(ArenaRegistry.getBungeeArena()).teleportToLobby(event.getPlayer());
+			ArenaRegistry.getBungeeArena().teleportToLobby(event.getPlayer());
 			return;
 		}
 
@@ -81,23 +67,18 @@ public class JoinEvent implements Listener {
 	}
 
 	@EventHandler
-	public void onJoinCheckVersion(final PlayerJoinEvent event) {
-		if (!plugin.getConfig().getBoolean("Update-Notifier.Enabled", true) || !event.getPlayer().hasPermission("tntrun.updatenotify")) {
+	public void onJoinCheckVersion(PlayerJoinEvent event) {
+		Player player = event.getPlayer();
+
+		if (!plugin.getPermissionManager().hasNotifyPerm(player)) {
 			return;
 		}
 
-		Bukkit.getScheduler().runTaskLater(plugin, () -> UpdateChecker.init(plugin, 83196).requestUpdateCheck().whenComplete((result, exception) -> {
-			if (!result.requiresUpdate()) {
-				return;
-			}
+		plugin.getServer().getScheduler().runTaskLater(plugin, () -> UpdateChecker.init(plugin, 83196).requestUpdateCheck().whenComplete((result, exception) -> {
+			if (!result.requiresUpdate()) return;
 
-			if (result.getNewestVersion().contains("b")) {
-				event.getPlayer().sendMessage(plugin.getChatManager().colorRawMessage("&3[TNT Run] &bFound a beta update: v" + result.getNewestVersion() + " Download"));
-			} else {
-				event.getPlayer().sendMessage(plugin.getChatManager().colorRawMessage("&3[TNT Run] &bFound an update: v" + result.getNewestVersion() + " Download:"));
-			}
-
-			event.getPlayer().sendMessage(plugin.getChatManager().colorRawMessage("&3>> &bhttps://www.spigotmc.org/resources/tnt-run-1-12-1-16-5.83196/"));
+			player.sendMessage(plugin.getChatManager().color("&3[TNT Run] &bFound an update: v" + result.getNewestVersion() + " Download:"));
+			player.sendMessage(plugin.getChatManager().color("&3>> &bhttps://www.spigotmc.org/resources/tnt-run.83196/"));
 		}), 25);
 	}
 }

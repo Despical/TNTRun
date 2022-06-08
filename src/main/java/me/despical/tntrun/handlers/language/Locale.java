@@ -7,7 +7,7 @@ package me.despical.tntrun.handlers.language;
  */
 public class Locale {
 
-	public final String name, prefix, aliases[];
+	protected final String name, prefix, aliases[];
 
 	public Locale(String name, String prefix, String... aliases) {
 		this.prefix = prefix;

@@ -24,10 +24,8 @@ import org.bukkit.event.HandlerList;
 
 /**
  * @author Despical
- * @since 1.0.0
  * <p>
- * <p>
- * Called when arena is stopped.
+ * Created at 10.07.2020
  */
 public class TRGameStopEvent extends TREvent {
 

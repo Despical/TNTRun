@@ -18,12 +18,14 @@
 
 package me.despical.tntrun;
 
+import me.despical.commandframework.CommandFramework;
 import me.despical.commons.compat.VersionResolver;
 import me.despical.commons.configuration.ConfigUtils;
 import me.despical.commons.database.MysqlDatabase;
 import me.despical.commons.exception.ExceptionLogHandler;
 import me.despical.commons.scoreboard.ScoreboardLib;
 import me.despical.commons.serializer.InventorySerializer;
+import me.despical.commons.util.Collections;
 import me.despical.commons.util.LogUtils;
 import me.despical.commons.util.UpdateChecker;
 import me.despical.tntrun.api.StatsStorage;
@@ -31,7 +33,9 @@ import me.despical.tntrun.arena.Arena;
 import me.despical.tntrun.arena.ArenaEvents;
 import me.despical.tntrun.arena.ArenaRegistry;
 import me.despical.tntrun.arena.ArenaUtils;
-import me.despical.tntrun.commands.CommandHandler;
+import me.despical.tntrun.commands.AdminCommands;
+import me.despical.tntrun.commands.PlayerCommands;
+import me.despical.tntrun.commands.TabCompletion;
 import me.despical.tntrun.events.*;
 import me.despical.tntrun.events.spectator.SpectatorEvents;
 import me.despical.tntrun.events.spectator.SpectatorItemEvents;
@@ -39,21 +43,18 @@ import me.despical.tntrun.handlers.BungeeManager;
 import me.despical.tntrun.handlers.ChatManager;
 import me.despical.tntrun.handlers.PermissionsManager;
 import me.despical.tntrun.handlers.PlaceholderManager;
-import me.despical.tntrun.handlers.items.SpecialItem;
+import me.despical.tntrun.handlers.items.SpecialItemManager;
 import me.despical.tntrun.handlers.language.LanguageManager;
 import me.despical.tntrun.handlers.rewards.RewardsFactory;
 import me.despical.tntrun.handlers.sign.SignManager;
 import me.despical.tntrun.user.User;
 import me.despical.tntrun.user.UserManager;
 import me.despical.tntrun.user.data.MysqlManager;
-import org.bstats.bukkit.Metrics;
 import org.bukkit.block.BlockState;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
-import java.util.Arrays;
 import java.util.Iterator;
 
 /**
@@ -63,22 +64,33 @@ import java.util.Iterator;
  */
 public class Main extends JavaPlugin {
 
+	private boolean forceDisable;
+
 	private ExceptionLogHandler exceptionLogHandler;
-	private boolean forceDisable = false;
 	private BungeeManager bungeeManager;
 	private RewardsFactory rewardsFactory;
 	private MysqlDatabase database;
 	private SignManager signManager;
 	private ConfigPreferences configPreferences;
-	private CommandHandler commandHandler;
 	private ChatManager chatManager;
 	private LanguageManager languageManager;
 	private UserManager userManager;
+	private SpecialItemManager itemManager;
+	private PermissionsManager permissionManager;
+	private CommandFramework commandFramework;
 
 	@Override
 	public void onEnable() {
-		if (!validateIfPluginShouldStart()) {
-			forceDisable = true;
+		LogUtils.setLoggerName("TNT Run");
+		LogUtils.enableLogging();
+		getServer().getLogger().setParent(LogUtils.getLogger());
+
+//		if (getDescription().getVersion().contains("debug") || getConfig().getBoolean("Debug-Messages")) {
+//			LogUtils.setLoggerName("TNT Run");
+//			LogUtils.enableLogging();
+//		}
+
+		if (forceDisable = !validateIfPluginShouldStart()) {
 			getServer().getPluginManager().disablePlugin(this);
 			return;
 		}
@@ -90,18 +102,14 @@ public class Main extends JavaPlugin {
 
 		saveDefaultConfig();
 
-		if (getConfig().getBoolean("Developer-Mode")) {
-			LogUtils.enableLogging();
-		}
-
+		LogUtils.log("Initialization started!");
 		long start = System.currentTimeMillis();
-		configPreferences = new ConfigPreferences(this);
 
 		setupFiles();
 		initializeClasses();
 		checkUpdate();
 
-		LogUtils.log("Initialization finished took {0} ms", System.currentTimeMillis() - start);
+		LogUtils.log("Initialization finished took {0} ms.", System.currentTimeMillis() - start);
 
 		if (configPreferences.getOption(ConfigPreferences.Option.NAME_TAGS_HIDDEN)) {
 			getServer().getScheduler().scheduleSyncRepeatingTask(this, () ->
@@ -110,7 +118,7 @@ public class Main extends JavaPlugin {
 	}
 
 	private boolean validateIfPluginShouldStart() {
-		if (VersionResolver.isCurrentLower(VersionResolver.ServerVersion.v1_12_R1)) {
+		if (VersionResolver.isCurrentLower(VersionResolver.ServerVersion.v1_11_R1)) {
 			LogUtils.sendConsoleMessage("&cYour server version is not supported by TNT Run!");
 			LogUtils.sendConsoleMessage("&cSadly, we must shut off. Maybe you consider changing your server version?");
 			return false;
@@ -120,7 +128,7 @@ public class Main extends JavaPlugin {
 			Class.forName("org.spigotmc.SpigotConfig");
 		} catch (Exception e) {
 			LogUtils.sendConsoleMessage("&cYour server software is not supported by TNT Run!");
-			LogUtils.sendConsoleMessage("&cWe support only Spigot and Spigot forks only! Shutting off...");
+			LogUtils.sendConsoleMessage("&cWe support Spigot and forks only! Shutting off...");
 			return false;
 		}
 
@@ -129,17 +137,15 @@ public class Main extends JavaPlugin {
 
 	@Override
 	public void onDisable() {
-		if (forceDisable) {
-			return;
-		}
+		if (forceDisable) return;
 
-		LogUtils.log("System disable initialized");
+		LogUtils.log("System disable initialized.");
 		long start = System.currentTimeMillis();
 
 		getServer().getLogger().removeHandler(exceptionLogHandler);
 		saveAllUserStatistics();
 
-		if (configPreferences.getOption(ConfigPreferences.Option.DATABASE_ENABLED)) {
+		if (database != null) {
 			database.shutdownConnPool();
 		}
 
@@ -164,33 +170,35 @@ public class Main extends JavaPlugin {
 			Iterator<BlockState> iterator = arena.getDestroyedBlocks().iterator();
 
 			while (iterator.hasNext()) {
-				BlockState bs = iterator.next();
-				bs.update(true);
+				iterator.next().update(true);
 				iterator.remove();
 			}
 		}
 
-		LogUtils.log("System disable finished took {0} ms", System.currentTimeMillis() - start);
+		LogUtils.log("System disable finished took {0} ms.", System.currentTimeMillis() - start);
+		LogUtils.disableLogging();
 	}
 
 	private void initializeClasses() {
 		ScoreboardLib.setPluginInstance(this);
+
+		configPreferences = new ConfigPreferences(this);
 		chatManager = new ChatManager(this);
+		permissionManager = new PermissionsManager(this);
 
 		if (configPreferences.getOption(ConfigPreferences.Option.BUNGEE_ENABLED)) {
 			bungeeManager = new BungeeManager(this);
 		}
 
 		if (configPreferences.getOption(ConfigPreferences.Option.DATABASE_ENABLED)) {
-			FileConfiguration config = ConfigUtils.getConfig(this, "mysql");
-			database = new MysqlDatabase(config.getString("user"), config.getString("password"), config.getString("address"));
+			database = new MysqlDatabase(ConfigUtils.getConfig(this, "mysql"));
 		}
 
 		languageManager = new LanguageManager(this);
 		userManager = new UserManager(this);
+		itemManager = new SpecialItemManager();
+
 		User.cooldownHandlerTask();
-		SpecialItem.loadAll();
-		PermissionsManager.init();
 		new SpectatorEvents(this);
 		new QuitEvent(this);
 		new JoinEvent(this);
@@ -199,40 +207,31 @@ public class Main extends JavaPlugin {
 		new LobbyEvent(this);
 		new SpectatorItemEvents(this);
 		new ArenaEvents(this);
+
 		signManager = new SignManager(this);
 		ArenaRegistry.registerArenas();
 		signManager.loadSigns();
 		signManager.updateSigns();
 		rewardsFactory = new RewardsFactory(this);
-		commandHandler = new CommandHandler(this);
+		commandFramework = new CommandFramework(this);
+
+		new PlayerCommands(this);
+		new AdminCommands(this);
+		new TabCompletion(this);
+
 		registerSoftDependenciesAndServices();
 	}
 
 	private void registerSoftDependenciesAndServices() {
-		LogUtils.log("Hooking into soft dependencies");
+		LogUtils.log("Hooking into soft dependencies.");
 		long start = System.currentTimeMillis();
 
-		startPluginMetrics();
-
 		if (configPreferences.isPapiEnabled()) {
-			LogUtils.log("Hooking into PlaceholderAPI");
-			new PlaceholderManager().register();
+			LogUtils.log("Hooking into PlaceholderAPI.");
+			new PlaceholderManager(this);
 		}
 
-		LogUtils.log("Hooked into PAPI, took {0] ms.", System.currentTimeMillis() - start);
-	}
-
-	private void startPluginMetrics() {
-		Metrics metrics = new Metrics(this, 8147);
-
-		if (!metrics.isEnabled()) {
-			return;
-		}
-
-		metrics.addCustomChart(new Metrics.SimplePie("database_enabled", () -> String.valueOf(configPreferences.getOption(ConfigPreferences.Option.DATABASE_ENABLED))));
-		metrics.addCustomChart(new Metrics.SimplePie("bungeecord_hooked", () -> String.valueOf(configPreferences.getOption(ConfigPreferences.Option.BUNGEE_ENABLED))));
-		metrics.addCustomChart(new Metrics.SimplePie("locale_used", () -> languageManager.getPluginLocale().prefix));
-		metrics.addCustomChart(new Metrics.SimplePie("update_notifier", () -> getConfig().getBoolean("Update-Notifier.Enabled", true) ? "Enabled" : "Disabled"));
+		LogUtils.log("Hooked into PAPI, took {0} ms.", System.currentTimeMillis() - start);
 	}
 
 	private void checkUpdate() {
@@ -247,18 +246,12 @@ public class Main extends JavaPlugin {
 
 			LogUtils.sendConsoleMessage("[TNTRun] Found a new version available: v" + result.getNewestVersion());
 			LogUtils.sendConsoleMessage("[TNTRun] Download it SpigotMC:");
-			LogUtils.sendConsoleMessage("[TNTRun] spigotmc.org/resources/tnt-run-1-12-1-16-5.83196/");
+			LogUtils.sendConsoleMessage("[TNTRun] spigotmc.org/resources/tnt-run.83196/");
 		});
 	}
 
 	private void setupFiles() {
-		for (String fileName : Arrays.asList("arenas", "bungee", "rewards", "stats", "lobbyitems", "mysql", "messages")) {
-			File file = new File(getDataFolder() + File.separator + fileName + ".yml");
-
-			if (!file.exists()) {
-				saveResource(fileName + ".yml", false);
-			}
-		}
+		Collections.streamOf("arenas", "bungee", "rewards", "stats", "lobbyitems", "mysql", "messages").filter(name -> !new File(getDataFolder(),name + ".yml").exists()).forEach(name -> saveResource(name + ".yml", false));
 	}
 
 	public RewardsFactory getRewardsFactory() {
@@ -285,10 +278,6 @@ public class Main extends JavaPlugin {
 		return chatManager;
 	}
 
-	public CommandHandler getCommandHandler() {
-		return commandHandler;
-	}
-
 	public LanguageManager getLanguageManager() {
 		return languageManager;
 	}
@@ -297,12 +286,25 @@ public class Main extends JavaPlugin {
 		return userManager;
 	}
 
+	public SpecialItemManager getItemManager() {
+		return itemManager;
+	}
+
+	public PermissionsManager getPermissionManager() {
+		return permissionManager;
+	}
+
+	public CommandFramework getCommandFramework() {
+		return commandFramework;
+	}
+
 	private void saveAllUserStatistics() {
 		for (Player player : getServer().getOnlinePlayers()) {
 			User user = userManager.getUser(player);
 
 			if (userManager.getDatabase() instanceof MysqlManager) {
 				StringBuilder update = new StringBuilder(" SET ");
+
 				for (StatsStorage.StatisticType stat : StatsStorage.StatisticType.values()) {
 					if (!stat.isPersistent()) continue;
 					if (update.toString().equalsIgnoreCase(" SET ")) {
@@ -313,13 +315,12 @@ public class Main extends JavaPlugin {
 				}
 
 				String finalUpdate = update.toString();
-				((MysqlManager) userManager.getDatabase()).getDatabase().executeUpdate("UPDATE " + ((MysqlManager) getUserManager().getDatabase()).getTableName() + finalUpdate + " WHERE UUID='" + user.getPlayer().getUniqueId().toString() + "';");
+				MysqlDatabase mysqlDatabase = ((MysqlManager) userManager.getDatabase()).getDatabase();
+				mysqlDatabase.executeUpdate("UPDATE " + mysqlDatabase + finalUpdate + " WHERE UUID='" + user.getUniqueId().toString() + "';");
 				continue;
 			}
 
-			for (StatsStorage.StatisticType stat : StatsStorage.StatisticType.values()) {
-				userManager.getDatabase().saveStatistic(user, stat);
-			}
+			userManager.saveAllStatistic(user);
 		}
 	}
 }

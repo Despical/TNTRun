@@ -18,8 +18,10 @@
 
 package me.despical.tntrun.handlers.setup;
 
+import me.despical.commons.compat.XMaterial;
 import me.despical.commons.configuration.ConfigUtils;
 import me.despical.inventoryframework.Gui;
+import me.despical.inventoryframework.GuiItem;
 import me.despical.inventoryframework.pane.StaticPane;
 import me.despical.tntrun.Main;
 import me.despical.tntrun.arena.Arena;
@@ -30,9 +32,8 @@ import me.despical.tntrun.handlers.setup.components.PlayerAmountComponents;
 import me.despical.tntrun.handlers.setup.components.SpawnComponents;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * @author Despical
@@ -41,27 +42,31 @@ import java.util.Random;
  */
 public class SetupInventory {
 
-	private static final Random random = new Random();
-	private static final Main plugin = JavaPlugin.getPlugin(Main.class);
-	private final FileConfiguration config = ConfigUtils.getConfig(plugin, "arenas");
+	private final Main plugin;
 	private final Arena arena;
 	private final Player player;
-	private Gui gui;
+	private final FileConfiguration config;
 	private final SetupUtilities setupUtilities;
 
-	public SetupInventory(Arena arena, Player player) {
+	private Gui gui;
+
+	public SetupInventory(Main plugin, Arena arena, Player player) {
+		this.plugin = plugin;
 		this.arena = arena;
 		this.player = player;
-		this.setupUtilities = new SetupUtilities(config, arena);
+		this.config = ConfigUtils.getConfig(plugin, "arenas");
+		this.setupUtilities = new SetupUtilities(config);
 
 		prepareGui();
 	}
 
 	private void prepareGui() {
-		gui = new Gui(plugin, 1, "TNT Run Arena Editor");
-		gui.setOnGlobalClick(e -> e.setCancelled(true));
+		gui = new Gui(plugin, 5, "TNT Run Arena Editor");
+		gui.setOnGlobalClick(event -> event.setCancelled(true));
 
-		StaticPane pane = new StaticPane(9, 1);
+		StaticPane pane = new StaticPane(9, 5);
+		pane.fillProgressBorder(GuiItem.of(XMaterial.GREEN_STAINED_GLASS_PANE.parseItem()), GuiItem.of(XMaterial.BLACK_STAINED_GLASS_PANE.parseItem()), arena.isReady() ? 100 : 0);
+
 		gui.addPane(pane);
 
 		prepareComponents(pane);
@@ -69,41 +74,33 @@ public class SetupInventory {
 
 	private void prepareComponents(StaticPane pane) {
 		SpawnComponents spawnComponents = new SpawnComponents();
-		spawnComponents.prepare(this);
-		spawnComponents.injectComponents(pane);
+		spawnComponents.registerComponent(this, pane);
 
 		PlayerAmountComponents playerAmountComponents = new PlayerAmountComponents();
-		playerAmountComponents.prepare(this);
-		playerAmountComponents.injectComponents(pane);
+		playerAmountComponents.registerComponent(this, pane);
 
 		MiscComponents miscComponents = new MiscComponents();
-		miscComponents.prepare(this);
-		miscComponents.injectComponents(pane);
+		miscComponents.registerComponent(this, pane);
 
 		ArenaRegisterComponent arenaRegisterComponent = new ArenaRegisterComponent();
-		arenaRegisterComponent.prepare(this);
-		arenaRegisterComponent.injectComponents(pane);
+		arenaRegisterComponent.registerComponent(this, pane);
 	}
 
-	private void sendProTip(Player p) {
+	private void sendTip(Player p) {
 		ChatManager chatManager = plugin.getChatManager();
-		int rand = random.nextInt(16 + 1);
 
-		switch (rand) {
+		switch (ThreadLocalRandom.current().nextInt(12 + 1)) {
 			case 0:
-				p.sendMessage(chatManager.colorRawMessage("&e&lTIP: &7We are open source! You can always help us by contributing! Check https://github.com/Despical/TNTRun"));
+				p.sendMessage(chatManager.color("&e&lTIP: &7Need help? Join our discord server: https://discordapp.com/invite/Vhyy4HA"));
 				break;
 			case 1:
-				p.sendMessage(chatManager.colorRawMessage("&e&lTIP: &7Need help? Join our discord server: https://discordapp.com/invite/Vhyy4HA"));
+				p.sendMessage(chatManager.color("&e&lTIP: &7Need help? Check our wiki: https://github.com/Despical/TNTRun/wiki"));
 				break;
 			case 2:
-				p.sendMessage(chatManager.colorRawMessage("&e&lTIP: &7Need help? Check our wiki: https://github.com/Despical/TNTRun/wiki"));
+				p.sendMessage(chatManager.color("&e&lTIP: &7Still thinking donating? Check our Patreon page: https://www.patreon.com/despical"));
 				break;
 			case 3:
-				p.sendMessage(chatManager.colorRawMessage("&e&lTIP: &7Want to access exclusive maps, addons and more? Check our Patreon page: https://www.patreon.com/despical"));
-				break;
-			case 4:
-				p.sendMessage(chatManager.colorRawMessage("&e&lTIP: &7Help us translating plugin to your language here: https://github.com/Despical/LocaleStorage/"));
+				p.sendMessage(chatManager.color("&e&lTIP: &7Help us translating plugin to your language here: https://github.com/Despical/LocaleStorage/"));
 				break;
 			default:
 				break;
@@ -111,7 +108,7 @@ public class SetupInventory {
 	}
 
 	public void openInventory() {
-		sendProTip(player);
+		sendTip(player);
 		gui.show(player);
 	}
 

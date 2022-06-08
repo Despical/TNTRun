@@ -72,9 +72,9 @@ public class SpectatorItemEvents implements Listener {
 
 			e.setCancelled(true);
 
-			if (stack.getItemMeta().getDisplayName().equalsIgnoreCase(plugin.getChatManager().colorMessage("In-Game.Spectator.Spectator-Item-Name"))) {
+			if (stack.getItemMeta().getDisplayName().equalsIgnoreCase(plugin.getChatManager().message("In-Game.Spectator.Spectator-Item-Name"))) {
 				openSpectatorMenu(e.getPlayer().getWorld(), e.getPlayer());
-			} else if (stack.getItemMeta().getDisplayName().equalsIgnoreCase(plugin.getChatManager().colorMessage("In-Game.Spectator.Settings-Menu.Item-Name"))) {
+			} else if (stack.getItemMeta().getDisplayName().equalsIgnoreCase(plugin.getChatManager().message("In-Game.Spectator.Settings-Menu.Item-Name"))) {
 				new SpectatorSettingsMenu(e.getPlayer()).openInventory();
 			}
 		}
@@ -82,7 +82,7 @@ public class SpectatorItemEvents implements Listener {
 
 	private void openSpectatorMenu(World world, Player p) {
 		Inventory inventory = plugin.getServer().createInventory(null, NumberUtils.roundInteger(ArenaRegistry.getArena(p).getPlayers().size(), 9),
-			plugin.getChatManager().colorMessage("In-Game.Spectator.Spectator-Menu-Name"));
+			plugin.getChatManager().message("In-Game.Spectator.Spectator-Menu-Name"));
 		Set<Player> players = ArenaRegistry.getArena(p).getPlayers();
 
 		for (Player player : world.getPlayers()) {
@@ -92,7 +92,7 @@ public class SpectatorItemEvents implements Listener {
 				meta = ItemUtils.setPlayerHead(player, meta);
 				meta.setDisplayName(player.getName());
 
-				String score = plugin.getChatManager().colorMessage("In-Game.Spectator.Target-Player-Score", p).replace("%score%", Integer.toString(StatsStorage.getUserStats(player, StatsStorage.StatisticType.LOCAL_COINS)));
+				String score = plugin.getChatManager().message("In-Game.Spectator.Target-Player-Score", p).replace("%score%", Integer.toString(StatsStorage.getUserStats(player, StatsStorage.StatisticType.LOCAL_COINS)));
 
 				meta.setLore(Collections.singletonList(score));
 				skull.setDurability((short) SkullType.PLAYER.ordinal());
@@ -118,7 +118,7 @@ public class SpectatorItemEvents implements Listener {
 			return;
 		}
 
-		if (!e.getView().getTitle().equalsIgnoreCase(plugin.getChatManager().colorMessage("In-Game.Spectator.Spectator-Menu-Name", p))) {
+		if (!e.getView().getTitle().equalsIgnoreCase(plugin.getChatManager().message("In-Game.Spectator.Spectator-Menu-Name", p))) {
 			return;
 		}
 
@@ -127,13 +127,13 @@ public class SpectatorItemEvents implements Listener {
 
 		for (Player player : arena.getPlayers()) {
 			if (player.getName().equalsIgnoreCase(meta.getDisplayName()) || ChatColor.stripColor(meta.getDisplayName()).contains(player.getName())) {
-				p.sendMessage(plugin.getChatManager().formatMessage(arena, plugin.getChatManager().colorMessage("Commands.Admin-Commands.Teleported-To-Player"), player));
+				p.sendMessage(plugin.getChatManager().formatMessage(arena, plugin.getChatManager().message("Commands.Admin-Commands.Teleported-To-Player"), player));
 				p.teleport(player);
 				p.closeInventory();
 				return;
 			}
 		}
 
-		p.sendMessage(plugin.getChatManager().colorMessage("Commands.Admin-Commands.Player-Not-Found"));
+		p.sendMessage(plugin.getChatManager().message("Commands.Admin-Commands.Player-Not-Found"));
 	}
 }

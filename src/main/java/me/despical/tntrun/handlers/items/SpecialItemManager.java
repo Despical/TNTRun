@@ -18,9 +18,11 @@
 
 package me.despical.tntrun.handlers.items;
 
+import me.despical.commons.compat.XMaterial;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author Despical
@@ -29,21 +31,29 @@ import java.util.HashMap;
  */
 public class SpecialItemManager {
 
-	private static final HashMap<String, SpecialItem> specialItems = new HashMap<>();
+	private final Map<String, SpecialItem> specialItems;
 
-	public static void addItem(String name, SpecialItem entityItem) {
-		specialItems.put(name, entityItem);
+	public SpecialItemManager() {
+		this.specialItems = new HashMap<>();
+
+		this.addItem("Leave", new SpecialItem("Leave", "&cLeave", 8, XMaterial.WHITE_BED, "&7Click to teleport to hub"));
+		this.addItem("Double-Jump", new SpecialItem("Double-Jump", "&cDouble-Jump", 0, XMaterial.FEATHER, "&7Click to double jump"));
 	}
 
-	public static SpecialItem getSpecialItem(String name) {
+	public void addItem(String name, SpecialItem specialItem) {
+		specialItems.put(name, specialItem);
+	}
+
+	public SpecialItem getSpecialItem(String name) {
 		return specialItems.get(name);
 	}
 
-	public static String getRelatedSpecialItem(ItemStack itemStack) {
+	public String getRelatedSpecialItem(ItemStack itemStack) {
 		for (String key : specialItems.keySet()) {
-			SpecialItem entityItem = specialItems.get(key);
+			SpecialItem specialItem = specialItems.get(key);
 
-			if (entityItem.getItemStack().getItemMeta().getDisplayName().equalsIgnoreCase(itemStack.getItemMeta().getDisplayName())) {
+			if (specialItem.getItemStack().equals(itemStack)) {
+//			if (specialItem.getItemStack().getItemMeta().getDisplayName().equalsIgnoreCase(itemStack.getItemMeta().getDisplayName())) {
 				return key;
 			}
 		}

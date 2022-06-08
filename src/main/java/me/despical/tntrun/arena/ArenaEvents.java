@@ -24,7 +24,6 @@ import me.despical.commons.item.ItemUtils;
 import me.despical.tntrun.Main;
 import me.despical.tntrun.api.StatsStorage;
 import me.despical.tntrun.handlers.ChatManager;
-import me.despical.tntrun.handlers.items.SpecialItemManager;
 import me.despical.tntrun.handlers.rewards.Reward;
 import me.despical.tntrun.user.User;
 import org.bukkit.GameMode;
@@ -40,6 +39,11 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
+/**
+ * @author Despical
+ * <p>
+ * Created at 10.07.2020
+ */
 public class ArenaEvents implements Listener {
 
 	private final Main plugin;
@@ -92,7 +96,7 @@ public class ArenaEvents implements Listener {
 			return;
 		}
 
-		String key = SpecialItemManager.getRelatedSpecialItem(itemStack);
+		String key = plugin.getItemManager().getRelatedSpecialItem(itemStack);
 
 		if (key == null) {
 			return;
@@ -102,7 +106,7 @@ public class ArenaEvents implements Listener {
 			return;
 		}
 
-		if (SpecialItemManager.getRelatedSpecialItem(itemStack).equalsIgnoreCase("Double-Jump")) {
+		if (plugin.getItemManager().getRelatedSpecialItem(itemStack).equalsIgnoreCase("Double-Jump")) {
 			event.setCancelled(true);
 
 			if (StatsStorage.getUserStats(player, StatsStorage.StatisticType.LOCAL_DOUBLE_JUMPS) > 0 && arena.getArenaState() == ArenaState.IN_GAME) {
@@ -152,15 +156,15 @@ public class ArenaEvents implements Listener {
 
 				for (Player all : arena.getPlayers()) {
 					if (all == winner) {
-						all.sendTitle(plugin.getChatManager().colorMessage("In-Game.Messages.Game-End-Messages.Titles.Win"), plugin.getChatManager().colorMessage("In-Game.Messages.Game-End-Messages.Subtitles.Win").replace("%winner%", winner.getName()), 5, 40, 5);
+						all.sendTitle(plugin.getChatManager().message("In-Game.Messages.Game-End-Messages.Titles.Win"), plugin.getChatManager().message("In-Game.Messages.Game-End-Messages.Subtitles.Win").replace("%winner%", winner.getName()), 5, 40, 5);
 					} else {
-						all.sendTitle(plugin.getChatManager().colorMessage("In-Game.Messages.Game-End-Messages.Titles.Lose"), plugin.getChatManager().colorMessage("In-Game.Messages.Game-End-Messages.Subtitles.Lose").replace("%winner%", winner.getName()), 5, 40, 5);
+						all.sendTitle(plugin.getChatManager().message("In-Game.Messages.Game-End-Messages.Titles.Lose"), plugin.getChatManager().message("In-Game.Messages.Game-End-Messages.Subtitles.Lose").replace("%winner%", winner.getName()), 5, 40, 5);
 					}
 				}
 			}
 
 			player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 3 * 20, 0, false, false));
-			player.sendTitle(plugin.getChatManager().colorMessage("In-Game.Messages.Game-End-Messages.Titles.Lose"), plugin.getChatManager().colorMessage("In-Game.Messages.Game-End-Messages.Subtitles.Lose").replace("%winner%", arena.getPlayersLeft().get(0).getName()), 5, 40, 5);
+			player.sendTitle(plugin.getChatManager().message("In-Game.Messages.Game-End-Messages.Titles.Lose"), plugin.getChatManager().message("In-Game.Messages.Game-End-Messages.Subtitles.Lose").replace("%winner%", arena.getPlayersLeft().get(0).getName()), 5, 40, 5);
 			player.setCollidable(false);
 			player.setGameMode(GameMode.SURVIVAL);
 			player.setAllowFlight(true);
@@ -171,9 +175,9 @@ public class ArenaEvents implements Listener {
 
 			plugin.getChatManager().broadcastAction(arena, player, ChatManager.ActionType.DEATH);
 
-			player.getInventory().setItem(0, new ItemBuilder(XMaterial.COMPASS.parseItem()).name(plugin.getChatManager().colorMessage("In-Game.Spectator.Spectator-Item-Name", player)).build());
-			player.getInventory().setItem(4, new ItemBuilder(XMaterial.COMPARATOR.parseItem()).name(plugin.getChatManager().colorMessage("In-Game.Spectator.Settings-Menu.Item-Name", player)).build());
-			player.getInventory().setItem(SpecialItemManager.getSpecialItem("Leave").getSlot(), SpecialItemManager.getSpecialItem("Leave").getItemStack());
+			player.getInventory().setItem(0, new ItemBuilder(XMaterial.COMPASS.parseItem()).name(plugin.getChatManager().message("In-Game.Spectator.Spectator-Item-Name", player)).build());
+			player.getInventory().setItem(4, new ItemBuilder(XMaterial.COMPARATOR.parseItem()).name(plugin.getChatManager().message("In-Game.Spectator.Settings-Menu.Item-Name", player)).build());
+			player.getInventory().setItem(plugin.getItemManager().getSpecialItem("Leave").getSlot(), plugin.getItemManager().getSpecialItem("Leave").getItemStack());
 		}
 	}
 }

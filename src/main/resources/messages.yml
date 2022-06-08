@@ -64,7 +64,6 @@ Scoreboard:
       - ""
       - "&ewww.despical.com"
     Waiting:
-      - ""
       - "&fMap: &a%mapname%"
       - "&fPlayers: &a%players%/%max_players%"
       - ""
@@ -88,11 +87,11 @@ Bossbar:
   Starting-In: "&f&lStarting in: &e&l%time%"
   Waiting-For-Players: "&4&lWaiting for more players..."
   In-Game-Info: "&e&lPlaying &f&lTNT RUN &e&lby &b&lDESPICAL"
-  Game-Ended: "&c&lGame has ended! You were playing &b&lTNT Run"
+  Game-Ended: "&c&lGame has ended! You were playing &b&lTNT RUN"
 
+# Used in most game messages.
 In-Game:
-  #Used in most game messages.
-  Plugin-Prefix: "&8[&6TNTRun&8] "
+  Plugin-Prefix: "&8[&6TNT Run&8] "
   Already-Playing: "&cYou are already queued for a game! You can leave a game with /tr leave."
   Join-No-Permission: "&cYou don't have &6%permission% &cpermission to join this arena!"
   Full-Game-No-Permission: "&cYou don't have the permission to join full games!"
@@ -197,6 +196,3 @@ Validator:
   Invalid-Arena-Configuration: "[TNTRun] Arena %arena% has invalid configuration! Missing node: %error%"
   Instance-Started: "[TNTRun] Arena %arena% instance successfully started!"
   No-Instances-Created: "[TNTRun] There are no arena instances created in configuration!"
-
-# Don't edit it. But who's stopping you? It's your server!
-File-Version: 0

@@ -21,6 +21,8 @@ package me.despical.tntrun.handlers;
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 import me.despical.commons.configuration.ConfigUtils;
+import me.despical.commons.util.LogUtils;
+import me.despical.tntrun.ConfigPreferences;
 import me.despical.tntrun.Main;
 import me.despical.tntrun.arena.Arena;
 import me.despical.tntrun.arena.ArenaManager;
@@ -54,20 +56,24 @@ public class BungeeManager implements Listener {
 		this.plugin = plugin;
 		this.config = ConfigUtils.getConfig(plugin, "bungee");
 
-		gameStateToString.put(ArenaState.WAITING_FOR_PLAYERS, plugin.getChatManager().colorRawMessage(config.getString("MOTD.Game-States.Inactive", "Inactive")));
-		gameStateToString.put(ArenaState.STARTING, plugin.getChatManager().colorRawMessage(config.getString("MOTD.Game-States.Starting", "Starting")));
-		gameStateToString.put(ArenaState.IN_GAME, plugin.getChatManager().colorRawMessage(config.getString("MOTD.Game-States.In-Game", "In-Game")));
-		gameStateToString.put(ArenaState.ENDING, plugin.getChatManager().colorRawMessage(config.getString("MOTD.Game-States.Ending", "Ending")));
-		gameStateToString.put(ArenaState.RESTARTING, plugin.getChatManager().colorRawMessage(config.getString("MOTD.Game-States.Restarting", "Restarting")));
-		motd = plugin.getChatManager().colorRawMessage(config.getString("MOTD.Message", "The actual game state of TNT Run is %state%"));
+		gameStateToString.put(ArenaState.WAITING_FOR_PLAYERS, plugin.getChatManager().color(config.getString("MOTD.Game-States.Inactive", "Inactive")));
+		gameStateToString.put(ArenaState.STARTING, plugin.getChatManager().color(config.getString("MOTD.Game-States.Starting", "Starting")));
+		gameStateToString.put(ArenaState.IN_GAME, plugin.getChatManager().color(config.getString("MOTD.Game-States.In-Game", "In-Game")));
+		gameStateToString.put(ArenaState.ENDING, plugin.getChatManager().color(config.getString("MOTD.Game-States.Ending", "Ending")));
+		gameStateToString.put(ArenaState.RESTARTING, plugin.getChatManager().color(config.getString("MOTD.Game-States.Restarting", "Restarting")));
+		motd = plugin.getChatManager().color(config.getString("MOTD.Message", "The actual game state of TNT Run is %state%"));
 
 		plugin.getServer().getMessenger().registerOutgoingPluginChannel(plugin, "BungeeCord");
 		plugin.getServer().getPluginManager().registerEvents(this, plugin);
 	}
 
-	public void connectToHub(Player player) {
+	public boolean connectToHub(Player player) {
+		if (!plugin.getConfigPreferences().getOption(ConfigPreferences.Option.BUNGEE_ENABLED)) {
+			return false;
+		}
+
 		if (!config.getBoolean("Connect-To-Hub", true)) {
-			return;
+			return false;
 		}
 
 		ByteArrayDataOutput out = ByteStreams.newDataOutput();
@@ -75,10 +81,13 @@ public class BungeeManager implements Listener {
 		out.writeUTF(getHubServerName());
 
 		player.sendPluginMessage(plugin, "BungeeCord", out.toByteArray());
+
+		LogUtils.log("{0} was teleported to the hub server.", player.getName());
+		return true;
 	}
 
 	private Arena getArena() {
-		return ArenaRegistry.getArenas().get(ArenaRegistry.getBungeeArena());
+		return ArenaRegistry.getBungeeArena();
 	}
 
 	private String getHubServerName() {

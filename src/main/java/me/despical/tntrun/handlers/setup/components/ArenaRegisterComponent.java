@@ -24,22 +24,15 @@ import me.despical.commons.item.ItemBuilder;
 import me.despical.commons.serializer.LocationSerializer;
 import me.despical.inventoryframework.GuiItem;
 import me.despical.inventoryframework.pane.StaticPane;
-import me.despical.tntrun.Main;
 import me.despical.tntrun.arena.Arena;
-import me.despical.tntrun.arena.ArenaRegistry;
 import me.despical.tntrun.arena.ArenaState;
 import me.despical.tntrun.handlers.setup.SetupInventory;
 import me.despical.tntrun.handlers.sign.ArenaSign;
-import org.bukkit.Bukkit;
-import org.bukkit.Material;
-import org.bukkit.block.Sign;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author Despical
@@ -48,81 +41,63 @@ import java.util.List;
  */
 public class ArenaRegisterComponent implements SetupComponent {
 
-	private SetupInventory setupInventory;
-
 	@Override
-	public void prepare(SetupInventory setupInventory) {
-		this.setupInventory = setupInventory;
-	}
-
-	@Override
-	public void injectComponents(StaticPane pane) {
+	public void registerComponent(SetupInventory setupInventory, StaticPane pane) {
+		Player player = setupInventory.getPlayer();
 		FileConfiguration config = setupInventory.getConfig();
-		Main plugin = setupInventory.getPlugin();
+		Arena arena = setupInventory.getArena();
 		ItemStack registeredItem;
 
-		if (!setupInventory.getArena().isReady()) {
-			registeredItem = new ItemBuilder(XMaterial.FIREWORK_ROCKET.parseItem())
-				.name("&e&lRegister Arena - Finish Setup")
-				.lore("&7Click this when you're done with configuration.")
-				.lore("&7It will validate and register arena.")
-				.build();
-		} else {
-			registeredItem = new ItemBuilder(Material.BARRIER)
-				.name(plugin.getChatManager().colorRawMessage("&a&lArena Registered - Congratulations"))
+		if (arena.isReady()) {
+			registeredItem = new ItemBuilder(XMaterial.BARRIER)
+				.name("&a&lArena Registered - Congratulations")
 				.lore("&7This arena is already registered!")
 				.lore("&7Good job, you went through whole setup!")
 				.lore("&7You can play on this arena now!")
 				.enchantment(Enchantment.DURABILITY)
 				.flag(ItemFlag.HIDE_ENCHANTS)
 				.build();
+		} else {
+			registeredItem = new ItemBuilder(XMaterial.FIREWORK_ROCKET)
+				.name("&e&lRegister Arena - Finish Setup")
+				.lore("&7Click this when you're done with configuration.")
+				.lore("&7It will validate and register arena.")
+				.build();
 		}
 
-		pane.addItem(new GuiItem(registeredItem, e -> {
-			Arena arena = setupInventory.getArena();
-			e.getWhoClicked().closeInventory();
+		pane.addItem(GuiItem.of(registeredItem, e -> {
+			player.closeInventory();
 
-			if (ArenaRegistry.getArena(setupInventory.getArena().getId()).isReady()) {
-				e.getWhoClicked().sendMessage(plugin.getChatManager().colorRawMessage("&a&l✔ &aThis arena was already validated and is ready to use!"));
+			if (arena.isReady()) {
+				player.sendMessage(chatManager.color("&a&l✔ &aThis arena was already validated and is ready to use!"));
 				return;
 			}
 
-			String[] locations = {"lobbylocation", "Endlocation"};
+			String path = "instances." + arena.getId() + ".", locations[] = {"lobbyLocation", "endLocation"};
 
-			for (String s : locations) {
-				if (!config.isSet("instances." + arena.getId() + "." + s) || config.getString("instances." + arena.getId() + "." + s).equals(LocationSerializer.toString(Bukkit.getWorlds().get(0).getSpawnLocation()))) {
-					e.getWhoClicked().sendMessage(plugin.getChatManager().colorRawMessage("&c&l✘ &cArena validation failed! Please configure following spawn properly: " + s + " (cannot be world spawn location)"));
+			for (String location : locations) {
+				if (!config.isSet(path + location) || LocationSerializer.isDefaultLocation(config.getString(path + location))) {
+					player.sendMessage(chatManager.color("&c&l✘ &cArena validation failed! Please configure following spawn properly: " + location + " (cannot be world spawn location)"));
 					return;
 				}
 			}
 
-			e.getWhoClicked().sendMessage(plugin.getChatManager().colorRawMessage("&a&l✔ &aValidation succeeded! Registering new arena instance: " + arena.getId()));
-			config.set("instances." + arena.getId() + ".isdone", true);
+			player.sendMessage(chatManager.color("&a&l✔ &aValidation succeeded! Registering new arena instance: " + arena.getId()));
+
+			config.set(path + "ready", true);
 			ConfigUtils.saveConfig(plugin, config, "arenas");
-
-			List<Sign> signsToUpdate = new ArrayList<>();
-
-			ArenaRegistry.unregisterArena(setupInventory.getArena());
-
-			for (ArenaSign arenaSign : plugin.getSignManager().getArenaSigns()) {
-				if (arenaSign.getArena().equals(setupInventory.getArena())) {
-					signsToUpdate.add(arenaSign.getSign());
-				}
-			}
 
 			arena.setArenaState(ArenaState.WAITING_FOR_PLAYERS);
 			arena.setReady(true);
-			arena.setMinimumPlayers(config.getInt("instances." + arena.getId() + ".minimumplayers"));
-			arena.setMaximumPlayers(config.getInt("instances." + arena.getId() + ".maximumplayers"));
-			arena.setMapName(config.getString("instances." + arena.getId() + ".mapname"));
-			arena.setLobbyLocation(LocationSerializer.fromString(config.getString("instances." + arena.getId() + ".lobbylocation")));
-			arena.setEndLocation(LocationSerializer.fromString(config.getString("instances." + arena.getId() + ".Endlocation")));
-			ArenaRegistry.registerArena(arena);
+			arena.setMinimumPlayers(config.getInt(path + "minimumPlayers"));
+			arena.setMaximumPlayers(config.getInt(path + "maximumPlayers"));
+			arena.setMapName(config.getString(path + "mapName"));
+			arena.setLobbyLocation(LocationSerializer.fromString(config.getString(path + "lobbyLocation")));
+			arena.setEndLocation(LocationSerializer.fromString(config.getString(path + "endLocation")));
 			arena.start();
 
-			signsToUpdate.forEach(s -> plugin.getSignManager().getArenaSigns().add(new ArenaSign(s, arena)));
-
-			ConfigUtils.saveConfig(plugin, config, "arenas");
-		}), 8, 0);
+			plugin.getSignManager().getArenaSigns().stream().filter(arenaSign -> arenaSign.getArena().equals(arena)).map(ArenaSign::getSign)
+				.forEach(sign -> plugin.getSignManager().addArenaSign(sign.getBlock(), arena));
+		}), 7, 3);
 	}
 }

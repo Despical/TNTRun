@@ -36,25 +36,17 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.*;
 import java.util.logging.Level;
+import java.util.stream.Collectors;
 
 /**
  * @author Despical
- * @since 1.0.0
  * <p>
- * <p>
- * Class for accessing users statistics.
+ * Created at 10.07.2020
  */
 public class StatsStorage {
 
 	private static final Main plugin = JavaPlugin.getPlugin(Main.class);
 
-	/**
-	 * Get all UUID's sorted ascending by Statistic Type
-	 *
-	 * @param stat Statistic type to get (kills, deaths etc.)
-	 * @return Map of UUID keys and Integer values sorted in ascending order of
-	 * requested statistic type
-	 */
 	@NotNull
 	@Contract("null -> fail")
 	public static Map<UUID, Integer> getStats(StatisticType stat) {
@@ -78,27 +70,10 @@ public class StatsStorage {
 		}
 
 		FileConfiguration config = ConfigUtils.getConfig(plugin, "stats");
-		Map<UUID, Integer> stats = new TreeMap<>();
-
-		for (String string : config.getKeys(false)) {
-			if (string.equals("data-version")) {
-				continue;
-			}
-
-			stats.put(UUID.fromString(string), config.getInt(string + "." + stat.getName()));
-		}
-
+		Map<UUID, Integer> stats = config.getKeys(false).stream().collect(Collectors.toMap(UUID::fromString, string -> config.getInt(string + "." + stat.getName()), (a, b) -> b, HashMap::new));
 		return SortUtils.sortByValue(stats);
 	}
 
-	/**
-	 * Get user statistic based on StatisticType
-	 *
-	 * @param player        Online player to get data from
-	 * @param statisticType Statistic type to get (kills, deaths etc.)
-	 * @return int of statistic
-	 * @see StatisticType
-	 */
 	public static int getUserStats(Player player, StatisticType statisticType) {
 		return plugin.getUserManager().getUser(player).getStat(statisticType);
 	}
@@ -107,9 +82,9 @@ public class StatsStorage {
 	 * Available statistics to get.
 	 */
 	public enum StatisticType {
-		COINS("coinsearned", true), GAMES_PLAYED("gamesplayed", true), LOCAL_COINS("local_coins", false), LOCAL_DOUBLE_JUMPS("local_double_jumps", false),
-		LOCAL_SURVIVE("local_survive", false), LONGEST_SURVIVE("longestsurvive", true), LOSES("loses", true),
-		WINS("wins", true);
+		COINS("coinsearned", true), GAMES_PLAYED("gamesplayed", true), LOCAL_COINS("local_coins", false),
+		LOCAL_DOUBLE_JUMPS("local_double_jumps", false), LOCAL_SURVIVE("local_survive", false), LONGEST_SURVIVE("longestsurvive", true),
+		LOSES("loses", true), WINS("wins", true);
 
 		private final String name;
 		private final boolean persistent;

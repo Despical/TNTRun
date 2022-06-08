@@ -22,7 +22,7 @@ import me.despical.commons.configuration.ConfigUtils;
 import me.despical.commons.serializer.LocationSerializer;
 import me.despical.commons.util.LogUtils;
 import me.despical.tntrun.Main;
-import org.bukkit.Bukkit;
+import me.despical.tntrun.handlers.ChatManager;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
@@ -30,7 +30,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * @author Despical
@@ -41,128 +41,87 @@ public class ArenaRegistry {
 
 	private static final Main plugin = JavaPlugin.getPlugin(Main.class);
 	private static final List<Arena> arenas = new ArrayList<>();
-	private static int bungeeArena = -999;
 
-	/**
-	 * Checks if player is in any arena
-	 *
-	 * @param player player to check
-	 * @return [b]true[/b] when player is in arena, [b]false[/b] if otherwise
-	 */
+	private static int bungeeArena = -1;
+
 	public static boolean isInArena(Player player) {
-		for (Arena arena : arenas) {
-			if (arena.getPlayers().contains(player)) {
-				return true;
-			}
-		}
-
-		return false;
+		return getArena(player) != null;
 	}
 
-	/**
-	 * Returns arena where the player is
-	 *
-	 * @param p target player
-	 * @return Arena or null if not playing
-	 * @see #isInArena(Player) to check if player is playing
-	 */
-	public static Arena getArena(Player p) {
-		if (p == null || !p.isOnline()) {
-			return null;
-		}
-
-		for (Arena arena : arenas) {
-			for (Player player : arena.getPlayers()) {
-				if (player.getUniqueId().equals(p.getUniqueId())) {
-					return arena;
-				}
-			}
-		}
-
-		return null;
+	public static boolean isArena(String id) {
+		return getArena(id) != null;
 	}
 
-	/**
-	 * Returns arena based by ID
-	 *
-	 * @param id name of arena
-	 * @return Arena or null if not found
-	 */
+	public static Arena getArena(Player player) {
+		return arenas.stream().filter(arena -> arena.getPlayers().contains(player)).findFirst().orElse(null);
+	}
+
 	public static Arena getArena(String id) {
-		for (Arena loopArena : arenas) {
-			if (loopArena.getId().equalsIgnoreCase(id)) {
-				return loopArena;
-			}
-		}
-
-		return null;
+		return arenas.stream().filter(arena -> arena.getId().equalsIgnoreCase(id)).findFirst().orElse(null);
 	}
 
 	public static void registerArena(Arena arena) {
-		LogUtils.log("Registering new game instance {0}", arena.getId());
+		LogUtils.log("Registering new game instance with id {0}.", arena.getId());
 		arenas.add(arena);
 	}
 
 	public static void unregisterArena(Arena arena) {
-		LogUtils.log("Unregistering game instance {0}", arena.getId());
+		LogUtils.log("Unregistering game instance with id {0}.", arena.getId());
 		arenas.remove(arena);
 	}
 
 	public static void registerArenas() {
-		LogUtils.log("Initial arenas registration");
+		LogUtils.log("Initial arenas registration.");
 		long start = System.currentTimeMillis();
 
-		if (ArenaRegistry.getArenas().size() > 0) {
-			for (Arena arena : ArenaRegistry.getArenas()) {
-				unregisterArena(arena);
-			}
-		}
+		arenas.clear();
 
 		FileConfiguration config = ConfigUtils.getConfig(plugin, "arenas");
+		ChatManager chatManager = plugin.getChatManager();
 
 		if (!config.contains("instances")) {
-			Bukkit.getConsoleSender().sendMessage(plugin.getChatManager().colorMessage("Validator.No-Instances-Created"));
+			LogUtils.sendConsoleMessage(chatManager.message("validator.no-instances-created"));
 			return;
 		}
 
 		ConfigurationSection section = config.getConfigurationSection("instances");
 
 		if (section == null) {
-			Bukkit.getConsoleSender().sendMessage(plugin.getChatManager().colorMessage("Validator.No-Instances-Created"));
+			LogUtils.sendConsoleMessage(chatManager.message("validator.no-instances-created"));
 			return;
 		}
 
 		for (String id : section.getKeys(false)) {
+			String path = "instances." + id + ".";
 			Arena arena;
-			String s = "instances." + id + ".";
 
-			if (s.contains("default")) {
+			if (path.contains("default")) {
 				continue;
 			}
 
 			arena = new Arena(id);
 			arena.setReady(true);
-			arena.setMinimumPlayers(config.getInt(s + "minimumplayers", 2));
-			arena.setMaximumPlayers(config.getInt(s + "maximumplayers", 10));
-			arena.setMapName(config.getString(s + "mapname", "undefined"));
-			arena.setLobbyLocation(LocationSerializer.fromString(config.getString(s + "lobbylocation", "world, -994.000, 4.000, 853.000, 0.000, 0.000")));
-			arena.setEndLocation(LocationSerializer.fromString(config.getString(s + "Endlocation", "world, -994.000, 4.000, 853.000, 0.000, 0.000")));
+			arena.setMinimumPlayers(config.getInt(path + "minimumPlayers", 2));
+			arena.setMaximumPlayers(config.getInt(path + "maximumPlayers", 10));
+			arena.setMapName(config.getString(path + "mapName", "undefined"));
+			arena.setLobbyLocation(LocationSerializer.fromString(config.getString(path + "lobbyLocation")));
+			arena.setEndLocation(LocationSerializer.fromString(config.getString(path + "endLocation")));
 
-			if (!config.getBoolean(s + "isdone", false)) {
-				Bukkit.getConsoleSender().sendMessage(plugin.getChatManager().colorMessage("Validator.Invalid-Arena-Configuration").replace("%arena%", id).replace("%error%", "NOT VALIDATED"));
+			registerArena(arena);
+
+			if (!config.getBoolean(path + "ready", false)) {
+				LogUtils.sendConsoleMessage(chatManager.message("validator.invalid-arena-configuration").replace("%arena%", id).replace("%error%", "NOT VALIDATED"));
 				arena.setReady(false);
-				ArenaRegistry.registerArena(arena);
 				continue;
 			}
 
 			arena.setArenaState(ArenaState.WAITING_FOR_PLAYERS);
-			ArenaRegistry.registerArena(arena);
 			arena.start();
 
-			Bukkit.getConsoleSender().sendMessage(plugin.getChatManager().colorMessage("Validator.Instance-Started").replace("%arena%", id));
+			LogUtils.sendConsoleMessage(chatManager.message("validator.instance-started").replace("%arena%", id));
 		}
 
-		LogUtils.log("Arenas registration completed, took {0} ms", System.currentTimeMillis() - start);
+		LogUtils.log("Arenas registration completed, took {0} ms.", System.currentTimeMillis() - start);
 	}
 
 	public static List<Arena> getArenas() {
@@ -170,14 +129,10 @@ public class ArenaRegistry {
 	}
 
 	public static void shuffleBungeeArena() {
-		bungeeArena = new Random().nextInt(arenas.size());
+		bungeeArena = ThreadLocalRandom.current().nextInt(arenas.size());
 	}
 
-	public static int getBungeeArena() {
-		if (bungeeArena == -999) {
-			bungeeArena = new Random().nextInt(arenas.size());
-		}
-
-		return bungeeArena;
+	public static Arena getBungeeArena() {
+		return arenas.get(bungeeArena == -1 ? bungeeArena = ThreadLocalRandom.current().nextInt(arenas.size()) : bungeeArena);
 	}
 }
