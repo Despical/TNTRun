@@ -55,19 +55,19 @@ public class PlayerCommands {
 		});
 	}
 
-	@Command(
-		name = "tntrun"
-	)
-	public void tntRunCommand(CommandArguments arguments) {
-		if (arguments.isArgumentsEmpty()) {
-			arguments.sendMessage(chatManager.color("&3This server is running &bTNT Run &3v" + plugin.getDescription().getVersion() + " by &bDespical"));
-			arguments.sendMessage(chatManager.color("&3Thank you for purchasing our plugin and supporting us!"));
-
-			if (arguments.hasPermission("tntrun.admin")) {
-				arguments.sendMessage(chatManager.color("&3Commands: &b/" + arguments.getLabel() + " help"));
-			}
-		}
-	}
+//	@Command(
+//		name = "tntrun"
+//	)
+//	public void tntRunCommand(CommandArguments arguments) {
+//		if (arguments.isArgumentsEmpty()) {
+//			arguments.sendMessage(chatManager.color("&3This server is running &bTNT Run &3v" + plugin.getDescription().getVersion() + " by &bDespical"));
+//			arguments.sendMessage(chatManager.color("&3Thank you for purchasing our plugin and supporting us!"));
+//
+//			if (arguments.hasPermission("tntrun.admin")) {
+//				arguments.sendMessage(chatManager.color("&3Commands: &b/" + arguments.getLabel() + " help"));
+//			}
+//		}
+//	}
 
 	@Command(
 		name = "tntrun.join",
@@ -190,17 +190,17 @@ public class PlayerCommands {
 	}
 
 	private void printLeaderboard(CommandSender sender, StatsStorage.StatisticType statisticType) {
-		sender.sendMessage(chatManager.message("commands.statistics.header"));
-
 		Map<UUID, Integer> stats = StatsStorage.getStats(statisticType);
+		sender.sendMessage(chatManager.message("Commands.Statistics.Header"));
 		String statistic = StringUtils.capitalize(statisticType.name().toLowerCase(java.util.Locale.ENGLISH).replace("_", " "));
+
 		Object[] array = stats.keySet().toArray();
 		UUID current = (UUID) array[array.length - 1];
 
 		for (int i = 0; i < 10; i++) {
 			try {
 				sender.sendMessage(formatMessage(statistic, plugin.getServer().getOfflinePlayer(current).getName(), i + 1, stats.remove(current)));
-			} catch (IndexOutOfBoundsException ex) {
+			} catch (ArrayIndexOutOfBoundsException ex) {
 				sender.sendMessage(formatMessage(statistic, "Empty", i + 1, 0));
 			} catch (NullPointerException ex) {
 				if (plugin.getConfigPreferences().getOption(ConfigPreferences.Option.DATABASE_ENABLED)) {
@@ -223,10 +223,11 @@ public class PlayerCommands {
 	}
 
 	private String formatMessage(String statisticName, String playerName, int position, int value) {
-		String message = chatManager.message("commands.statistics.format");
+		String message = chatManager.message("Commands.Statistics.Format");
+
 		message = StringUtils.replace(message, "%position%", Integer.toString(position));
 		message = StringUtils.replace(message, "%name%", playerName);
-		message = StringUtils.replace(message, "%value%", statisticName.equalsIgnoreCase("longest survive") ? StringFormatUtils.formatIntoMMSS(value) : Integer.toString(value));
+		message = StringUtils.replace(message, "%value%", Integer.toString(value));
 		message = StringUtils.replace(message, "%statistic%", statisticName);
 		return message;
 	}

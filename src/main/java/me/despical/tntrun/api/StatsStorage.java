@@ -20,15 +20,12 @@ package me.despical.tntrun.api;
 
 import me.despical.commons.configuration.ConfigUtils;
 import me.despical.commons.sorter.SortUtils;
-import me.despical.commons.util.LogUtils;
 import me.despical.tntrun.ConfigPreferences;
 import me.despical.tntrun.Main;
 import me.despical.tntrun.user.data.MysqlManager;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -47,30 +44,27 @@ public class StatsStorage {
 
 	private static final Main plugin = JavaPlugin.getPlugin(Main.class);
 
-	@NotNull
-	@Contract("null -> fail")
 	public static Map<UUID, Integer> getStats(StatisticType stat) {
 		if (plugin.getConfigPreferences().getOption(ConfigPreferences.Option.DATABASE_ENABLED)) {
 			try (Connection connection = plugin.getMysqlDatabase().getConnection()) {
 				Statement statement = connection.createStatement();
 				ResultSet set = statement.executeQuery("SELECT UUID, " + stat.getName() + " FROM " + ((MysqlManager) plugin.getUserManager().getDatabase()).getTableName() + " ORDER BY " + stat.getName());
-				Map<UUID, Integer> column = new LinkedHashMap<>();
+				Map<UUID, Integer> column = new HashMap<>();
 
 				while (set.next()) {
 					column.put(UUID.fromString(set.getString("UUID")), set.getInt(stat.getName()));
 				}
 
 				return column;
-			} catch (SQLException e) {
-				plugin.getLogger().log(Level.WARNING, "SQL Exception occurred! " + e.getSQLState() + " (" + e.getErrorCode() + ")");
-				LogUtils.sendConsoleMessage("&cCannot get contents from MySQL database!");
-				LogUtils.sendConsoleMessage("&cCheck configuration of mysql.yml file or disable mysql option in config.yml");
-				return Collections.emptyMap();
+			} catch (SQLException exception) {
+				plugin.getLogger().log(Level.WARNING, "SQL Exception occurred! " + exception.getSQLState() + " (" + exception.getErrorCode() + ")");
+				return null;
 			}
 		}
 
 		FileConfiguration config = ConfigUtils.getConfig(plugin, "stats");
-		Map<UUID, Integer> stats = config.getKeys(false).stream().collect(Collectors.toMap(UUID::fromString, string -> config.getInt(string + "." + stat.getName()), (a, b) -> b, HashMap::new));
+		Map<UUID, Integer> stats = config.getKeys(false).stream().collect(Collectors.toMap(UUID::fromString, string -> config.getInt(string + "." + stat.getName()), (a, b) -> b));
+
 		return SortUtils.sortByValue(stats);
 	}
 
