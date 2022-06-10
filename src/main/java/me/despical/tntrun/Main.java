@@ -25,7 +25,6 @@ import me.despical.commons.database.MysqlDatabase;
 import me.despical.commons.exception.ExceptionLogHandler;
 import me.despical.commons.scoreboard.ScoreboardLib;
 import me.despical.commons.serializer.InventorySerializer;
-import me.despical.commons.util.Collections;
 import me.despical.commons.util.LogUtils;
 import me.despical.commons.util.UpdateChecker;
 import me.despical.tntrun.api.StatsStorage;
@@ -39,7 +38,6 @@ import me.despical.tntrun.commands.TabCompletion;
 import me.despical.tntrun.events.*;
 import me.despical.tntrun.events.spectator.SpectatorEvents;
 import me.despical.tntrun.events.spectator.SpectatorItemEvents;
-import me.despical.tntrun.handlers.BungeeManager;
 import me.despical.tntrun.handlers.ChatManager;
 import me.despical.tntrun.handlers.PermissionsManager;
 import me.despical.tntrun.handlers.PlaceholderManager;
@@ -67,7 +65,6 @@ public class Main extends JavaPlugin {
 	private boolean forceDisable;
 
 	private ExceptionLogHandler exceptionLogHandler;
-	private BungeeManager bungeeManager;
 	private RewardsFactory rewardsFactory;
 	private MysqlDatabase database;
 	private SignManager signManager;
@@ -186,10 +183,6 @@ public class Main extends JavaPlugin {
 		chatManager = new ChatManager(this);
 		permissionManager = new PermissionsManager(this);
 
-		if (configPreferences.getOption(ConfigPreferences.Option.BUNGEE_ENABLED)) {
-			bungeeManager = new BungeeManager(this);
-		}
-
 		if (configPreferences.getOption(ConfigPreferences.Option.DATABASE_ENABLED)) {
 			database = new MysqlDatabase(ConfigUtils.getConfig(this, "mysql"));
 		}
@@ -199,6 +192,7 @@ public class Main extends JavaPlugin {
 		itemManager = new SpecialItemManager();
 
 		User.cooldownHandlerTask();
+
 		new SpectatorEvents(this);
 		new QuitEvent(this);
 		new JoinEvent(this);
@@ -211,7 +205,7 @@ public class Main extends JavaPlugin {
 		signManager = new SignManager(this);
 		ArenaRegistry.registerArenas();
 		signManager.loadSigns();
-		signManager.updateSigns();
+
 		rewardsFactory = new RewardsFactory(this);
 		commandFramework = new CommandFramework(this);
 
@@ -219,19 +213,9 @@ public class Main extends JavaPlugin {
 		new AdminCommands(this);
 		new TabCompletion(this);
 
-		registerSoftDependenciesAndServices();
-	}
-
-	private void registerSoftDependenciesAndServices() {
-		LogUtils.log("Hooking into soft dependencies.");
-		long start = System.currentTimeMillis();
-
 		if (configPreferences.isPapiEnabled()) {
-			LogUtils.log("Hooking into PlaceholderAPI.");
 			new PlaceholderManager(this);
 		}
-
-		LogUtils.log("Hooked into PAPI, took {0} ms.", System.currentTimeMillis() - start);
 	}
 
 	private void checkUpdate() {
@@ -251,15 +235,19 @@ public class Main extends JavaPlugin {
 	}
 
 	private void setupFiles() {
-		Collections.streamOf("arenas", "bungee", "rewards", "stats", "lobbyitems", "mysql", "messages").filter(name -> !new File(getDataFolder(),name + ".yml").exists()).forEach(name -> saveResource(name + ".yml", false));
+		String[] files = {"arenas", "rewards", "stats", "items", "mysql", "messages"};
+
+		for (String name : files) {
+			File file = new File(getDataFolder(), name + ".yml");
+
+			if (file.exists()) continue;
+
+			saveResource(name + ".yml", false);
+		}
 	}
 
 	public RewardsFactory getRewardsFactory() {
 		return rewardsFactory;
-	}
-
-	public BungeeManager getBungeeManager() {
-		return bungeeManager;
 	}
 
 	public ConfigPreferences getConfigPreferences() {
@@ -276,10 +264,6 @@ public class Main extends JavaPlugin {
 
 	public ChatManager getChatManager() {
 		return chatManager;
-	}
-
-	public LanguageManager getLanguageManager() {
-		return languageManager;
 	}
 
 	public UserManager getUserManager() {

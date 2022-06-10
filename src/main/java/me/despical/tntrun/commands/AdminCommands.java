@@ -73,11 +73,11 @@ public class AdminCommands {
 
 		Player player = arguments.getSender();
 
-		MiscUtils.sendCenteredMessage(player, "&l----------------------------------------");
+		MiscUtils.sendCenteredMessage(player, "&l--------------------------------------------");
 		MiscUtils.sendCenteredMessage(player, "Instance " + id + " created!");
 		player.sendMessage("");
 		MiscUtils.sendCenteredMessage(player, "&aEdit this arena via &6/tntrun edit " + id + "&a!");
-		MiscUtils.sendCenteredMessage(player, "&l----------------------------------------");
+		MiscUtils.sendCenteredMessage(player, "&l--------------------------------------------");
 
 		// Configuration setup and registering arena
 		String path = "instances." + id + ".";
@@ -254,25 +254,13 @@ public class AdminCommands {
 		plugin.reloadConfig();
 		plugin.getChatManager().reloadConfig();
 
+		// 0dan reload command 0dan arena stateler vs
+
 		for (Arena arena : ArenaRegistry.getArenas()) {
-			LogUtils.log("Stopping {0} instance.");
-
-			long stopTime = System.currentTimeMillis();
-
-			for (Player player : arena.getPlayers()) {
-				arena.doBarAction(Arena.BarAction.REMOVE, player);
-
-				if (plugin.getConfigPreferences().getOption(ConfigPreferences.Option.INVENTORY_MANAGER_ENABLED)) {
-					InventorySerializer.loadInventory(plugin, player);
-				} else {
-					player.getInventory().clear();
-					player.getInventory().setArmorContents(null);
-					player.getActivePotionEffects().forEach(effect -> player.removePotionEffect(effect.getType()));
-				}
-			}
+			LogUtils.log("Stopping {0} instance.", arena.getId());
 
 			ArenaManager.stopGame(true, arena);
-			LogUtils.log("Instance {0} stopped took {1} ms.", arena.getId(), System.currentTimeMillis() - stopTime);
+			ArenaRegistry.unregisterArena(arena);
 		}
 
 		ArenaRegistry.registerArenas();

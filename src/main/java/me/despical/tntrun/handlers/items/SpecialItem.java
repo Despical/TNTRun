@@ -44,7 +44,7 @@ public class SpecialItem {
 	public SpecialItem(String key, String displayName, int slot, XMaterial material, String... lore) {
 		this.slot = slot;
 
-		FileConfiguration config = ConfigUtils.getConfig(plugin, "lobbyitems");
+		FileConfiguration config = ConfigUtils.getConfig(plugin, "items");
 
 		if (!config.contains(key)) {
 			config.set(key + ".displayName", displayName);

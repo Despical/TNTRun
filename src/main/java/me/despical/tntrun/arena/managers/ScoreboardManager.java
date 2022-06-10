@@ -100,14 +100,14 @@ public class ScoreboardManager {
 	private String formatScoreboardLine(String line, Player player) {
 		String formattedLine = line;
 
-		formattedLine = StringUtils.replace(formattedLine, "%time%", String.valueOf(arena.getTimer()));
+		formattedLine = StringUtils.replace(formattedLine, "%time%", Integer.toString(arena.getTimer()));
 		formattedLine = StringUtils.replace(formattedLine, "%formatted_time%", StringFormatUtils.formatIntoMMSS(arena.getTimer()));
-		formattedLine = StringUtils.replace(formattedLine, "%mapname%", arena.getMapName());
-		formattedLine = StringUtils.replace(formattedLine, "%players%", String.valueOf(arena.getPlayers().size()));
-		formattedLine = StringUtils.replace(formattedLine, "%max_players%", String.valueOf(arena.getMaximumPlayers()));
-		formattedLine = StringUtils.replace(formattedLine, "%min_players%", String.valueOf(arena.getMinimumPlayers()));
-		formattedLine = StringUtils.replace(formattedLine, "%coins_earned%", String.valueOf(StatsStorage.getUserStats(player, StatsStorage.StatisticType.LOCAL_COINS)));
-		formattedLine = StringUtils.replace(formattedLine, "%double_jumps%", String.valueOf(StatsStorage.getUserStats(player, StatsStorage.StatisticType.LOCAL_DOUBLE_JUMPS)));
+		formattedLine = StringUtils.replace(formattedLine, "%map_name%", arena.getMapName());
+		formattedLine = StringUtils.replace(formattedLine, "%players%", Integer.toString(arena.getPlayers().size()));
+		formattedLine = StringUtils.replace(formattedLine, "%max_players%", Integer.toString(arena.getMaximumPlayers()));
+		formattedLine = StringUtils.replace(formattedLine, "%min_players%", Integer.toString(arena.getMinimumPlayers()));
+		formattedLine = StringUtils.replace(formattedLine, "%coins_earned%", Integer.toString(StatsStorage.getUserStats(player, StatsStorage.StatisticType.LOCAL_COINS)));
+		formattedLine = StringUtils.replace(formattedLine, "%double_jumps%", Integer.toString(StatsStorage.getUserStats(player, StatsStorage.StatisticType.LOCAL_DOUBLE_JUMPS)));
 		formattedLine = plugin.getChatManager().color(formattedLine);
 
 		if (plugin.getConfigPreferences().isPapiEnabled()) {

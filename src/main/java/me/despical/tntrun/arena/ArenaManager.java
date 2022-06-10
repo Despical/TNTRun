@@ -82,11 +82,9 @@ public class ArenaManager {
 
 		PermissionsManager permManager = plugin.getPermissionManager();
 
-		if (!plugin.getConfigPreferences().getOption(ConfigPreferences.Option.BUNGEE_ENABLED)) {
-			if (!permManager.hasJoinPerm(player, "*") || !permManager.hasJoinPerm(player, arena.getId())) {
-				player.sendMessage(plugin.getChatManager().getPrefix() + plugin.getChatManager().message("In-Game.Join-No-Permission").replace("%permission%", permManager.getJoinPerm().replace("<arena>", arena.getId())));
-				return;
-			}
+		if (!permManager.hasJoinPerm(player, "*") || !permManager.hasJoinPerm(player, arena.getId())) {
+			player.sendMessage(plugin.getChatManager().getPrefix() + plugin.getChatManager().message("In-Game.Join-No-Permission").replace("%permission%", permManager.getJoinPerm().replace("<arena>", arena.getId())));
+			return;
 		}
 
 		if (arena.getArenaState() == ArenaState.RESTARTING) {
@@ -106,7 +104,7 @@ public class ArenaManager {
 					continue;
 				}
 
-				leaveAttempt(loopPlayer, arena);
+				leaveAttempt(loopPlayer, arena, "No Slot");
 				loopPlayer.sendMessage(plugin.getChatManager().getPrefix() + plugin.getChatManager().message("In-Game.Messages.Lobby-Messages.You-Were-Kicked-For-Premium-Slot"));
 				arena.broadcastMessage(plugin.getChatManager().formatMessage(arena, plugin.getChatManager().message("In-Game.Messages.Lobby-Messages.Kicked-For-Premium-Slot"), loopPlayer));
 
@@ -120,7 +118,7 @@ public class ArenaManager {
 			}
 		}
 
-		LogUtils.log("[{0}] Checked join attempt for {1} initialized", arena.getId(), player.getName());
+		LogUtils.log("[{0}] Checked join attempt for {1} initialized.", arena.getId(), player.getName());
 		arena.getScoreboardManager().createScoreboard(player);
 
 		if (plugin.getConfigPreferences().getOption(ConfigPreferences.Option.INVENTORY_MANAGER_ENABLED)) {
@@ -135,6 +133,7 @@ public class ArenaManager {
 		player.getInventory().setArmorContents(null);
 		player.getInventory().clear();
 		player.setGameMode(GameMode.ADVENTURE);
+		player.getInventory().setHeldItemSlot(0);
 		AttributeUtils.healPlayer(player);
 
 		User user = plugin.getUserManager().getUser(player);
@@ -203,12 +202,11 @@ public class ArenaManager {
 	 * @param arena  target arena
 	 * @see TRGameLeaveAttemptEvent
 	 */
-	public static void leaveAttempt(Player player, Arena arena) {
+	public static void leaveAttempt(Player player, Arena arena, String reason) {
 		LogUtils.log("[{0}] Initial leave attempt for {1}", arena.getId(), player.getName());
 		long start = System.currentTimeMillis();
 
-		TRGameLeaveAttemptEvent event = new TRGameLeaveAttemptEvent(player, arena);
-		plugin.getServer().getPluginManager().callEvent(event);
+		plugin.getServer().getPluginManager().callEvent(new TRGameLeaveAttemptEvent(player, arena));
 		User user = plugin.getUserManager().getUser(player);
 
 		if (user.getStat(StatsStorage.StatisticType.LOCAL_SURVIVE) > user.getStat(StatsStorage.StatisticType.LONGEST_SURVIVE)) {
@@ -239,7 +237,6 @@ public class ArenaManager {
 
 		user.setSpectator(false);
 
-		arena.getScoreboardManager().removeScoreboard(player);
 		arena.doBarAction(Arena.BarAction.REMOVE, player);
 
 		AttributeUtils.healPlayer(player);
@@ -251,12 +248,6 @@ public class ArenaManager {
 		player.getActivePotionEffects().forEach(effect -> player.removePotionEffect(effect.getType()));
 		player.setWalkSpeed(0.2f);
 		player.setFireTicks(0);
-
-		if (arena.getArenaState() != ArenaState.WAITING_FOR_PLAYERS && arena.getArenaState() != ArenaState.STARTING && arena.getPlayers().size() == 0) {
-			arena.setArenaState(ArenaState.ENDING);
-			arena.setTimer(0);
-		}
-
 		player.setGameMode(GameMode.SURVIVAL);
 
 		for (Player players : plugin.getServer().getOnlinePlayers()) {
@@ -269,12 +260,12 @@ public class ArenaManager {
 
 		arena.teleportToEndLocation(player);
 
-		if (!plugin.getConfigPreferences().getOption(ConfigPreferences.Option.BUNGEE_ENABLED) && plugin.getConfigPreferences().getOption(ConfigPreferences.Option.INVENTORY_MANAGER_ENABLED)) {
+		if (plugin.getConfigPreferences().getOption(ConfigPreferences.Option.INVENTORY_MANAGER_ENABLED)) {
 			InventorySerializer.loadInventory(plugin, player);
 		}
 
 		plugin.getUserManager().saveAllStatistic(user);
-		LogUtils.log("[{0}] Game leave finished for {1} took {2} ms", arena.getId(), player.getName(), System.currentTimeMillis() - start);
+		LogUtils.log("[{0}] Game leave finished for {1} took {2} ms. Reason: {3}", arena.getId(), player.getName(), System.currentTimeMillis() - start, reason);
 	}
 
 	/**
@@ -292,11 +283,9 @@ public class ArenaManager {
 
 		plugin.getServer().getPluginManager().callEvent(new TRGameStopEvent(arena));
 
-		arena.setArenaState(ArenaState.ENDING);
-
 		if (quickStop) {
-			plugin.getServer().getScheduler().runTaskLater(plugin, () -> arena.setArenaState(ArenaState.ENDING), 20L * 2);
-			arena.broadcastMessage(plugin.getChatManager().message("In-Game.Messages.Admin-Messages.Stopped-Game"));
+			plugin.getServer().getScheduler().runTaskLater(plugin, () -> arena.setArenaState(ArenaState.ENDING), 5L);
+			arena.broadcastMessage(plugin.getChatManager().prefixedMessage("In-Game.Messages.Admin-Messages.Stopped-Game"));
 		} else {
 			plugin.getServer().getScheduler().runTaskLater(plugin, () -> arena.setArenaState(ArenaState.ENDING), 20L * 10);
 		}

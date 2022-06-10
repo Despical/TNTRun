@@ -53,11 +53,6 @@ Whitelisted-Blocks:
   - RED_SANDSTONE
   - RED_SAND
 
-# Should we hook into bungee cord? (If you wanna use arena per server option)
-# You STILL need to use external addon for HUB server game signs
-# TNT Run doesn't offer that addon.
-BungeeActivated: false
-
 # Enable this option when you're using MySQL, otherwise it won't work.
 # Be careful when changing this because there is NO migrator between
 # flat file and MySQL for player stats.

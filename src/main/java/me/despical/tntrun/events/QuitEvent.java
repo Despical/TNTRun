@@ -49,7 +49,7 @@ public class QuitEvent implements Listener {
 		Arena arena = user.getArena();
 
 		if (arena != null) {
-			ArenaManager.leaveAttempt(player, arena);
+			ArenaManager.leaveAttempt(player, arena, "Quit Event");
 		}
 
 		plugin.getUserManager().removeUser(user);

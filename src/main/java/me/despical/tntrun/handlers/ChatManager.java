@@ -69,6 +69,14 @@ public class ChatManager {
 		return color(config.getString(me.despical.commons.string.StringUtils.capitalize(path, '-', '.')));
 	}
 
+	public String message(String path, int integer) {
+		return formatMessage(null, message(path), integer);
+	}
+
+	public String prefixedMessage(String path, int integer) {
+		return prefix + message(path, integer);
+	}
+
 	public String prefixedMessage(String path, Player player) {
 		return prefix + message(path, player);
 	}
@@ -91,7 +99,7 @@ public class ChatManager {
 			returnString = PlaceholderAPI.setPlaceholders(player, returnString);
 		}
 
-		return color(formatPlaceholders(returnString, arena));
+		return formatPlaceholders(returnString, arena);
 	}
 
 	private String formatPlaceholders(String message, Arena arena) {
@@ -103,15 +111,18 @@ public class ChatManager {
 		formatted = StringUtils.replace(formatted, "%players%", Integer.toString(arena.getPlayersLeft().size()));
 		formatted = StringUtils.replace(formatted, "%maxplayers%", Integer.toString(arena.getMaximumPlayers()));
 		formatted = StringUtils.replace(formatted, "%minplayers%", Integer.toString(arena.getMinimumPlayers()));
-		return formatted;
+		return color(formatted);
+	}
+
+	public String prefixedFormattedMessage(Arena arena, String path, int integer) {
+		return prefix + formatMessage(arena, message(path), integer);
 	}
 
 	public String formatMessage(Arena arena, String message, int integer) {
 		String returnString = message;
 
 		returnString = StringUtils.replace(returnString, "%number%", Integer.toString(integer));
-		returnString = color(formatPlaceholders(returnString, arena));
-		return returnString;
+		return arena != null ? formatPlaceholders(returnString, arena) : returnString;
 	}
 
 	public void broadcastAction(Arena arena, Player player, ActionType action) {

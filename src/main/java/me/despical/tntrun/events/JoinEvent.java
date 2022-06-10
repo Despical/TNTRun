@@ -47,11 +47,6 @@ public class JoinEvent implements Listener {
 	public void onJoin(PlayerJoinEvent event) {
 		plugin.getUserManager().loadStatistics(plugin.getUserManager().getUser(event.getPlayer()));
 
-		if (plugin.getConfigPreferences().getOption(ConfigPreferences.Option.BUNGEE_ENABLED)) {
-			ArenaRegistry.getBungeeArena().teleportToLobby(event.getPlayer());
-			return;
-		}
-
 		for (Player player : plugin.getServer().getOnlinePlayers()) {
 			if (!ArenaRegistry.isInArena(player)) {
 				continue;

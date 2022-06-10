@@ -25,7 +25,6 @@ import me.despical.commons.serializer.LocationSerializer;
 import me.despical.commons.util.conversation.ConversationBuilder;
 import me.despical.inventoryframework.GuiItem;
 import me.despical.inventoryframework.pane.StaticPane;
-import me.despical.tntrun.ConfigPreferences;
 import me.despical.tntrun.arena.Arena;
 import me.despical.tntrun.handlers.setup.SetupInventory;
 import org.bukkit.block.Block;
@@ -53,28 +52,13 @@ public class MiscComponents implements SetupComponent {
 		Player player = setupInventory.getPlayer();
 		FileConfiguration config = setupInventory.getConfig();
 		Arena arena = setupInventory.getArena();
-		ItemStack bungeeItem;
-
-		if (!plugin.getConfigPreferences().getOption(ConfigPreferences.Option.BUNGEE_ENABLED)) {
-			bungeeItem = new ItemBuilder(XMaterial.OAK_SIGN)
+		ItemStack signItem = new ItemBuilder(XMaterial.OAK_SIGN)
 				.name("&e&lAdd Game Sign")
 				.lore("&7Target a sign and click this.")
 				.lore("&8(this will set target sign as game sign)")
 				.build();
-		} else {
-			bungeeItem = new ItemBuilder(XMaterial.BARRIER)
-				.name("&c&lAdd Game Sign")
-				.lore("&7Option disabled in bungee cord mode.")
-				.lore("&8Bungee mode is meant to be one arena per server")
-				.lore("&8If you wish to have multi arena, disable bungee in config!")
-				.build();
-		}
 
-		pane.addItem(GuiItem.of(bungeeItem, e -> {
-			if (plugin.getConfigPreferences().getOption(ConfigPreferences.Option.BUNGEE_ENABLED)) {
-				return;
-			}
-
+		pane.addItem(GuiItem.of(signItem, e -> {
 			player.closeInventory();
 			Block block = player.getTargetBlock(null, 10);
 

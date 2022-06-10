@@ -18,6 +18,9 @@
 
 package me.despical.tntrun.arena.options;
 
+import me.despical.tntrun.Main;
+import org.bukkit.plugin.java.JavaPlugin;
+
 /**
  * @author Despical
  * <p>
@@ -29,12 +32,22 @@ public enum ArenaOption {
 
 	MINIMUM_PLAYERS(2),
 
-	MAXIMUM_PLAYERS(12);
+	MAXIMUM_PLAYERS(12),
+
+	WAITING_TIME("Starting-Waiting-Time", 60),
+
+	START_TIME("Start-Time-On-Full-Lobby", 15);
 
 	int defaultValue;
 
 	ArenaOption(int defaultValue) {
 		this.defaultValue = defaultValue;
+	}
+
+	ArenaOption(String path, int defaultValue) {
+		final Main plugin = JavaPlugin.getPlugin(Main.class);
+
+		this.defaultValue = plugin.getConfig().getInt(path, defaultValue);
 	}
 
 	public int getDefaultValue() {

@@ -30,7 +30,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * @author Despical
@@ -41,8 +40,6 @@ public class ArenaRegistry {
 
 	private static final Main plugin = JavaPlugin.getPlugin(Main.class);
 	private static final List<Arena> arenas = new ArrayList<>();
-
-	private static int bungeeArena = -1;
 
 	public static boolean isInArena(Player player) {
 		return getArena(player) != null;
@@ -126,13 +123,5 @@ public class ArenaRegistry {
 
 	public static List<Arena> getArenas() {
 		return arenas;
-	}
-
-	public static void shuffleBungeeArena() {
-		bungeeArena = ThreadLocalRandom.current().nextInt(arenas.size());
-	}
-
-	public static Arena getBungeeArena() {
-		return arenas.get(bungeeArena == -1 ? bungeeArena = ThreadLocalRandom.current().nextInt(arenas.size()) : bungeeArena);
 	}
 }

@@ -139,11 +139,7 @@ public class Events implements Listener {
 		if (plugin.getItemManager().getRelatedSpecialItem(itemStack).equalsIgnoreCase("Leave")) {
 			event.setCancelled(true);
 
-			if (plugin.getConfigPreferences().getOption(ConfigPreferences.Option.BUNGEE_ENABLED)) {
-				plugin.getBungeeManager().connectToHub(event.getPlayer());
-			} else {
-				ArenaManager.leaveAttempt(event.getPlayer(), arena);
-			}
+			ArenaManager.leaveAttempt(event.getPlayer(), arena, "Leave Item");
 		}
 	}
 

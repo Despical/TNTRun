@@ -2,9 +2,6 @@ package me.despical.tntrun.commands;
 
 import me.despical.commandframework.Command;
 import me.despical.commandframework.CommandArguments;
-import me.despical.commons.compat.VersionResolver;
-import me.despical.commons.compat.XMaterial;
-import me.despical.commons.number.NumberUtils;
 import me.despical.commons.string.StringFormatUtils;
 import me.despical.commons.string.StringMatcher;
 import me.despical.tntrun.ConfigPreferences;
@@ -20,12 +17,6 @@ import me.despical.tntrun.user.data.MysqlManager;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -51,8 +42,6 @@ public class PlayerCommands {
 		this.plugin = plugin;
 		this.chatManager = plugin.getChatManager();
 
-		registerArenaSelectorEvents();
-
 		plugin.getCommandFramework().registerCommands(this);
 		plugin.getCommandFramework().setAnyMatch(arguments -> {
 			if (arguments.isArgumentsEmpty()) return;
@@ -67,8 +56,7 @@ public class PlayerCommands {
 	}
 
 	@Command(
-		name = "oitc",
-		aliases = "tr"
+		name = "tntrun"
 	)
 	public void tntRunCommand(CommandArguments arguments) {
 		if (arguments.isArgumentsEmpty()) {
@@ -117,11 +105,7 @@ public class PlayerCommands {
 
 			player.sendMessage(chatManager.prefixedMessage("commands.teleported-to-the-lobby", player));
 
-			if (plugin.getBungeeManager() != null && plugin.getBungeeManager().connectToHub(player)) {
-				return;
-			}
-
-			ArenaManager.leaveAttempt(player, arena);
+			ArenaManager.leaveAttempt(player, arena, "Leave command");
 		}
 	}
 
@@ -130,10 +114,6 @@ public class PlayerCommands {
 		senderType = Command.SenderType.PLAYER
 	)
 	public void randomJoinCommand(CommandArguments arguments) {
-		if (plugin.getConfigPreferences().getOption(ConfigPreferences.Option.BUNGEE_ENABLED)) {
-			return;
-		}
-
 		Map<Arena, Integer> arenas = ArenaRegistry.getArenas().stream().filter(arena -> arena.getArenaState() == ArenaState.STARTING && arena.getPlayers().size() < arena.getMaximumPlayers()).collect(Collectors.toMap(arena -> arena, arena -> arena.getPlayers().size(), (a, b) -> b));
 
 		if (!arenas.isEmpty()) {
@@ -249,86 +229,5 @@ public class PlayerCommands {
 		message = StringUtils.replace(message, "%value%", statisticName.equalsIgnoreCase("longest survive") ? StringFormatUtils.formatIntoMMSS(value) : Integer.toString(value));
 		message = StringUtils.replace(message, "%statistic%", statisticName);
 		return message;
-	}
-
-	@Command(
-		name = "tntrun.arenaselector",
-		permission = "tntrun.arenaselector",
-		senderType = Command.SenderType.PLAYER
-	)
-	public void arenaSelectorCommand(CommandArguments arguments) {
-		List<Arena> arenas = ArenaRegistry.getArenas();
-
-		if (arenas.isEmpty()) {
-			arguments.sendMessage(chatManager.prefixedMessage("commands.no-free-arenas"));
-			return;
-		}
-
-		Player player = arguments.getSender();
-		Inventory inventory = plugin.getServer().createInventory(player, NumberUtils.roundInteger(arenas.size(), 9), chatManager.message("arena-selector.inventory-title"));
-		boolean legacy = VersionResolver.isCurrentLower(VersionResolver.ServerVersion.v1_12_R1);
-
-		for (Arena arena : arenas) {
-			XMaterial material;
-
-			switch (arena.getArenaState()) {
-				case WAITING_FOR_PLAYERS:
-					material = legacy ? XMaterial.LIME_WOOL : XMaterial.LIME_CONCRETE;
-					break;
-				case STARTING:
-					material = legacy ? XMaterial.YELLOW_WOOL : XMaterial.YELLOW_CONCRETE;
-					break;
-				default:
-					material = legacy ? XMaterial.RED_WOOL : XMaterial.RED_CONCRETE;
-					break;
-			}
-
-			final ItemStack itemStack = material.parseItem();
-			final ItemMeta itemMeta = itemStack.getItemMeta();
-			itemMeta.setDisplayName(arena.getId());
-			itemMeta.setLore(chatManager.getStringList("arena-selector.item.lore").stream().map(string -> formatItem(string, arena, plugin)).collect(Collectors.toList()));
-			itemStack.setItemMeta(itemMeta);
-
-			inventory.addItem(itemStack);
-		}
-
-		player.openInventory(inventory);
-	}
-
-	private String formatItem(String string, Arena arena, Main plugin) {
-		String formatted = string;
-
-		formatted = StringUtils.replace(formatted, "%mapname%", arena.getMapName());
-		formatted = StringUtils.replace(formatted, "%state%", arena.getPlayers().size() >= arena.getMaximumPlayers() ? chatManager.message("signs.game-states.full-game") : plugin.getSignManager().getGameStateToString().get(arena.getArenaState()));
-		formatted = StringUtils.replace(formatted, "%playersize%", Integer.toString(arena.getPlayers().size()));
-		formatted = StringUtils.replace(formatted, "%maxplayers%", Integer.toString(arena.getMaximumPlayers()));
-		return chatManager.color(formatted);
-	}
-
-	public void registerArenaSelectorEvents() {
-		plugin.getServer().getPluginManager().registerEvents(new Listener() {
-
-			@EventHandler
-			public void onArenaSelectorMenuClick(InventoryClickEvent event) {
-				if (!event.getView().getTitle().equals(chatManager.message("arena-selector.inventory-title"))) {
-					return;
-				}
-
-				if (event.getCurrentItem() == null || !event.getCurrentItem().hasItemMeta()) {
-					return;
-				}
-
-				Player player = (Player) event.getWhoClicked();
-				player.closeInventory();
-
-				Arena arena = ArenaRegistry.getArena(event.getCurrentItem().getItemMeta().getDisplayName());
-
-				if (arena != null) {
-					ArenaManager.joinAttempt(player, arena);
-				} else {
-					player.sendMessage(chatManager.prefixedMessage("commands.no-arena-like-that"));
-				}
-			}
-		}, plugin);
 	}
 }

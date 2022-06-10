@@ -36,8 +36,8 @@ import java.lang.reflect.InvocationTargetException;
  */
 public class ArenaSign {
 
-	private final Sign sign;
 	private Block behind;
+	private final Sign sign;
 	private final Arena arena;
 
 	public ArenaSign(Sign sign, Arena arena) {
@@ -48,9 +48,7 @@ public class ArenaSign {
 	}
 
 	private void setBehindBlock() {
-		this.behind = null;
-
-		if (sign.getBlock().getType() == Material.getMaterial("WALL_SIGN")) {
+		if (sign.getBlock().getType().name().equals("WALL_SIGN")) {
 			this.behind = VersionResolver.isCurrentEqualOrHigher(VersionResolver.ServerVersion.v1_14_R1) ? getBlockBehind() : getBlockBehindLegacy();
 		}
 	}
@@ -59,8 +57,7 @@ public class ArenaSign {
 		try {
 			Object blockData = sign.getBlock().getState().getClass().getMethod("getBlockData").invoke(sign.getBlock().getState());
 			BlockFace face = (BlockFace) blockData.getClass().getMethod("getFacing").invoke(blockData);
-			Location loc = sign.getLocation();
-			Location location = new Location(sign.getWorld(), loc.getBlockX() - face.getModX(), loc.getBlockY() - face.getModY(), loc.getBlockZ() - face.getModZ());
+			Location loc = sign.getLocation(), location = new Location(sign.getWorld(), loc.getBlockX() - face.getModX(), loc.getBlockY() - face.getModY(), loc.getBlockZ() - face.getModZ());
 			return location.getBlock();
 		} catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
 			e.printStackTrace();
