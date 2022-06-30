@@ -18,8 +18,10 @@
 
 package me.despical.tntrun.user.data;
 
+import me.despical.tntrun.Main;
 import me.despical.tntrun.api.StatsStorage;
 import me.despical.tntrun.user.User;
+import org.bukkit.plugin.java.JavaPlugin;
 
 /**
  * @author Despical
@@ -27,6 +29,8 @@ import me.despical.tntrun.user.User;
  * Created at 10.07.2020
  */
 public interface UserDatabase {
+
+	Main plugin = JavaPlugin.getPlugin(Main.class);
 
 	void saveStatistic(User user, StatsStorage.StatisticType stat);
 

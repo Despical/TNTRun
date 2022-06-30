@@ -5,7 +5,7 @@
 
 	<groupId>me.despical</groupId>
 	<artifactId>tnt-run</artifactId>
-	<version>1.0.0-debug</version>
+	<version>2.0.0</version>
 	<name>TNT Run</name>
 
 	<properties>
@@ -52,12 +52,12 @@
 		<dependency>
 			<groupId>com.github.Despical</groupId>
 			<artifactId>Commons</artifactId>
-			<version>1.4.7.0</version>
+			<version>1.5.2</version>
 		</dependency>
 		<dependency>
 			<groupId>com.github.Despical</groupId>
 			<artifactId>InventoryFramework</artifactId>
-			<version>2.0.0</version>
+			<version>2.2.0</version>
 		</dependency>
 		<dependency>
 			<groupId>com.github.Despical</groupId>
@@ -98,7 +98,7 @@
 				<artifactId>maven-jar-plugin</artifactId>
 				<version>3.1.0</version>
 				<configuration>
-					<outputDirectory>C:\Users\pc\Desktop\Sunucu\plugins</outputDirectory>
+					<outputDirectory>C:\Users\pc\Desktop\1.18 Sunucu\plugins</outputDirectory>
 				</configuration>
 			</plugin>
 			<plugin>

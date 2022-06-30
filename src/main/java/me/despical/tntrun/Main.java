@@ -20,11 +20,11 @@ package me.despical.tntrun;
 
 import me.despical.commandframework.CommandFramework;
 import me.despical.commons.compat.VersionResolver;
-import me.despical.commons.configuration.ConfigUtils;
 import me.despical.commons.database.MysqlDatabase;
 import me.despical.commons.exception.ExceptionLogHandler;
 import me.despical.commons.scoreboard.ScoreboardLib;
 import me.despical.commons.serializer.InventorySerializer;
+import me.despical.commons.util.JavaVersion;
 import me.despical.commons.util.LogUtils;
 import me.despical.commons.util.UpdateChecker;
 import me.despical.tntrun.api.StatsStorage;
@@ -70,7 +70,6 @@ public class Main extends JavaPlugin {
 	private SignManager signManager;
 	private ConfigPreferences configPreferences;
 	private ChatManager chatManager;
-	private LanguageManager languageManager;
 	private UserManager userManager;
 	private SpecialItemManager itemManager;
 	private PermissionsManager permissionManager;
@@ -78,14 +77,7 @@ public class Main extends JavaPlugin {
 
 	@Override
 	public void onEnable() {
-		LogUtils.setLoggerName("TNT Run");
-		LogUtils.enableLogging();
-		getServer().getLogger().setParent(LogUtils.getLogger());
-
-//		if (getDescription().getVersion().contains("debug") || getConfig().getBoolean("Debug-Messages")) {
-//			LogUtils.setLoggerName("TNT Run");
-//			LogUtils.enableLogging();
-//		}
+		this.configPreferences = new ConfigPreferences(this);
 
 		if (forceDisable = !validateIfPluginShouldStart()) {
 			getServer().getPluginManager().disablePlugin(this);
@@ -93,13 +85,18 @@ public class Main extends JavaPlugin {
 		}
 
 		exceptionLogHandler = new ExceptionLogHandler(this);
-		exceptionLogHandler.setMainPackage("me.despical.tntrun");
-		exceptionLogHandler.setRecordMessage("[TNT Run] We have found a bug in the code. Contact us at our official repo on GitHub with the following error above.");
+		exceptionLogHandler.setMainPackage("me.despical");
 		exceptionLogHandler.addBlacklistedClass("me.despical.tntrun.user.data.MysqlManager", "me.despical.commons.database.MysqlDatabase");
+		exceptionLogHandler.setRecordMessage("[TNTRun] We have found a bug in the code. Contact us at our official Discord server (link: https://discord.gg/rVkaGmyszE) with the following error given above!");
 
 		saveDefaultConfig();
 
-		LogUtils.log("Initialization started!");
+		if (configPreferences.getOption(ConfigPreferences.Option.DEBUG_MESSAGES)) {
+			LogUtils.setLoggerName("TNTRun");
+			LogUtils.enableLogging();
+			LogUtils.log("Initialization started.");
+		}
+
 		long start = System.currentTimeMillis();
 
 		setupFiles();
@@ -109,23 +106,27 @@ public class Main extends JavaPlugin {
 		LogUtils.log("Initialization finished took {0} ms.", System.currentTimeMillis() - start);
 
 		if (configPreferences.getOption(ConfigPreferences.Option.NAME_TAGS_HIDDEN)) {
-			getServer().getScheduler().scheduleSyncRepeatingTask(this, () ->
-				getServer().getOnlinePlayers().forEach(ArenaUtils::updateNameTagsVisibility), 60, 140);
+			getServer().getScheduler().scheduleSyncRepeatingTask(this, () -> getServer().getOnlinePlayers().forEach(ArenaUtils::updateNameTagsVisibility), 60, 140);
 		}
 	}
 
 	private boolean validateIfPluginShouldStart() {
-		if (VersionResolver.isCurrentLower(VersionResolver.ServerVersion.v1_11_R1)) {
+		if (!VersionResolver.isCurrentBetween(VersionResolver.ServerVersion.v1_11_R1, VersionResolver.ServerVersion.v1_19_R1)) {
 			LogUtils.sendConsoleMessage("&cYour server version is not supported by TNT Run!");
-			LogUtils.sendConsoleMessage("&cSadly, we must shut off. Maybe you consider changing your server version?");
+			LogUtils.sendConsoleMessage("&cMaybe you consider changing your server version?");
 			return false;
+		}
+
+		if (!configPreferences.getOption(ConfigPreferences.Option.IGNORE_WARNING_MESSAGES) && JavaVersion.getCurrentVersion().isAt(JavaVersion.JAVA_8)) {
+			LogUtils.sendConsoleMessage("[TNTRun] &cThis plugin won't support Java 8 in future updates.");
+			LogUtils.sendConsoleMessage("[TNTRun] &cSo, maybe consider to update your version, right?");
 		}
 
 		try {
 			Class.forName("org.spigotmc.SpigotConfig");
-		} catch (Exception e) {
+		} catch (Exception exception) {
 			LogUtils.sendConsoleMessage("&cYour server software is not supported by TNT Run!");
-			LogUtils.sendConsoleMessage("&cWe support Spigot and forks only! Shutting off...");
+			LogUtils.sendConsoleMessage("&cWe support only Spigot and Spigot forks! Shutting off...");
 			return false;
 		}
 
@@ -184,10 +185,10 @@ public class Main extends JavaPlugin {
 		permissionManager = new PermissionsManager(this);
 
 		if (configPreferences.getOption(ConfigPreferences.Option.DATABASE_ENABLED)) {
-			database = new MysqlDatabase(ConfigUtils.getConfig(this, "mysql"));
+			database = new MysqlDatabase(this, "mysql");
 		}
 
-		languageManager = new LanguageManager(this);
+		new LanguageManager(this);
 		userManager = new UserManager(this);
 		itemManager = new SpecialItemManager();
 

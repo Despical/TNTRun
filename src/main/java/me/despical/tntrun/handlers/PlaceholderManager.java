@@ -37,6 +37,7 @@ public class PlaceholderManager extends PlaceholderExpansion {
 
 	public PlaceholderManager(Main plugin) {
 		this.plugin = plugin;
+
 		this.register();
 	}
 
@@ -80,16 +81,12 @@ public class PlaceholderManager extends PlaceholderExpansion {
 	}
 
 	private String handleArenaPlaceholderRequest(String id) {
-		if (!id.contains(":")) {
-			return null;
-		}
+		if (!id.contains(":")) return null;
 
 		String[] data = id.split(":");
 		Arena arena = ArenaRegistry.getArena(data[0]);
 
-		if (arena == null) {
-			return null;
-		}
+		if (arena == null) return null;
 
 		switch (data[1].toLowerCase()) {
 			case "players":

@@ -45,7 +45,7 @@ public class UserManager {
 
 	public UserManager(Main plugin) {
 		this.users = new HashSet<>();
-		this.database = plugin.getConfigPreferences().getOption(ConfigPreferences.Option.DATABASE_ENABLED) ? new MysqlManager(plugin) : new FileStats(plugin);
+		this.database = plugin.getConfigPreferences().getOption(ConfigPreferences.Option.DATABASE_ENABLED) ? new MysqlManager() : new FileStats();
 
 		plugin.getServer().getOnlinePlayers().forEach(this::getUser);
 	}

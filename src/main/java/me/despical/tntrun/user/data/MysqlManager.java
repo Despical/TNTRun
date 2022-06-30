@@ -21,7 +21,6 @@ package me.despical.tntrun.user.data;
 import me.despical.commons.configuration.ConfigUtils;
 import me.despical.commons.database.MysqlDatabase;
 import me.despical.commons.util.LogUtils;
-import me.despical.tntrun.Main;
 import me.despical.tntrun.api.StatsStorage;
 import me.despical.tntrun.user.User;
 
@@ -37,12 +36,10 @@ import java.sql.Statement;
  */
 public class MysqlManager implements UserDatabase {
 
-	private final Main plugin;
 	private final String tableName;
 	private final MysqlDatabase database;
 
-	public MysqlManager(Main plugin) {
-		this.plugin = plugin;
+	public MysqlManager() {
 		this.tableName = ConfigUtils.getConfig(plugin, "mysql").getString("table", "playerstats");
 		this.database = plugin.getMysqlDatabase();
 

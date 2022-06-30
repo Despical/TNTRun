@@ -53,7 +53,7 @@ public class ConfigPreferences {
 	public enum Option {
 		BOSS_BAR_ENABLED( true), CHAT_FORMAT_ENABLED(true), DATABASE_ENABLED,
 		DISABLE_SEPARATE_CHAT, ENABLE_SHORT_COMMANDS, INVENTORY_MANAGER_ENABLED(true), NAME_TAGS_HIDDEN,
-		DISABLE_LEAVE_COMMAND, SIGNS_BLOCK_STATES_ENABLED(true);
+		DISABLE_LEAVE_COMMAND, SIGNS_BLOCK_STATES_ENABLED(true), DEBUG_MESSAGES, IGNORE_WARNING_MESSAGES;
 
 		String path;
 		boolean def;
@@ -63,8 +63,8 @@ public class ConfigPreferences {
 		}
 
 		Option(boolean def) {
-			this.path = StringUtils.capitalize(name().replace('_', '-').toLowerCase(), '_');
 			this.def = def;
+			this.path = StringUtils.capitalize(name().replace('_', '-').toLowerCase(), '_');
 		}
 	}
 }

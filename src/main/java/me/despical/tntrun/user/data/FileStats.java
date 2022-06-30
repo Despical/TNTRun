@@ -31,12 +31,9 @@ import org.bukkit.configuration.file.FileConfiguration;
  */
 public class FileStats implements UserDatabase {
 
-	private final Main plugin;
 	private final FileConfiguration config;
 
-	public FileStats(Main plugin) {
-		this.plugin = plugin;
-
+	public FileStats() {
 		config = ConfigUtils.getConfig(plugin, "stats");
 	}
 
