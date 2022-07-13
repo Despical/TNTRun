@@ -19,14 +19,12 @@
 package me.despical.tntrun.handlers.setup.components;
 
 import me.despical.commons.compat.XMaterial;
-import me.despical.commons.configuration.ConfigUtils;
 import me.despical.commons.item.ItemBuilder;
 import me.despical.commons.serializer.LocationSerializer;
 import me.despical.inventoryframework.GuiItem;
 import me.despical.inventoryframework.pane.StaticPane;
 import me.despical.tntrun.arena.Arena;
 import me.despical.tntrun.handlers.setup.SetupInventory;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 
 /**
@@ -39,7 +37,6 @@ public class SpawnComponents implements SetupComponent {
 	@Override
 	public void registerComponent(SetupInventory setupInventory, StaticPane pane) {
 		Player player = setupInventory.getPlayer();
-		FileConfiguration config = setupInventory.getConfig();
 		Arena arena = setupInventory.getArena();
 		String serializedLocation = LocationSerializer.toString(player.getLocation());
 
@@ -49,7 +46,7 @@ public class SpawnComponents implements SetupComponent {
 			.lore("&7on the place where you are standing.")
 			.lore("&8(location where players will be")
 			.lore("&8teleported after the game)")
-			.lore("", setupInventory.getSetupUtilities().isOptionDoneBool(arena.getId() + ".endLocation"))
+			.lore("", setupInventory.getSetupUtilities().isOptionDoneBool("endLocation"))
 			.build(), e -> {
 
 			arena.setEndLocation(player.getLocation());
@@ -58,14 +55,14 @@ public class SpawnComponents implements SetupComponent {
 			player.sendMessage(chatManager.color("&e✔ Completed | &aEnding location for arena " + arena.getId() + " set at your location!"));
 
 			config.set("instances." + arena.getId() + ".endLocation", serializedLocation);
-			ConfigUtils.saveConfig(plugin, config, "arenas");
+			saveConfig();
 		}), 1, 1);
 
 		pane.addItem(GuiItem.of(new ItemBuilder(XMaterial.LAPIS_BLOCK)
 			.name(chatManager.color("&e&lSet Lobby Location"))
 			.lore("&7Click to set the lobby location")
 			.lore("&7on the place where you are standing")
-			.lore("", setupInventory.getSetupUtilities().isOptionDoneBool(arena.getId() + ".lobbyLocation"))
+			.lore("", setupInventory.getSetupUtilities().isOptionDoneBool("lobbyLocation"))
 			.build(), e -> {
 
 			arena.setLobbyLocation(player.getLocation());
@@ -74,7 +71,7 @@ public class SpawnComponents implements SetupComponent {
 			player.sendMessage(chatManager.color("&e✔ Completed | &aLobby location for arena " + arena.getId() + " set at your location!"));
 
 			config.set("instances." + arena.getId() + ".lobbyLocation", serializedLocation);
-			ConfigUtils.saveConfig(plugin, config, "arenas");
+			saveConfig();
 		}), 2, 1);
 	}
 }

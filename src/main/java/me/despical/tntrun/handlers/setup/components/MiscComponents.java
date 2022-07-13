@@ -19,7 +19,6 @@
 package me.despical.tntrun.handlers.setup.components;
 
 import me.despical.commons.compat.XMaterial;
-import me.despical.commons.configuration.ConfigUtils;
 import me.despical.commons.item.ItemBuilder;
 import me.despical.commons.serializer.LocationSerializer;
 import me.despical.commons.util.conversation.ConversationBuilder;
@@ -29,7 +28,6 @@ import me.despical.tntrun.arena.Arena;
 import me.despical.tntrun.handlers.setup.SetupInventory;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.conversations.ConversationContext;
 import org.bukkit.conversations.Prompt;
 import org.bukkit.conversations.StringPrompt;
@@ -50,7 +48,6 @@ public class MiscComponents implements SetupComponent {
 	@Override
 	public void registerComponent(SetupInventory setupInventory, StaticPane pane) {
 		Player player = setupInventory.getPlayer();
-		FileConfiguration config = setupInventory.getConfig();
 		Arena arena = setupInventory.getArena();
 		ItemStack signItem = new ItemBuilder(XMaterial.OAK_SIGN)
 				.name("&e&lAdd Game Sign")
@@ -81,7 +78,7 @@ public class MiscComponents implements SetupComponent {
 			locations.add(LocationSerializer.toString(block.getLocation()));
 
 			config.set("instances." + arena.getId() + ".signs", locations);
-			ConfigUtils.saveConfig(plugin, config, "arenas");
+			saveConfig();
 		}), 5, 1);
 
 		pane.addItem(GuiItem.of(new ItemBuilder(XMaterial.NAME_TAG)
@@ -108,7 +105,7 @@ public class MiscComponents implements SetupComponent {
 					player.sendMessage(chatManager.color("&e✔ Completed | &aName of arena " + arena.getId() + " set to " + name));
 
 					config.set("instances." + arena.getId() + ".mapName", arena.getMapName());
-					ConfigUtils.saveConfig(plugin, config, "arenas");
+					saveConfig();
 
 					new SetupInventory(plugin, arena, player).openInventory();
 					return Prompt.END_OF_CONVERSATION;

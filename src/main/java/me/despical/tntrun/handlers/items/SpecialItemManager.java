@@ -52,8 +52,7 @@ public class SpecialItemManager {
 		for (String key : specialItems.keySet()) {
 			SpecialItem specialItem = specialItems.get(key);
 
-			if (specialItem.getItemStack().equals(itemStack)) {
-//			if (specialItem.getItemStack().getItemMeta().getDisplayName().equalsIgnoreCase(itemStack.getItemMeta().getDisplayName())) {
+			if (specialItem.itemStack.equals(itemStack)) {
 				return key;
 			}
 		}

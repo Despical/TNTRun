@@ -18,14 +18,18 @@
 
 package me.despical.tntrun.events;
 
+import me.despical.commons.compat.VersionResolver;
 import me.despical.commons.compat.XMaterial;
 import me.despical.commons.item.ItemUtils;
+import me.despical.commons.serializer.InventorySerializer;
+import me.despical.commons.util.UpdateChecker;
 import me.despical.tntrun.ConfigPreferences;
 import me.despical.tntrun.Main;
 import me.despical.tntrun.arena.Arena;
 import me.despical.tntrun.arena.ArenaManager;
 import me.despical.tntrun.arena.ArenaRegistry;
 import me.despical.tntrun.arena.ArenaUtils;
+import me.despical.tntrun.user.User;
 import org.bukkit.entity.*;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
@@ -47,21 +51,61 @@ import org.bukkit.inventory.ItemStack;
  * <p>
  * Created at 10.07.2020
  */
-public class Events implements Listener {
-
-	private final Main plugin;
+public class Events extends ListenerAdapter {
 
 	public Events(Main plugin) {
-		this.plugin = plugin;
+		super (plugin);
 
-		plugin.getServer().getPluginManager().registerEvents(this, plugin);
+		registerIf(bool -> VersionResolver.isCurrentEqualOrHigher(VersionResolver.ServerVersion.v1_9_R1), () -> new Listener() {
+
+			@EventHandler(priority = EventPriority.HIGH)
+			public void onItemSwap(PlayerSwapHandItemsEvent e) {
+				if (ArenaRegistry.isInArena(e.getPlayer())) {
+					e.setCancelled(true);
+				}
+			}
+		});
 	}
 
-	@EventHandler(priority = EventPriority.HIGH)
-	public void onItemSwap(PlayerSwapHandItemsEvent e) {
-		if (ArenaRegistry.isInArena(e.getPlayer())) {
-			e.setCancelled(true);
+	@EventHandler
+	public void onJoin(PlayerJoinEvent event) {
+		Player player = event.getPlayer();
+		plugin.getUserManager().loadStatistics(plugin.getUserManager().getUser(player));
+
+		for (Player p : plugin.getServer().getOnlinePlayers()) {
+			if (!ArenaRegistry.isInArena(p)) continue;
+
+			p.hidePlayer(plugin, player);
+			player.hidePlayer(plugin, p);
 		}
+
+		if (plugin.getConfigPreferences().getOption(ConfigPreferences.Option.INVENTORY_MANAGER_ENABLED)) {
+			InventorySerializer.loadInventory(plugin, player);
+		}
+
+		if (!plugin.getPermissionManager().hasNotifyPerm(player)) {
+			return;
+		}
+
+		plugin.getServer().getScheduler().runTaskLater(plugin, () -> UpdateChecker.init(plugin, 83196).requestUpdateCheck().whenComplete((result, exception) -> {
+			if (!result.requiresUpdate()) return;
+
+			player.sendMessage(plugin.getChatManager().color("&3[TNT Run] &bFound an update: v" + result.getNewestVersion() + " Download:"));
+			player.sendMessage(plugin.getChatManager().color("&3>> &bhttps://www.spigotmc.org/resources/tnt-run.83196/"));
+		}), 25);
+	}
+
+	@EventHandler
+	public void onQuit(PlayerQuitEvent event) {
+		Player player = event.getPlayer();
+		User user = plugin.getUserManager().getUser(player);
+		Arena arena = user.getArena();
+
+		if (arena != null) {
+			ArenaManager.leaveAttempt(player, arena, "Quit Event");
+		}
+
+		plugin.getUserManager().removeUser(user);
 	}
 
 	@EventHandler(priority = EventPriority.HIGH)
@@ -96,7 +140,7 @@ public class Events implements Listener {
 		}
 
 		event.setCancelled(true);
-		event.getPlayer().sendMessage(plugin.getChatManager().getPrefix() + plugin.getChatManager().message("In-Game.Only-Command-Ingame-Is-Leave"));
+		event.getPlayer().sendMessage(plugin.getChatManager().prefixedMessage("In-Game.Only-Command-Ingame-Is-Leave"));
 	}
 
 	@EventHandler(priority = EventPriority.HIGH)
@@ -260,6 +304,32 @@ public class Events implements Listener {
 		if (e.getCause().equals(EntityDamageEvent.DamageCause.FALL)) {
 			e.setCancelled(true);
 		}
+	}
+
+	@EventHandler
+	public void onLobbyDamage(EntityDamageEvent event) {
+		if (!(event.getEntity() instanceof Player)) return;
+
+		Player player = (Player) event.getEntity();
+
+		if (!ArenaRegistry.isInArena(player)) {
+			return;
+		}
+
+		if (event.getDamage() < 500d && event.getCause() != EntityDamageEvent.DamageCause.VOID) {
+			event.setCancelled(true);
+		}
+	}
+
+	@EventHandler
+	public void onEntityDamageToEntity(EntityDamageByEntityEvent event) {
+		if (!(event.getEntity() instanceof Player) || !(event.getDamager() instanceof Player)) return;
+
+		Player player = (Player) event.getEntity();
+
+		if (!ArenaRegistry.isInArena(player)) return;
+
+		event.setCancelled(true);
 	}
 
 	@EventHandler(priority = EventPriority.HIGH)

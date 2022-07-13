@@ -24,7 +24,6 @@ import me.despical.tntrun.Main;
 import me.despical.tntrun.events.spectator.components.MiscComponents;
 import me.despical.tntrun.events.spectator.components.SpeedComponents;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
 /**
@@ -32,7 +31,7 @@ import org.bukkit.plugin.java.JavaPlugin;
  * <p>
  * Created at 10.07.2020
  */
-public class SpectatorSettingsMenu implements Listener {
+public class SpectatorSettingsMenu {
 
 	private final Main plugin = JavaPlugin.getPlugin(Main.class);
 	private final Player player;
@@ -56,20 +55,14 @@ public class SpectatorSettingsMenu implements Listener {
 
 	private void prepareComponents(StaticPane pane) {
 		SpeedComponents speedComponents = new SpeedComponents();
-		speedComponents.prepare(this);
-		speedComponents.injectComponents(pane);
+		speedComponents.registerComponent(this, pane);
 
 		MiscComponents miscComponents = new MiscComponents();
-		miscComponents.prepare(this);
-		miscComponents.injectComponents(pane);
+		miscComponents.registerComponent(this, pane);
 	}
 
 	public void openInventory() {
 		gui.show(player);
-	}
-
-	public Main getPlugin() {
-		return plugin;
 	}
 
 	public Player getPlayer() {

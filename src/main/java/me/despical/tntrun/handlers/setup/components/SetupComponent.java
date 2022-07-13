@@ -18,10 +18,12 @@
 
 package me.despical.tntrun.handlers.setup.components;
 
+import me.despical.commons.configuration.ConfigUtils;
 import me.despical.inventoryframework.pane.StaticPane;
 import me.despical.tntrun.Main;
 import me.despical.tntrun.handlers.ChatManager;
 import me.despical.tntrun.handlers.setup.SetupInventory;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
 /**
@@ -33,6 +35,11 @@ public interface SetupComponent {
 
 	Main plugin = JavaPlugin.getPlugin(Main.class);
 	ChatManager chatManager = plugin.getChatManager();
+	FileConfiguration config = ConfigUtils.getConfig(plugin, "arenas");
 
 	void registerComponent(SetupInventory setupInventory, StaticPane pane);
+
+	default void saveConfig() {
+		ConfigUtils.saveConfig(plugin, config, "arenas");
+	}
 }

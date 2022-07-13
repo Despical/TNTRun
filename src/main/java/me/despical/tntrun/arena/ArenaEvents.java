@@ -23,6 +23,7 @@ import me.despical.commons.item.ItemBuilder;
 import me.despical.commons.item.ItemUtils;
 import me.despical.tntrun.Main;
 import me.despical.tntrun.api.StatsStorage;
+import me.despical.tntrun.events.ListenerAdapter;
 import me.despical.tntrun.handlers.ChatManager;
 import me.despical.tntrun.handlers.rewards.Reward;
 import me.despical.tntrun.user.User;
@@ -30,7 +31,6 @@ import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -44,14 +44,10 @@ import org.bukkit.potion.PotionEffectType;
  * <p>
  * Created at 10.07.2020
  */
-public class ArenaEvents implements Listener {
-
-	private final Main plugin;
+public class ArenaEvents extends ListenerAdapter {
 
 	public ArenaEvents(Main plugin) {
-		this.plugin = plugin;
-
-		plugin.getServer().getPluginManager().registerEvents(this, plugin);
+		super (plugin);
 	}
 
 	@EventHandler(priority = EventPriority.HIGH)
@@ -66,15 +62,17 @@ public class ArenaEvents implements Listener {
 			return;
 		}
 
-		if (plugin.getUserManager().getUser(player).getCooldown("double_jump") > 0) {
+		User user = plugin.getUserManager().getUser(player);
+
+		if (user.getCooldown("double_jump") > 0) {
 			return;
 		}
 
 		if (StatsStorage.getUserStats(player, StatsStorage.StatisticType.LOCAL_DOUBLE_JUMPS) > 0) {
 			player.setFlying(false);
 
-			plugin.getUserManager().getUser(player).addStat(StatsStorage.StatisticType.LOCAL_DOUBLE_JUMPS, -1);
-			plugin.getUserManager().getUser(player).setCooldown("double_jump", plugin.getConfig().getInt("Double-Jump-Delay", 4));
+			user.addStat(StatsStorage.StatisticType.LOCAL_DOUBLE_JUMPS, -1);
+			user.setCooldown("double_jump", plugin.getConfig().getInt("Double-Jump-Delay", 4));
 
 			player.setVelocity(player.getLocation().getDirection().multiply(1.5D).setY(0.7D));
 			event.setCancelled(true);
@@ -102,17 +100,21 @@ public class ArenaEvents implements Listener {
 			return;
 		}
 
-		if (plugin.getUserManager().getUser(player).getCooldown("double_jump") > 0) {
+		User user = plugin.getUserManager().getUser(player);
+
+		if (user.getCooldown("double_jump") > 0) {
 			return;
 		}
 
 		if (plugin.getItemManager().getRelatedSpecialItem(itemStack).equalsIgnoreCase("Double-Jump")) {
 			event.setCancelled(true);
 
-			if (StatsStorage.getUserStats(player, StatsStorage.StatisticType.LOCAL_DOUBLE_JUMPS) > 0 && arena.getArenaState() == ArenaState.IN_GAME) {
+			if (user.getStat(StatsStorage.StatisticType.LOCAL_DOUBLE_JUMPS) > 0 && arena.getArenaState() == ArenaState.IN_GAME) {
 				event.setCancelled(true);
-				plugin.getUserManager().getUser(player).addStat(StatsStorage.StatisticType.LOCAL_DOUBLE_JUMPS, -1);
-				plugin.getUserManager().getUser(player).setCooldown("double_jump", plugin.getConfig().getInt("Double-Jump-Delay", 4));
+
+				user.addStat(StatsStorage.StatisticType.LOCAL_DOUBLE_JUMPS, -1);
+				user.setCooldown("double_jump", plugin.getConfig().getInt("Double-Jump-Delay", 4));
+
 				player.setVelocity(player.getLocation().getDirection().multiply(1.5D).setY(0.7D));
 				player.setFlying(false);
 			}

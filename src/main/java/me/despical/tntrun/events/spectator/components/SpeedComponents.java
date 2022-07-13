@@ -18,11 +18,9 @@
 
 package me.despical.tntrun.events.spectator.components;
 
-import me.despical.commons.compat.XMaterial;
 import me.despical.commons.item.ItemBuilder;
 import me.despical.inventoryframework.GuiItem;
 import me.despical.inventoryframework.pane.StaticPane;
-import me.despical.tntrun.Main;
 import me.despical.tntrun.events.spectator.SpectatorSettingsMenu;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -36,22 +34,15 @@ import org.bukkit.potion.PotionEffectType;
  */
 public class SpeedComponents implements SpectatorSettingComponent {
 
-	private SpectatorSettingsMenu spectatorSettingsMenu;
-
 	@Override
-	public void prepare(SpectatorSettingsMenu spectatorSettingsMenu) {
-		this.spectatorSettingsMenu = spectatorSettingsMenu;
-	}
-
-	@Override
-	public void injectComponents(StaticPane pane) {
-		Main plugin = spectatorSettingsMenu.getPlugin();
+	public void registerComponent(SpectatorSettingsMenu spectatorSettingsMenu, StaticPane pane) {
 		Player player = spectatorSettingsMenu.getPlayer();
 		String speedPrefix = plugin.getChatManager().message("In-Game.Spectator.Settings-Menu.Speed-Name");
 
 		pane.addItem(new GuiItem(new ItemBuilder(Material.LEATHER_BOOTS)
 			.name(plugin.getChatManager().message("In-Game.Spectator.Settings-Menu.No-Speed"))
 			.build(), e -> {
+
 			player.closeInventory();
 			player.removePotionEffect(PotionEffectType.SPEED);
 			player.setFlySpeed(0.1f);
@@ -60,6 +51,7 @@ public class SpeedComponents implements SpectatorSettingComponent {
 		pane.addItem(new GuiItem(new ItemBuilder(Material.CHAINMAIL_BOOTS)
 			.name(speedPrefix + " I")
 			.build(), e -> {
+
 			player.closeInventory();
 			player.removePotionEffect(PotionEffectType.SPEED);
 			player.setFlySpeed(0.2f);
@@ -69,15 +61,17 @@ public class SpeedComponents implements SpectatorSettingComponent {
 		pane.addItem(new GuiItem(new ItemBuilder(Material.IRON_BOOTS)
 			.name(speedPrefix + " II")
 			.build(), e -> {
+
 			player.closeInventory();
 			player.removePotionEffect(PotionEffectType.SPEED);
 			player.setFlySpeed(0.25f);
 			player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, Integer.MAX_VALUE, 2, false, false));
 		}), 4, 1);
 
-		pane.addItem(new GuiItem(new ItemBuilder(XMaterial.GOLDEN_BOOTS.parseMaterial())
+		pane.addItem(new GuiItem(new ItemBuilder(Material.GOLDEN_BOOTS)
 			.name(speedPrefix + " III")
 			.build(), e -> {
+
 			player.closeInventory();
 			player.removePotionEffect(PotionEffectType.SPEED);
 			player.setFlySpeed(0.3f);
@@ -87,6 +81,7 @@ public class SpeedComponents implements SpectatorSettingComponent {
 		pane.addItem(new GuiItem(new ItemBuilder(Material.DIAMOND_BOOTS)
 			.name(speedPrefix + " IV")
 			.build(), e -> {
+
 			player.closeInventory();
 			player.removePotionEffect(PotionEffectType.SPEED);
 			player.setFlySpeed(0.35f);

@@ -29,9 +29,7 @@ public class LanguageManager {
 	}
 
 	private void init() {
-		if (Collections.contains(pluginLocale.aliases, plugin.getChatManager().message("Language"))) {
-			return;
-		}
+		if (Collections.contains(pluginLocale.aliases, plugin.getChatManager().message("Language"))) return;
 
 		try {
 			FileUtils.copyURLToFile(new URL("https://raw.githubusercontent.com/Despical/LocaleStorage/main/Minecraft/TNT%20Run/" + pluginLocale.prefix + ".yml"), new File(plugin.getDataFolder() + File.separator + "messages.yml"));

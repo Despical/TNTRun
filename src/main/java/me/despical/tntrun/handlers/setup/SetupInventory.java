@@ -19,7 +19,7 @@
 package me.despical.tntrun.handlers.setup;
 
 import me.despical.commons.compat.XMaterial;
-import me.despical.commons.configuration.ConfigUtils;
+import me.despical.commons.item.ItemBuilder;
 import me.despical.inventoryframework.Gui;
 import me.despical.inventoryframework.GuiItem;
 import me.despical.inventoryframework.pane.StaticPane;
@@ -30,7 +30,6 @@ import me.despical.tntrun.handlers.setup.components.ArenaRegisterComponent;
 import me.despical.tntrun.handlers.setup.components.MiscComponents;
 import me.despical.tntrun.handlers.setup.components.PlayerAmountComponents;
 import me.despical.tntrun.handlers.setup.components.SpawnComponents;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 
 import java.util.concurrent.ThreadLocalRandom;
@@ -45,7 +44,6 @@ public class SetupInventory {
 	private final Main plugin;
 	private final Arena arena;
 	private final Player player;
-	private final FileConfiguration config;
 	private final SetupUtilities setupUtilities;
 
 	private Gui gui;
@@ -54,8 +52,7 @@ public class SetupInventory {
 		this.plugin = plugin;
 		this.arena = arena;
 		this.player = player;
-		this.config = ConfigUtils.getConfig(plugin, "arenas");
-		this.setupUtilities = new SetupUtilities(config);
+		this.setupUtilities = new SetupUtilities(plugin, arena.getId());
 
 		prepareGui();
 	}
@@ -65,8 +62,9 @@ public class SetupInventory {
 		gui.setOnGlobalClick(event -> event.setCancelled(true));
 
 		StaticPane pane = new StaticPane(9, 5);
-		pane.fillProgressBorder(GuiItem.of(XMaterial.GREEN_STAINED_GLASS_PANE.parseItem()), GuiItem.of(XMaterial.BLACK_STAINED_GLASS_PANE.parseItem()), arena.isReady() ? 100 : 0);
-
+		ItemBuilder registeredItem = new ItemBuilder(XMaterial.GREEN_STAINED_GLASS_PANE).name("&aArena Validation Successful"),
+			notRegisteredItem = new ItemBuilder(XMaterial.BLACK_STAINED_GLASS_PANE).name("&cArena Validation Not Finished Yet");
+		pane.fillProgressBorder(GuiItem.of(registeredItem.build()), GuiItem.of(notRegisteredItem.build()), arena.isReady() ? 100 : 0);
 		gui.addPane(pane);
 
 		prepareComponents(pane);
@@ -86,38 +84,45 @@ public class SetupInventory {
 		arenaRegisterComponent.registerComponent(this, pane);
 	}
 
-	private void sendTip(Player p) {
+	private void sendTip() {
 		ChatManager chatManager = plugin.getChatManager();
+		String tip = "";
 
-		switch (ThreadLocalRandom.current().nextInt(12 + 1)) {
+		switch (ThreadLocalRandom.current().nextInt(12)) {
 			case 0:
-				p.sendMessage(chatManager.color("&e&lTIP: &7Need help? Join our discord server: https://discordapp.com/invite/Vhyy4HA"));
+				tip = "We are open source! You can always help us by contributing! Check https://github.com/Despical/TNTRun";
 				break;
 			case 1:
-				p.sendMessage(chatManager.color("&e&lTIP: &7Need help? Check our wiki: https://github.com/Despical/TNTRun/wiki"));
+				tip = "Need help? Check our wiki: https://github.com/Despical/TNTRun/wiki";
 				break;
 			case 2:
-				p.sendMessage(chatManager.color("&e&lTIP: &7Still thinking donating? Check our Patreon page: https://www.patreon.com/despical"));
+				tip = "Help us translating plugin to your language here: https://github.com/Despical/LocaleStorage/";
 				break;
 			case 3:
-				p.sendMessage(chatManager.color("&e&lTIP: &7Help us translating plugin to your language here: https://github.com/Despical/LocaleStorage/"));
+				tip = "You can support us with becoming Patron on https://www.patreon.com/despical to make updates better and sooner.";
+				break;
+			case 4:
+				tip = "Need help? You can join our Discord community. Check out https://discord.gg/rVkaGmyszE";
+				break;
+			case 5:
+				tip = "You have suggestions to improve the plugin? Use our issue tracker or join our Discord server.";
 				break;
 			default:
 				break;
 		}
+
+		if (!tip.isEmpty()) {
+			player.sendMessage(chatManager.color("&e&lTIP: &7" + tip));
+		}
 	}
 
 	public void openInventory() {
-		sendTip(player);
+		sendTip();
 		gui.show(player);
 	}
 
 	public Main getPlugin() {
 		return plugin;
-	}
-
-	public FileConfiguration getConfig() {
-		return config;
 	}
 
 	public Arena getArena() {

@@ -66,7 +66,7 @@ public class SignManager implements Listener {
 		this.chatManager = plugin.getChatManager();
 		this.config = ConfigUtils.getConfig(plugin, "arenas");
 		this.arenaSigns = new ArrayList<>();
-		this.signLines = chatManager.getStringList("Signs.Lines");
+		this.signLines = chatManager.getStringList("signs.lines");
 		this.gameStateToString = new EnumMap<>(ArenaState.class);
 
 		for (ArenaState state : ArenaState.values()) {
@@ -273,9 +273,5 @@ public class SignManager implements Listener {
 
 	public List<ArenaSign> getArenaSigns() {
 		return new ArrayList<>(arenaSigns);
-	}
-
-	public Map<ArenaState, String> getGameStateToString() {
-		return gameStateToString;
 	}
 }

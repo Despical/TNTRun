@@ -21,8 +21,6 @@ package me.despical.tntrun.handlers.rewards;
 import me.despical.commons.util.LogUtils;
 import org.apache.commons.lang.StringUtils;
 
-import java.util.logging.Level;
-
 /**
  * @author Despical
  * <p>
@@ -53,7 +51,7 @@ public class Reward {
 			int loc = processedCode.indexOf(")");
 
 			if (loc == -1) {
-				LogUtils.log(Level.WARNING, "rewards.yml configuration is broken! Make sure you don't forget using ')' character in chance condition! Command: " + rawCode);
+				LogUtils.log("rewards.yml configuration is broken! Make sure you don't forget using ')' character in chance condition! Command: " + rawCode);
 				this.chance = 0.0;
 				return;
 			}
@@ -88,12 +86,12 @@ public class Reward {
 	}
 
 	public enum RewardType {
-		END_GAME("endgame"), LOSE("lose"), WIN("win");
+		END_GAME("end-game"), LOSE("lose"), WIN("win");
 
 		String path;
 
 		RewardType(String path) {
-			this.path = path;
+			this.path = "rewards." + path;
 		}
 	}
 

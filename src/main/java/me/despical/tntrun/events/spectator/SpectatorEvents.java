@@ -19,13 +19,11 @@
 package me.despical.tntrun.events.spectator;
 
 import me.despical.tntrun.Main;
-import me.despical.tntrun.arena.Arena;
 import me.despical.tntrun.arena.ArenaRegistry;
-import me.despical.tntrun.user.User;
+import me.despical.tntrun.events.ListenerAdapter;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.*;
@@ -36,14 +34,10 @@ import org.bukkit.event.player.*;
  * <p>
  * Created at 10.07.2020
  */
-public class SpectatorEvents implements Listener {
-
-	private final Main plugin;
+public class SpectatorEvents extends ListenerAdapter {
 
 	public SpectatorEvents(Main plugin) {
-		this.plugin = plugin;
-
-		plugin.getServer().getPluginManager().registerEvents(this, plugin);
+		super (plugin);
 	}
 
 	@EventHandler(priority = EventPriority.HIGH)

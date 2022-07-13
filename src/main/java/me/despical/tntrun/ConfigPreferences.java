@@ -30,12 +30,12 @@ import java.util.Map;
  */
 public class ConfigPreferences {
 
-	private final boolean papiEnabled;
 	private final Map<Option, Boolean> options;
 
 	public ConfigPreferences(Main plugin) {
-		this.papiEnabled = plugin.getServer().getPluginManager().isPluginEnabled("PlaceholderAPI");
 		this.options = new HashMap<>();
+
+		plugin.saveDefaultConfig();
 
 		for (Option option : Option.values()) {
 			options.put(option, plugin.getConfig().getBoolean(option.path, option.def));
@@ -46,20 +46,17 @@ public class ConfigPreferences {
 		return options.get(option);
 	}
 
-	public boolean isPapiEnabled() {
-		return papiEnabled;
-	}
-
 	public enum Option {
 		BOSS_BAR_ENABLED( true), CHAT_FORMAT_ENABLED(true), DATABASE_ENABLED,
 		DISABLE_SEPARATE_CHAT, ENABLE_SHORT_COMMANDS, INVENTORY_MANAGER_ENABLED(true), NAME_TAGS_HIDDEN,
-		DISABLE_LEAVE_COMMAND, SIGNS_BLOCK_STATES_ENABLED(true), DEBUG_MESSAGES, IGNORE_WARNING_MESSAGES;
+		DISABLE_LEAVE_COMMAND, SIGNS_BLOCK_STATES_ENABLED(true), DEBUG_MESSAGES, UPDATE_NOTIFIER_ENABLED,
+		IGNORE_WARNING_MESSAGES, REWARDS_ENABLED;
 
 		String path;
 		boolean def;
 
 		Option() {
-			this(false);
+			this (false);
 		}
 
 		Option(boolean def) {

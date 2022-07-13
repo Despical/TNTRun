@@ -21,7 +21,6 @@ package me.despical.tntrun.handlers.sign;
 import me.despical.commons.compat.VersionResolver;
 import me.despical.tntrun.arena.Arena;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Sign;

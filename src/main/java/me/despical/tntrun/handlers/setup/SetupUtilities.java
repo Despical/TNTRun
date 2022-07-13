@@ -18,7 +18,9 @@
 
 package me.despical.tntrun.handlers.setup;
 
+import me.despical.commons.configuration.ConfigUtils;
 import me.despical.commons.serializer.LocationSerializer;
+import me.despical.tntrun.Main;
 import org.bukkit.configuration.file.FileConfiguration;
 
 /**
@@ -28,24 +30,26 @@ import org.bukkit.configuration.file.FileConfiguration;
  */
 public class SetupUtilities {
 
+	private final String id;
 	private final FileConfiguration config;
 
-	SetupUtilities(FileConfiguration config) {
-		this.config = config;
+	SetupUtilities(Main plugin, String id) {
+		this.id = id;
+		this.config = ConfigUtils.getConfig(plugin, "arenas");
 	}
 
 	public String isOptionDone(String path) {
-		path = "instances." + path;
+		path = String.format("instances.%s.%s", id, path);
 		return config.isSet(path) ? "&a&l✔ Completed &7(value: &8" + config.getString(path) + "&7)" : "&c&l✘ Not Completed";
 	}
 
 	public String isOptionDoneBool(String path) {
-		path = "instances." + path;
+		path = String.format("instances.%s.%s", id, path);
 		return config.isSet(path) ? LocationSerializer.isDefaultLocation(config.getString(path)) ? "&c&l✘ Not Completed" : "&a&l✔ Completed" : "&c&l✘ Not Completed";
 	}
 
 	public int getMinimumValueHigherThanZero(String path) {
-		int amount = config.getInt("instances." + path);
+		int amount = config.getInt(String.format("instances.%s.%s", id, path));
 
 		return amount == 0 ? 1 : amount;
 	}

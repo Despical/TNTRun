@@ -19,13 +19,11 @@
 package me.despical.tntrun.handlers.setup.components;
 
 import me.despical.commons.compat.XMaterial;
-import me.despical.commons.configuration.ConfigUtils;
 import me.despical.commons.item.ItemBuilder;
 import me.despical.inventoryframework.GuiItem;
 import me.despical.inventoryframework.pane.StaticPane;
 import me.despical.tntrun.arena.Arena;
 import me.despical.tntrun.handlers.setup.SetupInventory;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 
 /**
@@ -38,18 +36,17 @@ public class PlayerAmountComponents implements SetupComponent {
 	@Override
 	public void registerComponent(SetupInventory setupInventory, StaticPane pane) {
 		Player player = setupInventory.getPlayer();
-		FileConfiguration config = setupInventory.getConfig();
 		Arena arena = setupInventory.getArena();
 		String error = chatManager.color("&c&l✖ &cWarning | Please do not set amount lower than 2! Game is designed for 2 or more players!");
 
 		pane.addItem(GuiItem.of(new ItemBuilder(XMaterial.COAL)
-			.amount(setupInventory.getSetupUtilities().getMinimumValueHigherThanZero(arena.getId() + ".minimumPlayers"))
+			.amount(setupInventory.getSetupUtilities().getMinimumValueHigherThanZero("minimumPlayers"))
 			.name("&e&lSet Minimum Players Amount")
 			.lore("&7LEFT click to decrease")
 			.lore("&7RIGHT click to increase")
 			.lore("&8(how many players are needed")
 			.lore("&8for game to start lobby countdown)")
-			.lore("", setupInventory.getSetupUtilities().isOptionDone(arena.getId() + ".minimumPlayers"))
+			.lore("", setupInventory.getSetupUtilities().isOptionDone("minimumPlayers"))
 			.build(), e -> {
 
 			int amount = e.getCurrentItem().getAmount();
@@ -70,18 +67,18 @@ public class PlayerAmountComponents implements SetupComponent {
 			arena.setMinimumPlayers(amount);
 
 			config.set("instances." + arena.getId() + ".minimumPlayers", amount);
-			ConfigUtils.saveConfig(plugin, config, "arenas");
+			saveConfig();
 
 			new SetupInventory(plugin, arena, player).openInventory();
 		}), 3, 1);
 
 		pane.addItem(GuiItem.of(new ItemBuilder(XMaterial.REDSTONE)
-			.amount(setupInventory.getSetupUtilities().getMinimumValueHigherThanZero(arena.getId() + ".maximumPlayers"))
+			.amount(setupInventory.getSetupUtilities().getMinimumValueHigherThanZero("maximumPlayers"))
 			.name("&e&lSet Maximum Players Amount")
 			.lore("&7LEFT click to decrease")
 			.lore("&7RIGHT click to increase")
 			.lore("&8(how many players arena can hold)")
-			.lore("", setupInventory.getSetupUtilities().isOptionDone(arena.getId() + ".maximumPlayers"))
+			.lore("", setupInventory.getSetupUtilities().isOptionDone("maximumPlayers"))
 			.build(), e -> {
 
 			int amount = e.getCurrentItem().getAmount();
@@ -102,7 +99,7 @@ public class PlayerAmountComponents implements SetupComponent {
 			arena.setMaximumPlayers(amount);
 
 			config.set("instances." + arena.getId() + ".maximumPlayers", amount);
-			ConfigUtils.saveConfig(plugin, config, "arenas");
+			saveConfig();
 
 			new SetupInventory(plugin, arena, player).openInventory();
 		}), 4, 1);

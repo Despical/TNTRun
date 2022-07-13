@@ -66,24 +66,24 @@ public class ArenaManager {
 		plugin.getServer().getPluginManager().callEvent(gameJoinAttemptEvent);
 
 		if (!arena.isReady()) {
-			player.sendMessage(plugin.getChatManager().getPrefix() + plugin.getChatManager().message("In-Game.Arena-Not-Configured"));
+			player.sendMessage(plugin.getChatManager().prefixedMessage("In-Game.Arena-Not-Configured"));
 			return;
 		}
 
 		if (gameJoinAttemptEvent.isCancelled()) {
-			player.sendMessage(plugin.getChatManager().getPrefix() + plugin.getChatManager().message("In-Game.Join-Cancelled-Via-API"));
+			player.sendMessage(plugin.getChatManager().prefixedMessage("In-Game.Join-Cancelled-Via-API"));
 			return;
 		}
 
 		if (ArenaRegistry.isInArena(player)) {
-			player.sendMessage(plugin.getChatManager().getPrefix() + plugin.getChatManager().message("In-Game.Already-Playing"));
+			player.sendMessage(plugin.getChatManager().prefixedMessage("In-Game.Already-Playing"));
 			return;
 		}
 
 		PermissionsManager permManager = plugin.getPermissionManager();
 
 		if (!permManager.hasJoinPerm(player, "*") || !permManager.hasJoinPerm(player, arena.getId())) {
-			player.sendMessage(plugin.getChatManager().getPrefix() + plugin.getChatManager().message("In-Game.Join-No-Permission").replace("%permission%", permManager.getJoinPerm().replace("<arena>", arena.getId())));
+			player.sendMessage(plugin.getChatManager().prefixedMessage("In-Game.Join-No-Permission").replace("%permission%", permManager.getJoinPerm().replace("<arena>", arena.getId())));
 			return;
 		}
 
@@ -93,7 +93,7 @@ public class ArenaManager {
 
 		if (arena.getPlayers().size() >= arena.getMaximumPlayers() && arena.getArenaState() == ArenaState.STARTING) {
 			if (!permManager.hasFullPerm(player)) {
-				player.sendMessage(plugin.getChatManager().getPrefix() + plugin.getChatManager().message("In-Game.Full-Game-No-Permission"));
+				player.sendMessage(plugin.getChatManager().prefixedMessage("In-Game.Full-Game-No-Permission"));
 				return;
 			}
 
@@ -105,7 +105,7 @@ public class ArenaManager {
 				}
 
 				leaveAttempt(loopPlayer, arena, "No Slot");
-				loopPlayer.sendMessage(plugin.getChatManager().getPrefix() + plugin.getChatManager().message("In-Game.Messages.Lobby-Messages.You-Were-Kicked-For-Premium-Slot"));
+				loopPlayer.sendMessage(plugin.getChatManager().prefixedMessage("In-Game.Messages.Lobby-Messages.You-Were-Kicked-For-Premium-Slot"));
 				arena.broadcastMessage(plugin.getChatManager().formatMessage(arena, plugin.getChatManager().message("In-Game.Messages.Lobby-Messages.Kicked-For-Premium-Slot"), loopPlayer));
 
 				foundSlot = true;
@@ -113,7 +113,7 @@ public class ArenaManager {
 			}
 
 			if (!foundSlot) {
-				player.sendMessage(plugin.getChatManager().getPrefix() + plugin.getChatManager().message("In-Game.No-Slots-For-Premium"));
+				player.sendMessage(plugin.getChatManager().prefixedMessage("In-Game.No-Slots-For-Premium"));
 				return;
 			}
 		}
@@ -140,7 +140,7 @@ public class ArenaManager {
 
 		if (arena.getArenaState() == ArenaState.IN_GAME || arena.getArenaState() == ArenaState.ENDING) {
 			arena.teleportToStartLocation(player);
-			player.sendMessage(plugin.getChatManager().getPrefix() + plugin.getChatManager().message("In-Game.You-Are-Spectator"));
+			player.sendMessage(plugin.getChatManager().prefixedMessage("In-Game.You-Are-Spectator"));
 			player.getInventory().clear();
 			player.getInventory().setItem(0, new ItemBuilder(XMaterial.COMPASS.parseItem()).name(plugin.getChatManager().message("In-Game.Spectator.Spectator-Item-Name")).build());
 			player.getInventory().setItem(4, new ItemBuilder(XMaterial.COMPARATOR.parseItem()).name(plugin.getChatManager().message("In-Game.Spectator.Settings-Menu.Item-Name")).build());

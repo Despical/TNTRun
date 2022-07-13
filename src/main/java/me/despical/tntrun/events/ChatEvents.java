@@ -27,7 +27,6 @@ import org.apache.commons.lang.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 
 import java.util.regex.Pattern;
@@ -37,22 +36,20 @@ import java.util.regex.Pattern;
  * <p>
  * Created at 10.07.2020
  */
-public class ChatEvents implements Listener {
+public class ChatEvents extends ListenerAdapter {
 
-	private final Main plugin;
+	private final boolean chatFormatEnabled, disableSeparateChat;
 
 	public ChatEvents(Main plugin) {
-		this.plugin = plugin;
-
-		plugin.getServer().getPluginManager().registerEvents(this, plugin);
+		super (plugin);
+		this.chatFormatEnabled = plugin.getConfigPreferences().getOption(ConfigPreferences.Option.CHAT_FORMAT_ENABLED);
+		this.disableSeparateChat = plugin.getConfigPreferences().getOption(ConfigPreferences.Option.DISABLE_SEPARATE_CHAT);
 	}
 
 	@EventHandler
 	public void onChatInGame(AsyncPlayerChatEvent event) {
 		Player player = event.getPlayer();
 		Arena arena = ArenaRegistry.getArena(player);
-
-		boolean disableSeparateChat = plugin.getConfigPreferences().getOption(ConfigPreferences.Option.DISABLE_SEPARATE_CHAT);
 
 		if (arena == null) {
 			if (!disableSeparateChat) {
@@ -62,7 +59,7 @@ public class ChatEvents implements Listener {
 			return;
 		}
 
-		if (plugin.getConfigPreferences().getOption(ConfigPreferences.Option.CHAT_FORMAT_ENABLED)) {
+		if (chatFormatEnabled) {
 			String message = formatChatPlaceholders(plugin.getChatManager().message("in-game.game-chat-format"), player, event.getMessage().replaceAll(Pattern.quote("[$\\]"), ""));
 
 			if (!disableSeparateChat) {

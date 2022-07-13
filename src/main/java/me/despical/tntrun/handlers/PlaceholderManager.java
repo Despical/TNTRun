@@ -38,29 +38,33 @@ public class PlaceholderManager extends PlaceholderExpansion {
 	public PlaceholderManager(Main plugin) {
 		this.plugin = plugin;
 
-		this.register();
+		register();
 	}
 
+	@Override
 	public boolean persist() {
 		return true;
 	}
 
+	@Override
 	public String getIdentifier() {
 		return "tntrun";
 	}
 
+	@Override
 	public String getAuthor() {
 		return "Despical";
 	}
 
+	@Override
 	public String getVersion() {
 		return plugin.getDescription().getVersion();
 	}
 
+	@Override
 	public String onPlaceholderRequest(Player player, String id) {
-		if (player == null) {
-			return null;
-		}
+		if (player == null) return null;
+
 
 		User user = plugin.getUserManager().getUser(player);
 

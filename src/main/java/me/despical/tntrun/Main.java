@@ -24,6 +24,7 @@ import me.despical.commons.database.MysqlDatabase;
 import me.despical.commons.exception.ExceptionLogHandler;
 import me.despical.commons.scoreboard.ScoreboardLib;
 import me.despical.commons.serializer.InventorySerializer;
+import me.despical.commons.util.Collections;
 import me.despical.commons.util.JavaVersion;
 import me.despical.commons.util.LogUtils;
 import me.despical.commons.util.UpdateChecker;
@@ -77,8 +78,6 @@ public class Main extends JavaPlugin {
 
 	@Override
 	public void onEnable() {
-		this.configPreferences = new ConfigPreferences(this);
-
 		if (forceDisable = !validateIfPluginShouldStart()) {
 			getServer().getPluginManager().disablePlugin(this);
 			return;
@@ -89,7 +88,7 @@ public class Main extends JavaPlugin {
 		exceptionLogHandler.addBlacklistedClass("me.despical.tntrun.user.data.MysqlManager", "me.despical.commons.database.MysqlDatabase");
 		exceptionLogHandler.setRecordMessage("[TNTRun] We have found a bug in the code. Contact us at our official Discord server (link: https://discord.gg/rVkaGmyszE) with the following error given above!");
 
-		saveDefaultConfig();
+		this.configPreferences = new ConfigPreferences(this);
 
 		if (configPreferences.getOption(ConfigPreferences.Option.DEBUG_MESSAGES)) {
 			LogUtils.setLoggerName("TNTRun");
@@ -103,6 +102,7 @@ public class Main extends JavaPlugin {
 		initializeClasses();
 		checkUpdate();
 
+		LogUtils.sendConsoleMessage("Initialization finished. Join our Discord server to get support and news about TNT Run. (https://discord.gg/rVkaGmyszE)");
 		LogUtils.log("Initialization finished took {0} ms.", System.currentTimeMillis() - start);
 
 		if (configPreferences.getOption(ConfigPreferences.Option.NAME_TAGS_HIDDEN)) {
@@ -111,7 +111,7 @@ public class Main extends JavaPlugin {
 	}
 
 	private boolean validateIfPluginShouldStart() {
-		if (!VersionResolver.isCurrentBetween(VersionResolver.ServerVersion.v1_11_R1, VersionResolver.ServerVersion.v1_19_R1)) {
+		if (!VersionResolver.isCurrentBetween(VersionResolver.ServerVersion.v1_9_R1, VersionResolver.ServerVersion.v1_19_R1)) {
 			LogUtils.sendConsoleMessage("&cYour server version is not supported by TNT Run!");
 			LogUtils.sendConsoleMessage("&cMaybe you consider changing your server version?");
 			return false;
@@ -153,8 +153,8 @@ public class Main extends JavaPlugin {
 			for (Player player : arena.getPlayers()) {
 				arena.doBarAction(Arena.BarAction.REMOVE, player);
 				arena.teleportToEndLocation(player);
-				player.setFlySpeed(0.1f);
-				player.setWalkSpeed(0.2f);
+				player.setFlySpeed(.1F);
+				player.setWalkSpeed(.2F);
 
 				if (configPreferences.getOption(ConfigPreferences.Option.INVENTORY_MANAGER_ENABLED)) {
 					InventorySerializer.loadInventory(this, player);
@@ -195,11 +195,8 @@ public class Main extends JavaPlugin {
 		User.cooldownHandlerTask();
 
 		new SpectatorEvents(this);
-		new QuitEvent(this);
-		new JoinEvent(this);
 		new ChatEvents(this);
 		new Events(this);
-		new LobbyEvent(this);
 		new SpectatorItemEvents(this);
 		new ArenaEvents(this);
 
@@ -214,20 +211,14 @@ public class Main extends JavaPlugin {
 		new AdminCommands(this);
 		new TabCompletion(this);
 
-		if (configPreferences.isPapiEnabled()) {
-			new PlaceholderManager(this);
-		}
+		registerSoftDependencies();
 	}
 
 	private void checkUpdate() {
-		if (!getConfig().getBoolean("Update-Notifier.Enabled", true)) {
-			return;
-		}
+		if (!configPreferences.getOption(ConfigPreferences.Option.UPDATE_NOTIFIER_ENABLED)) return;
 
 		UpdateChecker.init(this, 83196).requestUpdateCheck().whenComplete((result, exception) -> {
-			if (!result.requiresUpdate()) {
-				return;
-			}
+			if (!result.requiresUpdate()) return;
 
 			LogUtils.sendConsoleMessage("[TNTRun] Found a new version available: v" + result.getNewestVersion());
 			LogUtils.sendConsoleMessage("[TNTRun] Download it SpigotMC:");
@@ -235,16 +226,20 @@ public class Main extends JavaPlugin {
 		});
 	}
 
-	private void setupFiles() {
-		String[] files = {"arenas", "rewards", "stats", "items", "mysql", "messages"};
+	private void registerSoftDependencies() {
+		LogUtils.log("Hooking into soft dependencies.");
 
-		for (String name : files) {
-			File file = new File(getDataFolder(), name + ".yml");
-
-			if (file.exists()) continue;
-
-			saveResource(name + ".yml", false);
+		if (chatManager.isPapiEnabled()) {
+			LogUtils.log("Hooking into PlaceholderAPI.");
+			new PlaceholderManager(this);
 		}
+
+		LogUtils.log("Hooked into soft dependencies.");
+	}
+
+
+	private void setupFiles() {
+		Collections.streamOf("arenas", "rewards", "stats", "items", "mysql", "messages").filter(name -> !new File(getDataFolder(),name + ".yml").exists()).forEach(name -> saveResource(name + ".yml", false));
 	}
 
 	public RewardsFactory getRewardsFactory() {

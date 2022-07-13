@@ -38,8 +38,8 @@ public class SpecialItem {
 
 	private static final Main plugin = JavaPlugin.getPlugin(Main.class);
 
-	private final int slot;
-	private final ItemStack itemStack;
+	final int slot;
+	final ItemStack itemStack;
 
 	public SpecialItem(String key, String displayName, int slot, XMaterial material, String... lore) {
 		this.slot = slot;

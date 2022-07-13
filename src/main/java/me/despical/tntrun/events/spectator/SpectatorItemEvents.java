@@ -25,13 +25,13 @@ import me.despical.tntrun.Main;
 import me.despical.tntrun.api.StatsStorage;
 import me.despical.tntrun.arena.Arena;
 import me.despical.tntrun.arena.ArenaRegistry;
+import me.despical.tntrun.events.ListenerAdapter;
 import org.bukkit.ChatColor;
 import org.bukkit.SkullType;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -48,13 +48,10 @@ import java.util.Set;
  * <p>
  * Created at 10.07.2020
  */
-public class SpectatorItemEvents implements Listener {
-
-	private final Main plugin;
+public class SpectatorItemEvents extends ListenerAdapter {
 
 	public SpectatorItemEvents(Main plugin) {
-		this.plugin = plugin;
-		plugin.getServer().getPluginManager().registerEvents(this, plugin);
+		super (plugin);
 	}
 
 	@EventHandler(priority = EventPriority.HIGH)

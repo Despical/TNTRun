@@ -21,7 +21,6 @@ package me.despical.tntrun.events.spectator.components;
 import me.despical.commons.item.ItemBuilder;
 import me.despical.inventoryframework.GuiItem;
 import me.despical.inventoryframework.pane.StaticPane;
-import me.despical.tntrun.Main;
 import me.despical.tntrun.arena.Arena;
 import me.despical.tntrun.arena.ArenaRegistry;
 import me.despical.tntrun.events.spectator.SpectatorSettingsMenu;
@@ -38,16 +37,8 @@ import org.bukkit.potion.PotionEffectType;
  */
 public class MiscComponents implements SpectatorSettingComponent {
 
-	private SpectatorSettingsMenu spectatorSettingsMenu;
-
 	@Override
-	public void prepare(SpectatorSettingsMenu spectatorSettingsMenu) {
-		this.spectatorSettingsMenu = spectatorSettingsMenu;
-	}
-
-	@Override
-	public void injectComponents(StaticPane pane) {
-		Main plugin = spectatorSettingsMenu.getPlugin();
+	public void registerComponent(SpectatorSettingsMenu spectatorSettingsMenu, StaticPane pane) {
 		Player player = spectatorSettingsMenu.getPlayer();
 		Arena arena = ArenaRegistry.getArena(player);
 		ItemStack nightVision;

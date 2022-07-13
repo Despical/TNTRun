@@ -19,7 +19,6 @@
 package me.despical.tntrun.handlers.setup.components;
 
 import me.despical.commons.compat.XMaterial;
-import me.despical.commons.configuration.ConfigUtils;
 import me.despical.commons.item.ItemBuilder;
 import me.despical.commons.serializer.LocationSerializer;
 import me.despical.inventoryframework.GuiItem;
@@ -28,7 +27,6 @@ import me.despical.tntrun.arena.Arena;
 import me.despical.tntrun.arena.ArenaState;
 import me.despical.tntrun.handlers.setup.SetupInventory;
 import me.despical.tntrun.handlers.sign.ArenaSign;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
@@ -44,7 +42,6 @@ public class ArenaRegisterComponent implements SetupComponent {
 	@Override
 	public void registerComponent(SetupInventory setupInventory, StaticPane pane) {
 		Player player = setupInventory.getPlayer();
-		FileConfiguration config = setupInventory.getConfig();
 		Arena arena = setupInventory.getArena();
 		ItemStack registeredItem;
 
@@ -85,7 +82,7 @@ public class ArenaRegisterComponent implements SetupComponent {
 			player.sendMessage(chatManager.color("&a&l✔ &aValidation succeeded! Registering new arena instance: " + arena.getId()));
 
 			config.set(path + "ready", true);
-			ConfigUtils.saveConfig(plugin, config, "arenas");
+			saveConfig();
 
 			arena.setArenaState(ArenaState.WAITING_FOR_PLAYERS);
 			arena.setReady(true);

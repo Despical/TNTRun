@@ -18,8 +18,11 @@
 
 package me.despical.tntrun.handlers;
 
+import me.despical.tntrun.ConfigPreferences;
 import me.despical.tntrun.Main;
 import org.bukkit.entity.Player;
+
+import java.util.List;
 
 /**
  * @author Despical
@@ -29,37 +32,41 @@ import org.bukkit.entity.Player;
 public class PermissionsManager {
 
 	private final Main plugin;
+	private final int defaultDoubleJumps;
 	private final String joinPerm, joinFullPerm;
+	private final List<String> doubleJumpsPerms;
 
 	public PermissionsManager(Main plugin) {
 		this.plugin = plugin;
+		this.defaultDoubleJumps = plugin.getConfig().getInt("Default-Double-Jumps", 5);
 		this.joinPerm = plugin.getConfig().getString("Basic-Permissions.Join-Permission", "tntrun.join.<arena>");
 		this.joinFullPerm = plugin.getConfig().getString("Basic-Permissions.Full-Games-Permission", "tntrun.fullgames");
+		this.doubleJumpsPerms = plugin.getConfig().getStringList("Double-Jumps");
 	}
 
 	public boolean hasJoinPerm(Player player, String replacement) {
-		return player.hasPermission(this.joinPerm.replace("<arena>", replacement));
+		return player.hasPermission(joinPerm.replace("<arena>", replacement));
 	}
 
 	public boolean hasFullPerm(Player player) {
-		return player.hasPermission(this.joinFullPerm);
+		return player.hasPermission(joinFullPerm);
 	}
 
 	public boolean hasNotifyPerm(Player player) {
-		return plugin.getConfig().getBoolean("Update-Notifier.Enabled", true) && player.hasPermission("tntrun.updatenotify");
+		return plugin.getConfigPreferences().getOption(ConfigPreferences.Option.UPDATE_NOTIFIER_ENABLED) && player.hasPermission("tntrun.updatenotify");
 	}
 
 	public String getJoinPerm() {
-		return this.joinPerm;
+		return joinPerm;
 	}
 
 	public int getDoubleJumps(Player player) {
-		for (String perm : plugin.getConfig().getStringList("Double-Jumps")) {
+		for (String perm : doubleJumpsPerms) {
 			if (perm.startsWith("tntrun") && player.hasPermission(perm)) {
 				return Integer.parseInt(perm.substring(perm.lastIndexOf('.') + 1));
 			}
 		}
 
-		return plugin.getConfig().getInt("Default-Double-Jumps", 5);
+		return defaultDoubleJumps;
 	}
 }

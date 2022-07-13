@@ -21,6 +21,7 @@ package me.despical.tntrun.handlers.rewards;
 import me.despical.commons.configuration.ConfigUtils;
 import me.despical.commons.engine.ScriptEngine;
 import me.despical.commons.util.LogUtils;
+import me.despical.tntrun.ConfigPreferences;
 import me.despical.tntrun.Main;
 import me.despical.tntrun.arena.Arena;
 import me.despical.tntrun.arena.ArenaRegistry;
@@ -29,9 +30,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -47,16 +46,14 @@ public class RewardsFactory {
 	private final boolean enabled;
 
 	public RewardsFactory(Main plugin) {
-		enabled = plugin.getConfig().getBoolean("Rewards-Enabled");
+		enabled = plugin.getConfigPreferences().getOption(ConfigPreferences.Option.REWARDS_ENABLED);
 		config = ConfigUtils.getConfig(plugin, "rewards");
 
 		registerRewards();
 	}
 
 	public void performReward(Arena arena, Reward.RewardType type) {
-		if (!enabled) {
-			return;
-		}
+		if (!enabled) return;
 
 		for (Player player : arena.getPlayers()) {
 			performReward(player, type);
@@ -64,9 +61,7 @@ public class RewardsFactory {
 	}
 
 	public void performReward(Player player, Reward.RewardType type) {
-		if (!enabled) {
-			return;
-		}
+		if (!enabled) return;
 
 		Arena arena = ArenaRegistry.getArena(player);
 
@@ -105,7 +100,7 @@ public class RewardsFactory {
 		String formatted = command;
 
 		formatted = StringUtils.replace(formatted, "%arena-id%", arena.getId());
-		formatted = StringUtils.replace(formatted, "%mapname%", arena.getMapName());
+		formatted = StringUtils.replace(formatted, "%map_name%", arena.getMapName());
 		formatted = StringUtils.replace(formatted, "%players%", Integer.toString(arena.getPlayers().size()));
 		return formatted;
 	}
@@ -113,21 +108,16 @@ public class RewardsFactory {
 	private void registerRewards() {
 		if (!enabled) return;
 
-		LogUtils.log("[RewardsFactory] Starting rewards registration.");
+		LogUtils.log("[Rewards Factory] Starting rewards registration.");
 
 		long start = System.currentTimeMillis();
-
-		Map<Reward.RewardType, Integer> registeredRewards = new HashMap<>();
 
 		for (Reward.RewardType rewardType : Reward.RewardType.values()) {
 			for (String reward : config.getStringList("rewards." + rewardType.path)) {
 				rewards.add(new Reward(rewardType, reward));
-				registeredRewards.put(rewardType, registeredRewards.getOrDefault(rewardType, 0) + 1);
 			}
-
-			LogUtils.log("[RewardsFactory] Registered {0} {1} rewards!", registeredRewards.get(rewardType), rewardType.name());
 		}
 
-		LogUtils.log("[RewardsFactory] Registered all rewards took {0} ms", System.currentTimeMillis() - start);
+		LogUtils.log("[Rewards Factory] Registered all rewards took {0} ms", System.currentTimeMillis() - start);
 	}
 }

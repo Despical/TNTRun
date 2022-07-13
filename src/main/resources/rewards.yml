@@ -32,7 +32,7 @@
 # Rewards must be enabled via config.yml first!
 rewards:
   # Commands performed when game is finished
-  endgame:
+  end-game:
     - p:say %mapname% has ended!
     - say Ooh and there were playing %players% players
   # Commands executed when player wins the game

@@ -38,19 +38,21 @@ import java.util.Locale;
  */
 public class ChatManager {
 
-	private String prefix;
-
 	private final Main plugin;
 	private FileConfiguration config;
+
+	private final String prefix;
+	private final boolean papiEnabled;
 
 	public ChatManager(Main plugin) {
 		this.plugin = plugin;
 		this.config = ConfigUtils.getConfig(plugin, "messages");
-		this.prefix = message("in-game.plugin-prefix");
+		this.prefix = message("in_game.plugin_prefix");
+		this.papiEnabled = plugin.getServer().getPluginManager().isPluginEnabled("PlaceholdersAPI");
 	}
 
-	public String getPrefix() {
-		return prefix;
+	public boolean isPapiEnabled() {
+		return papiEnabled;
 	}
 
 	public String prefixedRawMessage(String message) {
@@ -66,7 +68,8 @@ public class ChatManager {
 	}
 
 	public String message(String path) {
-		return color(config.getString(me.despical.commons.string.StringUtils.capitalize(path, '-', '.')));
+		path = me.despical.commons.string.StringUtils.capitalize(path.replace('_', '-'), '-', '.');
+		return color(config.getString(path));
 	}
 
 	public String message(String path, int integer) {
@@ -84,7 +87,7 @@ public class ChatManager {
 	public String message(String path, Player player) {
 		String returnString = message(path);
 
-		if (plugin.getConfigPreferences().isPapiEnabled()) {
+		if (papiEnabled) {
 			returnString = PlaceholderAPI.setPlaceholders(player, returnString);
 		}
 
@@ -95,7 +98,7 @@ public class ChatManager {
 		String returnString = message;
 		returnString = StringUtils.replace(returnString, "%player%", player.getName());
 
-		if (plugin.getConfigPreferences().isPapiEnabled()) {
+		if (papiEnabled) {
 			returnString = PlaceholderAPI.setPlaceholders(player, returnString);
 		}
 
@@ -109,8 +112,8 @@ public class ChatManager {
 		formatted = StringUtils.replace(formatted, "%time%", Integer.toString(arena.getTimer()));
 		formatted = StringUtils.replace(formatted, "%formatted_time%", StringFormatUtils.formatIntoMMSS(arena.getTimer()));
 		formatted = StringUtils.replace(formatted, "%players%", Integer.toString(arena.getPlayersLeft().size()));
-		formatted = StringUtils.replace(formatted, "%maxplayers%", Integer.toString(arena.getMaximumPlayers()));
-		formatted = StringUtils.replace(formatted, "%minplayers%", Integer.toString(arena.getMinimumPlayers()));
+		formatted = StringUtils.replace(formatted, "%maximum_players%", Integer.toString(arena.getMaximumPlayers()));
+		formatted = StringUtils.replace(formatted, "%minimum_players%", Integer.toString(arena.getMinimumPlayers()));
 		return color(formatted);
 	}
 
@@ -130,12 +133,12 @@ public class ChatManager {
 	}
 
 	public List<String> getStringList(String path) {
+		path = me.despical.commons.string.StringUtils.capitalize(path.replace('_', '-'), '-', '.');
 		return config.getStringList(path);
 	}
 
 	public void reloadConfig() {
 		config = ConfigUtils.getConfig(plugin, "messages");
-		prefix = message("in-game.plugin-prefix");
 	}
 
 	public enum ActionType {
