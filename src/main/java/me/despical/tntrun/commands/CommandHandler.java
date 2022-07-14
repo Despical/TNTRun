@@ -2,6 +2,8 @@ package me.despical.tntrun.commands;
 
 import me.despical.commons.string.StringMatcher;
 import me.despical.tntrun.Main;
+import me.despical.tntrun.commands.admin.*;
+import me.despical.tntrun.commands.player.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandException;
 import org.bukkit.command.CommandExecutor;
@@ -26,12 +28,12 @@ public class CommandHandler implements CommandExecutor {
 		this.plugin = plugin;
 		this.subCommands = new HashSet<>();
 
-//		SubCommand[] cmds = {new CreateCommand(), new DeleteCommand(), new EditCommand(), new ListCommand(), new ForceStartCommand(), new StopCommand(),
-//			new ReloadCommand(), new HelpCommand(), new JoinCommand(), new LeaveCommand(), new RandomJoinCommand(), new StatsCommand(), new TopPlayersCommand()};
-//
-//		for (SubCommand cmd : cmds) {
-//			registerSubCommand(cmd);
-//		}
+		SubCommand[] cmds = {new CreateCommand(), new DeleteCommand(), new EditCommand(), new ListCommand(), new ForceStartCommand(), new StopCommand(),
+			new ReloadCommand(), new HelpCommand(), new JoinCommand(), new LeaveCommand(), new RandomJoinCommand(), new StatsCommand(), new TopPlayersCommand()};
+
+		for (SubCommand cmd : cmds) {
+			registerSubCommand(cmd);
+		}
 
 		Optional.ofNullable(plugin.getCommand("tntrun")).ifPresent(command -> {
 			command.setExecutor(this);

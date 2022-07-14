@@ -60,11 +60,6 @@
 			<version>2.2.0</version>
 		</dependency>
 		<dependency>
-			<groupId>com.github.Despical</groupId>
-			<artifactId>CommandFramework</artifactId>
-			<version>1.0.7</version>
-		</dependency>
-		<dependency>
 			<groupId>me.clip</groupId>
 			<artifactId>placeholderapi</artifactId>
 			<version>2.10.1</version>

@@ -18,7 +18,6 @@
 
 package me.despical.tntrun;
 
-import me.despical.commandframework.CommandFramework;
 import me.despical.commons.compat.VersionResolver;
 import me.despical.commons.database.MysqlDatabase;
 import me.despical.commons.exception.ExceptionLogHandler;
@@ -33,10 +32,7 @@ import me.despical.tntrun.arena.Arena;
 import me.despical.tntrun.arena.ArenaEvents;
 import me.despical.tntrun.arena.ArenaRegistry;
 import me.despical.tntrun.arena.ArenaUtils;
-import me.despical.tntrun.commands.AdminCommands;
 import me.despical.tntrun.commands.CommandHandler;
-import me.despical.tntrun.commands.PlayerCommands;
-import me.despical.tntrun.commands.TabCompletion;
 import me.despical.tntrun.events.*;
 import me.despical.tntrun.events.spectator.SpectatorEvents;
 import me.despical.tntrun.events.spectator.SpectatorItemEvents;
@@ -208,10 +204,6 @@ public class Main extends JavaPlugin {
 
 		rewardsFactory = new RewardsFactory(this);
 		commandHandler = new CommandHandler(this);
-
-		new PlayerCommands(this);
-		new AdminCommands(this);
-		new TabCompletion(this);
 
 		registerSoftDependencies();
 	}

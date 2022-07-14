@@ -14,14 +14,14 @@ import java.util.ArrayList;
 /**
  * @author Despical
  * <p>
- * Created at 23.06.2022
+ * Created at 14.07.2022
  */
 public class CreateCommand extends SubCommand {
 
 	public CreateCommand() {
 		super ("create");
 
-		setPermission("tr.admin.create");
+		setPermission("tntrun.admin.create");
 	}
 
 	@Override
