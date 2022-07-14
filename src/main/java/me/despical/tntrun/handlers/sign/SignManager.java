@@ -44,7 +44,6 @@ import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 import java.util.*;
-import java.util.logging.Level;
 
 /**
  * @author Despical
@@ -198,7 +197,7 @@ public class SignManager implements Listener {
 				if (location.getBlock().getState() instanceof Sign) {
 					arenaSigns.add(new ArenaSign((Sign) location.getBlock().getState(), ArenaRegistry.getArena(path)));
 				} else {
-					LogUtils.log(Level.WARNING, "Block at location {0} for arena {1} is not a sign!", location, path);
+					LogUtils.log("Block at location {0} for arena {1} is not a sign!", location, path);
 				}
 			}
 		}

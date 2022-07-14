@@ -65,7 +65,6 @@ public class PlaceholderManager extends PlaceholderExpansion {
 	public String onPlaceholderRequest(Player player, String id) {
 		if (player == null) return null;
 
-
 		User user = plugin.getUserManager().getUser(player);
 
 		switch (id.toLowerCase()) {

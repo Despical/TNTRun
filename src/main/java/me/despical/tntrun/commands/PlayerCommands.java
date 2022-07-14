@@ -42,12 +42,12 @@ public class PlayerCommands {
 		this.plugin = plugin;
 		this.chatManager = plugin.getChatManager();
 
-		plugin.getCommandFramework().registerCommands(this);
-		plugin.getCommandFramework().setAnyMatch(arguments -> {
+		plugin.getCommandHandler().registerCommands(this);
+		plugin.getCommandHandler().setAnyMatch(arguments -> {
 			if (arguments.isArgumentsEmpty()) return;
 
 			String label = arguments.getLabel();
-			List<StringMatcher.Match> matches = StringMatcher.match(arguments.getArgument(0), plugin.getCommandFramework().getCommands().stream().map(cmd -> cmd.name().replace(label + '.', "")).collect(Collectors.toList()));
+			List<StringMatcher.Match> matches = StringMatcher.match(arguments.getArgument(0), plugin.getCommandHandler().getCommands().stream().map(cmd -> cmd.name().replace(label + '.', "")).collect(Collectors.toList()));
 
 			if (!matches.isEmpty()) {
 				arguments.sendMessage(chatManager.message("commands.did-you-mean").replace("%command%", label + " " + matches.get(0).getMatch()));

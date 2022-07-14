@@ -48,11 +48,11 @@ public class StatsStorage {
 		if (plugin.getConfigPreferences().getOption(ConfigPreferences.Option.DATABASE_ENABLED)) {
 			try (Connection connection = plugin.getMysqlDatabase().getConnection()) {
 				Statement statement = connection.createStatement();
-				ResultSet set = statement.executeQuery("SELECT UUID, " + stat.getName() + " FROM " + ((MysqlManager) plugin.getUserManager().getDatabase()).getTableName() + " ORDER BY " + stat.getName());
+				ResultSet set = statement.executeQuery("SELECT UUID, " + stat.name + " FROM " + ((MysqlManager) plugin.getUserManager().getDatabase()).getTableName() + " ORDER BY " + stat.name);
 				Map<UUID, Integer> column = new HashMap<>();
 
 				while (set.next()) {
-					column.put(UUID.fromString(set.getString("UUID")), set.getInt(stat.getName()));
+					column.put(UUID.fromString(set.getString("UUID")), set.getInt(stat.name));
 				}
 
 				return column;
@@ -63,7 +63,7 @@ public class StatsStorage {
 		}
 
 		FileConfiguration config = ConfigUtils.getConfig(plugin, "stats");
-		Map<UUID, Integer> stats = config.getKeys(false).stream().collect(Collectors.toMap(UUID::fromString, string -> config.getInt(string + "." + stat.getName()), (a, b) -> b));
+		Map<UUID, Integer> stats = config.getKeys(false).stream().collect(Collectors.toMap(UUID::fromString, string -> config.getInt(string + "." + stat.name), (a, b) -> b));
 
 		return SortUtils.sortByValue(stats);
 	}
@@ -80,8 +80,8 @@ public class StatsStorage {
 		LOCAL_DOUBLE_JUMPS("local_double_jumps", false), LOCAL_SURVIVE("local_survive", false), LONGEST_SURVIVE("longestsurvive", true),
 		LOSES("loses", true), WINS("wins", true);
 
-		private final String name;
-		private final boolean persistent;
+		final String name;
+		final boolean persistent;
 
 		StatisticType(String name, boolean persistent) {
 			this.name = name;

@@ -34,6 +34,7 @@ import me.despical.tntrun.arena.ArenaEvents;
 import me.despical.tntrun.arena.ArenaRegistry;
 import me.despical.tntrun.arena.ArenaUtils;
 import me.despical.tntrun.commands.AdminCommands;
+import me.despical.tntrun.commands.CommandHandler;
 import me.despical.tntrun.commands.PlayerCommands;
 import me.despical.tntrun.commands.TabCompletion;
 import me.despical.tntrun.events.*;
@@ -74,7 +75,7 @@ public class Main extends JavaPlugin {
 	private UserManager userManager;
 	private SpecialItemManager itemManager;
 	private PermissionsManager permissionManager;
-	private CommandFramework commandFramework;
+	private CommandHandler commandHandler;
 
 	@Override
 	public void onEnable() {
@@ -102,6 +103,7 @@ public class Main extends JavaPlugin {
 		initializeClasses();
 		checkUpdate();
 
+		LogUtils.sendConsoleMessage("Please note that TNT Run is now in a beta stage because of the recoding whole plugin, join our Discord if this version is not working properly.");
 		LogUtils.sendConsoleMessage("Initialization finished. Join our Discord server to get support and news about TNT Run. (https://discord.gg/rVkaGmyszE)");
 		LogUtils.log("Initialization finished took {0} ms.", System.currentTimeMillis() - start);
 
@@ -205,7 +207,7 @@ public class Main extends JavaPlugin {
 		signManager.loadSigns();
 
 		rewardsFactory = new RewardsFactory(this);
-		commandFramework = new CommandFramework(this);
+		commandHandler = new CommandHandler(this);
 
 		new PlayerCommands(this);
 		new AdminCommands(this);
@@ -274,28 +276,31 @@ public class Main extends JavaPlugin {
 		return permissionManager;
 	}
 
-	public CommandFramework getCommandFramework() {
-		return commandFramework;
+	public CommandHandler getCommandHandler() {
+		return commandHandler;
 	}
 
 	private void saveAllUserStatistics() {
 		for (Player player : getServer().getOnlinePlayers()) {
-			User user = userManager.getUser(player);
+			final User user = userManager.getUser(player);
 
 			if (userManager.getDatabase() instanceof MysqlManager) {
-				StringBuilder update = new StringBuilder(" SET ");
+				final StringBuilder update = new StringBuilder(" SET ");
 
 				for (StatsStorage.StatisticType stat : StatsStorage.StatisticType.values()) {
 					if (!stat.isPersistent()) continue;
+
+					int value = user.getStat(stat);
+
 					if (update.toString().equalsIgnoreCase(" SET ")) {
-						update.append(stat.getName()).append("'='").append(user.getStat(stat));
+						update.append(stat.getName()).append("'='").append(value);
 					}
 
-					update.append(", ").append(stat.getName()).append("'='").append(user.getStat(stat));
+					update.append(", ").append(stat.getName()).append("'='").append(value);
 				}
 
-				String finalUpdate = update.toString();
-				MysqlDatabase mysqlDatabase = ((MysqlManager) userManager.getDatabase()).getDatabase();
+				final String finalUpdate = update.toString();
+				final MysqlDatabase mysqlDatabase = ((MysqlManager) userManager.getDatabase()).getDatabase();
 				mysqlDatabase.executeUpdate("UPDATE " + mysqlDatabase + finalUpdate + " WHERE UUID='" + user.getUniqueId().toString() + "';");
 				continue;
 			}

@@ -30,8 +30,8 @@ public abstract class TREvent extends Event {
 
 	protected Arena arena;
 
-	public TREvent(Arena eventArena) {
-		arena = eventArena;
+	public TREvent(Arena arena) {
+		this.arena = arena;
 	}
 
 	public Arena getArena() {

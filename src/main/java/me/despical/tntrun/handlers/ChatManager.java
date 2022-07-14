@@ -129,7 +129,7 @@ public class ChatManager {
 	}
 
 	public void broadcastAction(Arena arena, Player player, ActionType action) {
-		arena.broadcastMessage(prefix + formatMessage(arena, message("in-game.messages." + action.name().toLowerCase(Locale.ENGLISH)), player));
+		arena.broadcastMessage(prefix + formatMessage(arena, message("in_game.messages." + action.name().toLowerCase(Locale.ENGLISH)), player));
 	}
 
 	public List<String> getStringList(String path) {

@@ -18,62 +18,59 @@
 
 package me.despical.tntrun.commands;
 
-import me.despical.commandframework.CommandArguments;
-import me.despical.commandframework.Completer;
 import me.despical.commons.util.Collections;
 import me.despical.tntrun.Main;
-import me.despical.tntrun.api.StatsStorage;
 import me.despical.tntrun.arena.Arena;
 import me.despical.tntrun.arena.ArenaRegistry;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import org.bukkit.util.StringUtil;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.stream.Collectors;
 
 /**
  * @author Despical
  * <p>
- * Created at 10.07.2020
+ * Created at 14.07.2022
  */
-public class TabCompletion {
+public class TabCompletion implements TabCompleter {
 
-	public Main plugin;
+	private final Main plugin;
 
 	public TabCompletion(Main plugin) {
 		this.plugin = plugin;
-		this.plugin.getCommandFramework().registerCommands(this);
 	}
 
-	@Completer(
-		name = "tntrun"
-	)
-	public List<String> onTabComplete(CommandArguments arguments) {
-		List<String> completions = new ArrayList<>(), commands = plugin.getCommandFramework().getCommands().stream().map(cmd -> cmd.name().replace(arguments.getLabel() + '.', "")).collect(Collectors.toList());
-		String[] args = arguments.getArguments();
+	@Override
+	public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String label, String[] args) {
+		List<String> completions = new ArrayList<>(), commands = plugin.getCommandHandler().getSubCommands().stream().map(SubCommand::getName).collect(Collectors.toList());
+		String arg = args[0];
 
 		if (args.length == 1) {
-			StringUtil.copyPartialMatches(args[0], commands, completions);
+			StringUtil.copyPartialMatches(arg, commands, completions);
 		}
 
 		if (args.length == 2) {
-			if (Collections.contains(args[0], "create", "help", "list", "reload", "randomjoin", "stop", "forcestart", "stats", "arenas")) {
-				return null;
+			if (arg.equalsIgnoreCase("top")) {
+				return Collections.listOf("kills", "deaths", "games_played", "highest_score", "longest_survive", "loses", "wins");
 			}
 
-			if (args[0].equalsIgnoreCase("top")) {
-				return Collections.streamOf(StatsStorage.StatisticType.values()).filter(StatsStorage.StatisticType::isPersistent).map(statistic -> statistic.name().toLowerCase(Locale.ENGLISH)).collect(Collectors.toList());
-			}
-
-			if (args[0].equalsIgnoreCase("stats")) {
+			if (arg.equalsIgnoreCase("stats")) {
 				return plugin.getServer().getOnlinePlayers().stream().map(Player::getName).collect(Collectors.toList());
 			}
 
-			List<String> arenas = ArenaRegistry.getArenas().stream().map(Arena::getId).collect(Collectors.toList());
+			if (!commands.contains(arg)) {
+				return null;
+			}
 
+			List<String> arenas = ArenaRegistry.getArenas().stream().map(Arena::getId).collect(Collectors.toList());
 			StringUtil.copyPartialMatches(args[1], arenas, completions);
+
 			arenas.sort(null);
 			return arenas;
 		}

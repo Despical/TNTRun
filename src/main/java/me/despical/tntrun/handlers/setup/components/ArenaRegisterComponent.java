@@ -24,7 +24,6 @@ import me.despical.commons.serializer.LocationSerializer;
 import me.despical.inventoryframework.GuiItem;
 import me.despical.inventoryframework.pane.StaticPane;
 import me.despical.tntrun.arena.Arena;
-import me.despical.tntrun.arena.ArenaState;
 import me.despical.tntrun.handlers.setup.SetupInventory;
 import me.despical.tntrun.handlers.sign.ArenaSign;
 import org.bukkit.enchantments.Enchantment;
@@ -84,7 +83,6 @@ public class ArenaRegisterComponent implements SetupComponent {
 			config.set(path + "ready", true);
 			saveConfig();
 
-			arena.setArenaState(ArenaState.WAITING_FOR_PLAYERS);
 			arena.setReady(true);
 			arena.setMinimumPlayers(config.getInt(path + "minimumPlayers"));
 			arena.setMaximumPlayers(config.getInt(path + "maximumPlayers"));

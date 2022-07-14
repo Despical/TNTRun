@@ -62,9 +62,9 @@ public class UserManager {
 		LogUtils.log("Registering new user {0} ({1})", uuid, player.getName());
 
 		final User user = new User(player);
+		users.add(user);
 
 		database.loadStatistics(user);
-		users.add(user);
 		return user;
 	}
 

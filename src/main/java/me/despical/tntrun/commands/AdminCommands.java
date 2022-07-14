@@ -4,10 +4,8 @@ import me.despical.commandframework.Command;
 import me.despical.commandframework.CommandArguments;
 import me.despical.commons.configuration.ConfigUtils;
 import me.despical.commons.miscellaneous.MiscUtils;
-import me.despical.commons.serializer.InventorySerializer;
 import me.despical.commons.serializer.LocationSerializer;
 import me.despical.commons.util.LogUtils;
-import me.despical.tntrun.ConfigPreferences;
 import me.despical.tntrun.Main;
 import me.despical.tntrun.arena.Arena;
 import me.despical.tntrun.arena.ArenaManager;
@@ -44,60 +42,10 @@ public class AdminCommands {
 
 	public AdminCommands(Main plugin) {
 		this.plugin = plugin;
-		this.plugin.getCommandFramework().registerCommands(this);
 		this.config = ConfigUtils.getConfig(plugin, "arenas");
 		this.chatManager = plugin.getChatManager();
 		this.deleteConfirmations = new HashSet<>();
 		this.reloadConfirmations = new HashSet<>();
-	}
-
-	@Command(
-		name = "tntrun.create",
-		permission = "tntrun.admin.create",
-		usage = "/tntrun create <arenaId>",
-		desc = "Creates a new arena with default configuration",
-		senderType = Command.SenderType.PLAYER
-	)
-	public void createCommand(CommandArguments arguments) {
-		if (arguments.isArgumentsEmpty()) {
-			arguments.sendMessage(chatManager.prefixedMessage("commands.type-arena-name"));
-			return;
-		}
-
-		String id = arguments.getArgument(0);
-
-		if (ArenaRegistry.isArena(id)) {
-			arguments.sendMessage(chatManager.prefixedRawMessage("&cArena with that ID already exists! Use another ID or delete it first!"));
-			return;
-		}
-
-		Player player = arguments.getSender();
-
-		MiscUtils.sendCenteredMessage(player, "&l--------------------------------------------");
-		MiscUtils.sendCenteredMessage(player, "Instance " + id + " created!");
-		player.sendMessage("");
-		MiscUtils.sendCenteredMessage(player, "&aEdit this arena via &6/tntrun edit " + id + "&a!");
-		MiscUtils.sendCenteredMessage(player, "&l--------------------------------------------");
-
-		// Configuration setup and registering arena
-		String path = "instances." + id + ".";
-		config.set(path + "ready", false);
-		config.set(path + "mapName", id);
-		config.set(path + "minimumPlayers", 2);
-		config.set(path + "maximumPlayers", 12);
-		config.set(path + "endLocation", LocationSerializer.SERIALIZED_LOCATION);
-		config.set(path + "lobbyLocation", LocationSerializer.SERIALIZED_LOCATION);
-		config.set(path + "signs", new ArrayList<>());
-
-		ConfigUtils.saveConfig(plugin, config, "arenas");
-
-		Arena arena = new Arena(id);
-		arena.setMapName(id);
-		arena.setReady(false);
-		arena.setLobbyLocation(LocationSerializer.DEFAULT_LOCATION);
-		arena.setEndLocation(LocationSerializer.DEFAULT_LOCATION);
-
-		ArenaRegistry.registerArena(arena);
 	}
 
 	@Command(
@@ -281,21 +229,21 @@ public class AdminCommands {
 
 		boolean isPlayer = arguments.isSenderPlayer();
 
-		for (Command command : plugin.getCommandFramework().getCommands()) {
-			String usage = command.usage(), desc = command.desc();
-
-			if (usage.isEmpty()) continue;
-
-			if (isPlayer) {
-				arguments.getSender().spigot().sendMessage(new ComponentBuilder(usage)
-					.color(ChatColor.AQUA)
-					.event(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, usage))
-					.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.fromLegacyText(desc)))
-					.create());
-			} else {
-				arguments.sendMessage(chatManager.color("&b" + usage + " &3- &b" + desc));
-			}
-		}
+//		for (Command command : plugin.getCommandHandler().getCommands()) {
+//			String usage = command.usage(), desc = command.desc();
+//
+//			if (usage.isEmpty()) continue;
+//
+//			if (isPlayer) {
+//				arguments.getSender().spigot().sendMessage(new ComponentBuilder(usage)
+//					.color(ChatColor.AQUA)
+//					.event(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, usage))
+//					.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.fromLegacyText(desc)))
+//					.create());
+//			} else {
+//				arguments.sendMessage(chatManager.color("&b" + usage + " &3- &b" + desc));
+//			}
+//		}
 
 		if (isPlayer) {
 			arguments.sendMessage("");
