@@ -18,7 +18,8 @@ import java.util.Arrays;
 public class LanguageManager {
 
 	private final Main plugin;
-	private Locale pluginLocale;
+
+	private Locale locale;
 
 	public LanguageManager(Main plugin) {
 		this.plugin = plugin;
@@ -29,10 +30,10 @@ public class LanguageManager {
 	}
 
 	private void init() {
-		if (Collections.contains(pluginLocale.aliases, plugin.getChatManager().message("Language"))) return;
+		if (Collections.contains(locale.aliases, plugin.getChatManager().message("language"))) return;
 
 		try {
-			FileUtils.copyURLToFile(new URL("https://raw.githubusercontent.com/Despical/LocaleStorage/main/Minecraft/TNT%20Run/" + pluginLocale.prefix + ".yml"), new File(plugin.getDataFolder() + File.separator + "messages.yml"));
+			FileUtils.copyURLToFile(new URL("https://raw.githubusercontent.com/Despical/LocaleStorage/main/Minecraft/TNT%20Run/" + locale.prefix + ".yml"), new File(plugin.getDataFolder() + File.separator + "messages.yml"));
 		} catch (IOException e) {
 			LogUtils.sendConsoleMessage("&c[TNTRun] Error while connecting to internet!");
 		}
@@ -40,7 +41,7 @@ public class LanguageManager {
 
 	private void registerLocales() {
 		Arrays.asList(
-			new Locale("English", "en_GB", "english", "en"),
+			new Locale("English", "en_GB", "english", "en", "default"),
 			new Locale("German", "de_DE", "german", "de"),
 			new Locale("Turkish", "tr_TR", "türkçe", "turkce", "tr"))
 			.forEach(LocaleRegistry::registerLocale);
@@ -51,23 +52,27 @@ public class LanguageManager {
 
 		for (Locale locale : LocaleRegistry.getRegisteredLocales()) {
 			if (locale.prefix.equalsIgnoreCase(localeName)) {
-				pluginLocale = locale;
+				this.locale = locale;
 				break;
 			}
 
 			for (String alias : locale.aliases) {
 				if (alias.equals(localeName)) {
-					pluginLocale = locale;
+					this.locale = locale;
 					break;
 				}
 			}
 		}
 
-		if (pluginLocale == null) {
+		if (locale == null) {
 			LogUtils.sendConsoleMessage("&c[TNTRun] Plugin locale is invalid! Using default one...");
-			pluginLocale = LocaleRegistry.getByName("English");
+			locale = LocaleRegistry.getByName("English");
 		}
 
-		LogUtils.sendConsoleMessage("[TNTRun] Loaded locale " + pluginLocale.name + " (ID: " + pluginLocale.prefix + ")");
+		LogUtils.sendConsoleMessage("[TNTRun] Loaded locale " + locale.name + " (ID: " + locale.prefix + ")");
+	}
+
+	public Locale getLocale() {
+		return locale;
 	}
 }

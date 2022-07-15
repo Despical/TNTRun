@@ -3,8 +3,8 @@
 #
 #                    Placeholders list:
 #             %player% - Current player name
-#             %mapname% - Name of map
-#             %arena-id% - Arena Identifier
+#             %map_name% - Name of map
+#             %arena_id% - Arena Identifier
 #             %players% - Number of players in game
 #
 #        Commands are executed by default bY CONSOLE, use "p:" to preform command by player
@@ -33,7 +33,7 @@
 rewards:
   # Commands performed when game is finished
   end-game:
-    - p:say %mapname% has ended!
+    - p:say %map_name% has ended!
     - say Ooh and there were playing %players% players
   # Commands executed when player wins the game
   win:

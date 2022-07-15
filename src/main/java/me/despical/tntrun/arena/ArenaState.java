@@ -18,8 +18,6 @@
 
 package me.despical.tntrun.arena;
 
-import java.util.List;
-
 /**
  * @author Despical
  * <p>

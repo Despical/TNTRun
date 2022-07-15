@@ -33,7 +33,6 @@ import me.despical.tntrun.user.User;
 import org.bukkit.entity.*;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -55,10 +54,9 @@ public class Events extends ListenerAdapter {
 
 	public Events(Main plugin) {
 		super (plugin);
+		super.registerIf(bool -> VersionResolver.isCurrentEqualOrHigher(VersionResolver.ServerVersion.v1_9_R1), () -> new Listener() {
 
-		registerIf(bool -> VersionResolver.isCurrentEqualOrHigher(VersionResolver.ServerVersion.v1_9_R1), () -> new Listener() {
-
-			@EventHandler(priority = EventPriority.HIGH)
+			@EventHandler
 			public void onItemSwap(PlayerSwapHandItemsEvent e) {
 				if (ArenaRegistry.isInArena(e.getPlayer())) {
 					e.setCancelled(true);
@@ -108,14 +106,14 @@ public class Events extends ListenerAdapter {
 		plugin.getUserManager().removeUser(user);
 	}
 
-	@EventHandler(priority = EventPriority.HIGH)
+	@EventHandler
 	public void onDrop(PlayerDropItemEvent event) {
 		if (ArenaRegistry.isInArena(event.getPlayer())) {
 			event.setCancelled(true);
 		}
 	}
 
-	@EventHandler(priority = EventPriority.HIGH)
+	@EventHandler
 	public void onCommandExecute(PlayerCommandPreprocessEvent event) {
 		if (!ArenaRegistry.isInArena(event.getPlayer())) {
 			return;
@@ -135,7 +133,7 @@ public class Events extends ListenerAdapter {
 			return;
 		}
 
-		if (event.getMessage().startsWith("/tntrun") || event.getMessage().startsWith("/tntrun") || event.getMessage().contains("leave") || event.getMessage().contains("stats")) {
+		if (event.getMessage().startsWith("/tntrun") || event.getMessage().startsWith("/tr") || event.getMessage().contains("leave") || event.getMessage().contains("stats")) {
 			return;
 		}
 
@@ -143,7 +141,7 @@ public class Events extends ListenerAdapter {
 		event.getPlayer().sendMessage(plugin.getChatManager().prefixedMessage("In-Game.Only-Command-Ingame-Is-Leave"));
 	}
 
-	@EventHandler(priority = EventPriority.HIGH)
+	@EventHandler
 	public void onInGameInteract(PlayerInteractEvent event) {
 		if (!ArenaRegistry.isInArena(event.getPlayer()) || event.getClickedBlock() == null) {
 			return;
@@ -154,14 +152,14 @@ public class Events extends ListenerAdapter {
 		}
 	}
 
-	@EventHandler(priority = EventPriority.HIGH)
+	@EventHandler
 	public void onInGameBedEnter(PlayerBedEnterEvent event) {
 		if (ArenaRegistry.isInArena(event.getPlayer())) {
 			event.setCancelled(true);
 		}
 	}
 
-	@EventHandler(priority = EventPriority.HIGH)
+	@EventHandler
 	public void onLeave(PlayerInteractEvent event) {
 		if (event.getAction() == Action.LEFT_CLICK_AIR || event.getAction() == Action.LEFT_CLICK_BLOCK || event.getAction() == Action.PHYSICAL) {
 			return;
@@ -187,7 +185,7 @@ public class Events extends ListenerAdapter {
 		}
 	}
 
-	@EventHandler(priority = EventPriority.HIGH)
+	@EventHandler
 	public void onFoodLevelChange(FoodLevelChangeEvent event) {
 		if (event.getEntity().getType() == EntityType.PLAYER && ArenaRegistry.isInArena((Player) event.getEntity())) {
 			event.setFoodLevel(20);
@@ -195,21 +193,21 @@ public class Events extends ListenerAdapter {
 		}
 	}
 
-	@EventHandler(priority = EventPriority.HIGH)
-	public void onBlockBreak(BlockBreakEvent event) {
+	@EventHandler
+	public void onBreak(BlockBreakEvent event) {
 		if (ArenaRegistry.isInArena(event.getPlayer())) {
 			event.setCancelled(true);
 		}
 	}
 
-	@EventHandler(priority = EventPriority.HIGH)
-	public void onBuild(BlockPlaceEvent event) {
+	@EventHandler
+	public void onPlace(BlockPlaceEvent event) {
 		if (ArenaRegistry.isInArena(event.getPlayer())) {
 			event.setCancelled(true);
 		}
 	}
 
-	@EventHandler(priority = EventPriority.HIGH)
+	@EventHandler
 	public void onHangingBreakEvent(HangingBreakByEntityEvent event) {
 		if (event.getEntity() instanceof ItemFrame || event.getEntity() instanceof Painting) {
 			if (event.getRemover() instanceof Player && ArenaRegistry.isInArena((Player) event.getRemover())) {
@@ -229,7 +227,7 @@ public class Events extends ListenerAdapter {
 		}
 	}
 
-	@EventHandler(priority = EventPriority.HIGH)
+	@EventHandler
 	public void onArmorStandDestroy(EntityDamageByEntityEvent e) {
 		if (!(e.getEntity() instanceof LivingEntity)) {
 			return;
@@ -255,14 +253,14 @@ public class Events extends ListenerAdapter {
 		}
 	}
 
-	@EventHandler(priority = EventPriority.HIGH)
+	@EventHandler
 	public void onInteractWithArmorStand(PlayerArmorStandManipulateEvent event) {
 		if (ArenaRegistry.isInArena(event.getPlayer())) {
 			event.setCancelled(true);
 		}
 	}
 
-	@EventHandler(priority = EventPriority.HIGH)
+	@EventHandler
 	public void onItemMove(InventoryClickEvent e) {
 		if (e.getWhoClicked() instanceof Player) {
 			if (ArenaRegistry.isInArena((Player) e.getWhoClicked())) {
@@ -271,7 +269,7 @@ public class Events extends ListenerAdapter {
 		}
 	}
 
-	@EventHandler(priority = EventPriority.HIGH)
+	@EventHandler
 	public void playerCommandExecution(PlayerCommandPreprocessEvent e) {
 		if (plugin.getConfigPreferences().getOption(ConfigPreferences.Option.ENABLE_SHORT_COMMANDS)) {
 			Player player = e.getPlayer();
@@ -289,7 +287,7 @@ public class Events extends ListenerAdapter {
 		}
 	}
 
-	@EventHandler(priority = EventPriority.HIGH)
+	@EventHandler
 	public void onFallDamage(EntityDamageEvent e) {
 		if (!(e.getEntity() instanceof Player)) {
 			return;
@@ -332,7 +330,7 @@ public class Events extends ListenerAdapter {
 		event.setCancelled(true);
 	}
 
-	@EventHandler(priority = EventPriority.HIGH)
+	@EventHandler
 	public void onDamage(EntityDamageByEntityEvent event) {
 		if (!(event.getDamager() instanceof Player && event.getEntity() instanceof Player)) {
 			return;
@@ -345,7 +343,7 @@ public class Events extends ListenerAdapter {
 		event.setCancelled(true);
 	}
 
-	@EventHandler(priority = EventPriority.HIGH)
+	@EventHandler
 	public void onArrowPickup(PlayerPickupArrowEvent e) {
 		if (ArenaRegistry.isInArena(e.getPlayer())) {
 			e.getItem().remove();
@@ -353,7 +351,7 @@ public class Events extends ListenerAdapter {
 		}
 	}
 
-	@EventHandler(priority = EventPriority.HIGH)
+	@EventHandler
 	public void onPickupItem(PlayerPickupItemEvent event) {
 		if (!ArenaRegistry.isInArena(event.getPlayer())) {
 			return;
@@ -363,7 +361,7 @@ public class Events extends ListenerAdapter {
 		event.getItem().remove();
 	}
 
-	@EventHandler(priority = EventPriority.HIGH)
+	@EventHandler
 	public void onCraft(PlayerInteractEvent event) {
 		if (!ArenaRegistry.isInArena(event.getPlayer())) {
 			return;

@@ -1,15 +1,20 @@
 # TNT Run
 [![](https://jitpack.io/v/Despical/TNTRun.svg)](https://jitpack.io/#Despical/TNTRun)
+![](https://img.shields.io/github/workflow/status/Despical/TNTRun/TNTRun%20Build)
 [![](https://img.shields.io/badge/JavaDocs-latest-lime.svg)](https://javadoc.jitpack.io/com/github/Despical/TNTRun/latest/javadoc/index.html)
-![GitHub Workflow Status](https://img.shields.io/github/workflow/status/Despical/TNTRun/TNTRun%20Build)
+[![Discord](https://img.shields.io/discord/719922452259668000.svg?color=lime&label=Discord)](https://discord.gg/rVkaGmyszE)
 
-TNT Run is an old Minecraft mini game that supports almost every version. 
-Jump on the blocks but don't fall into void, show your parkour talent!
+TNT Run is an old Minecraft minigame that supports almost every version. Jump on the blocks but don't fall into void, show your parkour talent!
 
 ## Documentation
-More information can be found on the [wiki page](https://github.com/Despical/TNTRun/wiki). The [Javadoc](https://javadoc.jitpack.io/com/github/Despical/TNTRun/latest/javadoc/index.html) can be browsed.
+More information can be found on the [wiki page](https://github.com/Despical/TNTRun/wiki).
+The [Java documentations](https://javadoc.jitpack.io/com/github/Despical/TNTRun/latest/javadoc/index.html) can be browsed.
+Questions related to the usage of TNT Run should be posted on my [Discord server](https://www.discord.gg/rVkaGmyszE).
 
-## Using TNT Run API
+## Donations
+You like the TNT Run? Then [donate](https://www.patreon.com/despical) back me to support the development. Donations are more like motivation than money and, they are speeding up the development.
+
+## TNT Run API
 The project isn't in the Central Repository yet, so specifying a repository is needed.<br>
 To add this project as a dependency to your project, add the following to your pom.xml:
 
@@ -38,17 +43,9 @@ repositories {
 ```
 ```
 dependencies {
-    compileOnly group: "com.github.Despical", name: "TNTRun", version: "2.1.0;
+    compileOnly group: "com.github.Despical", name: "TNTRun", version: "2.1.0";
 }
 ```
-
-## License
-This code is under [GPL-3.0 License](http://www.gnu.org/licenses/gpl-3.0.html)
-
-See the [LICENSE](https://github.com/Despical/TNTRun/blob/master/LICENSE) file for required notices and attributions.
-
-## Donations
-You like the TNTRun? Then [donate](https://www.patreon.com/despical) back me to support the development.
 
 ## Contributing
 
@@ -58,12 +55,21 @@ I accept Pull Requests via GitHub. There are some guidelines which will make app
 + Do not increase the version numbers in any examples files and the README.md to the new version that this Pull Request would represent.
 + Create minimal diffs - disable on save actions like reformat source code or organize imports. If you feel the source code should be reformatted create a separate PR for this change.
 
-You can learn more about contributing via GitHub in [contribution guidelines](CONTRIBUTING.md).
+You can learn more about contributing via GitHub in [contribution guidelines](../CONTRIBUTING.md).
+
+## Translations
+We are supporting multiple languages such as English, Turkish and German for now.<br>
+If you want to help us with translating take a look at our [language repository](https://github.com/Despical/LocaleStorage).
+
+## License
+This code is under [GPL-3.0 License](http://www.gnu.org/licenses/gpl-3.0.html)
+
+See the [LICENSE](https://github.com/Despical/TNTRun/blob/master/LICENSE) file for required notices and attributions.
 
 ## Building from source
 If you want to build this project from source code, run the following from Git Bash:
 ```
 git clone https://www.github.com/Despical/TNTRun.git && cd TNTRun
-mvn clean package -Dmaven.javadoc.skip=true (to not generate docs)
+mvn clean package -Dmaven.javadoc.skip=true
 ```
 Also don't forget to install Maven before building.

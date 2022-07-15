@@ -74,7 +74,7 @@ public class MysqlManager implements UserDatabase {
 
 	@Override
 	public void saveAllStatistic(User user) {
-		StringBuilder builder = new StringBuilder(" SET ");
+		final StringBuilder builder = new StringBuilder(" SET ");
 
 		for (StatsStorage.StatisticType stat : StatsStorage.StatisticType.values()) {
 			if (!stat.isPersistent()) continue;
@@ -85,18 +85,18 @@ public class MysqlManager implements UserDatabase {
 			builder.append(", ").append(stat.getName()).append("=").append(user.getStat(stat));
 		}
 
-		String update = builder.toString();
+		final String update = builder.toString();
 		plugin.getServer().getScheduler().runTaskAsynchronously(plugin, () -> database.executeUpdate("UPDATE " + tableName + update + " WHERE UUID='" + user.getPlayer().getUniqueId().toString() + "';"));
 	}
 
 	@Override
 	public void loadStatistics(User user) {
 		plugin.getServer().getScheduler().runTaskAsynchronously(plugin, () -> {
-			String uuid = user.getUniqueId().toString(), name = user.getPlayer().getName();
+			final String uuid = user.getUniqueId().toString(), name = user.getPlayer().getName();
 
 			try (Connection connection = database.getConnection()) {
-				Statement statement = connection.createStatement();
-				ResultSet resultSet = statement.executeQuery("SELECT * from " + tableName + " WHERE UUID='" + uuid + "';");
+				final Statement statement = connection.createStatement();
+				final ResultSet resultSet = statement.executeQuery("SELECT * from " + tableName + " WHERE UUID='" + uuid + "';");
 
 				if (resultSet.next()) {
 					LogUtils.log("MySQL Stats | Player {0} already exist. Getting Stats...", name);

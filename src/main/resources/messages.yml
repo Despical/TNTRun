@@ -1,4 +1,4 @@
-#        You can translate TNT Run messages here.
+#    You can translate TNT Run messages here.
 #             Color codes (&) supported.
 #
 #              Use \n to make new line
@@ -9,7 +9,7 @@
 #     Some messages support their own placeholders
 #                  like %player%
 
-# TNT Run Commands Messages
+# TNT Run Command Messages
 Commands:
   Did-You-Mean: "&3Did you mean &b/%command%&3?"
   Are-You-Sure: "&cAre you sure you want to do this action? Type the command again &6within 10 seconds &cto confirm!"
@@ -18,10 +18,7 @@ Commands:
   No-Arena-Like-That: "&cNo arena with that ID!"
   Look-Sign: "&cYou have to look at a sign to perform this command!"
   Type-Arena-Name: "&cPlease type arena ID!"
-  No-Free-Arenas: "&cThere are no free arenas!"
-  Conversation:
-    Operation-Timeout: "&7Operation cancelled!"
-    Only-By-Player: "&4Only by players!"
+  No-Free-Arenas: "&cThere isn't any available arena!"
   Statistics:
     Type-Name: "&cPlease type statistic name to view!"
     Invalid-Name: "&cName of statistic is invalid! Type: games_played, wins, loses, longest_survive and coins"
@@ -46,15 +43,15 @@ Commands:
     Games-Played: "&aGames played: &e"
     Coins: "&aCoins: &e"
     Longest-Survive: "&aLongest survive: &e"
-  
-# In game scoreboard messages.
-# Don't use more than 48 characters if you use old versions of Minecraft!
+
+# Don't use more than 48 characters if you use old versions of Minecraft.
 # Can be used up to 144 characters in 1.14 and higher versions.
 Scoreboard:
   Title: "&e&lTNTRun"
   Content:
-    # Contents of scoreboard for players
+    # Can be find more information about placeholders on our wiki.
     Playing:
+      - ""
       - "&7Duration: %formatted_time%"
       - ""
       - "&fDouble Jump: &7%double_jumps%/5"
@@ -63,14 +60,15 @@ Scoreboard:
       - ""
       - "&fCoins Earned: &a%coins_earned%"
       - ""
-      - "&egithub.com/Despical"
+      - "&epatreon.com/Despical"
     Waiting:
+      - ""
       - "&fMap: &a%map_name%"
       - "&fPlayers: &a%players%/%max_players%"
       - ""
       - "&fWaiting for players..."
       - ""
-      - "&github.com/Despical"
+      - "&epatreon.com/Despical"
     Starting:
       - ""
       - "&fMap: &a%map_name%"
@@ -80,16 +78,17 @@ Scoreboard:
       - "&fallow time for"
       - "&fadditional players"
       - ""
-      - "&egithub.com/Despical"
-      -
+      - "&fGame: &aTNT Run"
+      - ""
+      - "&epatreon.com/Despical"
+
 # Has usage only when boss bar is enabled in config
-# Also not compatible with the versions before Minecraft 1.9
 Boss-Bar:
   Main-Title: "&a&lTNT Run &f&l- &6&lDespical"
   Starting-In: "&f&lStarting in: &e&l%time%"
   Waiting-For-Players: "&4&lWaiting for more players..."
   In-Game-Info: "&e&lPlaying &f&lTNT RUN &e&lby &b&lDESPICAL"
-  Game-Ended: "&c&lGame has ended! You were playing &b&lTNT RUN"
+  Game-Ended: "&c&lGame has ended! You were playing &b&lTNT Run"
 
 # Used in most game messages.
 In-Game:
@@ -100,6 +99,7 @@ In-Game:
   No-Slots-For-Premium: "&cThis game is already full of premium players! Sorry"
   You-Are-Spectator: "&cYou're now a spectator! You can fly now!"
   Only-Command-Ingame-Is-Leave: "&cYou have to leave the game first to perform commands. The only command that works is /tr leave!"
+  # Join cancelled via external plugin that uses TNT Run API.
   Join-Cancelled-Via-API: "&cYou can't join this game!"
   Arena-Not-Configured: "&cArena is not configured yet! Contact staff!"
   Game-Chat-Format: "&7%player%: &f%message%"
@@ -130,13 +130,13 @@ In-Game:
   Messages:
     Lobby-Messages:
       Start-In: "&7The game starts in &b%time%&7 seconds!"
-      Waiting-For-Players: "&7Waiting for players... We need at least &b%minplayers%&7 players to start."
+      Waiting-For-Players: "&7Waiting for players... We need at least &b%minimum_players%&7 players to start."
       Enough-Players-To-Start: "&7Now we have enough players. The game is starting soon!"
       Game-Started: "&7Game started! Don't stop running!"
       Kicked-For-Premium-Slot: "&c%player% got removed from the game to make a place for premium players!"
       You-Were-Kicked-For-Premium-Slot: "&cYou got kicked out of the game to make a place for a premium player!"
-    Join: "&b%player%&7 joined the game &8(&7%players%/%maxplayers%&8)&7!"
-    Leave: "&b%player% &7left the game &8(&7%players%/%maxplayers%&8)&7!"
+    Join: "&b%player%&7 joined the game &8(&7%players%/%maximum_players%&8)&7!"
+    Leave: "&b%player% &7left the game &8(&7%players%/%maximum_players%&8)&7!"
     Death: "&7%player% &cdied!\n&e%players% players remaining."
     Earned-Coin: "&e+15 extra coins (Surviving bonus)"
     Game-End-Messages:
@@ -157,8 +157,8 @@ In-Game:
         - ""
         - "&a&m----------------------------------------------------"
     Admin-Messages:
-      Set-Starting-In-To-0: "&7Admin set waiting time to 0. The game starts now!"
-      Stopped-Game: "&7Admin has been force stopped the game by command!"
+      Set-Starting-In-To-0: "&bAn admin set waiting time to 0. The game starts now!"
+      Stopped-Game: "&bAn admin has been force stopped the game by command!"
 
 Signs:
   Please-Type-Arena-Name: "&cPlease type arena name in second line!"
@@ -168,19 +168,23 @@ Signs:
   Sign-Removed: "&aSign successfully removed!"
   Game-States:
     Waiting: "&lWaiting..."
-    Starting: "&e&lStarting"
-    Playing: "&lIn-game"
-    Ending: "&lEnding"
     Inactive: "&lInactive..."
+    In-Game: "&lIn-game"
+    Starting: "&e&lStarting"
     Full-Game: "&c&lFULL"
+    Ending: "&lEnding"
     Restarting: "&c&lRestarting"
   Lines:
     - "&4&lTNT Run"
     - "%state%"
-    - "%map_name%"
-    - "&5[%players%/%max_players%]"
+    - "%mapname%"
+    - "&5[%players%/%maxplayers%]"
 
 Validator:
-  Invalid-Arena-Configuration: "[TNT Run] Arena %arena% has invalid configuration! Missing node: %error%"
-  Instance-Started: "[TNT Run] Arena %arena% instance successfully started!"
-  No-Instances-Created: "[TNT Run] There are no arena instances created in configuration!"
+  Invalid-Arena-Configuration: "[TNTRun] Arena %arena% has invalid configuration! Missing node: %error%"
+  Instance-Started: "[TNTRun] Arena %arena% instance successfully started!"
+  No-Instances-Created: "[TNTRun] There are no arena instances created in configuration!"
+
+# If you change the value the file will be replaced with default yaml
+# So you shouldn't edit here. Be careful to make changes here!
+Language: default

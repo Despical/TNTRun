@@ -3,7 +3,12 @@ main: me.despical.tntrun.Main
 author: Despical
 version: ${project.version}
 api-version: 1.13
-softdepend: [PlaceholderAPI]
+softdepend: [Multiverse-Core, PlaceholderAPI]
+
+commands:
+  tntrun:
+    description: TNT Run Commands
+    aliases: [tr, tntr]
 
 permissions:
   tntrun.admin.*:
