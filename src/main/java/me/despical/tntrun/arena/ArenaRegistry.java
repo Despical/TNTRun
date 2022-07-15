@@ -112,7 +112,6 @@ public class ArenaRegistry {
 				continue;
 			}
 
-			arena.setArenaState(ArenaState.WAITING_FOR_PLAYERS);
 			arena.start();
 
 			LogUtils.sendConsoleMessage(chatManager.message("validator.instance-started").replace("%arena%", id));

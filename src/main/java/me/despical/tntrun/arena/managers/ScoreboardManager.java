@@ -110,7 +110,7 @@ public class ScoreboardManager {
 		formattedLine = StringUtils.replace(formattedLine, "%double_jumps%", Integer.toString(StatsStorage.getUserStats(player, StatsStorage.StatisticType.LOCAL_DOUBLE_JUMPS)));
 		formattedLine = plugin.getChatManager().color(formattedLine);
 
-		if (plugin.getConfigPreferences().isPapiEnabled()) {
+		if (plugin.getChatManager().isPapiEnabled()) {
 			formattedLine = PlaceholderAPI.setPlaceholders(player, formattedLine);
 		}
 

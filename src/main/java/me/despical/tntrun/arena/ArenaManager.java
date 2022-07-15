@@ -20,7 +20,6 @@ package me.despical.tntrun.arena;
 
 import me.clip.placeholderapi.PlaceholderAPI;
 import me.despical.commons.compat.XMaterial;
-import me.despical.commons.configuration.ConfigUtils;
 import me.despical.commons.item.ItemBuilder;
 import me.despical.commons.miscellaneous.AttributeUtils;
 import me.despical.commons.miscellaneous.MiscUtils;
@@ -38,7 +37,6 @@ import me.despical.tntrun.handlers.PermissionsManager;
 import me.despical.tntrun.user.User;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.GameMode;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
@@ -222,14 +220,7 @@ public class ArenaManager {
 			}
 		}
 
-		player.setFlySpeed(0.1f);
-		player.setGlowing(false);
-		player.setCollidable(true);
-		player.getInventory().clear();
-		player.getInventory().setArmorContents(null);
-
 		arena.removePlayer(player);
-		arena.teleportToEndLocation(player);
 
 		if (!user.isSpectator()) {
 			plugin.getChatManager().broadcastAction(arena, player, ActionType.LEAVE);
@@ -239,16 +230,24 @@ public class ArenaManager {
 
 		arena.doBarAction(Arena.BarAction.REMOVE, player);
 
-		AttributeUtils.healPlayer(player);
-		player.setFoodLevel(20);
-		player.setLevel(0);
-		player.setExp(0);
-		player.setFlying(false);
-		player.setAllowFlight(false);
-		player.getActivePotionEffects().forEach(effect -> player.removePotionEffect(effect.getType()));
-		player.setWalkSpeed(0.2f);
-		player.setFireTicks(0);
-		player.setGameMode(GameMode.SURVIVAL);
+		if (plugin.getConfigPreferences().getOption(ConfigPreferences.Option.INVENTORY_MANAGER_ENABLED)) {
+			InventorySerializer.loadInventory(plugin, player);
+		} else {
+			player.getInventory().clear();
+			player.getInventory().setArmorContents(null);
+			player.setFoodLevel(20);
+			player.setLevel(0);
+			player.setExp(0);
+			player.setFlying(false);
+			player.setAllowFlight(false);
+			player.getActivePotionEffects().forEach(effect -> player.removePotionEffect(effect.getType()));
+			player.setFlySpeed(.1F);
+			player.setWalkSpeed(.2F);
+			player.setFireTicks(0);
+			player.setGameMode(GameMode.SURVIVAL);
+			AttributeUtils.healPlayer(player);
+
+		}
 
 		for (Player players : plugin.getServer().getOnlinePlayers()) {
 			if (!ArenaRegistry.isInArena(players)) {
@@ -260,25 +259,12 @@ public class ArenaManager {
 
 		arena.teleportToEndLocation(player);
 
-		if (plugin.getConfigPreferences().getOption(ConfigPreferences.Option.INVENTORY_MANAGER_ENABLED)) {
-			InventorySerializer.loadInventory(plugin, player);
-		}
-
 		plugin.getUserManager().saveAllStatistic(user);
 		LogUtils.log("[{0}] Game leave finished for {1} took {2} ms. Reason: {3}", arena.getId(), player.getName(), System.currentTimeMillis() - start, reason);
 	}
 
-	/**
-	 * Stops current arena.
-	 * Calls TRGameStopEvent event
-	 *
-	 * @param quickStop should arena be stopped immediately? (use only in important cases)
-	 * @param arena     target arena
-	 * @see TRGameStopEvent
-	 */
 	public static void stopGame(boolean quickStop, Arena arena) {
 		LogUtils.log("[{0}] Stop game event initialized with quickStop {1}", arena.getId(), quickStop);
-		FileConfiguration config = ConfigUtils.getConfig(plugin, "messages");
 		long start = System.currentTimeMillis();
 
 		plugin.getServer().getPluginManager().callEvent(new TRGameStopEvent(arena));
@@ -303,7 +289,7 @@ public class ArenaManager {
 			player.getInventory().setItem(plugin.getItemManager().getSpecialItem("Leave").getSlot(), plugin.getItemManager().getSpecialItem("Leave").getItemStack());
 
 			if (!quickStop) {
-				for (String msg : config.getStringList("In-Game.Messages.Game-End-Messages.Summary-Message")) {
+				for (String msg : plugin.getChatManager().getStringList("In-Game.Messages.Game-End-Messages.Summary-Message")) {
 					MiscUtils.sendCenteredMessage(player, formatSummaryPlaceholders(msg, arena, player));
 				}
 			}

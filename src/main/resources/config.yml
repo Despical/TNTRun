@@ -1,6 +1,6 @@
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
 # +---------------------------------------------------------+ #
-# |           TNT Run by Despical (Version 1.1.0)           | #
+# |           TNT Run by Despical (Version 2.1.0)           | #
 # +---------------------------------------------------------+ #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
@@ -12,7 +12,7 @@
 #    tr - Türkçe dili
 locale: default
 
-# Enable bossbar support?
+# Enable boss bar support?
 Boss-Bar-Enabled: true
 
 # How many seconds game should take to start.
@@ -40,7 +40,7 @@ Double-Jumps:
   - tntrun.doublejumps.3
   - tntrun.doublejumps.5
 
-# The duration between using double jump again for in-game players.
+# The duration between using double jumps as seconds.
 Double-Jump-Delay: 4
 
 # The block list that we are going to remove these when player is on these blocks in-game.
@@ -56,16 +56,16 @@ Whitelisted-Blocks:
 # Enable this option when you're using MySQL, otherwise it won't work.
 # Be careful when changing this because there is NO migrator between
 # flat file and MySQL for player stats.
-DatabaseActivated: false
+Database-Enabled: false
 
 # Enable Inventory Manager for your games? (VERY USEFUL feature for MULTI ARENA)
 # This saves inventory of players and restores it after player leaves arena.
 # Saved elements: max health, health, food, experience, full inventory, armor contents, fire ticks, active potions, gamemode and more
-InventoryManager: true
+Inventory-Manager-Enabled: true
 
 # Should in-game chat format be enabled?
 # You can edit the formatting in language.yml
-ChatFormat-Enabled: true
+Chat-Format-Enabled: true
 
 # Should we disable all chat related stuff?
 # It will disable the separated chat, for example
@@ -111,15 +111,10 @@ Name-Tags-Hidden: false
 # - red (inactive) stained glass
 Signs-Block-States-Enabled: true
 
-Update-Notifier:
-  # Should we check for updates on plugin start/after admin join?
-  # You REALLY should have this true!
-  Enabled: true
-  # Should we inform you when beta version is out?
-  # Also note that BETA IS NOT ALWAYS AS STABLE AS NORMAL RELEASE!
-  Notify-Beta-Versions: true
+# Should we check for updates on plugin start/after admin join?
+Update-Notifier-Enabled: true
 
-# Don't edit it. But who's stopping you? It's your server!
-File-Version: 0
+# Should we send warning messages if server is running a old Java version such as JAVA 8?
+Ignore-Warning-Messages: false
 
 # No way! You've reached the end! But... where's the dragon!?

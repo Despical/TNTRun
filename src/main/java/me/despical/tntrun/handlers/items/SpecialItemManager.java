@@ -36,7 +36,7 @@ public class SpecialItemManager {
 	public SpecialItemManager() {
 		this.specialItems = new HashMap<>();
 
-		this.addItem("Leave", new SpecialItem("Leave", "&cLeave", 8, XMaterial.WHITE_BED, "&7Click to teleport to hub"));
+		this.addItem("Leave", new SpecialItem("Leave", "&cLeave", 8, XMaterial.RED_BED, "&7Click to teleport to hub"));
 		this.addItem("Double-Jump", new SpecialItem("Double-Jump", "&cDouble-Jump", 0, XMaterial.FEATHER, "&7Click to double jump"));
 	}
 

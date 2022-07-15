@@ -79,7 +79,7 @@ public class Arena extends BukkitRunnable {
 		}
 
 		if (plugin.getConfigPreferences().getOption(ConfigPreferences.Option.BOSS_BAR_ENABLED)) {
-			gameBar = Bukkit.createBossBar(plugin.getChatManager().message("Bossbar.Main-Title"), BarColor.BLUE, BarStyle.SOLID);
+			gameBar = Bukkit.createBossBar(plugin.getChatManager().message("boss_bar.main_title"), BarColor.BLUE, BarStyle.SOLID);
 		}
 
 		scoreboardManager = new ScoreboardManager(plugin, this);
@@ -99,38 +99,39 @@ public class Arena extends BukkitRunnable {
 			return;
 		}
 
-		int size = players.size(), timer = getTimer(), waitingTime = getWaitingTime(), minPlayers = getMinimumPlayers();
+		int size = players.size(), waitingTime = getWaitingTime(), minPlayers = getMinimumPlayers();
 
 		switch (arenaState) {
 			case WAITING_FOR_PLAYERS:
+
 				if (size < minPlayers) {
 					if (plugin.getConfigPreferences().getOption(ConfigPreferences.Option.BOSS_BAR_ENABLED)) {
-						gameBar.setTitle(plugin.getChatManager().message("boss-bar.waiting-for-players"));
+						gameBar.setTitle(plugin.getChatManager().message("boss_bar.waiting_for_players"));
 					}
 
-					if (timer <= 0) {
+					if (getTimer() <= 0) {
 						setTimer(45);
-						broadcastMessage(plugin.getChatManager().prefixedFormattedMessage(this, "in-game.messages.lobby-messages.waiting-for-players", minPlayers));
+						broadcastMessage(plugin.getChatManager().prefixedFormattedMessage(this, "in_game.messages.lobby_messages.waiting_for_players", minPlayers));
 					}
 				} else {
 					showPlayers();
 					setTimer(waitingTime);
 					setArenaState(ArenaState.STARTING);
-					broadcastMessage(plugin.getChatManager().prefixedMessage("in-game.messages.lobby-messages.enough-players-to-start"));
+					broadcastMessage(plugin.getChatManager().prefixedMessage("in_game.messages.lobby_messages.enough_players_to_start"));
 					break;
 				}
 
-				setTimer(timer - 1);
+				setTimer(getTimer() - 1);
 				break;
 			case STARTING:
 				if (plugin.getConfigPreferences().getOption(ConfigPreferences.Option.BOSS_BAR_ENABLED)) {
-					gameBar.setProgress((double) timer / waitingTime);
-					gameBar.setTitle(plugin.getChatManager().message("boss-bar.starting-in", timer));
+					gameBar.setProgress((double) getTimer() / waitingTime);
+					gameBar.setTitle(plugin.getChatManager().message("boss-bar.starting-in", getTimer()));
 				}
 
 				for (Player player : players) {
-					player.setLevel(timer);
-					player.setExp((float) (timer / waitingTime));
+					player.setLevel(getTimer());
+					player.setExp((float) (getTimer() / waitingTime));
 				}
 
 				if (size < minPlayers) {
@@ -151,12 +152,12 @@ public class Arena extends BukkitRunnable {
 					break;
 				}
 
-				if (size >= getMaximumPlayers() && timer >= getStartTime() && !forceStart) {
+				if (size >= getMaximumPlayers() && getTimer() >= getStartTime() && !forceStart) {
 					setTimer(getStartTime());
-					broadcastMessage(plugin.getChatManager().prefixedMessage("in-game.messages.lobby-messages.start-in", timer));
+					broadcastMessage(plugin.getChatManager().prefixedMessage("in-game.messages.lobby-messages.start-in", getTimer()));
 				}
 
-				if (timer == 0 || forceStart) {
+				if (getTimer() == 0 || forceStart) {
 					setArenaState(ArenaState.IN_GAME);
 
 					plugin.getServer().getPluginManager().callEvent(new TRGameStartEvent(this));
@@ -191,7 +192,7 @@ public class Arena extends BukkitRunnable {
 					}
 				}
 
-				setTimer(timer - 1);
+				setTimer(getTimer() - 1);
 				break;
 			case IN_GAME:
 				int playerSize = getPlayersLeft().size();
@@ -204,7 +205,7 @@ public class Arena extends BukkitRunnable {
 				for (Player player : getPlayersLeft()) {
 					User user = plugin.getUserManager().getUser(player);
 
-					if (timer % 30 == 0) {
+					if (getTimer() % 30 == 0) {
 						user.addStat(StatsStorage.StatisticType.COINS, 15);
 						user.addStat(StatsStorage.StatisticType.LOCAL_COINS, 15);
 
@@ -220,7 +221,7 @@ public class Arena extends BukkitRunnable {
 					user.addStat(StatsStorage.StatisticType.LOCAL_SURVIVE, 1);
 				}
 
-				setTimer(timer + 1);
+				setTimer(getTimer() + 1);
 				break;
 			case ENDING:
 				scoreboardManager.stopAllScoreboards();

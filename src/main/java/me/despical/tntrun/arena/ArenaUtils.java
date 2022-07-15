@@ -35,11 +35,13 @@ public class ArenaUtils {
 	private static final Main plugin = JavaPlugin.getPlugin(Main.class);
 
 	public static boolean areInSameArena(Player one, Player two) {
-		if (ArenaRegistry.getArena(one) == null || ArenaRegistry.getArena(two) == null) {
+		Arena first = ArenaRegistry.getArena(one), second = ArenaRegistry.getArena(two);
+
+		if (first == null || second == null) {
 			return false;
 		}
 
-		return ArenaRegistry.getArena(one).equals(ArenaRegistry.getArena(two));
+		return first.equals(second);
 	}
 
 	public static void hidePlayer(Player p, Arena arena) {
@@ -105,9 +107,7 @@ public class ArenaUtils {
 
 			if (arena.getArenaState() == ArenaState.IN_GAME) {
 				team.addEntry(p.getName());
-			} else if (arena.getArenaState() == ArenaState.WAITING_FOR_PLAYERS || arena.getArenaState() == ArenaState.STARTING) {
-				team.removeEntry(p.getName());
-			} else if (arena.getArenaState() == ArenaState.ENDING || arena.getArenaState() == ArenaState.RESTARTING) {
+			} else {
 				team.removeEntry(p.getName());
 			}
 

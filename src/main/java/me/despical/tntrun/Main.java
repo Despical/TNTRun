@@ -46,6 +46,7 @@ import me.despical.tntrun.handlers.sign.SignManager;
 import me.despical.tntrun.user.User;
 import me.despical.tntrun.user.UserManager;
 import me.despical.tntrun.user.data.MysqlManager;
+import org.bstats.bukkit.Metrics;
 import org.bukkit.block.BlockState;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -72,9 +73,12 @@ public class Main extends JavaPlugin {
 	private SpecialItemManager itemManager;
 	private PermissionsManager permissionManager;
 	private CommandHandler commandHandler;
+	private LanguageManager languageManager;
 
 	@Override
 	public void onEnable() {
+		this.configPreferences = new ConfigPreferences(this);
+
 		if (forceDisable = !validateIfPluginShouldStart()) {
 			getServer().getPluginManager().disablePlugin(this);
 			return;
@@ -85,7 +89,6 @@ public class Main extends JavaPlugin {
 		exceptionLogHandler.addBlacklistedClass("me.despical.tntrun.user.data.MysqlManager", "me.despical.commons.database.MysqlDatabase");
 		exceptionLogHandler.setRecordMessage("[TNTRun] We have found a bug in the code. Contact us at our official Discord server (link: https://discord.gg/rVkaGmyszE) with the following error given above!");
 
-		this.configPreferences = new ConfigPreferences(this);
 
 		if (configPreferences.getOption(ConfigPreferences.Option.DEBUG_MESSAGES)) {
 			LogUtils.setLoggerName("TNTRun");
@@ -99,8 +102,8 @@ public class Main extends JavaPlugin {
 		initializeClasses();
 		checkUpdate();
 
-		LogUtils.sendConsoleMessage("Please note that TNT Run is now in a beta stage because of the recoding whole plugin, join our Discord if this version is not working properly.");
-		LogUtils.sendConsoleMessage("Initialization finished. Join our Discord server to get support and news about TNT Run. (https://discord.gg/rVkaGmyszE)");
+		LogUtils.sendConsoleMessage("[TNTRun] &cPlease note that TNT Run is now in a beta stage because of the recoding whole plugin, join our Discord if this version is not working properly.");
+		LogUtils.sendConsoleMessage("[TNTRun] Initialization finished. Join our Discord server to get support and news about TNT Run. (https://discord.gg/rVkaGmyszE)");
 		LogUtils.log("Initialization finished took {0} ms.", System.currentTimeMillis() - start);
 
 		if (configPreferences.getOption(ConfigPreferences.Option.NAME_TAGS_HIDDEN)) {
@@ -186,7 +189,7 @@ public class Main extends JavaPlugin {
 			database = new MysqlDatabase(this, "mysql");
 		}
 
-		new LanguageManager(this);
+		languageManager = new LanguageManager(this);
 		userManager = new UserManager(this);
 		itemManager = new SpecialItemManager();
 
@@ -223,12 +226,24 @@ public class Main extends JavaPlugin {
 	private void registerSoftDependencies() {
 		LogUtils.log("Hooking into soft dependencies.");
 
+		startPluginMetrics();
+
 		if (chatManager.isPapiEnabled()) {
 			LogUtils.log("Hooking into PlaceholderAPI.");
 			new PlaceholderManager(this);
 		}
 
 		LogUtils.log("Hooked into soft dependencies.");
+	}
+
+	private void startPluginMetrics() {
+		Metrics metrics = new Metrics(this, 8147);
+
+		if (!metrics.isEnabled()) return;
+
+		metrics.addCustomChart(new Metrics.SimplePie("locale_used", () -> languageManager.getLocale().prefix));
+		metrics.addCustomChart(new Metrics.SimplePie("database_enabled", () -> configPreferences.getOption(ConfigPreferences.Option.DATABASE_ENABLED) ? "Enabled" : "Disabled"));
+		metrics.addCustomChart(new Metrics.SimplePie("update_notifier", () -> configPreferences.getOption(ConfigPreferences.Option.UPDATE_NOTIFIER_ENABLED) ? "Enabled" : "Disabled"));
 	}
 
 

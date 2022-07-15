@@ -99,7 +99,7 @@ public class RewardsFactory {
 	private String formatCommandPlaceholders(String command, Arena arena) {
 		String formatted = command;
 
-		formatted = StringUtils.replace(formatted, "%arena-id%", arena.getId());
+		formatted = StringUtils.replace(formatted, "%arena_id%", arena.getId());
 		formatted = StringUtils.replace(formatted, "%map_name%", arena.getMapName());
 		formatted = StringUtils.replace(formatted, "%players%", Integer.toString(arena.getPlayers().size()));
 		return formatted;
