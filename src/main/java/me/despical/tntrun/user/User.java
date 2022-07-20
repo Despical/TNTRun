@@ -74,7 +74,7 @@ public class User {
 	}
 
 	public int getStat(StatsStorage.StatisticType stat) {
-		Integer statistic = stats.get(stat);
+		final Integer statistic = stats.get(stat);
 
 		if (statistic == null) {
 			stats.put(stat, 0);

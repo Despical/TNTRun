@@ -1,13 +1,10 @@
-#    You can translate TNT Run messages here.
+#        You can translate TNT Run messages here.
 #             Color codes (&) supported.
 #
 #              Use \n to make new line
-#        Some messages like kit and kit items
-#        descriptions don't support new lines
-# they are wrapped every 40 characters automatically
 #
 #     Some messages support their own placeholders
-#                  like %player%
+#                 like %player%
 
 # TNT Run Command Messages
 Commands:
@@ -49,7 +46,7 @@ Commands:
 Scoreboard:
   Title: "&e&lTNTRun"
   Content:
-    # Can be find more information about placeholders on our wiki.
+    # Can be found more information about placeholders on our wiki.
     Playing:
       - ""
       - "&7Duration: %formatted_time%"
@@ -181,7 +178,7 @@ Signs:
     - "&5[%players%/%maxplayers%]"
 
 Validator:
-  Invalid-Arena-Configuration: "[TNTRun] Arena %arena% has invalid configuration! Missing node: %error%"
+  Invalid-Arena-Configuration: "[TNTRun] %cArena %arena% has invalid configuration! Missing node: %error%"
   Instance-Started: "[TNTRun] Arena %arena% instance successfully started!"
   No-Instances-Created: "[TNTRun] There are no arena instances created in configuration!"
 

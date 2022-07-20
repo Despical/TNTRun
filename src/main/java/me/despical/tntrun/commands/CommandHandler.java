@@ -68,7 +68,7 @@ public class CommandHandler implements CommandExecutor {
 					return true;
 				}
 
-				if (subCommand.getSenderType() == SubCommand.SenderType.PLAYER && !(sender instanceof Player)) {
+				if (subCommand.getSenderType() == 0 && !(sender instanceof Player)) {
 					sender.sendMessage(plugin.getChatManager().prefixedMessage("commands.only_by_player"));
 					return true;
 				}
@@ -79,7 +79,7 @@ public class CommandHandler implements CommandExecutor {
 					} catch (CommandException exception) {
 						sender.sendMessage(plugin.getChatManager().color("&c" + exception.getMessage()));
 					}
-				} else if (subCommand.getType() == SubCommand.CommandType.GENERIC) {
+				} else if (subCommand.getType() == 0) {
 					sender.sendMessage(plugin.getChatManager().color("&cUsage: /" + label + " " + subCommand.getName() + " " + (subCommand.getPossibleArguments().length() > 0 ? subCommand.getPossibleArguments() : "")));
 				}
 

@@ -53,12 +53,12 @@ public class JoinCommand extends SubCommand {
 	}
 
 	@Override
-	public CommandType getType() {
-		return CommandType.HIDDEN;
+	public int getType() {
+		return HIDDEN;
 	}
 
 	@Override
-	public SenderType getSenderType() {
-		return SubCommand.SenderType.PLAYER;
+	public int getSenderType() {
+		return PLAYER;
 	}
 }

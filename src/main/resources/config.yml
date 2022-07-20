@@ -1,8 +1,11 @@
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
 # +---------------------------------------------------------+ #
-# |           TNT Run by Despical (Version 2.1.0)           | #
-# +---------------------------------------------------------+ #
+# |           TNT Run by Despical (Version 2.2.0)           | #
+# |                                                         | #
+# |            https://www.patreon.com/despical             | #
+# | Support us with becoming Patron and use Patron benefits | #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+
 
 # If you want to translate for us check out: https://github.com/Despical/LocaleStorage#locale-storage
 # Select locale of TNT Run, default it's English.
@@ -60,7 +63,7 @@ Database-Enabled: false
 
 # Enable Inventory Manager for your games? (VERY USEFUL feature for MULTI ARENA)
 # This saves inventory of players and restores it after player leaves arena.
-# Saved elements: max health, health, food, experience, full inventory, armor contents, fire ticks, active potions, gamemode and more
+# Saved elements: max health, health, food, experience, full inventory, armor contents, and more.
 Inventory-Manager-Enabled: true
 
 # Should in-game chat format be enabled?

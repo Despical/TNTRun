@@ -23,6 +23,7 @@ import me.despical.tntrun.ConfigPreferences;
 import me.despical.tntrun.Main;
 import me.despical.tntrun.arena.Arena;
 import me.despical.tntrun.arena.ArenaRegistry;
+import me.despical.tntrun.handlers.ChatManager;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -38,18 +39,20 @@ import java.util.regex.Pattern;
  */
 public class ChatEvents extends ListenerAdapter {
 
+	private final ChatManager chatManager;
 	private final boolean chatFormatEnabled, disableSeparateChat;
 
 	public ChatEvents(Main plugin) {
 		super (plugin);
+		this.chatManager = plugin.getChatManager();
 		this.chatFormatEnabled = plugin.getConfigPreferences().getOption(ConfigPreferences.Option.CHAT_FORMAT_ENABLED);
 		this.disableSeparateChat = plugin.getConfigPreferences().getOption(ConfigPreferences.Option.DISABLE_SEPARATE_CHAT);
 	}
 
 	@EventHandler
 	public void onChatInGame(AsyncPlayerChatEvent event) {
-		Player player = event.getPlayer();
-		Arena arena = ArenaRegistry.getArena(player);
+		final Player player = event.getPlayer();
+		final Arena arena = ArenaRegistry.getArena(player);
 
 		if (arena == null) {
 			if (!disableSeparateChat) {
@@ -60,19 +63,19 @@ public class ChatEvents extends ListenerAdapter {
 		}
 
 		if (chatFormatEnabled) {
-			String message = formatChatPlaceholders(plugin.getChatManager().message("in-game.game-chat-format"), player, event.getMessage().replaceAll(Pattern.quote("[$\\]"), ""));
+			final String message = formatChatPlaceholders(chatManager.message("in-game.game-chat-format"), player, event.getMessage().replaceAll(Pattern.quote("[$\\]"), ""));
 
 			if (!disableSeparateChat) {
 				event.setCancelled(true);
 
-				boolean dead = !arena.getPlayersLeft().contains(player);
+				final boolean dead = !arena.getPlayersLeft().contains(player);
 
 				for (Player p : arena.getPlayers()) {
 					if (dead && arena.getPlayersLeft().contains(p)) {
 						continue;
 					}
 
-					p.sendMessage(dead ? formatChatPlaceholders(plugin.getChatManager().message("in-game.game-death-format"), player, null) + message : message);
+					p.sendMessage(dead ? formatChatPlaceholders(chatManager.message("in-game.game-death-format"), player, null) + message : message);
 				}
 
 				plugin.getServer().getConsoleSender().sendMessage(message);
@@ -87,10 +90,10 @@ public class ChatEvents extends ListenerAdapter {
 		formatted = StringUtils.replace(formatted, "%player%", player.getName());
 		formatted = StringUtils.replace(formatted, "%message%", ChatColor.stripColor(saidMessage));
 
-		if (plugin.getServer().getPluginManager().isPluginEnabled("PlaceholderAPI")) {
+		if (chatManager.isPapiEnabled()) {
 			formatted = PlaceholderAPI.setPlaceholders(player, formatted);
 		}
 
-		return plugin.getChatManager().color(formatted);
+		return chatManager.color(formatted);
 	}
 }

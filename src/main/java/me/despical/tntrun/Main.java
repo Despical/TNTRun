@@ -103,7 +103,7 @@ public class Main extends JavaPlugin {
 		checkUpdate();
 
 		LogUtils.sendConsoleMessage("[TNTRun] &cPlease note that TNT Run is now in a beta stage because of the recoding whole plugin, join our Discord if this version is not working properly.");
-		LogUtils.sendConsoleMessage("[TNTRun] Initialization finished. Join our Discord server to get support and news about TNT Run. (https://discord.gg/rVkaGmyszE)");
+		LogUtils.sendConsoleMessage("[TNTRun] Initialization finished. Join our Discord server if you need any help. (https://discord.gg/rVkaGmyszE)");
 		LogUtils.log("Initialization finished took {0} ms.", System.currentTimeMillis() - start);
 
 		if (configPreferences.getOption(ConfigPreferences.Option.NAME_TAGS_HIDDEN)) {

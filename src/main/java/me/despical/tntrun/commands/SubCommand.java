@@ -20,6 +20,7 @@ public abstract class SubCommand {
 	protected final Main plugin;
 	protected final FileConfiguration config;
 	protected final ChatManager chatManager;
+	protected final int GENERIC = 0, HIDDEN = 1, PLAYER = 0, BOTH = 1;
 
 	public SubCommand(String name) {
 		this.name = name;
@@ -48,15 +49,7 @@ public abstract class SubCommand {
 
 	public abstract String getTutorial();
 
-	public abstract CommandType getType();
+	public abstract int getType();
 
-	public abstract SenderType getSenderType();
-
-	public enum CommandType {
-		GENERIC, HIDDEN
-	}
-
-	public enum SenderType {
-		PLAYER, BOTH
-	}
+	public abstract int getSenderType();
 }

@@ -65,7 +65,7 @@ public class MysqlManager implements UserDatabase {
 	@Override
 	public void saveStatistic(User user, StatsStorage.StatisticType stat) {
 		plugin.getServer().getScheduler().runTaskAsynchronously(plugin, () -> {
-			String query = "UPDATE " + tableName + " SET " + stat.getName() + "=" + user.getStat(stat) + " WHERE UUID='" + user.getUniqueId().toString() + "';";
+			final String query = "UPDATE " + tableName + " SET " + stat.getName() + "=" + user.getStat(stat) + " WHERE UUID='" + user.getUniqueId().toString() + "';";
 
 			database.executeUpdate(query);
 			LogUtils.log("Executed MySQL: " + query);

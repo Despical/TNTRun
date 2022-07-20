@@ -50,7 +50,7 @@ public class SpecialItemManager {
 
 	public String getRelatedSpecialItem(ItemStack itemStack) {
 		for (String key : specialItems.keySet()) {
-			SpecialItem specialItem = specialItems.get(key);
+			final SpecialItem specialItem = specialItems.get(key);
 
 			if (specialItem.itemStack.equals(itemStack)) {
 				return key;
