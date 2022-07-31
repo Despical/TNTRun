@@ -63,7 +63,7 @@ public class MysqlManager implements UserDatabase {
 	}
 
 	@Override
-	public void saveStatistic(User user, StatsStorage.StatisticType stat) {
+	public void saveStatistic(final User user, final StatsStorage.StatisticType stat) {
 		plugin.getServer().getScheduler().runTaskAsynchronously(plugin, () -> {
 			final String query = "UPDATE " + tableName + " SET " + stat.getName() + "=" + user.getStat(stat) + " WHERE UUID='" + user.getUniqueId().toString() + "';";
 
@@ -73,16 +73,19 @@ public class MysqlManager implements UserDatabase {
 	}
 
 	@Override
-	public void saveAllStatistic(User user) {
+	public void saveAllStatistic(final User user) {
 		final StringBuilder builder = new StringBuilder(" SET ");
 
 		for (StatsStorage.StatisticType stat : StatsStorage.StatisticType.values()) {
 			if (!stat.isPersistent()) continue;
+
+			final int value = user.getStat(stat);
+
 			if (builder.toString().equalsIgnoreCase(" SET ")) {
-				builder.append(stat.getName()).append("=").append(user.getStat(stat));
+				builder.append(stat.getName()).append("=").append(value);
 			}
 
-			builder.append(", ").append(stat.getName()).append("=").append(user.getStat(stat));
+			builder.append(", ").append(stat.getName()).append("=").append(value);
 		}
 
 		final String update = builder.toString();
@@ -90,7 +93,7 @@ public class MysqlManager implements UserDatabase {
 	}
 
 	@Override
-	public void loadStatistics(User user) {
+	public void loadStatistics(final User user) {
 		plugin.getServer().getScheduler().runTaskAsynchronously(plugin, () -> {
 			final String uuid = user.getUniqueId().toString(), name = user.getPlayer().getName();
 

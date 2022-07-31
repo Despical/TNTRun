@@ -69,7 +69,7 @@ public class SignManager implements Listener {
 		this.gameStateToString = new EnumMap<>(ArenaState.class);
 
 		for (ArenaState state : ArenaState.values()) {
-			gameStateToString.put(state, chatManager.message("signs.game-states." + state.getFormattedName()));
+			gameStateToString.put(state, chatManager.message("signs.game_states." + state.getFormattedName()));
 		}
 
 		plugin.getServer().getPluginManager().registerEvents(this, plugin);
@@ -77,7 +77,7 @@ public class SignManager implements Listener {
 
 	@EventHandler
 	public void onSignChange(SignChangeEvent event) {
-		Player player = event.getPlayer();
+		final Player player = event.getPlayer();
 
 		if (!player.hasPermission("tntrun.admin.sign.create") || !event.getLine(0).equalsIgnoreCase("[tntrun]")) {
 			return;
@@ -90,7 +90,7 @@ public class SignManager implements Listener {
 			return;
 		}
 
-		Arena arena = ArenaRegistry.getArena(id);
+		final Arena arena = ArenaRegistry.getArena(id);
 
 		if (arena == null) {
 			event.getPlayer().sendMessage(chatManager.prefixedMessage("signs.arena-doesnt-exists"));
@@ -122,24 +122,22 @@ public class SignManager implements Listener {
 	}
 
 	@EventHandler
-	public void onSignDestroy(BlockBreakEvent e) {
-		ArenaSign arenaSign = getArenaSignByBlock(e.getBlock());
+	public void onSignDestroy(BlockBreakEvent event) {
+		final ArenaSign arenaSign = getArenaSignByBlock(event.getBlock());
 
-		if (arenaSign == null) {
-			return;
-		}
+		if (arenaSign == null) return;
 
-		Player player = e.getPlayer();
+		final Player player = event.getPlayer();
 
 		if (!player.hasPermission("tntrun.admin.sign.break")) {
-			e.setCancelled(true);
+			event.setCancelled(true);
 			player.sendMessage(chatManager.prefixedMessage("signs.doesnt-have-permission"));
 			return;
 		}
 
 		arenaSigns.remove(arenaSign);
 
-		String location = LocationSerializer.toString(e.getBlock().getLocation());
+		final String location = LocationSerializer.toString(event.getBlock().getLocation());
 
 		for (String arena : config.getConfigurationSection("instances").getKeys(false)) {
 			for (String sign : config.getStringList("instances." + arena + ".signs")) {

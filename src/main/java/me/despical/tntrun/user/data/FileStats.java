@@ -37,17 +37,17 @@ public class FileStats implements UserDatabase {
 	}
 
 	@Override
-	public void saveStatistic(User user, StatsStorage.StatisticType stat) {
+	public void saveStatistic(final User user, final StatsStorage.StatisticType stat) {
 		config.set(user.getUniqueId().toString() + "." + stat.getName(), user.getStat(stat));
 
 		ConfigUtils.saveConfig(plugin, config, "stats");
 	}
 
 	@Override
-	public void saveAllStatistic(User user) {
+	public void saveAllStatistic(final User user) {
 		final String uuid = user.getUniqueId().toString();
 
-		for (StatsStorage.StatisticType stat : StatsStorage.StatisticType.values()) {
+		for (final StatsStorage.StatisticType stat : StatsStorage.StatisticType.values()) {
 			if (stat.isPersistent()) {
 				config.set(uuid + "." + stat.getName(), user.getStat(stat));
 			}
@@ -58,10 +58,10 @@ public class FileStats implements UserDatabase {
 
 
 	@Override
-	public void loadStatistics(User user) {
+	public void loadStatistics(final User user) {
 		final String uuid = user.getUniqueId().toString();
 
-		for (StatsStorage.StatisticType stat : StatsStorage.StatisticType.values()) {
+		for (final StatsStorage.StatisticType stat : StatsStorage.StatisticType.values()) {
 			user.setStat(stat, config.getInt(uuid + "." + stat.getName(), 0));
 		}
 	}

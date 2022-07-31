@@ -54,9 +54,9 @@ public class ArenaSign {
 
 	private Block getBlockBehind() {
 		try {
-			Object blockData = sign.getBlock().getState().getClass().getMethod("getBlockData").invoke(sign.getBlock().getState());
-			BlockFace face = (BlockFace) blockData.getClass().getMethod("getFacing").invoke(blockData);
-			Location loc = sign.getLocation(), location = new Location(sign.getWorld(), loc.getBlockX() - face.getModX(), loc.getBlockY() - face.getModY(), loc.getBlockZ() - face.getModZ());
+			final Object blockData = sign.getBlock().getState().getClass().getMethod("getBlockData").invoke(sign.getBlock().getState());
+			final BlockFace face = (BlockFace) blockData.getClass().getMethod("getFacing").invoke(blockData);
+			final Location loc = sign.getLocation(), location = new Location(sign.getWorld(), loc.getBlockX() - face.getModX(), loc.getBlockY() - face.getModY(), loc.getBlockZ() - face.getModZ());
 			return location.getBlock();
 		} catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
 			e.printStackTrace();

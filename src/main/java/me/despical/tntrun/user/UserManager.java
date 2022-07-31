@@ -21,7 +21,6 @@ package me.despical.tntrun.user;
 import me.despical.commons.util.LogUtils;
 import me.despical.tntrun.ConfigPreferences;
 import me.despical.tntrun.Main;
-import me.despical.tntrun.api.StatsStorage;
 import me.despical.tntrun.arena.Arena;
 import me.despical.tntrun.user.data.FileStats;
 import me.despical.tntrun.user.data.MysqlManager;
@@ -53,7 +52,7 @@ public class UserManager {
 	public User getUser(Player player) {
 		final UUID uuid = player.getUniqueId();
 
-		for (User user : users) {
+		for (final User user : users) {
 			if (user.getUniqueId().equals(uuid)) {
 				return user;
 			}
@@ -70,12 +69,6 @@ public class UserManager {
 
 	public Set<User> getUsers(Arena arena) {
 		return arena.getPlayers().stream().map(this::getUser).collect(Collectors.toSet());
-	}
-
-	public void saveStatistic(User user, StatsStorage.StatisticType stat) {
-		if (!stat.isPersistent()) return;
-
-		database.saveStatistic(user, stat);
 	}
 
 	public void saveAllStatistic(User user) {

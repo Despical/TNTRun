@@ -296,15 +296,14 @@ public class ArenaManager {
 
 			plugin.getUserManager().saveAllStatistic(user);
 			
-			arena.getScoreboardManager().removeScoreboard(player);
-
 			if (!quickStop && plugin.getConfig().getBoolean("Firework-When-Game-Ends", true)) {
 				new BukkitRunnable() {
-					int i = 0;
+
+					private int i = 0;
 
 					public void run() {
 						if (i == 4 || !arena.getPlayers().contains(player)) {
-							this.cancel();
+							cancel();
 						}
 
 						MiscUtils.spawnRandomFirework(player.getLocation());
@@ -320,12 +319,14 @@ public class ArenaManager {
 	private static String formatSummaryPlaceholders(String msg, Arena arena, Player player) {
 		String formatted = msg;
 
-		formatted = StringUtils.replace(formatted, "%winner%", arena.getPlayersLeft().get(0).getName());
-		formatted = StringUtils.replace(formatted, "%earned_coins%", String.valueOf(StatsStorage.getUserStats(player, StatsStorage.StatisticType.LOCAL_COINS)));
-		formatted = StringUtils.replace(formatted, "%survive_time%", String.valueOf(StatsStorage.getUserStats(player, StatsStorage.StatisticType.LOCAL_SURVIVE)));
-		formatted = StringUtils.replace(formatted, "%formatted_survive_time%", StringFormatUtils.formatIntoMMSS(StatsStorage.getUserStats(player, StatsStorage.StatisticType.LOCAL_SURVIVE)));
+		final User user = plugin.getUserManager().getUser(player);
 
-		if (plugin.getServer().getPluginManager().isPluginEnabled("PlaceholderAPI")) {
+		formatted = StringUtils.replace(formatted, "%winner%", arena.getPlayersLeft().get(0).getName());
+		formatted = StringUtils.replace(formatted, "%earned_coins%", Integer.toString(user.getStat(StatsStorage.StatisticType.LOCAL_COINS)));
+		formatted = StringUtils.replace(formatted, "%survive_time%", Integer.toString(user.getStat(StatsStorage.StatisticType.LOCAL_SURVIVE)));
+		formatted = StringUtils.replace(formatted, "%formatted_survive_time%", StringFormatUtils.formatIntoMMSS(user.getStat(StatsStorage.StatisticType.LOCAL_SURVIVE)));
+
+		if (plugin.getChatManager().isPapiEnabled()) {
 			formatted = PlaceholderAPI.setPlaceholders(player, formatted);
 		}
 

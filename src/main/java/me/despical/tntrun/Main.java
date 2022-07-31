@@ -47,6 +47,7 @@ import me.despical.tntrun.user.User;
 import me.despical.tntrun.user.UserManager;
 import me.despical.tntrun.user.data.MysqlManager;
 import org.bstats.bukkit.Metrics;
+import org.bstats.charts.SimplePie;
 import org.bukkit.block.BlockState;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -103,7 +104,7 @@ public class Main extends JavaPlugin {
 		checkUpdate();
 
 		LogUtils.sendConsoleMessage("[TNTRun] &cPlease note that TNT Run is now in a beta stage because of the recoding whole plugin, join our Discord if this version is not working properly.");
-		LogUtils.sendConsoleMessage("[TNTRun] Initialization finished. Join our Discord server if you need any help. (https://discord.gg/rVkaGmyszE)");
+		LogUtils.sendConsoleMessage("[TNTRun] &aInitialization finished. Join our Discord server if you need any help. (https://discord.gg/rVkaGmyszE)");
 		LogUtils.log("Initialization finished took {0} ms.", System.currentTimeMillis() - start);
 
 		if (configPreferences.getOption(ConfigPreferences.Option.NAME_TAGS_HIDDEN)) {
@@ -113,8 +114,8 @@ public class Main extends JavaPlugin {
 
 	private boolean validateIfPluginShouldStart() {
 		if (!VersionResolver.isCurrentBetween(VersionResolver.ServerVersion.v1_9_R1, VersionResolver.ServerVersion.v1_19_R1)) {
-			LogUtils.sendConsoleMessage("&cYour server version is not supported by TNT Run!");
-			LogUtils.sendConsoleMessage("&cMaybe you consider changing your server version?");
+			LogUtils.sendConsoleMessage("[TNTRun] &cYour server version is not supported by TNT Run!");
+			LogUtils.sendConsoleMessage("[TNTRun] &cMaybe you consider changing your server version?");
 			return false;
 		}
 
@@ -126,8 +127,8 @@ public class Main extends JavaPlugin {
 		try {
 			Class.forName("org.spigotmc.SpigotConfig");
 		} catch (Exception exception) {
-			LogUtils.sendConsoleMessage("&cYour server software is not supported by TNT Run!");
-			LogUtils.sendConsoleMessage("&cWe support only Spigot and Spigot forks! Shutting off...");
+			LogUtils.sendConsoleMessage("[TNTRun] &cYour server software is not supported by TNT Run!");
+			LogUtils.sendConsoleMessage("[TNTRun] &cWe support only Spigot and Spigot forks! Shutting off...");
 			return false;
 		}
 
@@ -219,7 +220,7 @@ public class Main extends JavaPlugin {
 
 			LogUtils.sendConsoleMessage("[TNTRun] Found a new version available: v" + result.getNewestVersion());
 			LogUtils.sendConsoleMessage("[TNTRun] Download it SpigotMC:");
-			LogUtils.sendConsoleMessage("[TNTRun] spigotmc.org/resources/tnt-run.83196/");
+			LogUtils.sendConsoleMessage("[TNTRun] https://wwwspigotmc.org/resources/tnt-run.83196/");
 		});
 	}
 
@@ -239,13 +240,10 @@ public class Main extends JavaPlugin {
 	private void startPluginMetrics() {
 		Metrics metrics = new Metrics(this, 8147);
 
-		if (!metrics.isEnabled()) return;
-
-		metrics.addCustomChart(new Metrics.SimplePie("locale_used", () -> languageManager.getLocale().prefix));
-		metrics.addCustomChart(new Metrics.SimplePie("database_enabled", () -> configPreferences.getOption(ConfigPreferences.Option.DATABASE_ENABLED) ? "Enabled" : "Disabled"));
-		metrics.addCustomChart(new Metrics.SimplePie("update_notifier", () -> configPreferences.getOption(ConfigPreferences.Option.UPDATE_NOTIFIER_ENABLED) ? "Enabled" : "Disabled"));
+		metrics.addCustomChart(new SimplePie("locale_used", () -> languageManager.getLocale().prefix));
+		metrics.addCustomChart(new SimplePie("database_enabled", () -> configPreferences.getOption(ConfigPreferences.Option.DATABASE_ENABLED) ? "Enabled" : "Disabled"));
+		metrics.addCustomChart(new SimplePie("update_notifier", () -> configPreferences.getOption(ConfigPreferences.Option.UPDATE_NOTIFIER_ENABLED) ? "Enabled" : "Disabled"));
 	}
-
 
 	private void setupFiles() {
 		Collections.streamOf("arenas", "rewards", "stats", "items", "mysql", "messages").filter(name -> !new File(getDataFolder(),name + ".yml").exists()).forEach(name -> saveResource(name + ".yml", false));
@@ -292,23 +290,23 @@ public class Main extends JavaPlugin {
 			final User user = userManager.getUser(player);
 
 			if (userManager.getDatabase() instanceof MysqlManager) {
-				final StringBuilder update = new StringBuilder(" SET ");
+				final StringBuilder builder = new StringBuilder(" SET ");
 
 				for (StatsStorage.StatisticType stat : StatsStorage.StatisticType.values()) {
 					if (!stat.isPersistent()) continue;
 
-					int value = user.getStat(stat);
+					final int value = user.getStat(stat);
 
-					if (update.toString().equalsIgnoreCase(" SET ")) {
-						update.append(stat.getName()).append("'='").append(value);
+					if (builder.toString().equalsIgnoreCase(" SET ")) {
+						builder.append(stat.getName()).append("'='").append(value);
 					}
 
-					update.append(", ").append(stat.getName()).append("'='").append(value);
+					builder.append(", ").append(stat.getName()).append("'='").append(value);
 				}
 
-				final String finalUpdate = update.toString();
+				final String update = builder.toString();
 				final MysqlDatabase mysqlDatabase = ((MysqlManager) userManager.getDatabase()).getDatabase();
-				mysqlDatabase.executeUpdate("UPDATE " + mysqlDatabase + finalUpdate + " WHERE UUID='" + user.getUniqueId().toString() + "';");
+				mysqlDatabase.executeUpdate("UPDATE " + mysqlDatabase + update + " WHERE UUID='" + user.getUniqueId().toString() + "';");
 				continue;
 			}
 

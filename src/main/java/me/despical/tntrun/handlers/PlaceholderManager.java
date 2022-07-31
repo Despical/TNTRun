@@ -25,6 +25,7 @@ import me.despical.tntrun.arena.Arena;
 import me.despical.tntrun.arena.ArenaRegistry;
 import me.despical.tntrun.user.User;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * @author Despical
@@ -38,7 +39,7 @@ public class PlaceholderManager extends PlaceholderExpansion {
 	public PlaceholderManager(Main plugin) {
 		this.plugin = plugin;
 
-		register();
+		this.register();
 	}
 
 	@Override
@@ -46,23 +47,26 @@ public class PlaceholderManager extends PlaceholderExpansion {
 		return true;
 	}
 
+	@NotNull
 	@Override
 	public String getIdentifier() {
 		return "tntrun";
 	}
 
+	@NotNull
 	@Override
 	public String getAuthor() {
 		return "Despical";
 	}
 
+	@NotNull
 	@Override
 	public String getVersion() {
 		return plugin.getDescription().getVersion();
 	}
 
 	@Override
-	public String onPlaceholderRequest(Player player, String id) {
+	public String onPlaceholderRequest(Player player, @NotNull String id) {
 		if (player == null) return null;
 
 		User user = plugin.getUserManager().getUser(player);
@@ -86,8 +90,8 @@ public class PlaceholderManager extends PlaceholderExpansion {
 	private String handleArenaPlaceholderRequest(String id) {
 		if (!id.contains(":")) return null;
 
-		String[] data = id.split(":");
-		Arena arena = ArenaRegistry.getArena(data[0]);
+		final String[] data = id.split(":");
+		final Arena arena = ArenaRegistry.getArena(data[0]);
 
 		if (arena == null) return null;
 

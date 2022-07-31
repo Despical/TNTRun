@@ -32,9 +32,9 @@ public interface UserDatabase {
 
 	Main plugin = JavaPlugin.getPlugin(Main.class);
 
-	void saveStatistic(User user, StatsStorage.StatisticType stat);
+	void saveStatistic(final User user, StatsStorage.StatisticType stat);
 
-	void saveAllStatistic(User user);
+	void saveAllStatistic(final User user);
 
-	void loadStatistics(User user);
+	void loadStatistics(final User user);
 }
