@@ -1,6 +1,5 @@
 # TNT Run
 [![](https://jitpack.io/v/Despical/TNTRun.svg)](https://jitpack.io/#Despical/TNTRun)
-![](https://img.shields.io/github/workflow/status/Despical/TNTRun/TNTRun%20Build)
 [![](https://img.shields.io/badge/JavaDocs-latest-lime.svg)](https://javadoc.jitpack.io/com/github/Despical/TNTRun/latest/javadoc/index.html)
 [![Discord](https://img.shields.io/discord/719922452259668000.svg?color=lime&label=Discord)](https://discord.gg/rVkaGmyszE)
 
