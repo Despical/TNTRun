@@ -82,7 +82,7 @@ Scoreboard:
 # Has usage only when boss bar is enabled in config
 Boss-Bar:
   Main-Title: "&a&lTNT Run &f&l- &6&lDespical"
-  Starting-In: "&f&lStarting in: &e&l%time%"
+  Starting-In: "&f&lStarting in: &e&l%number%"
   Waiting-For-Players: "&4&lWaiting for more players..."
   In-Game-Info: "&e&lPlaying &f&lTNT RUN &e&lby &b&lDESPICAL"
   Game-Ended: "&c&lGame has ended! You were playing &b&lTNT Run"
