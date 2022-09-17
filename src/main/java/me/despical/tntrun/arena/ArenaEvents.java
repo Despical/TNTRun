@@ -143,7 +143,7 @@ public class ArenaEvents extends ListenerAdapter {
 
 			player.setHealth(20.0d);
 
-			if (user.isSpectator()) return;
+			if (user.isSpectator() || arena.getArenaState() == ArenaState.WAITING_FOR_PLAYERS) return;
 
 			user.addStat(StatsStorage.StatisticType.LOSES, 1);
 			user.setSpectator(true);
