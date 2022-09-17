@@ -40,7 +40,6 @@ import me.despical.tntrun.handlers.ChatManager;
 import me.despical.tntrun.handlers.PermissionsManager;
 import me.despical.tntrun.handlers.PlaceholderManager;
 import me.despical.tntrun.handlers.items.SpecialItemManager;
-import me.despical.tntrun.handlers.language.LanguageManager;
 import me.despical.tntrun.handlers.rewards.RewardsFactory;
 import me.despical.tntrun.handlers.sign.SignManager;
 import me.despical.tntrun.user.User;
@@ -74,7 +73,6 @@ public class Main extends JavaPlugin {
 	private SpecialItemManager itemManager;
 	private PermissionsManager permissionManager;
 	private CommandHandler commandHandler;
-	private LanguageManager languageManager;
 
 	@Override
 	public void onEnable() {
@@ -190,7 +188,6 @@ public class Main extends JavaPlugin {
 			database = new MysqlDatabase(this, "mysql");
 		}
 
-		languageManager = new LanguageManager(this);
 		userManager = new UserManager(this);
 		itemManager = new SpecialItemManager();
 
@@ -240,7 +237,6 @@ public class Main extends JavaPlugin {
 	private void startPluginMetrics() {
 		Metrics metrics = new Metrics(this, 8147);
 
-		metrics.addCustomChart(new SimplePie("locale_used", () -> languageManager.getLocale().prefix));
 		metrics.addCustomChart(new SimplePie("database_enabled", () -> configPreferences.getOption(ConfigPreferences.Option.DATABASE_ENABLED) ? "Enabled" : "Disabled"));
 		metrics.addCustomChart(new SimplePie("update_notifier", () -> configPreferences.getOption(ConfigPreferences.Option.UPDATE_NOTIFIER_ENABLED) ? "Enabled" : "Disabled"));
 	}

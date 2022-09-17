@@ -1,19 +1,12 @@
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
 # +---------------------------------------------------------+ #
-# |           TNT Run by Despical (Version 2.2.1)           | #
+# |           TNT Run by Despical (Version ${project.version})           | #
 # |                                                         | #
 # |            https://www.patreon.com/despical             | #
 # | Support us with becoming Patron and use Patron benefits | #
+# +---------------------------------------------------------+ #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
-
-# If you want to translate for us check out: https://github.com/Despical/LocaleStorage#locale-storage
-# Select locale of TNT Run, default it's English.
-# Available locales:
-#    default - English language
-#    de - Deutsche sprache
-#    tr - Türkçe dili
-locale: default
 
 # Enable boss bar support?
 Boss-Bar-Enabled: true
@@ -67,7 +60,6 @@ Database-Enabled: false
 Inventory-Manager-Enabled: true
 
 # Should in-game chat format be enabled?
-# You can edit the formatting in language.yml
 Chat-Format-Enabled: true
 
 # Should we disable all chat related stuff?

@@ -174,14 +174,10 @@ Signs:
   Lines:
     - "&4&lTNT Run"
     - "%state%"
-    - "%mapname%"
-    - "&5[%players%/%maxplayers%]"
+    - "%map_name%"
+    - "&5[%players%/%max_players%]"
 
 Validator:
   Invalid-Arena-Configuration: "[TNTRun] %cArena %arena% has invalid configuration! Missing node: %error%"
   Instance-Started: "[TNTRun] Arena %arena% instance successfully started!"
   No-Instances-Created: "[TNTRun] There are no arena instances created in configuration!"
-
-# If you change the value the file will be replaced with default yaml
-# So you shouldn't edit here. Be careful to make changes here!
-Language: default
