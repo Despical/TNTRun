@@ -5,7 +5,7 @@
 
 	<groupId>me.despical</groupId>
 	<artifactId>tnt-run</artifactId>
-	<version>2.2.3</version>
+	<version>2.2.4</version>
 	<name>TNT Run</name>
 
 	<properties>
@@ -52,17 +52,12 @@
 		<dependency>
 			<groupId>com.github.Despical</groupId>
 			<artifactId>Commons</artifactId>
-			<version>1.5.3</version>
+			<version>1.5.4</version>
 		</dependency>
 		<dependency>
 			<groupId>com.github.Despical</groupId>
 			<artifactId>InventoryFramework</artifactId>
 			<version>2.2.2</version>
-		</dependency>
-		<dependency>
-			<groupId>com.github.Despical</groupId>
-			<artifactId>CommandFramework</artifactId>
-			<version>1.1.3</version>
 		</dependency>
 		<dependency>
 			<groupId>me.clip</groupId>

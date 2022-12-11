@@ -255,7 +255,7 @@ public class Arena extends BukkitRunnable {
 				}
 
 				setArenaState(ArenaState.RESTARTING);
-				broadcastMessage(plugin.getChatManager().prefixedMessage("commands.teleported-to-the-lobby")); // yeni mesaj eklicem
+				broadcastMessage(plugin.getChatManager().prefixedMessage("commands.teleported-to-the-lobby"));
 				break;
 			case RESTARTING:
 				players.clear();
@@ -352,7 +352,7 @@ public class Arena extends BukkitRunnable {
 		Location location = getLobbyLocation();
 
 		if (location == null) {
-			System.out.print("Lobby location isn't intialized for arena " + getId());
+			LogUtils.sendConsoleMessage("&cLobby location isn't initialized for arena " + getId());
 			return;
 		}
 

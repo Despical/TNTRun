@@ -88,10 +88,8 @@ public class Main extends JavaPlugin {
 		exceptionLogHandler.addBlacklistedClass("me.despical.tntrun.user.data.MysqlManager", "me.despical.commons.database.MysqlDatabase");
 		exceptionLogHandler.setRecordMessage("[TNTRun] We have found a bug in the code. Contact us at our official Discord server (link: https://discord.gg/rVkaGmyszE) with the following error given above!");
 
-
 		if (configPreferences.getOption(ConfigPreferences.Option.DEBUG_MESSAGES)) {
-			LogUtils.setLoggerName("TNTRun");
-			LogUtils.enableLogging();
+			LogUtils.enableLogging("TNTRun");
 			LogUtils.log("Initialization started.");
 		}
 
