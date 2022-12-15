@@ -1,4 +1,4 @@
-name: TNT Run Build
+name: Build
 
 on:
   push:
