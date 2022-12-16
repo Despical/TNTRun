@@ -35,7 +35,7 @@ The project isn't in the Central Repository yet, so specifying a repository is n
 <dependency>
     <groupId>com.github.Despical</groupId>
     <artifactId>TNTRun</artifactId>
-    <version>2.2.0</version>
+    <version>2.2.5</version>
     <scope>compile</scope>
 </dependency>
 ```
@@ -52,7 +52,7 @@ repositories {
 ```
 ```
 dependencies {
-    compileOnly group: "com.github.Despical", name: "TNTRun", version: "2.2.0";
+    compileOnly group: "com.github.Despical", name: "TNTRun", version: "2.2.5";
 }
 ```
 </details>

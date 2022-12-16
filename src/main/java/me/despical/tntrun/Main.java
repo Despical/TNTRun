@@ -190,12 +190,7 @@ public class Main extends JavaPlugin {
 		itemManager = new SpecialItemManager();
 
 		User.cooldownHandlerTask();
-
-		new SpectatorEvents(this);
-		new ChatEvents(this);
-		new Events(this);
-		new SpectatorItemEvents(this);
-		new ArenaEvents(this);
+		ListenerAdapter.registerEvents(this);
 
 		signManager = new SignManager(this);
 		ArenaRegistry.registerArenas();
@@ -214,7 +209,7 @@ public class Main extends JavaPlugin {
 			if (!result.requiresUpdate()) return;
 
 			LogUtils.sendConsoleMessage("[TNTRun] Found a new version available: v" + result.getNewestVersion());
-			LogUtils.sendConsoleMessage("[TNTRun] Download it SpigotMC:");
+			LogUtils.sendConsoleMessage("[TNTRun] Download it on SpigotMC:");
 			LogUtils.sendConsoleMessage("[TNTRun] https://wwwspigotmc.org/resources/tnt-run.83196/");
 		});
 	}
@@ -285,6 +280,7 @@ public class Main extends JavaPlugin {
 
 			if (userManager.getDatabase() instanceof MysqlManager) {
 				final StringBuilder builder = new StringBuilder(" SET ");
+				final MysqlDatabase mysqlDatabase = ((MysqlManager) userManager.getDatabase()).getDatabase();
 
 				for (StatsStorage.StatisticType stat : StatsStorage.StatisticType.values()) {
 					if (!stat.isPersistent()) continue;
@@ -299,7 +295,6 @@ public class Main extends JavaPlugin {
 				}
 
 				final String update = builder.toString();
-				final MysqlDatabase mysqlDatabase = ((MysqlManager) userManager.getDatabase()).getDatabase();
 				mysqlDatabase.executeUpdate("UPDATE " + mysqlDatabase + update + " WHERE UUID='" + user.getUniqueId().toString() + "';");
 				continue;
 			}

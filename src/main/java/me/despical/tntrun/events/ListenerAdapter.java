@@ -1,6 +1,10 @@
 package me.despical.tntrun.events;
 
+import me.despical.commons.util.LogUtils;
 import me.despical.tntrun.Main;
+import me.despical.tntrun.arena.ArenaEvents;
+import me.despical.tntrun.events.spectator.SpectatorEvents;
+import me.despical.tntrun.events.spectator.SpectatorItemEvents;
 import me.despical.tntrun.handlers.ChatManager;
 import org.bukkit.event.Listener;
 
@@ -27,5 +31,17 @@ public abstract class ListenerAdapter implements Listener {
 		if (predicate.test(false)) return;
 
 		plugin.getServer().getPluginManager().registerEvents(supplier.get(), plugin);
+	}
+
+	public static void registerEvents(Main plugin) {
+		final Class<?>[] listenerAdapters = {Events.class, ChatEvents.class, SpectatorEvents.class, SpectatorItemEvents.class, ArenaEvents.class};
+
+		try {
+			for (Class<?> listenerAdapter : listenerAdapters) {
+				listenerAdapter.getConstructor(Main.class).newInstance(plugin);
+			}
+		} catch (Exception ignored) {
+			LogUtils.sendConsoleMessage("&cAn exception occured on event registering.");
+		}
 	}
 }
