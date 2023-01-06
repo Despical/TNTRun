@@ -224,6 +224,11 @@ public class Arena extends BukkitRunnable {
 				setTimer(getTimer() + 1);
 				break;
 			case ENDING:
+				if (getTimer() != 0) {
+					setTimer(getTimer() - 1);
+					return;
+				}
+
 				scoreboardManager.stopAllScoreboards();
 
 				if (plugin.getConfigPreferences().getOption(ConfigPreferences.Option.BOSS_BAR_ENABLED)) {
@@ -298,8 +303,8 @@ public class Arena extends BukkitRunnable {
 		return mapName;
 	}
 
-	public void setMapName(String mapname) {
-		this.mapName = mapname;
+	public void setMapName(String mapName) {
+		this.mapName = mapName;
 	}
 
 	public int getTimer() {

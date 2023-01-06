@@ -245,8 +245,8 @@ public class ArenaManager {
 			player.setWalkSpeed(.2F);
 			player.setFireTicks(0);
 			player.setGameMode(GameMode.SURVIVAL);
-			AttributeUtils.healPlayer(player);
 
+			AttributeUtils.healPlayer(player);
 		}
 
 		for (Player players : plugin.getServer().getOnlinePlayers()) {
@@ -269,11 +269,14 @@ public class ArenaManager {
 
 		plugin.getServer().getPluginManager().callEvent(new TRGameStopEvent(arena));
 
+		arena.setArenaState(ArenaState.ENDING);
+
 		if (quickStop) {
-			plugin.getServer().getScheduler().runTaskLater(plugin, () -> arena.setArenaState(ArenaState.ENDING), 5L);
-			arena.broadcastMessage(plugin.getChatManager().prefixedMessage("In-Game.Messages.Admin-Messages.Stopped-Game"));
+			arena.setTimer(2);
+			arena.broadcastMessage(plugin.getChatManager().prefixedMessage("in_game.messages.admin_messages.stopped_game"));
+			return;
 		} else {
-			plugin.getServer().getScheduler().runTaskLater(plugin, () -> arena.setArenaState(ArenaState.ENDING), 20L * 10);
+			arena.setTimer(6);
 		}
 
 		arena.getScoreboardManager().stopAllScoreboards();
@@ -288,15 +291,13 @@ public class ArenaManager {
 			player.getInventory().clear();
 			player.getInventory().setItem(plugin.getItemManager().getSpecialItem("Leave").getSlot(), plugin.getItemManager().getSpecialItem("Leave").getItemStack());
 
-			if (!quickStop) {
-				for (String msg : plugin.getChatManager().getStringList("In-Game.Messages.Game-End-Messages.Summary-Message")) {
-					MiscUtils.sendCenteredMessage(player, formatSummaryPlaceholders(msg, arena, player));
-				}
+			for (String msg : plugin.getChatManager().getStringList("In-Game.Messages.Game-End-Messages.Summary-Message")) {
+				MiscUtils.sendCenteredMessage(player, formatSummaryPlaceholders(msg, arena, player));
 			}
 
 			plugin.getUserManager().saveAllStatistic(user);
 			
-			if (!quickStop && plugin.getConfig().getBoolean("Firework-When-Game-Ends", true)) {
+			if (plugin.getConfig().getBoolean("Firework-When-Game-Ends", true)) {
 				new BukkitRunnable() {
 
 					private int i = 0;
