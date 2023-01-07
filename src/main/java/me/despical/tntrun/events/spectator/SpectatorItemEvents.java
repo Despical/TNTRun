@@ -1,6 +1,6 @@
 /*
  * TNT Run - Don't stop running to win!
- * Copyright (C) 2020 Despical
+ * Copyright (C) 2023 Despical
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
