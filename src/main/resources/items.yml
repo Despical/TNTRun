@@ -1,14 +1,20 @@
-# Custom in-game items.
-# Probably you will only translate display name and lore so don't mess with it.
-Leave:
-  displayname: "&c&lReturn to Lobby &7(Right Click)"
-  lore:
-    - "&7Right-click to leave to the lobby"
-  material-name: RED_BED
-  slot: 8
-  
-Double-Jump:
-  displayname: "&a&lDouble Jump"
-  lore: []
-  material-name: FEATHER
-  slot: 0
+items:
+  leave-item:
+    name: "&c&lReturn to Lobby &7(Right Click)"
+    material: RED_BED
+    slot: 8
+    murderer-slot: 8
+    lore:
+      - "&7Right-click to leave to the lobby!"
+  double-jump:
+    name: "&a&lDouble Jump &7(Right Click)"
+    material: FEATHER
+    slot: 0
+    lore:
+      - "&7Right-click to double jump!"
+  force-start-item:
+    name: "&c&lForce start the Game &7(Right Click)"
+    material: REDSTONE
+    slot: 4
+    lore:
+      - "&7Right-click to force start the game!"

@@ -43,7 +43,6 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.Arrays;
 
 /**
  * @author Despical
@@ -54,7 +53,8 @@ public class ArenaManager {
 
 	private static final Main plugin = JavaPlugin.getPlugin(Main.class);
 
-	private ArenaManager() {}
+	private ArenaManager() {
+	}
 
 	public static void joinAttempt(Player player, Arena arena) {
 		LogUtils.log("[{0}] Initial join attempt for {1}", arena.getId(), player.getName());
@@ -102,7 +102,7 @@ public class ArenaManager {
 					continue;
 				}
 
-				leaveAttempt(loopPlayer, arena, "No Slot");
+				leaveAttempt(loopPlayer, arena);
 				loopPlayer.sendMessage(plugin.getChatManager().prefixedMessage("In-Game.Messages.Lobby-Messages.You-Were-Kicked-For-Premium-Slot"));
 				arena.broadcastMessage(plugin.getChatManager().formatMessage(arena, plugin.getChatManager().message("In-Game.Messages.Lobby-Messages.Kicked-For-Premium-Slot"), loopPlayer));
 
@@ -142,20 +142,17 @@ public class ArenaManager {
 			player.getInventory().clear();
 			player.getInventory().setItem(0, new ItemBuilder(XMaterial.COMPASS.parseItem()).name(plugin.getChatManager().message("In-Game.Spectator.Spectator-Item-Name")).build());
 			player.getInventory().setItem(4, new ItemBuilder(XMaterial.COMPARATOR.parseItem()).name(plugin.getChatManager().message("In-Game.Spectator.Settings-Menu.Item-Name")).build());
-			player.getInventory().setItem(plugin.getItemManager().getSpecialItem("Leave").getSlot(), plugin.getItemManager().getSpecialItem("Leave").getItemStack());
 			player.getActivePotionEffects().forEach(effect -> player.removePotionEffect(effect.getType()));
-
-			ArenaUtils.hidePlayer(player, arena);
-
-			player.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, Integer.MAX_VALUE, 0, false, false));
-
-			user.setSpectator(true);
-
+			player.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, Integer.MAX_VALUE, 0, false, false, false));
 			player.setCollidable(false);
 			player.setAllowFlight(true);
 			player.setFlying(true);
 
-			Arrays.stream(StatsStorage.StatisticType.values()).filter(stat -> !stat.isPersistent()).forEach(stat -> user.setStat(stat, 0));
+			ArenaUtils.hidePlayer(player, arena);
+
+			user.setSpectator(true);
+			user.addGameItem("leave-item");
+			user.resetTemporaryStats();
 
 			for (Player spectator : arena.getPlayers()) {
 				if (plugin.getUserManager().getUser(spectator).isSpectator()) {
@@ -171,16 +168,19 @@ public class ArenaManager {
 		}
 
 		arena.teleportToLobby(player);
+		arena.doBarAction(Arena.BarAction.ADD, player);
+
 		player.setFlying(false);
 		player.setAllowFlight(false);
-		arena.doBarAction(Arena.BarAction.ADD, player);
 
 		if (!plugin.getUserManager().getUser(player).isSpectator()) {
 			plugin.getChatManager().broadcastAction(arena, player, ActionType.JOIN);
 		}
 
 		if (arena.getArenaState() == ArenaState.STARTING || arena.getArenaState() == ArenaState.WAITING_FOR_PLAYERS) {
-			player.getInventory().setItem(plugin.getItemManager().getSpecialItem("Leave").getSlot(), plugin.getItemManager().getSpecialItem("Leave").getItemStack());
+			user.addGameItem("leave-item");
+
+			if (player.isOp()) user.addGameItem("force-start-item");
 		}
 
 		player.updateInventory();
@@ -192,15 +192,7 @@ public class ArenaManager {
 		LogUtils.log("[{0}] Join attempt as player for {1} took {2} ms", arena.getId(), player.getName(), System.currentTimeMillis() - start);
 	}
 
-	/**
-	 * Attempts player to leave arena.
-	 * Calls TRGameLeaveAttemptEvent event.
-	 *
-	 * @param player player to join
-	 * @param arena  target arena
-	 * @see TRGameLeaveAttemptEvent
-	 */
-	public static void leaveAttempt(Player player, Arena arena, String reason) {
+	public static void leaveAttempt(Player player, Arena arena) {
 		LogUtils.log("[{0}] Initial leave attempt for {1}", arena.getId(), player.getName());
 		long start = System.currentTimeMillis();
 
@@ -260,7 +252,7 @@ public class ArenaManager {
 		arena.teleportToEndLocation(player);
 
 		plugin.getUserManager().saveAllStatistic(user);
-		LogUtils.log("[{0}] Game leave finished for {1} took {2} ms. Reason: {3}", arena.getId(), player.getName(), System.currentTimeMillis() - start, reason);
+		LogUtils.log("[{0}] Game leave finished for {1} took {2} ms.", arena.getId(), player.getName(), System.currentTimeMillis() - start);
 	}
 
 	public static void stopGame(boolean quickStop, Arena arena) {
@@ -289,7 +281,8 @@ public class ArenaManager {
 			}
 
 			player.getInventory().clear();
-			player.getInventory().setItem(plugin.getItemManager().getSpecialItem("Leave").getSlot(), plugin.getItemManager().getSpecialItem("Leave").getItemStack());
+
+			user.addGameItem("leave-item");
 
 			for (String msg : plugin.getChatManager().getStringList("In-Game.Messages.Game-End-Messages.Summary-Message")) {
 				MiscUtils.sendCenteredMessage(player, formatSummaryPlaceholders(msg, arena, player));

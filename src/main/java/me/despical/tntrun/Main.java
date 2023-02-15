@@ -20,26 +20,21 @@ package me.despical.tntrun;
 
 import me.despical.commons.compat.VersionResolver;
 import me.despical.commons.database.MysqlDatabase;
-import me.despical.commons.exception.ExceptionLogHandler;
 import me.despical.commons.scoreboard.ScoreboardLib;
 import me.despical.commons.serializer.InventorySerializer;
 import me.despical.commons.util.Collections;
-import me.despical.commons.util.JavaVersion;
 import me.despical.commons.util.LogUtils;
 import me.despical.commons.util.UpdateChecker;
 import me.despical.tntrun.api.StatsStorage;
 import me.despical.tntrun.arena.Arena;
-import me.despical.tntrun.arena.ArenaEvents;
 import me.despical.tntrun.arena.ArenaRegistry;
 import me.despical.tntrun.arena.ArenaUtils;
 import me.despical.tntrun.commands.CommandHandler;
 import me.despical.tntrun.events.*;
-import me.despical.tntrun.events.spectator.SpectatorEvents;
-import me.despical.tntrun.events.spectator.SpectatorItemEvents;
 import me.despical.tntrun.handlers.ChatManager;
 import me.despical.tntrun.handlers.PermissionsManager;
 import me.despical.tntrun.handlers.PlaceholderManager;
-import me.despical.tntrun.handlers.items.SpecialItemManager;
+import me.despical.tntrun.handlers.items.GameItemManager;
 import me.despical.tntrun.handlers.rewards.RewardsFactory;
 import me.despical.tntrun.handlers.sign.SignManager;
 import me.despical.tntrun.user.User;
@@ -63,30 +58,24 @@ public class Main extends JavaPlugin {
 
 	private boolean forceDisable;
 
-	private ExceptionLogHandler exceptionLogHandler;
 	private RewardsFactory rewardsFactory;
 	private MysqlDatabase database;
 	private SignManager signManager;
 	private ConfigPreferences configPreferences;
 	private ChatManager chatManager;
 	private UserManager userManager;
-	private SpecialItemManager itemManager;
+	private GameItemManager gameItemManager;
 	private PermissionsManager permissionManager;
 	private CommandHandler commandHandler;
 
 	@Override
 	public void onEnable() {
-		this.configPreferences = new ConfigPreferences(this);
-
 		if (forceDisable = !validateIfPluginShouldStart()) {
 			getServer().getPluginManager().disablePlugin(this);
 			return;
 		}
 
-		exceptionLogHandler = new ExceptionLogHandler(this);
-		exceptionLogHandler.setMainPackage("me.despical");
-		exceptionLogHandler.addBlacklistedClass("me.despical.tntrun.user.data.MysqlManager", "me.despical.commons.database.MysqlDatabase");
-		exceptionLogHandler.setRecordMessage("[TNTRun] We have found a bug in the code. Contact us at our official Discord server (link: https://discord.gg/rVkaGmyszE) with the following error given above!");
+		this.configPreferences = new ConfigPreferences(this);
 
 		if (configPreferences.getOption(ConfigPreferences.Option.DEBUG_MESSAGES)) {
 			LogUtils.enableLogging("TNTRun");
@@ -99,7 +88,6 @@ public class Main extends JavaPlugin {
 		initializeClasses();
 		checkUpdate();
 
-		LogUtils.sendConsoleMessage("[TNTRun] &cPlease note that TNT Run is now in a beta stage because of the recoding whole plugin, join our Discord if this version is not working properly.");
 		LogUtils.sendConsoleMessage("[TNTRun] &aInitialization finished. Join our Discord server if you need any help. (https://discord.gg/rVkaGmyszE)");
 		LogUtils.log("Initialization finished took {0} ms.", System.currentTimeMillis() - start);
 
@@ -109,15 +97,10 @@ public class Main extends JavaPlugin {
 	}
 
 	private boolean validateIfPluginShouldStart() {
-		if (!VersionResolver.isCurrentBetween(VersionResolver.ServerVersion.v1_9_R1, VersionResolver.ServerVersion.v1_19_R1)) {
+		if (!VersionResolver.isCurrentBetween(VersionResolver.ServerVersion.v1_9_R1, VersionResolver.ServerVersion.v1_19_R2)) {
 			LogUtils.sendConsoleMessage("[TNTRun] &cYour server version is not supported by TNT Run!");
 			LogUtils.sendConsoleMessage("[TNTRun] &cMaybe you consider changing your server version?");
 			return false;
-		}
-
-		if (!configPreferences.getOption(ConfigPreferences.Option.IGNORE_WARNING_MESSAGES) && JavaVersion.getCurrentVersion().isAt(JavaVersion.JAVA_8)) {
-			LogUtils.sendConsoleMessage("[TNTRun] &cThis plugin won't support Java 8 in future updates.");
-			LogUtils.sendConsoleMessage("[TNTRun] &cSo, maybe consider to update your version, right?");
 		}
 
 		try {
@@ -138,7 +121,6 @@ public class Main extends JavaPlugin {
 		LogUtils.log("System disable initialized.");
 		long start = System.currentTimeMillis();
 
-		getServer().getLogger().removeHandler(exceptionLogHandler);
 		saveAllUserStatistics();
 
 		if (database != null) {
@@ -187,7 +169,7 @@ public class Main extends JavaPlugin {
 		}
 
 		userManager = new UserManager(this);
-		itemManager = new SpecialItemManager();
+		gameItemManager = new GameItemManager(this);
 
 		User.cooldownHandlerTask();
 		ListenerAdapter.registerEvents(this);
@@ -262,8 +244,8 @@ public class Main extends JavaPlugin {
 		return userManager;
 	}
 
-	public SpecialItemManager getItemManager() {
-		return itemManager;
+	public GameItemManager getGameItemManager() {
+		return gameItemManager;
 	}
 
 	public PermissionsManager getPermissionManager() {

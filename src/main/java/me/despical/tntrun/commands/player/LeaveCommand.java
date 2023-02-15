@@ -63,7 +63,7 @@ public class LeaveCommand extends SubCommand {
 
 		player.sendMessage(chatManager.prefixedMessage("commands.teleported_to_the_lobby", player));
 
-		ArenaManager.leaveAttempt(player, arena, "Command");
+		ArenaManager.leaveAttempt(player, arena);
 	}
 
 	@Override

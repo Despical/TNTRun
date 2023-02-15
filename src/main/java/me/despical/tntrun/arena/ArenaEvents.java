@@ -20,22 +20,20 @@ package me.despical.tntrun.arena;
 
 import me.despical.commons.compat.XMaterial;
 import me.despical.commons.item.ItemBuilder;
-import me.despical.commons.item.ItemUtils;
 import me.despical.tntrun.Main;
 import me.despical.tntrun.api.StatsStorage;
 import me.despical.tntrun.events.ListenerAdapter;
 import me.despical.tntrun.handlers.ChatManager;
+import me.despical.tntrun.handlers.items.GameItem;
 import me.despical.tntrun.handlers.rewards.Reward;
 import me.despical.tntrun.user.User;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerToggleFlightEvent;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
@@ -50,7 +48,7 @@ public class ArenaEvents extends ListenerAdapter {
 		super (plugin);
 	}
 
-	@EventHandler(priority = EventPriority.HIGH)
+	@EventHandler
 	public void onDoubleJump(PlayerToggleFlightEvent event) {
 		Player player = event.getPlayer();
 
@@ -79,34 +77,26 @@ public class ArenaEvents extends ListenerAdapter {
 		}
 	}
 
-	@EventHandler(priority = EventPriority.HIGH)
+	@EventHandler
 	public void onDoubleJump(PlayerInteractEvent event) {
-		Player player = event.getPlayer();
+		final Player player = event.getPlayer();
 
-		if (event.getAction() == Action.LEFT_CLICK_AIR || event.getAction() == Action.LEFT_CLICK_BLOCK || event.getAction() == Action.PHYSICAL) {
-			return;
-		}
+		if (event.getAction() == Action.LEFT_CLICK_AIR || event.getAction() == Action.LEFT_CLICK_BLOCK || event.getAction() == Action.PHYSICAL) return;
 
 		Arena arena = ArenaRegistry.getArena(event.getPlayer());
-		ItemStack itemStack = event.getPlayer().getInventory().getItemInMainHand();
 
-		if (arena == null || !ItemUtils.isNamed(itemStack)) {
-			return;
-		}
-
-		String key = plugin.getItemManager().getRelatedSpecialItem(itemStack);
-
-		if (key == null) {
-			return;
-		}
+		if (arena == null) return;
+		if (event.getItem() == null) return;
 
 		User user = plugin.getUserManager().getUser(player);
 
-		if (user.getCooldown("double_jump") > 0) {
-			return;
-		}
-
-		if (plugin.getItemManager().getRelatedSpecialItem(itemStack).equalsIgnoreCase("Double-Jump")) {
+		if (user.getCooldown("double_jump") > 0) return;
+		
+		final GameItem doubleJumpItem = plugin.getGameItemManager().getGameItem("double-jump");
+		
+		if (doubleJumpItem == null) return;
+		
+		if (event.getItem().getType() == doubleJumpItem.getItemStack().getType()) {
 			event.setCancelled(true);
 
 			if (user.getStat(StatsStorage.StatisticType.LOCAL_DOUBLE_JUMPS) > 0 && arena.getArenaState() == ArenaState.IN_GAME) {
@@ -121,7 +111,7 @@ public class ArenaEvents extends ListenerAdapter {
 		}
 	}
 
-	@EventHandler(ignoreCancelled = true, priority = EventPriority.HIGH)
+	@EventHandler
 	public void onDamage(EntityDamageEvent event) {
 		if (!(event.getEntity() instanceof Player)) {
 			return;
@@ -141,12 +131,13 @@ public class ArenaEvents extends ListenerAdapter {
 			User user = plugin.getUserManager().getUser(player);
 			user.setStat(StatsStorage.StatisticType.LOCAL_DOUBLE_JUMPS, 0);
 
-			player.setHealth(20.0d);
+			player.setHealth(20D);
 
 			if (user.isSpectator() || arena.getArenaState() == ArenaState.WAITING_FOR_PLAYERS) return;
 
 			user.addStat(StatsStorage.StatisticType.LOSES, 1);
 			user.setSpectator(true);
+			user.addGameItem("leave");
 
 			plugin.getRewardsFactory().performReward(player, Reward.RewardType.LOSE);
 
@@ -179,7 +170,40 @@ public class ArenaEvents extends ListenerAdapter {
 
 			player.getInventory().setItem(0, new ItemBuilder(XMaterial.COMPASS.parseItem()).name(plugin.getChatManager().message("In-Game.Spectator.Spectator-Item-Name", player)).build());
 			player.getInventory().setItem(4, new ItemBuilder(XMaterial.COMPARATOR.parseItem()).name(plugin.getChatManager().message("In-Game.Spectator.Settings-Menu.Item-Name", player)).build());
-			player.getInventory().setItem(plugin.getItemManager().getSpecialItem("Leave").getSlot(), plugin.getItemManager().getSpecialItem("Leave").getItemStack());
+		}
+	}
+
+	@EventHandler
+	public void onForceStartItemClicked(final PlayerInteractEvent event) {
+		if (event.getAction() == Action.PHYSICAL) return;
+
+		final Player player = event.getPlayer();
+		final User user = plugin.getUserManager().getUser(event.getPlayer());
+		final Arena arena = user.getArena();
+
+		if (arena == null) return;
+		if (event.getItem() == null) return;
+
+		final GameItem leaveItem = plugin.getGameItemManager().getGameItem("force-start-item");
+
+		if (leaveItem == null) return;
+		if (!event.getItem().getItemMeta().equals(leaveItem.getItemStack().getItemMeta())) return;
+
+		if (arena.getPlayers().size() < 2) {
+			arena.broadcastMessage("messages.arena.waiting-for-players");
+			return;
+		}
+
+		if (arena.isForceStart()) {
+			player.sendMessage(chatManager.message("in_game.messages.already-force-start"));
+			return;
+		}
+
+		if (arena.isArenaState(ArenaState.WAITING_FOR_PLAYERS, ArenaState.STARTING)) {
+			arena.setArenaState(ArenaState.STARTING);
+			arena.setForceStart(true);
+			arena.setTimer(0);
+			arena.broadcastMessage(chatManager.message("in_game.messages.admin_messages.set_starting_in_to_0"));
 		}
 	}
 }

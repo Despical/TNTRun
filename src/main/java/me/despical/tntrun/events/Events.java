@@ -20,7 +20,6 @@ package me.despical.tntrun.events;
 
 import me.despical.commons.compat.VersionResolver;
 import me.despical.commons.compat.XMaterial;
-import me.despical.commons.item.ItemUtils;
 import me.despical.commons.serializer.InventorySerializer;
 import me.despical.commons.util.UpdateChecker;
 import me.despical.tntrun.ConfigPreferences;
@@ -29,6 +28,7 @@ import me.despical.tntrun.arena.Arena;
 import me.despical.tntrun.arena.ArenaManager;
 import me.despical.tntrun.arena.ArenaRegistry;
 import me.despical.tntrun.arena.ArenaUtils;
+import me.despical.tntrun.handlers.items.GameItem;
 import me.despical.tntrun.user.User;
 import org.bukkit.entity.*;
 import org.bukkit.event.Event;
@@ -43,7 +43,9 @@ import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.hanging.HangingBreakByEntityEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.*;
-import org.bukkit.inventory.ItemStack;
+
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * @author Despical
@@ -52,8 +54,12 @@ import org.bukkit.inventory.ItemStack;
  */
 public class Events extends ListenerAdapter {
 
+	private final Set<User> leaveConfirmations;
+
 	public Events(Main plugin) {
 		super (plugin);
+		this.leaveConfirmations = new HashSet<>();
+
 		super.registerIf(bool -> VersionResolver.isCurrentEqualOrHigher(VersionResolver.ServerVersion.v1_9_R1), () -> new Listener() {
 
 			@EventHandler
@@ -100,7 +106,7 @@ public class Events extends ListenerAdapter {
 		Arena arena = user.getArena();
 
 		if (arena != null) {
-			ArenaManager.leaveAttempt(player, arena, "Quit Event");
+			ArenaManager.leaveAttempt(player, arena);
 		}
 
 		plugin.getUserManager().removeUser(user);
@@ -160,28 +166,38 @@ public class Events extends ListenerAdapter {
 	}
 
 	@EventHandler
-	public void onLeave(PlayerInteractEvent event) {
-		if (event.getAction() == Action.LEFT_CLICK_AIR || event.getAction() == Action.LEFT_CLICK_BLOCK || event.getAction() == Action.PHYSICAL) {
-			return;
-		}
+	public void onLeaveItemClicked(final PlayerInteractEvent event) {
+		if (event.getAction() == Action.PHYSICAL) return;
 
-		Arena arena = ArenaRegistry.getArena(event.getPlayer());
-		ItemStack itemStack = event.getPlayer().getInventory().getItemInMainHand();
+		final User user = plugin.getUserManager().getUser(event.getPlayer());
+		final Arena arena = user.getArena();
 
-		if (arena == null || !ItemUtils.isNamed(itemStack)) {
-			return;
-		}
+		if (arena == null) return;
+		if (event.getItem() == null) return;
 
-		String key = plugin.getItemManager().getRelatedSpecialItem(itemStack);
+		final GameItem leaveItem = plugin.getGameItemManager().getGameItem("leave-item");
 
-		if (key == null) {
-			return;
-		}
+		if (leaveItem == null) return;
+		if (!event.getItem().getItemMeta().equals(leaveItem.getItemStack().getItemMeta())) return;
 
-		if (plugin.getItemManager().getRelatedSpecialItem(itemStack).equalsIgnoreCase("Leave")) {
-			event.setCancelled(true);
+		final Player player = user.getPlayer();
 
-			ArenaManager.leaveAttempt(event.getPlayer(), arena, "Leave Item");
+		if (leaveConfirmations.contains(user)) {
+			this.leaveConfirmations.remove(user);
+
+			player.sendMessage(chatManager.message("in_game.game_items.leave_item.teleport_cancelled"));
+		} else {
+			player.sendMessage(chatManager.message("in_game.game_items.leave_item.returning_lobby"));
+
+			this.leaveConfirmations.add(user);
+
+			plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
+				if (!this.leaveConfirmations.contains(user)) return;
+
+				ArenaManager.leaveAttempt(player, arena);
+
+				this.leaveConfirmations.remove(user);
+			}, 60);
 		}
 	}
 

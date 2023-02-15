@@ -100,7 +100,11 @@ In-Game:
   Join-Cancelled-Via-API: "&cYou can't join this game!"
   Arena-Not-Configured: "&cArena is not configured yet! Contact staff!"
   Game-Chat-Format: "&7%player%: &f%message%"
-  Game-Death-Format: "&7[&4☠&7] &r"
+  Game-Death-Format: "&7[DEAD CHAT] &r"
+  Game-Items:
+    Leave-Item:
+      Returning-Lobby: "&a&lTeleporting you to the lobby in 3 seconds...\n&a&lRight-click again to cancel the teleport!"
+      Teleport-Cancelled: "&c&lTeleport cancelled!"
   Spectator:
     Spectator-Item-Name: "&b&lTeleporter &7(Right Click)"
     Spectator-Menu-Name: "&8Teleporter"
@@ -136,6 +140,7 @@ In-Game:
     Leave: "&b%player% &7left the game &8(&7%players%/%maximum_players%&8)&7!"
     Death: "&7%player% &cdied!\n&e%players% players remaining."
     Earned-Coin: "&e+15 extra coins (Surviving bonus)"
+    Already-Force-Start: "&cThe game is already starting!"
     Game-End-Messages:
       Titles:
         Win: "&fWinner"

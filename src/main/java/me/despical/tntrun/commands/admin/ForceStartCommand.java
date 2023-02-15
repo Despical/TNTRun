@@ -63,7 +63,9 @@ public class ForceStartCommand extends SubCommand {
 			return;
 		}
 
-		if (arena.getArenaState() == ArenaState.WAITING_FOR_PLAYERS || arena.getArenaState() == ArenaState.STARTING) {
+		if (arena.isForceStart()) return;
+
+		if (arena.getArenaState() == ArenaState.WAITING_FOR_PLAYERS) {
 			arena.setTimer(0);
 			arena.setForceStart(true);
 			arena.setArenaState(ArenaState.STARTING);

@@ -23,6 +23,7 @@ import me.despical.tntrun.api.StatsStorage;
 import me.despical.tntrun.api.events.player.TRPlayerStatisticChangeEvent;
 import me.despical.tntrun.arena.Arena;
 import me.despical.tntrun.arena.ArenaRegistry;
+import me.despical.tntrun.handlers.items.GameItem;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -94,12 +95,32 @@ public class User {
 		setStat(stat, getStat(stat) + value);
 	}
 
-	public void setCooldown(String key, double seconds) {
-		cooldowns.put(key, seconds + cooldownCounter);
+	public void setCooldown(String s, double seconds) {
+		cooldowns.put(s, seconds + cooldownCounter);
 	}
 
-	public double getCooldown(String key) {
-		return !cooldowns.containsKey(key) || cooldowns.get(key) <= cooldownCounter ? 0 : cooldowns.get(key) - cooldownCounter;
+	public double getCooldown(String s) {
+		final Double cooldown = cooldowns.get(s);
+
+		return (cooldown == null || cooldown <= cooldownCounter) ? 0 : cooldown - cooldownCounter;
+	}
+
+	public void addGameItem(final String id) {
+		final GameItem gameItem = plugin.getGameItemManager().getGameItem(id);
+
+		if (gameItem == null) return;
+
+		this.player.getInventory().setItem(gameItem.getSlot(), gameItem.getItemStack());
+	}
+
+	public void resetTemporaryStats() {
+		for (StatsStorage.StatisticType statistic : StatsStorage.StatisticType.values()) {
+			if (statistic.isPersistent()) continue;
+
+			setStat(statistic, 0);
+		}
+
+		this.spectator = false;
 	}
 
 	public static void cooldownHandlerTask() {

@@ -129,10 +129,6 @@ public class Arena extends BukkitRunnable {
 					gameBar.setTitle(plugin.getChatManager().message("boss-bar.starting-in", getTimer()));
 				}
 
-				for (Player player : players) {
-					player.setLevel(getTimer());
-					player.setExp((float) (getTimer() / waitingTime));
-				}
 
 				if (size < minPlayers) {
 					if (plugin.getConfigPreferences().getOption(ConfigPreferences.Option.BOSS_BAR_ENABLED)) {
@@ -177,10 +173,10 @@ public class Arena extends BukkitRunnable {
 						User user = plugin.getUserManager().getUser(player);
 						user.addStat(StatsStorage.StatisticType.GAMES_PLAYED, 1);
 						user.setStat(StatsStorage.StatisticType.LOCAL_DOUBLE_JUMPS, plugin.getPermissionManager().getDoubleJumps(player));
+						user.addGameItem("double-jump");
 
 						player.getInventory().clear();
 						player.setGameMode(GameMode.ADVENTURE);
-						player.getInventory().setItem(plugin.getItemManager().getSpecialItem("Double-Jump").getSlot(), plugin.getItemManager().getSpecialItem("Double-Jump").getItemStack());
 						player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, Integer.MAX_VALUE, 0, false, false));
 						player.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, Integer.MAX_VALUE, 0, false, false));
 						player.sendMessage(plugin.getChatManager().prefixedMessage("in-game.messages.lobby-messages.game-started"));
@@ -277,6 +273,10 @@ public class Arena extends BukkitRunnable {
 				setArenaState(ArenaState.WAITING_FOR_PLAYERS);
 				break;
 		}
+	}
+
+	public boolean isForceStart() {
+		return forceStart;
 	}
 
 	public void setForceStart(boolean forceStart) {
@@ -493,6 +493,10 @@ public class Arena extends BukkitRunnable {
 
 	public void setOptionValue(ArenaOption option, int value) {
 		arenaOptions.put(option, value);
+	}
+
+	public boolean isArenaState(ArenaState first, ArenaState second) {
+		return arenaState == first || arenaState == second;
 	}
 
 	public enum BarAction {
