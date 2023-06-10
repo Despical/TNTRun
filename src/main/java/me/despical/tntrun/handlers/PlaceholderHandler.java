@@ -21,9 +21,6 @@ package me.despical.tntrun.handlers;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import me.despical.tntrun.Main;
 import me.despical.tntrun.api.StatsStorage;
-import me.despical.tntrun.arena.Arena;
-import me.despical.tntrun.arena.ArenaRegistry;
-import me.despical.tntrun.user.User;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
@@ -39,7 +36,7 @@ public class PlaceholderHandler extends PlaceholderExpansion {
 	public PlaceholderHandler(Main plugin) {
 		this.plugin = plugin;
 
-		this.register();
+		register();
 	}
 
 	@Override
@@ -69,49 +66,35 @@ public class PlaceholderHandler extends PlaceholderExpansion {
 	public String onPlaceholderRequest(Player player, @NotNull String id) {
 		if (player == null) return null;
 
-		User user = plugin.getUserManager().getUser(player);
+		final var user = plugin.getUserManager().getUser(player);
 
-		switch (id.toLowerCase()) {
-			case "wins":
-				return Integer.toString(user.getStat(StatsStorage.StatisticType.WINS));
-			case "loses":
-				return Integer.toString(user.getStat(StatsStorage.StatisticType.LOSES));
-			case "games_played":
-				return Integer.toString(user.getStat(StatsStorage.StatisticType.GAMES_PLAYED));
-			case "longest_survive":
-				return Integer.toString(user.getStat(StatsStorage.StatisticType.LONGEST_SURVIVE));
-			case "coins":
-				return Integer.toString(user.getStat(StatsStorage.StatisticType.COINS));
-			default:
-				return handleArenaPlaceholderRequest(id);
-		}
+		return switch (id.toLowerCase()) {
+			case "wins" -> Integer.toString(user.getStat(StatsStorage.StatisticType.WINS));
+			case "loses" -> Integer.toString(user.getStat(StatsStorage.StatisticType.LOSES));
+			case "games_played" -> Integer.toString(user.getStat(StatsStorage.StatisticType.GAMES_PLAYED));
+			case "longest_survive" -> Integer.toString(user.getStat(StatsStorage.StatisticType.LONGEST_SURVIVE));
+			case "coins" -> Integer.toString(user.getStat(StatsStorage.StatisticType.COINS));
+			default -> handleArenaPlaceholderRequest(id);
+		};
 	}
 
 	private String handleArenaPlaceholderRequest(String id) {
 		if (!id.contains(":")) return null;
 
-		final String[] data = id.split(":");
-		final Arena arena = ArenaRegistry.getArena(data[0]);
+		final var data = id.split(":");
+		final var arena = plugin.getArenaRegistry().getArena(data[0]);
 
 		if (arena == null) return null;
 
-		switch (data[1].toLowerCase()) {
-			case "players":
-				return Integer.toString(arena.getPlayers().size());
-			case "players_left":
-				return Integer.toString(arena.getPlayersLeft().size());
-			case "max_players":
-				return Integer.toString(arena.getMaximumPlayers());
-			case "min_players":
-				return Integer.toString(arena.getMinimumPlayers());
-			case "state":
-				return arena.getArenaState().name();
-			case "state_pretty":
-				return arena.getArenaState().getFormattedName();
-			case "map_name":
-				return arena.getMapName();
-			default:
-				return null;
-		}
+		return switch (data[1].toLowerCase()) {
+			case "players" -> Integer.toString(arena.getPlayers().size());
+			case "players_left" -> Integer.toString(arena.getPlayersLeft().size());
+			case "max_players" -> Integer.toString(arena.getMaximumPlayers());
+			case "min_players" -> Integer.toString(arena.getMinimumPlayers());
+			case "state" -> arena.getArenaState().name();
+			case "state_pretty" -> arena.getArenaState().getFormattedName();
+			case "map_name" -> arena.getMapName();
+			default -> null;
+		};
 	}
 }

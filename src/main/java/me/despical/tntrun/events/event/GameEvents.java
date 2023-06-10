@@ -64,7 +64,7 @@ public class GameEvents extends EventListener {
 				if (arena.isArenaState(ArenaState.WAITING_FOR_PLAYERS, ArenaState.STARTING)) {
 					victim.teleport(arena.getLobbyLocation());
 				} else {
-					victim.teleport(arena.getPlayerSpawnPoints().get(0));
+//					victim.teleport(arena.getPlayerSpawnPoints().get(0));
 				}
 			}
 		}

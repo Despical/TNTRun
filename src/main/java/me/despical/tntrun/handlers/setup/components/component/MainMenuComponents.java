@@ -34,8 +34,6 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.stream.Collectors;
-
 /**
  * @author Despical
  * <p>
@@ -145,7 +143,6 @@ public class MainMenuComponents extends AbstractComponent {
 			arena.setMaximumPlayers(config.getInt(path + "maximumPlayers"));
 			arena.setLobbyLocation(LocationSerializer.fromString(config.getString(path + "lobbyLocation")));
 			arena.setEndLocation(LocationSerializer.fromString(config.getString(path + "endLocation")));
-			arena.setPlayerSpawnPoints(config.getStringList(path + "playerSpawnPoints").stream().map(LocationSerializer::fromString).collect(Collectors.toList()));
 			arena.start();
 		}), 8, 3);
 
