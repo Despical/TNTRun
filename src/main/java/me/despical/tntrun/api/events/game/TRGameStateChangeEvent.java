@@ -22,6 +22,7 @@ import me.despical.tntrun.api.events.TREvent;
 import me.despical.tntrun.arena.Arena;
 import me.despical.tntrun.arena.ArenaState;
 import org.bukkit.event.HandlerList;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * @author Despical
@@ -30,7 +31,7 @@ import org.bukkit.event.HandlerList;
  */
 public class TRGameStateChangeEvent extends TREvent {
 
-	private final HandlerList HANDLERS = new HandlerList();
+	private static final HandlerList handlers = new HandlerList();
 	private final ArenaState arenaState;
 
 	public TRGameStateChangeEvent(Arena eventArena, ArenaState arenaState) {
@@ -38,9 +39,14 @@ public class TRGameStateChangeEvent extends TREvent {
 		this.arenaState = arenaState;
 	}
 
+	public static HandlerList getHandlerList() {
+		return handlers;
+	}
+
+	@NotNull
 	@Override
 	public HandlerList getHandlers() {
-		return HANDLERS;
+		return handlers;
 	}
 
 	public ArenaState getArenaState() {
