@@ -44,10 +44,6 @@ public class TRPlayerStatisticChangeEvent extends TREvent {
 		this.number = number;
 	}
 
-	public static HandlerList getHandlerList() {
-		return handlers;
-	}
-
 	@NotNull
 	public static HandlerList getHandlerList() {
 		return handlers;
