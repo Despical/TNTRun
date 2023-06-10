@@ -21,12 +21,10 @@ package me.despical.tntrun.handlers.items;
 import me.despical.commons.compat.XMaterial;
 import me.despical.commons.configuration.ConfigUtils;
 import me.despical.tntrun.Main;
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.FileConfiguration;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
 
 /**
  * @author Despical
@@ -44,21 +42,22 @@ public class GameItemManager {
 		this.registerItems();
 	}
 
+	@Nullable
 	public GameItem getGameItem(final String id) {
 		return this.gameItems.get(id);
 	}
 
 	private void registerItems() {
-		final FileConfiguration config = ConfigUtils.getConfig(plugin, "items");
-		final ConfigurationSection section = config.getConfigurationSection("items");
+		final var config = ConfigUtils.getConfig(plugin, "items");
+		final var section = config.getConfigurationSection("items");
 
 		if (section == null) {
-			plugin.getLogger().log(Level.WARNING, "Couldn't find 'items' section in items.yml, delete the file to regenerate it!");
+			plugin.getLogger().warning("Couldn't find 'items' section in items.yml, delete the file to regenerate it!");
 			return;
 		}
 
-		for (final String id : section.getKeys(false)) {
-			final String path = String.format("items.%s.", id);
+		for (final var id : section.getKeys(false)) {
+			final String path = "items.%s.".formatted(id);
 			final GameItem gameItem = new GameItem(config.getString(path + "name"), XMaterial.valueOf(config.getString(path + "material")).parseMaterial(), config.getInt(path + "slot"), config.getStringList(path + "lore"));
 
 			this.gameItems.put(id, gameItem);

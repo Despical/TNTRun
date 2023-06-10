@@ -32,7 +32,7 @@ public enum ArenaState {
 	RESTARTING("Restarting"),
 	INACTIVE("Inactive");
 
-	String formattedName;
+	final String formattedName;
 
 	ArenaState(String formattedName) {
 		this.formattedName = formattedName;

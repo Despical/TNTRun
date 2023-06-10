@@ -28,29 +28,47 @@ import org.bukkit.plugin.java.JavaPlugin;
  */
 public enum ArenaOption {
 
-	TIMER(0),
+	TIMER(45),
 
-	MINIMUM_PLAYERS(2),
+	MINIMUM_PLAYERS(11),
 
-	MAXIMUM_PLAYERS(12),
+	MAXIMUM_PLAYERS(16),
 
-	WAITING_TIME("Starting-Waiting-Time", 60),
+	START_BLOCK_REMOVING("Time-Settings.Start-Block-Removing", 5),
 
-	START_TIME("Start-Time-On-Full-Lobby", 15);
+	BLOCK_REMOVE_DELAY("Time-Settings.Block-Remove-Delay", 12),
 
-	int defaultValue;
+	LOBBY_WAITING_TIME("Time-Settings.Lobby-Waiting-Time", 45),
+
+	LOBBY_STARTING_TIME("Time-Settings.Lobby-Starting-Time", 16),
+
+	LOBBY_ENDING_TIME("Time-Settings.Ending-Time", 6);
+
+	int integerValue;
+	boolean booleanValue;
 
 	ArenaOption(int defaultValue) {
-		this.defaultValue = defaultValue;
+		this.integerValue = defaultValue;
+	}
+
+	ArenaOption(String path, boolean defaultValue) {
+		final var plugin = JavaPlugin.getPlugin(Main.class);
+
+		this.booleanValue = plugin.getConfig().getBoolean(path, defaultValue);
 	}
 
 	ArenaOption(String path, int defaultValue) {
-		final Main plugin = JavaPlugin.getPlugin(Main.class);
+		final var plugin = JavaPlugin.getPlugin(Main.class);
+		final var value = plugin.getConfig().getInt(path, defaultValue);
 
-		this.defaultValue = plugin.getConfig().getInt(path, defaultValue);
+		this.integerValue = value < 0 ? defaultValue : value;
 	}
 
-	public int getDefaultValue() {
-		return defaultValue;
+	public boolean getBooleanValue() {
+		return booleanValue;
+	}
+
+	public int getIntegerValue() {
+		return integerValue;
 	}
 }

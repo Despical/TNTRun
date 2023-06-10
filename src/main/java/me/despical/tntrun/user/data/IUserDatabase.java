@@ -16,35 +16,30 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package me.despical.tntrun.handlers.items;
+package me.despical.tntrun.user.data;
 
-import me.despical.commons.item.ItemBuilder;
-import org.bukkit.Material;
-import org.bukkit.inventory.ItemFlag;
-import org.bukkit.inventory.ItemStack;
-
-import java.util.List;
+import me.despical.tntrun.Main;
+import me.despical.tntrun.api.StatsStorage;
+import me.despical.tntrun.user.User;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * @author Despical
  * <p>
  * Created at 10.07.2020
  */
-public class GameItem {
+public abstract sealed class IUserDatabase permits FileStatistics, MysqlManager {
 
-	private final ItemStack itemStack;
-	private final int slot;
+	@NotNull
+	protected final Main plugin;
 
-	public GameItem(final String displayName, final Material material, int slot, final List<String> lore) {
-		this.itemStack = new ItemBuilder(material).name(displayName).lore(lore).unbreakable(true).flag(ItemFlag.HIDE_UNBREAKABLE).flag(ItemFlag.HIDE_ATTRIBUTES).build();
-		this.slot = slot;
+	public IUserDatabase(final @NotNull Main plugin) {
+		this.plugin = plugin;
 	}
 
-	public ItemStack getItemStack() {
-		return itemStack;
-	}
+	public abstract void saveStatistic(final @NotNull User user, final StatsStorage.StatisticType statisticType);
 
-	public int getSlot() {
-		return slot;
-	}
+	public abstract void saveStatistics(final @NotNull User user);
+
+	public abstract void loadStatistics(final @NotNull User user);
 }

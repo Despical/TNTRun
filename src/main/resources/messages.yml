@@ -1,188 +1,146 @@
-#        You can translate TNT Run messages here.
-#             Color codes (&) supported.
-#
-#              Use \n to make new line
-#
-#     Some messages support their own placeholders
-#                 like %player%
+admin-commands:
+  did-you-mean: "&3Did you mean &b/%command%?"
+  cannot-do-that-ingame: "&cYou can not do that while playing!"
+  provide-an-arena-name: "&cPlease provide an arena name!"
+  there-is-already-an-arena: "&cThere is already an arena with that name!"
+  no-arena-found-with-that-name: "&cNo arena found with that name!"
+  deleted-arena-successfully: "&cDeleted arena called %s successfully!"
+  must-be-in-arena: "&cYou must be in the arena to perform this command!"
+  list-command:
+    no-arenas-created: "&cThere aren't any arena to show!"
+    format: "&aExisting arenas: &7%list%"
 
-# TNT Run Command Messages
-Commands:
-  Did-You-Mean: "&3Did you mean &b/%command%&3?"
-  Are-You-Sure: "&cAre you sure you want to do this action? Type the command again &6within 10 seconds &cto confirm!"
-  Teleported-To-The-Lobby: "&7Teleported to the lobby!"
-  Removed-Game-Instance: "&aSuccessfully removed game instance!"
-  No-Arena-Like-That: "&cNo arena with that ID!"
-  Look-Sign: "&cYou have to look at a sign to perform this command!"
-  Type-Arena-Name: "&cPlease type arena ID!"
-  No-Free-Arenas: "&cThere isn't any available arena!"
-  Statistics:
-    Type-Name: "&cPlease type statistic name to view!"
-    Invalid-Name: "&cName of statistic is invalid! Type: games_played, wins, loses, longest_survive and coins"
-    Header: "&8&m-------------------[&6 Top 10 &8&m]-------------------"
-    Format: "&e#%position% %name% - %value% &7%statistic%"
-  Only-By-Player: "&cYou can execute this command only as player!"
-  Not-Playing: "&cYou must play to execute this command!"
-  No-Permission: "&cYou don't have permission to use this command!"
-  Admin-Commands:
-    Teleported-To-Player: "&aTeleported to player!"
-    Player-Not-Found: "&cPlayer not found with that name!"
-    Success-Reload: "&aSystem successfully reloaded all configurations and arenas!"
-    List-Command:
-      Format: "&aExisting arenas: &7%list%"
-      No-Arenas-Created: "&cThere are no game instances!"
-  Stats-Command:
-    Header: "&l-----[YOUR STATS]-----"
-    Header-Other: "&l-----[STATS FOR %player%]-----"
-    Footer: "&l----------------------"
-    Wins: "&aWins: &e"
-    Loses: "&aLoses: &e"
-    Games-Played: "&aGames played: &e"
-    Coins: "&aCoins: &e"
-    Longest-Survive: "&aLongest survive: &e"
+player-commands:
+  no-player-found: "&cNo player found with that name!"
+  no-free-arenas: "&cThere aren't any available arena to join!"
+  statistics:
+    type-name: "&cPlease type statistic name to view!"
+    invalid-name: "&cNo statistic found with that name!"
+    header: "&8&m-------------------[&6 Top 10 &8&m]-------------------"
+    format: "&e#%position% %name% - %value% &7%statistic%"
+  stats-command:
+    header: "&l[-----YOUR STATS-----]"
+    header-other: "&l[-----STATS FOR %player%-----]"
+    footer: "&l[--------------------]"
+    wins: "&aWins: &e"
+    loses: "&aLoses: &e"
+    highest-score: "&aHighest score: &e"
+    games-played: "&aGames played: &e"
 
-# Don't use more than 48 characters if you use old versions of Minecraft.
-# Can be used up to 144 characters in 1.14 and higher versions.
+messages:
+  arena:
+    no-permission: "&cYou don't have enough permission to join this arena!"
+    not-configured: "&cThis arena is not ready yet to play!"
+    already-playing: "&cYou are already playing Murder Mystery!"
+    not-playing: "&cYou cannot leave the game if you are not playing!"
+    restarting: "&cYou cannot join while this arena is restarting!"
+    waiting-for-players: "&cWaiting for players... We need at least %min_players% players to start."
+    starts-in-15s: "&eThe game starts in &a%time% &eseconds!"
+    starts-in-10s: "&eThe game starts in &6%time% &eseconds!"
+    starts-in-5s-and-less: "&eThe game starts in &c%time% &eseconds!"
+    countdown-cancelled: "&c&lCountdown cancelled! There aren't enough players to start!"
+    game-started: "&c&lTeaming with the Murderers is not allowed!"
+    join-arena: "&7%player% &ehas joined (&b%players%&e/&b%max_players%&e)!"
+    quit-arena: "&7%player% &ehas quit!"
+  spectators:
+    show-spectators: "&aYou can now see other spectators!"
+    hide-spectators: "&cYou can no longer see other spectators!"
+    have-night-vision: "&aYou now have night vision!"
+    removed-night-vision: "&cYou no longer have night vision!"
+    auto-teleport-enabled: "&aOnce you select a player using your compass, it will auto teleport you to them!"
+    auto-teleport-disabled: "&cYou will no longer auto teleport to targets!"
+    first-person-enabled: "&aYou will now by default use First Person spectating!"
+    first-person-disabled: "&cYou will now by default use Third Person spectating!"
+    have-speed: "&aYou now have Speed %speed%!"
+    no-longer-speed: "&cYou no longer have any speed effects!"
+  in-game:
+    you-are-spectator-now: "&7You are spectator now!"
+    seconds-left-title: "&c%time% &eseconds left!"
+    seconds-left-subtitle: "&eAfter %time%s the Murderer will lose"
+    force-start: "&c&lAn admin set waiting time to 0. The game starts now!"
+    already-force-start: "&cThe game is already starting!"
+    game-chat-format: "&7%player%: %message%"
+    game-death-format: "&7[DEAD CHAT] "
+  score-actions:
+    survive: "Survived 30 seconds"
+  game-items:
+    leave-item:
+      returning-lobby: "&a&lTeleporting you to the lobby in 3 seconds...\n&a&lRight-click again to cancel the teleport!"
+      teleport-cancelled: "&c&lTeleport cancelled!"
+  summary-message:
+    - "&a&m-------------------------------------------------"
+    - "&f&lMurder Mystery"
+    - ""
+    - "&f&lWinner: %winner%"
+    - ""
+    - "&7Detective: %detective%&r"
+    - "&7Murderer: %murderer%&r &7(&6%murderer_kills% &7Kills)"
+    - "&7Hero: %hero%"
+    - ""
+    - "&a&m-------------------------------------------------"
+
+# Leave any message empty to hide bar in a specific arena state.
+game-bar:
+  waiting-for-players: "&e&lPLAYING &f&lTNT Run &e&lby &b&lDespical"
+  starting: "&e&lPLAYING &f&lTNT Run &e&lby &b&lDespical"
+  in-game: ""
+  ending: "&e&lPLAYING &f&lTNT Run &e&lby &b&lDespical"
+
 Scoreboard:
-  Title: "&e&lTNTRun"
-  Content:
-    # Can be found more information about placeholders on our wiki.
-    Playing:
-      - ""
-      - "&7Duration: %formatted_time%"
-      - ""
-      - "&fDouble Jump: &7%double_jumps%/5"
-      - ""
-      - "Players Alive: &a%players%"
-      - ""
-      - "&fCoins Earned: &a%coins_earned%"
-      - ""
-      - "&epatreon.com/Despical"
-    Waiting:
-      - ""
-      - "&fMap: &a%map_name%"
-      - "&fPlayers: &a%players%/%max_players%"
-      - ""
-      - "&fWaiting for players..."
-      - ""
-      - "&epatreon.com/Despical"
-    Starting:
-      - ""
-      - "&fMap: &a%map_name%"
-      - "&fPlayers: &a%players%/%max_players%"
-      - ""
-      - "&fStarting in &a%formatted_time% &fto"
-      - "&fallow time for"
-      - "&fadditional players"
-      - ""
-      - "&fGame: &aTNT Run"
-      - ""
-      - "&epatreon.com/Despical"
+  Title: " &e&lTNT Run "
+  Waiting:
+    - ""
+    - "&fMap: &a%map%"
+    - "&fPlayers: &a%players%/%max_players%"
+    - ""
+    - "&fWaiting for players..."
+    - ""
+    - "&epatreon.com/despical"
+  Starting:
+    - "&7%date%"
+    - ""
+    - "Map: &a%map%"
+    - "Players: &a%players%/%max_players%"
+    - ""
+    - "Starting in &a%time%s"
+    - ""
+    - "Mode: &a%mode%"
+    - ""
+    - "&epatreon.com/despical"
+  In-Game:
+    - "&7%date%"
+    - ""
+    - "Role: &a%role%"
+    - ""
+    - "Innocents Left: &a%innocents_left%"
+    - "Time Left: &a%formatted_time%"
+    - ""
+    - "%bow%"
+    - ""
+    - "Map: &a%map%"
+    - ""
+    - "&epatreon.com/despical"
 
-# Has usage only when boss bar is enabled in config
-Boss-Bar:
-  Main-Title: "&a&lTNT Run &f&l- &6&lDespical"
-  Starting-In: "&f&lStarting in: &e&l%number%"
-  Waiting-For-Players: "&4&lWaiting for more players..."
-  In-Game-Info: "&e&lPlaying &f&lTNT RUN &e&lby &b&lDESPICAL"
-  Game-Ended: "&c&lGame has ended! You were playing &b&lTNT Run"
-
-# Used in most game messages.
-In-Game:
-  Plugin-Prefix: "&8[&6TNT Run&8] "
-  Already-Playing: "&cYou are already queued for a game! You can leave a game with /tr leave."
-  Join-No-Permission: "&cYou don't have &6%permission% &cpermission to join this arena!"
-  Full-Game-No-Permission: "&cYou don't have the permission to join full games!"
-  No-Slots-For-Premium: "&cThis game is already full of premium players! Sorry"
-  You-Are-Spectator: "&cYou're now a spectator! You can fly now!"
-  Only-Command-Ingame-Is-Leave: "&cYou have to leave the game first to perform commands. The only command that works is /tr leave!"
-  # Join cancelled via external plugin that uses TNT Run API.
-  Join-Cancelled-Via-API: "&cYou can't join this game!"
-  Arena-Not-Configured: "&cArena is not configured yet! Contact staff!"
-  Game-Chat-Format: "&7%player%: &f%message%"
-  Game-Death-Format: "&7[DEAD CHAT] &r"
-  Game-Items:
-    Leave-Item:
-      Returning-Lobby: "&a&lTeleporting you to the lobby in 3 seconds...\n&a&lRight-click again to cancel the teleport!"
-      Teleport-Cancelled: "&c&lTeleport cancelled!"
-  Spectator:
-    Spectator-Item-Name: "&b&lTeleporter &7(Right Click)"
-    Spectator-Menu-Name: "&8Teleporter"
-    Target-Player-Score: "&7Score: %score%"
-    Settings-Menu:
-      Item-Name: "&b&lSpectator settings &7(Right Click)"
-      Inventory-Name: "&8Spectator settings"
-      Speed-Name: "&aSpeed"
-      No-Speed: "&aNo Speed"
-      Enable-Night-Vision: "&aEnable Night Vision"
-      Enable-Night-Vision-Lore:
-        - "&7Click to enable night vision!"
-      Disable-Night-Vision: "&cDisable Night Vision"
-      Disable-Night-Vision-Lore:
-        - "&7Click to disable night vision!"
-      Hide-Spectators: "&cHide Spectators"
-      Hide-Spectators-Message: "&cYou can no longer see other spectators!"
-      Hide-Spectators-Lore:
-        - "&7Click to hide other spectators!"
-      Show-Spectators: "&aShow Spectators"
-      Show-Spectators-Message: "&aYou can now see other spectators!"
-      Show-Spectators-Lore:
-        - "&7Click to show other spectators!"
-  Messages:
-    Lobby-Messages:
-      Start-In: "&7The game starts in &b%time%&7 seconds!"
-      Waiting-For-Players: "&7Waiting for players... We need at least &b%minimum_players%&7 players to start."
-      Enough-Players-To-Start: "&7Now we have enough players. The game is starting soon!"
-      Game-Started: "&7Game started! Don't stop running!"
-      Kicked-For-Premium-Slot: "&c%player% got removed from the game to make a place for premium players!"
-      You-Were-Kicked-For-Premium-Slot: "&cYou got kicked out of the game to make a place for a premium player!"
-    Join: "&b%player%&7 joined the game &8(&7%players%/%maximum_players%&8)&7!"
-    Leave: "&b%player% &7left the game &8(&7%players%/%maximum_players%&8)&7!"
-    Death: "&7%player% &cdied!\n&e%players% players remaining."
-    Earned-Coin: "&e+15 extra coins (Surviving bonus)"
-    Already-Force-Start: "&cThe game is already starting!"
-    Game-End-Messages:
-      Titles:
-        Win: "&fWinner"
-        Lose: ""
-      Subtitles:
-        Win: "&e%winner%"
-        Lose: "&c%winner% &awon the game!"
-      Summary-Message:
-        - "&a&m----------------------------------------------------"
-        - "&e&lTNT Run"
-        - ""
-        - "&f&lWINNER: &f&l%winner%"
-        - ""
-        - "&8&lYOUR SCORE: &7&l%earned_coins%"
-        - "&8&lYOUR SURVIVE TIME: &7&l%formatted_survive_time%"
-        - ""
-        - "&a&m----------------------------------------------------"
-    Admin-Messages:
-      Set-Starting-In-To-0: "&bAn admin set waiting time to 0. The game starts now!"
-      Stopped-Game: "&bAn admin has been force stopped the game by command!"
-
-Signs:
-  Please-Type-Arena-Name: "&cPlease type arena name in second line!"
-  Arena-Doesnt-Exists: "&cArena with that name doesn't exists!"
-  Doesnt-Have-Permission: "&cYou don't have enough permission to break this sign!"
-  Sign-Created: "&aSign created successfully!"
-  Sign-Removed: "&aSign successfully removed!"
-  Game-States:
-    Waiting: "&lWaiting..."
-    Inactive: "&lInactive..."
-    In-Game: "&lIn-game"
-    Starting: "&e&lStarting"
-    Full-Game: "&c&lFULL"
-    Ending: "&lEnding"
-    Restarting: "&c&lRestarting"
-  Lines:
-    - "&4&lTNT Run"
-    - "%state%"
-    - "%map_name%"
-    - "&5[%players%/%max_players%]"
-
-Validator:
-  Invalid-Arena-Configuration: "[TNTRun] %cArena %arena% has invalid configuration! Missing node: %error%"
-  Instance-Started: "[TNTRun] Arena %arena% instance successfully started!"
-  No-Instances-Created: "[TNTRun] There are no arena instances created in configuration!"
+spectator-gui:
+  title: "         Spectator Settings"
+  auto-teleport-item:
+    enable: "&aEnable Auto Teleport"
+    disable: "&cDisable Auto Teleport"
+    enabled-lore:
+      - "&7Click to disable auto teleport!"
+    disabled-lore:
+      - "&7Click to enable auto teleport!"
+  night-vision-item:
+    enable: "&aEnable Night Vision"
+    disable: "&cDisable Night Vision"
+    enabled-lore:
+      - "&7Click to disable night vision!"
+    disabled-lore:
+      - "&7Click to enable night vision!"
+  hide-spectators-item:
+    enable: "&cHide Spectators"
+    disable: "&aShow Spectators"
+    enabled-lore:
+      - "&7Click to hide other spectators!"
+    disabled-lore:
+      - "&7Click to show other spectators!"

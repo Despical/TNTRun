@@ -20,17 +20,18 @@ package me.despical.tntrun.user;
 
 import me.despical.tntrun.Main;
 import me.despical.tntrun.api.StatsStorage;
-import me.despical.tntrun.api.events.player.TRPlayerStatisticChangeEvent;
 import me.despical.tntrun.arena.Arena;
-import me.despical.tntrun.arena.ArenaRegistry;
-import me.despical.tntrun.handlers.items.GameItem;
+import me.despical.tntrun.handlers.rewards.Reward;
+import net.md_5.bungee.api.ChatMessageType;
+import net.md_5.bungee.api.chat.TextComponent;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.potion.PotionEffectType;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import java.util.EnumMap;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * @author Despical
@@ -40,9 +41,9 @@ import java.util.UUID;
 public class User {
 
 	private static final Main plugin = JavaPlugin.getPlugin(Main.class);
+	private static long cooldownCounter;
 
 	private boolean spectator;
-	private static long cooldownCounter;
 
 	private final Player player;
 	private final Map<String, Double> cooldowns;
@@ -54,16 +55,54 @@ public class User {
 		this.stats = new EnumMap<>(StatsStorage.StatisticType.class);
 	}
 
+	public void sendMessage(final String path) {
+		this.sendRawMessage(plugin.getChatManager().message(path));
+	}
+
+	public void sendMessage(final String path, final Object... args) {
+		this.sendRawMessage(plugin.getChatManager().message(path), args);
+	}
+
+	public void sendRawMessage(final String message) {
+		this.player.sendMessage(plugin.getChatManager().rawMessage(message));
+	}
+
+	public void sendRawMessage(final String message, final Object... args) {
+		this.player.sendMessage(plugin.getChatManager().rawMessage(String.format(message, args)));
+	}
+
+	public void performReward(final Reward.RewardType rewardType) {
+		plugin.getRewardsFactory().performReward(this, rewardType);
+	}
+
+
+	public void closeOpenedInventory() {
+		this.player.closeInventory();
+	}
+
+	public boolean isInArena() {
+		return plugin.getArenaRegistry().isInArena(this);
+	}
+
+	@Nullable
+	public Arena getArena() {
+		return plugin.getArenaRegistry().getArena(this);
+	}
+
 	public Player getPlayer() {
 		return player;
 	}
 
-	public UUID getUniqueId() {
-		return player.getUniqueId();
+	public String getName() {
+		return player.getName();
 	}
 
-	public Arena getArena() {
-		return ArenaRegistry.getArena(player);
+	public Location getLocation() {
+		return player.getLocation();
+	}
+
+	public UUID getUniqueId() {
+		return player.getUniqueId();
 	}
 
 	public boolean isSpectator() {
@@ -75,7 +114,7 @@ public class User {
 	}
 
 	public int getStat(StatsStorage.StatisticType stat) {
-		final Integer statistic = stats.get(stat);
+		final var statistic = stats.get(stat);
 
 		if (statistic == null) {
 			stats.put(stat, 0);
@@ -87,12 +126,14 @@ public class User {
 
 	public void setStat(StatsStorage.StatisticType stat, int value) {
 		stats.put(stat, value);
-
-		plugin.getServer().getScheduler().runTask(plugin, () -> plugin.getServer().getPluginManager().callEvent(new TRPlayerStatisticChangeEvent(getArena(), player, stat, value)));
 	}
 
 	public void addStat(StatsStorage.StatisticType stat, int value) {
 		setStat(stat, getStat(stat) + value);
+	}
+
+	public boolean hasPermission(final String permission) {
+		return this.player.hasPermission(permission);
 	}
 
 	public void setCooldown(String s, double seconds) {
@@ -100,27 +141,72 @@ public class User {
 	}
 
 	public double getCooldown(String s) {
-		final Double cooldown = cooldowns.get(s);
+		final var cooldown = cooldowns.get(s);
 
 		return (cooldown == null || cooldown <= cooldownCounter) ? 0 : cooldown - cooldownCounter;
 	}
 
-	public void addGameItem(final String id) {
-		final GameItem gameItem = plugin.getGameItemManager().getGameItem(id);
-
-		if (gameItem == null) return;
-
-		this.player.getInventory().setItem(gameItem.getSlot(), gameItem.getItemStack());
-	}
-
 	public void resetTemporaryStats() {
-		for (StatsStorage.StatisticType statistic : StatsStorage.StatisticType.values()) {
+		for (final var statistic : StatsStorage.StatisticType.values()) {
 			if (statistic.isPersistent()) continue;
 
 			setStat(statistic, 0);
 		}
 
 		this.spectator = false;
+	}
+
+	public void removePotionEffectsExcept(final PotionEffectType... effectTypes) {
+		final var setOfEffects = Set.of(effectTypes);
+
+		for (final var activePotion : this.player.getActivePotionEffects()) {
+			if (setOfEffects.contains(activePotion.getType())) continue;
+
+			player.removePotionEffect(activePotion.getType());
+		}
+	}
+
+	public void removeGameItem(final String id) {
+		final var gameItem = plugin.getGameItemManager().getGameItem(id);
+
+		if (gameItem == null) return;
+
+		this.player.getInventory().setItem(gameItem.getSlot(), null);
+	}
+
+	public void removeGameItems(final String... ids) {
+		for (final var id : ids) {
+			this.removeGameItem(id);
+		}
+	}
+
+	public void addGameItems(final String... ids) {
+		this.addGameItems(true, ids);
+	}
+
+	@SuppressWarnings("all")
+	public void sendActionBar(@NotNull String message) {
+		try {
+			this.player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(message));
+		} catch (Exception | Error ignored) { }
+	}
+
+	public void addGameItems(boolean clearInventory, final String... ids) {
+		if (clearInventory) this.player.getInventory().clear();
+
+		for (final var id : ids) {
+			this.addGameItem(id);
+		}
+
+		this.player.updateInventory();
+	}
+
+	public void addGameItem(final String id) {
+		final var gameItem = plugin.getGameItemManager().getGameItem(id);
+
+		if (gameItem == null) return;
+
+		this.player.getInventory().setItem(gameItem.getSlot(), gameItem.getItemStack());
 	}
 
 	public static void cooldownHandlerTask() {
