@@ -22,6 +22,7 @@ import me.despical.tntrun.api.events.TREvent;
 import me.despical.tntrun.arena.Arena;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * @author Despical
@@ -30,7 +31,7 @@ import org.bukkit.event.HandlerList;
  */
 public class TRGameLeaveAttemptEvent extends TREvent {
 
-	private final HandlerList HANDLERS = new HandlerList();
+	private static final HandlerList handlers = new HandlerList();
 	private final Player player;
 
 	public TRGameLeaveAttemptEvent(Player player, Arena targetArena) {
@@ -42,8 +43,13 @@ public class TRGameLeaveAttemptEvent extends TREvent {
 		return player;
 	}
 
+	public static HandlerList getHandlerList() {
+		return handlers;
+	}
+
+	@NotNull
 	@Override
 	public HandlerList getHandlers() {
-		return HANDLERS;
+		return handlers;
 	}
 }

@@ -21,6 +21,7 @@ package me.despical.tntrun.api.events.game;
 import me.despical.tntrun.api.events.TREvent;
 import me.despical.tntrun.arena.Arena;
 import org.bukkit.event.HandlerList;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * @author Despical
@@ -29,14 +30,19 @@ import org.bukkit.event.HandlerList;
  */
 public class TRGameStartEvent extends TREvent {
 
-	private final HandlerList HANDLERS = new HandlerList();
+	private static final HandlerList handlers = new HandlerList();
 
 	public TRGameStartEvent(Arena arena) {
 		super(arena);
 	}
 
+	public static HandlerList getHandlerList() {
+		return handlers;
+	}
+
+	@NotNull
 	@Override
 	public HandlerList getHandlers() {
-		return HANDLERS;
+		return handlers;
 	}
 }

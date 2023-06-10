@@ -23,6 +23,7 @@ import me.despical.tntrun.api.events.TREvent;
 import me.despical.tntrun.arena.Arena;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * @author Despical
@@ -31,7 +32,7 @@ import org.bukkit.event.HandlerList;
  */
 public class TRPlayerStatisticChangeEvent extends TREvent {
 
-	private final HandlerList HANDLERS = new HandlerList();
+	private static final HandlerList handlers = new HandlerList();
 	private final Player player;
 	private final StatsStorage.StatisticType statisticType;
 	private final int number;
@@ -43,9 +44,19 @@ public class TRPlayerStatisticChangeEvent extends TREvent {
 		this.number = number;
 	}
 
+	public static HandlerList getHandlerList() {
+		return handlers;
+	}
+
+	@NotNull
+	public static HandlerList getHandlerList() {
+		return handlers;
+	}
+
+	@NotNull
 	@Override
 	public HandlerList getHandlers() {
-		return HANDLERS;
+		return handlers;
 	}
 
 	public Player getPlayer() {
