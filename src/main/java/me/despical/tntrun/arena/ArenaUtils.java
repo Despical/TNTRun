@@ -81,14 +81,8 @@ public class ArenaUtils {
 
 		msg = msg.replace("%action%", action.action);
 
-		user.addStat(StatsStorage.StatisticType.LOCAL_SURVIVE, action.points);
+		user.addStat(StatsStorage.StatisticType.LOCAL_COINS, action.points);
 		user.sendRawMessage(msg);
-	}
-
-	public static boolean areInSameArena(final User one, final User two) {
-		final Arena arena = one.getArena();
-
-		return arena != null && arena.equals(two.getArena());
 	}
 
 	public enum ScoreAction {

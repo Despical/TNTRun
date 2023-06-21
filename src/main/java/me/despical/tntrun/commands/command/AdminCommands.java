@@ -15,8 +15,11 @@ import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
+import org.apache.logging.log4j.util.Strings;
 import org.bukkit.entity.Player;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.stream.Collectors;
 
 import static me.despical.commandframework.Command.SenderType.PLAYER;
@@ -47,6 +50,47 @@ public class AdminCommands extends AbstractCommand {
 		}
 	}
 
+
+	@Command(
+		name = "tntrun.setmapname",
+		permission = "tr.admin",
+		desc = "Set map name of the arena.",
+		usage = "/tr setmapname <arena name> <map name>",
+		senderType = PLAYER
+	)
+	public void mmMapNameCommand(CommandArguments arguments) {
+		final var user = plugin.getUserManager().getUser(arguments.getSender());
+
+		if (plugin.getArenaRegistry().isInArena(user)) {
+			user.sendMessage("admin-commands.cannot-do-that-ingame");
+			return;
+		}
+
+		if (arguments.isArgumentsEmpty()) {
+			user.sendMessage("admin-commands.provide-an-arena-name");
+			return;
+		}
+
+		final var arenaId = arguments.getArgument(0);
+		final var arena = plugin.getArenaRegistry().getArena(arenaId);
+
+		if (arena == null) {
+			user.sendMessage("admin-commands.no-arena-found-with-that-name");
+			return;
+		}
+
+		final var path = "instance.%s.".formatted(arenaId);
+		final var allArgs = new ArrayList<>(Arrays.asList(arguments.getArguments()));
+		allArgs.remove(allArgs.get(0));
+
+		final var name = Strings.join(allArgs, ' ');
+
+		arenaConfig.set(path + "mapName", name);
+		saveConfig();
+
+		user.sendRawMessage("&e✔ Completed | &aName of arena &e%s &aset to &e%s", arena, name);
+	}
+
 	@Command(
 		name = "tntrun.create",
 		permission = "tntrun.admin.create",
@@ -63,7 +107,7 @@ public class AdminCommands extends AbstractCommand {
 		}
 
 		if (arguments.isArgumentsEmpty()) {
-			user.sendRawMessage("admin-commands.provide-an-arena-name");
+			user.sendMessage("admin-commands.provide-an-arena-name");
 			return;
 		}
 
@@ -93,7 +137,7 @@ public class AdminCommands extends AbstractCommand {
 		user.sendRawMessage("&3&l--------------------------------------------");
 		MiscUtils.sendCenteredMessage(player, "&bArena " + id + " created!");
 		user.sendRawMessage("");
-		MiscUtils.sendCenteredMessage(player, "&bEdit this arena via &etntrun edit " + id + "&b!");
+		MiscUtils.sendCenteredMessage(player, "&bEdit this arena via &e/tntrun edit " + id + "&b!");
 		user.sendRawMessage("&3&l--------------------------------------------");
 	}
 
@@ -165,7 +209,10 @@ public class AdminCommands extends AbstractCommand {
 	public void forceStartCommand(CommandArguments arguments) {
 		final var user = plugin.getUserManager().getUser(arguments.getSender());
 
-		if (!user.isInArena()) return;
+		if (!user.isInArena()) {
+			user.sendMessage("admin-commands.must-be-in-arena");
+			return;
+		}
 
 		final var arena = user.getArena();
 

@@ -91,7 +91,7 @@ public class ArenaRegistry {
 		final var section = config.getConfigurationSection("instance");
 
 		if (section == null) {
-			plugin.getLogger().warning("Couldn't find 'instances' section in arena.yml, delete the file to regenerate it!");
+			plugin.getLogger().warning("Couldn't find 'instance' section in arena.yml, delete the file to regenerate it!");
 			return;
 		}
 

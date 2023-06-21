@@ -68,7 +68,7 @@ public class Main extends JavaPlugin {
 		initializeClasses();
 		checkUpdate();
 
-		getLogger().info("Initialization finished. Join our Discord server if you need any help. (https://discord.gg/rVkaGmyszE)");
+		getLogger().info("Initialization finished. Join our Discord server: https://discord.gg/rVkaGmyszE");
 	}
 
 	@Override
@@ -144,13 +144,13 @@ public class Main extends JavaPlugin {
 
 				logger.info("Found a new version available: v" + result.getNewestVersion());
 				logger.info("Download it on SpigotMC:");
-				logger.info("https://www.spigotmc.org/resources/tnt-run.83196/");
+				logger.info("https://spigotmc.org/resources/83196");
 			}
 		});
 	}
 
 	private void setupConfigurationFiles() {
-		Stream.of("arenas", "rewards", "stats", "items", "mysql", "messages").filter(name -> !new File(getDataFolder(),name + ".yml").exists()).forEach(name -> saveResource(name + ".yml", false));
+		Stream.of("arena", "rewards", "stats", "items", "mysql", "messages").filter(name -> !new File(getDataFolder(),name + ".yml").exists()).forEach(name -> saveResource(name + ".yml", false));
 	}
 
 	@NotNull

@@ -55,7 +55,7 @@ public class ArenaEditorGUI {
 		this.plugin = plugin;
 		this.user = user;
 		this.arena = arena;
-		this.gui = new Gui(plugin, 4, "    TNT Run Arena Editor");
+		this.gui = new Gui(plugin, 4, "       TNT Run Arena Editor");
 		this.paginatedPane = new PaginatedPane(9, 4);
 		this.gui.setOnGlobalClick(event -> event.setCancelled(true));
 		this.gui.addPane(paginatedPane);

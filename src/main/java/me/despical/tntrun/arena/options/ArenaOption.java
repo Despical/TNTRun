@@ -30,9 +30,9 @@ public enum ArenaOption {
 
 	TIMER(45),
 
-	MINIMUM_PLAYERS(11),
+	MINIMUM_PLAYERS(2),
 
-	MAXIMUM_PLAYERS(16),
+	MAXIMUM_PLAYERS(12),
 
 	START_BLOCK_REMOVING("Time-Settings.Start-Block-Removing", 5),
 

@@ -19,6 +19,7 @@
 package me.despical.tntrun.handlers.setup.components.component;
 
 import de.rapha149.signgui.SignGUI;
+import me.despical.commons.ReflectionUtils;
 import me.despical.commons.compat.XMaterial;
 import me.despical.commons.item.ItemBuilder;
 import me.despical.commons.serializer.LocationSerializer;
@@ -49,20 +50,28 @@ public class MainMenuComponents extends AbstractComponent {
 	@Override
 	public void registerComponents(PaginatedPane paginatedPane) {
 		final var pane = new StaticPane(9, 4);
-		final var mapNameItem = new ItemBuilder(XMaterial.NAME_TAG).name("&e&lSet Map Name").lore("&7Click to set arena map name.").lore("", "&7Currently: " + arena.getMapName()).enchantment(Enchantment.ARROW_INFINITE).flag(ItemFlag.HIDE_ENCHANTS);
 		final var readyItem = new ItemBuilder(XMaterial.LIME_STAINED_GLASS_PANE).name("&aArena is registered properly!");
 		final var notReadyItem = new ItemBuilder(XMaterial.BLACK_STAINED_GLASS_PANE).name("&cArena configuration is not validated yet!");
 		final var lobbyLocationsItem = new ItemBuilder(XMaterial.WHITE_CONCRETE).name("&e&lSet Lobby/End Locations").lore("&7Click to set lobby and ending locations.").lore("", "&7Lobby Location: " + isOptionDoneBool("lobbyLocation"), "&7End Location:    " + isOptionDoneBool("endLocation"));
 		final var playerAmountsItem = new ItemBuilder(XMaterial.GLOWSTONE_DUST).name("&e&lSet Min/Max Players").lore("&7Click to set player amounts.").lore("", "&a&l✔ &7Minimum  Players Amount: &8" + arena.getMinimumPlayers()).lore("&a&l✔ &7Maximum Players Amount: &8" + arena.getMaximumPlayers()).enchantment(Enchantment.ARROW_INFINITE).flag(ItemFlag.HIDE_ENCHANTS);
 
+		final var supportLatestVer = ReflectionUtils.supports(20);
+		final var mapNameItem = !supportLatestVer ? new ItemBuilder(XMaterial.NAME_TAG).name("&e&lSet Map Name").lore("&7Click to set arena map name.").lore("", "&7Currently: " + arena.getMapName()).enchantment(Enchantment.ARROW_INFINITE).flag(ItemFlag.HIDE_ENCHANTS) :
+			new ItemBuilder(XMaterial.BARRIER).name("&c&l&mUnsupported Version For Sign Menus&m").lore("&7The library we're using for 'Sign menus' is not", "&7supporting this version of Minecraft at the moment.", "&7Please use &a/mm setmapname &7command for now.");
+
 		if (isOptionDoneBoolean("lobbyLocation") && isOptionDoneBoolean("endLocation")) lobbyLocationsItem.enchantment(Enchantment.ARROW_INFINITE).flag(ItemFlag.HIDE_ENCHANTS);
 
 		pane.fillWith(arena.isReady() ? readyItem.build() : notReadyItem.build());
 		pane.fillProgressBorder(GuiItem.of(readyItem.build()), GuiItem.of(notReadyItem.build()), arena.getSetupProgress());
-		pane.addItem(GuiItem.of(lobbyLocationsItem.build(), event -> this.gui.setPage("   Set LOBBY and END locations", 3, 1)), 1, 1);
-		pane.addItem(GuiItem.of(playerAmountsItem.build(), event -> this.gui.setPage(" Set MIN and MAX player amount", 3, 3)), 7, 1);
+		pane.addItem(GuiItem.of(lobbyLocationsItem.build(), event -> this.gui.setPage("   Set LOBBY and END locations", 3, 1)), 2, 1);
+		pane.addItem(GuiItem.of(playerAmountsItem.build(), event -> this.gui.setPage(" Set MIN and MAX player amount", 3, 3)), 6, 1);
 
 		pane.addItem(GuiItem.of(mapNameItem.build(), event -> {
+			if (ReflectionUtils.supports(20)) {
+				event.setCancelled(true);
+				return;
+			}
+
 			user.closeOpenedInventory();
 
 			new SignGUI()
@@ -79,14 +88,14 @@ public class MainMenuComponents extends AbstractComponent {
 						config.set(path + "mapName", name);
 						saveConfig();
 
-						user.sendRawMessage("&e✔ Completed | &aName of arena &e%s &aset to &e%s", arena, name);
+						user.sendRawMessage("&e✔ Completed | &aName of arena &e%s &aset to &e%s.", arena, name);
 						return null;
 					} else {
 						user.sendRawMessage("&c✘ Not Completed | &aName of arena can not be empty!");
 						return lines;
 					}
 				}).open(user.getPlayer());
-		}), 3, 1);
+		}), 4, 1);
 
 		ItemStack registerItem;
 
@@ -115,18 +124,11 @@ public class MainMenuComponents extends AbstractComponent {
 				return;
 			}
 
-			final String[] locations = {"lobbyLocation", "endLocation"}, spawns = {"playerSpawnPoints", "goldSpawnPoints"};
+			final String[] locations = {"lobbyLocation", "endLocation"};
 
 			for (final var location : locations) {
 				if (!config.isSet(path + location) || LocationSerializer.isDefaultLocation(config.getString(path + location))) {
 					user.sendRawMessage("&c&l✘ &cArena validation failed! Please configure following spawn properly: %s (cannot be world spawn location)", location);
-					return;
-				}
-			}
-
-			for (final var spawn : spawns) {
-				if (!config.isSet(path + spawn) || config.getStringList(path + spawn).size() < arena.getMaximumPlayers()) {
-					user.sendRawMessage("&c&l✘ &cArena validation failed! Please configure following spawns properly: %s (must be minimum %d spawns)", spawn, arena.getMaximumPlayers());
 					return;
 				}
 			}

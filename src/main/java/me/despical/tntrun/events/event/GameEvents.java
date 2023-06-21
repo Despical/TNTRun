@@ -59,14 +59,7 @@ public class GameEvents extends EventListener {
 
 		switch (e.getCause()) {
 			case DROWNING, FALL -> e.setCancelled(true);
-
-			case VOID -> {
-				if (arena.isArenaState(ArenaState.WAITING_FOR_PLAYERS, ArenaState.STARTING)) {
-					victim.teleport(arena.getLobbyLocation());
-				} else {
-//					victim.teleport(arena.getPlayerSpawnPoints().get(0));
-				}
-			}
+			case VOID -> victim.teleport(arena.getLobbyLocation());
 		}
 	}
 

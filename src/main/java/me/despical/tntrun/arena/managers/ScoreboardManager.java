@@ -46,11 +46,13 @@ public class ScoreboardManager {
 	private final static String date = formatter.format(new Date());
 
 	private final Arena arena;
+	private final Main plugin;
 	private final ChatManager chatManager;
 	private final Set<Scoreboard> scoreboards;
 
 	public ScoreboardManager(final Arena arena, final Main plugin) {
 		this.arena = arena;
+		this.plugin = plugin;
 		this.chatManager = plugin.getChatManager();
 		this.scoreboards = new HashSet<>();
 	}
@@ -92,7 +94,7 @@ public class ScoreboardManager {
 
 	private List<Entry> formatScoreboard(User user) {
 		final var builder = new EntryBuilder();
-		final var path = arena.isArenaState(ArenaState.IN_GAME, ArenaState.ENDING) ? "Scoreboard.Content.Playing" :  "Scoreboard.Content." + arena.getArenaState().getFormattedName();
+		final var path = "Scoreboard." + (arena.isArenaState(ArenaState.IN_GAME, ArenaState.ENDING) ? "Playing" : arena.getArenaState().getFormattedName());
 
 		for (final var line : chatManager.getStringList(path)) {
 			builder.next(formatScoreboardLine(line, user));
@@ -112,8 +114,9 @@ public class ScoreboardManager {
 		formattedLine = formattedLine.replace("%max_players%", Integer.toString(arena.getMaximumPlayers()));
 		formattedLine = formattedLine.replace("%time%", Integer.toString(arena.getTimer()));
 		formattedLine = formattedLine.replace("%formatted_time%", StringFormatUtils.formatIntoMMSS(arena.getTimer()));
-		formattedLine = formattedLine.replace("%coins_earned%", Integer.toString(user.getStat(StatsStorage.StatisticType.COINS)));
+		formattedLine = formattedLine.replace("%coins_earned%", Integer.toString(user.getStat(StatsStorage.StatisticType.LOCAL_COINS)));
 		formattedLine = formattedLine.replace("%double_jumps%", Integer.toString(user.getStat(StatsStorage.StatisticType.LOCAL_DOUBLE_JUMPS)));
+		formattedLine = formattedLine.replace("%max_double_jumps%", Integer.toString(plugin.getPermissionManager().getDoubleJumps(user.getPlayer())));
 
 		return chatManager.rawMessage(formattedLine);
 	}

@@ -153,6 +153,8 @@ public class User {
 			setStat(statistic, 0);
 		}
 
+		setStat(StatsStorage.StatisticType.LOCAL_DOUBLE_JUMPS, plugin.getPermissionManager().getDoubleJumps(this.player));
+
 		this.spectator = false;
 	}
 

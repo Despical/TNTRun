@@ -70,7 +70,7 @@ public class JoinQuitEvents extends EventListener {
 			if (result.requiresUpdate()) {
 				user.sendRawMessage("Found a new version available: v" + result.getNewestVersion());
 				user.sendRawMessage("Download it on SpigotMC:");
-				user.sendRawMessage("https://www.spigotmc.org/resources/tnt-run.83196/");
+				user.sendRawMessage("https://spigotmc.org/resources/83196");
 			}
 		});
 	}

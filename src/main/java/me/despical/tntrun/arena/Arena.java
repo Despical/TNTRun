@@ -18,7 +18,6 @@
 
 package me.despical.tntrun.arena;
 
-import me.despical.commons.compat.Titles;
 import me.despical.commons.compat.XSound;
 import me.despical.commons.serializer.InventorySerializer;
 import me.despical.tntrun.ConfigPreferences;
@@ -282,7 +281,8 @@ public class Arena extends BukkitRunnable {
 						if (!removableBlocks.contains(block.getType().name())) continue;
 
 						destroyedBlocks.add(block.getState());
-						plugin.getServer().getScheduler().runTaskLater(plugin, () -> block.setType(Material.AIR), blockRemoveDelay);
+
+						if (plugin.isEnabled()) plugin.getServer().getScheduler().runTaskLater(plugin, () -> block.setType(Material.AIR), blockRemoveDelay);
 					}
 				}
 			}
@@ -499,12 +499,13 @@ public class Arena extends BukkitRunnable {
 
 				if (getTimer() == 0) {
 					setArenaState(ArenaState.IN_GAME);
+					broadcastMessage("messages.in-game.game-started");
 
 					for (final var user : this.players) {
 						teleportToLobby(user);
 
 						user.resetTemporaryStats();
-						user.getPlayer().getInventory().clear();
+						user.addGameItems("double-jump");
 
 						ArenaUtils.updateNameTagsVisibility(user);
 					}
@@ -527,21 +528,16 @@ public class Arena extends BukkitRunnable {
 						player.setAllowFlight(true);
 					}
 
-					if (timer % 30 == 0) {
+					user.addStat(StatsStorage.StatisticType.LOCAL_SURVIVE, 1);
+
+					if (timer > 0 && timer % 30 == 0) {
 						ArenaUtils.addScore(user, ArenaUtils.ScoreAction.SURVIVE_TIME);
-
-						if (timer == 30 || timer == 60) {
-							var time = Integer.toString(timer);
-							var title = chatManager.message("messages.seconds-left-title").replace("%time%", time);
-							var subtitle = chatManager.message("messages.seconds-left-subtitle").replace("%time%", time);
-
-							Titles.sendTitle(user.getPlayer(), 5, 60, 5, title, subtitle);
-						}
 					}
 				}
 
-				setTimer(getTimer() - 1);
+				setTimer(getTimer() + 1);
 			}
+
 			case ENDING -> {
 				if (getTimer() <= 0) {
 					scoreboardManager.stopAllScoreboards();
