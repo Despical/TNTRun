@@ -18,18 +18,16 @@
 
 package me.despical.tntrun.handlers;
 
-import me.clip.placeholderapi.PlaceholderAPI;
 import me.despical.commons.configuration.ConfigUtils;
 import me.despical.commons.string.StringFormatUtils;
 import me.despical.commons.util.Strings;
 import me.despical.tntrun.Main;
 import me.despical.tntrun.arena.Arena;
-import org.apache.commons.lang.StringUtils;
+import me.despical.tntrun.user.User;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.entity.Player;
 
 import java.util.List;
-import java.util.Locale;
 
 /**
  * @author Despical
@@ -38,110 +36,53 @@ import java.util.Locale;
  */
 public class ChatManager {
 
-	private final Main plugin;
-	private FileConfiguration config;
-
-	private final String prefix;
-	private final boolean papiEnabled;
+	private final FileConfiguration config;
 
 	public ChatManager(Main plugin) {
-		this.plugin = plugin;
 		this.config = ConfigUtils.getConfig(plugin, "messages");
-		this.prefix = message("in_game.plugin_prefix");
-		this.papiEnabled = plugin.getServer().getPluginManager().isPluginEnabled("PlaceholderAPI");
 	}
 
-	public boolean isPapiEnabled() {
-		return papiEnabled;
+	public String message(final String path) {
+		return rawMessage(this.config.getString(path));
 	}
 
-	public String prefixedRawMessage(String message) {
-		return prefix + color(message);
+	public String message(final String path, final User user) {
+		String message = this.message(path);
+
+		message = message.replace("%player%", user.getPlayer().getName());
+		return message;
 	}
 
-	public String color(String message) {
+	public String message(final String path, final Arena arena, final User user) {
+		String message = this.message(path, arena);
+
+		message = message.replace("%player%", user.getPlayer().getName());
+
+		return message;
+	}
+
+	public String message(final String path, final Arena arena) {
+		String message = this.message(path);
+
+		message = message.replace("%time%", Integer.toString(arena.getTimer()));
+		message = message.replace("%formatted_time%", StringFormatUtils.formatIntoMMSS(arena.getTimer()));
+		message = message.replace("%players%", Integer.toString(arena.getPlayers().size()));
+		message = message.replace("%players_left%", Integer.toString(arena.getPlayersLeft().size()));
+		message = message.replace("%min_players%", Integer.toString(arena.getMinimumPlayers()));
+		message = message.replace("%max_players%", Integer.toString(arena.getMaximumPlayers()));
+
+		return message;
+	}
+
+	public ConfigurationSection getConfigurationSection(final String path) {
+		return config.getConfigurationSection(path);
+	}
+
+	public String rawMessage(final String message) {
 		return Strings.format(message);
 	}
 
-	public String prefixedMessage(String path) {
-		return prefix + message(path);
-	}
-
-	public String message(String path) {
-		path = me.despical.commons.string.StringUtils.capitalize(path.replace('_', '-'), '-', '.');
-		return color(config.getString(path));
-	}
-
-	public String message(String path, int integer) {
-		return formatMessage(null, message(path), integer);
-	}
-
-	public String prefixedMessage(String path, int integer) {
-		return prefix + message(path, integer);
-	}
-
-	public String prefixedMessage(String path, Player player) {
-		return prefix + message(path, player);
-	}
-
-	public String message(String path, Player player) {
-		String returnString = message(path);
-
-		if (papiEnabled) {
-			returnString = PlaceholderAPI.setPlaceholders(player, returnString);
-		}
-
-		return color(returnString);
-	}
-
-	public String formatMessage(Arena arena, String message, Player player) {
-		String returnString = message;
-		returnString = StringUtils.replace(returnString, "%player%", player.getName());
-
-		if (papiEnabled) {
-			returnString = PlaceholderAPI.setPlaceholders(player, returnString);
-		}
-
-		return formatPlaceholders(returnString, arena);
-	}
-
-	private String formatPlaceholders(String message, Arena arena) {
-		String formatted = message;
-
-		formatted = StringUtils.replace(formatted, "%arena%", arena.getMapName());
-		formatted = StringUtils.replace(formatted, "%time%", Integer.toString(arena.getTimer()));
-		formatted = StringUtils.replace(formatted, "%formatted_time%", StringFormatUtils.formatIntoMMSS(arena.getTimer()));
-		formatted = StringUtils.replace(formatted, "%players%", Integer.toString(arena.getPlayersLeft().size()));
-		formatted = StringUtils.replace(formatted, "%maximum_players%", Integer.toString(arena.getMaximumPlayers()));
-		formatted = StringUtils.replace(formatted, "%minimum_players%", Integer.toString(arena.getMinimumPlayers()));
-		return color(formatted);
-	}
-
-	public String prefixedFormattedMessage(Arena arena, String path, int integer) {
-		return prefix + formatMessage(arena, message(path), integer);
-	}
-
-	public String formatMessage(Arena arena, String message, int integer) {
-		String returnString = message;
-
-		returnString = StringUtils.replace(returnString, "%number%", Integer.toString(integer));
-		return arena != null ? formatPlaceholders(returnString, arena) : returnString;
-	}
-
-	public void broadcastAction(Arena arena, Player player, ActionType action) {
-		arena.broadcastMessage(prefix + formatMessage(arena, message("in_game.messages." + action.name().toLowerCase(Locale.ENGLISH)), player));
-	}
-
-	public List<String> getStringList(String path) {
-		path = me.despical.commons.string.StringUtils.capitalize(path.replace('_', '-'), '-', '.');
-		return config.getStringList(path);
-	}
-
-	public void reloadConfig() {
-		config = ConfigUtils.getConfig(plugin, "messages");
-	}
-
-	public enum ActionType {
-		JOIN, LEAVE, DEATH
+	public List<String> getStringList(final String path) {
+		return this.config.getStringList(path);
 	}
 }

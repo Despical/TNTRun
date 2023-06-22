@@ -18,19 +18,18 @@
 
 package me.despical.tntrun.user;
 
-import me.despical.commons.util.LogUtils;
 import me.despical.tntrun.ConfigPreferences;
 import me.despical.tntrun.Main;
-import me.despical.tntrun.arena.Arena;
-import me.despical.tntrun.user.data.FileStats;
+import me.despical.tntrun.api.StatsStorage;
+import me.despical.tntrun.user.data.FileStatistics;
 import me.despical.tntrun.user.data.MysqlManager;
-import me.despical.tntrun.user.data.UserDatabase;
+import me.despical.tntrun.user.data.IUserDatabase;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 /**
  * @author Despical
@@ -39,51 +38,65 @@ import java.util.stream.Collectors;
  */
 public class UserManager {
 
+	@NotNull
 	private final Set<User> users;
-	private final UserDatabase database;
+
+	@NotNull
+	private final IUserDatabase userDatabase;
 
 	public UserManager(Main plugin) {
 		this.users = new HashSet<>();
-		this.database = plugin.getConfigPreferences().getOption(ConfigPreferences.Option.DATABASE_ENABLED) ? new MysqlManager() : new FileStats();
+		this.userDatabase = plugin.getConfigPreferences().getOption(ConfigPreferences.Option.DATABASE_ENABLED) ? new MysqlManager(plugin) : new FileStatistics(plugin);
 
-		plugin.getServer().getOnlinePlayers().forEach(this::getUser);
+		plugin.getServer().getOnlinePlayers().stream().map(this::getUser).forEach(this::loadStatistics);
 	}
 
-	public User getUser(Player player) {
+	@NotNull
+	public User addUser(final Player player) {
+		final User user = new User(player);
+
+		this.users.add(user);
+		return user;
+	}
+
+	public void removeUser(final Player player) {
+		this.users.remove(this.getUser(player));
+	}
+
+	@NotNull
+	public User getUser(final Player player) {
 		final UUID uuid = player.getUniqueId();
 
-		for (final User user : users) {
-			if (user.getUniqueId().equals(uuid)) {
+		for (User user : this.users) {
+			if (uuid.equals(user.getUniqueId())) {
 				return user;
 			}
 		}
 
-		LogUtils.log("Registering new user {0} ({1})", uuid, player.getName());
-
-		final User user = new User(player);
-		users.add(user);
-
-		database.loadStatistics(user);
-		return user;
+		return this.addUser(player);
 	}
 
-	public Set<User> getUsers(Arena arena) {
-		return arena.getPlayers().stream().map(this::getUser).collect(Collectors.toSet());
+	@NotNull
+	public Set<User> getUsers() {
+		return Set.copyOf(users);
 	}
 
-	public void saveAllStatistic(User user) {
-		database.saveAllStatistic(user);
+	@NotNull
+	public IUserDatabase getUserDatabase() {
+		return this.userDatabase;
 	}
 
-	public void loadStatistics(User user) {
-		database.loadStatistics(user);
+	public void saveStatistic(final User user, final StatsStorage.StatisticType statisticType) {
+		if (!statisticType.isPersistent()) return;
+
+		this.userDatabase.saveStatistics(user);
 	}
 
-	public void removeUser(User user) {
-		users.remove(user);
+	public void saveStatistics(final User user) {
+		this.userDatabase.saveStatistics(user);
 	}
 
-	public UserDatabase getDatabase() {
-		return database;
+	public void loadStatistics(final User user) {
+		this.userDatabase.loadStatistics(user);
 	}
 }

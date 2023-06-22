@@ -21,6 +21,7 @@ package me.despical.tntrun;
 import me.despical.commons.string.StringUtils;
 
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -35,9 +36,7 @@ public class ConfigPreferences {
 	public ConfigPreferences(Main plugin) {
 		this.options = new HashMap<>();
 
-		plugin.saveDefaultConfig();
-
-		for (Option option : Option.values()) {
+		for (final var option : Option.values()) {
 			options.put(option, plugin.getConfig().getBoolean(option.path, option.def));
 		}
 	}
@@ -48,21 +47,19 @@ public class ConfigPreferences {
 
 	public enum Option {
 
-		BOSS_BAR_ENABLED(true), CHAT_FORMAT_ENABLED(true), DATABASE_ENABLED,
-		DEBUG_MESSAGES, DISABLE_LEAVE_COMMAND, DISABLE_SEPARATE_CHAT,
-		ENABLE_SHORT_COMMANDS, INVENTORY_MANAGER_ENABLED(true),
-		NAME_TAGS_HIDDEN, REWARDS_ENABLED, SIGNS_BLOCK_STATES_ENABLED(true), UPDATE_NOTIFIER_ENABLED;
+		GAME_BAR_ENABLED, INVENTORY_MANAGER_ENABLED, DISABLE_FALL_DAMAGE, DATABASE_ENABLED(false),
+		NAME_TAGS_HIDDEN(false), CHAT_FORMAT_ENABLED, DISABLE_SEPARATE_CHAT(false), UPDATE_NOTIFIER_ENABLED;
 
-		String path;
-		boolean def;
+		final String path;
+		final boolean def;
 
 		Option() {
-			this(false);
+			this(true);
 		}
 
 		Option(boolean def) {
 			this.def = def;
-			this.path = StringUtils.capitalize(name().replace('_', '-').toLowerCase(), '_');
+			this.path = StringUtils.capitalize(name().replace('_', '-').toLowerCase(Locale.ENGLISH), '-', '.');
 		}
 	}
 }

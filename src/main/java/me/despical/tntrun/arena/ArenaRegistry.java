@@ -20,16 +20,14 @@ package me.despical.tntrun.arena;
 
 import me.despical.commons.configuration.ConfigUtils;
 import me.despical.commons.serializer.LocationSerializer;
-import me.despical.commons.util.LogUtils;
 import me.despical.tntrun.Main;
-import me.despical.tntrun.handlers.ChatManager;
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.entity.Player;
-import org.bukkit.plugin.java.JavaPlugin;
+import me.despical.tntrun.user.User;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.logging.Level;
 
 /**
  * @author Despical
@@ -38,89 +36,86 @@ import java.util.List;
  */
 public class ArenaRegistry {
 
-	private static final Main plugin = JavaPlugin.getPlugin(Main.class);
-	private static final List<Arena> arenas = new ArrayList<>();
+	@NotNull
+	private final Main plugin;
 
-	public static boolean isInArena(Player player) {
-		return getArena(player) != null;
+	@NotNull
+	private final Set<Arena> arenas;
+
+	public ArenaRegistry(final @NotNull Main plugin) {
+		this.plugin = plugin;
+		this.arenas = new HashSet<>();
+
+		this.registerArenas();
 	}
 
-	public static boolean isArena(String id) {
-		return getArena(id) != null;
+	public void registerArena(final Arena arena) {
+		this.arenas.add(arena);
 	}
 
-	public static Arena getArena(Player player) {
-		return arenas.stream().filter(arena -> arena.getPlayers().contains(player)).findFirst().orElse(null);
+	public void unregisterArena(final Arena arena) {
+		this.arenas.remove(arena);
 	}
 
-	public static Arena getArena(String id) {
-		return arenas.stream().filter(arena -> arena.getId().equalsIgnoreCase(id)).findFirst().orElse(null);
+	@NotNull
+	public Set<Arena> getArenas() {
+		return Set.copyOf(arenas);
 	}
 
-	public static void registerArena(Arena arena) {
-		LogUtils.log("Registering new game instance with id {0}.", arena.getId());
-		arenas.add(arena);
+	@Nullable
+	public Arena getArena(final String id) {
+		if (id == null) return null;
+
+		return this.arenas.stream().filter(arena -> arena.getId().equals(id)).findFirst().orElse(null);
 	}
 
-	public static void unregisterArena(Arena arena) {
-		LogUtils.log("Unregistering game instance with id {0}.", arena.getId());
-		arenas.remove(arena);
+	@Nullable
+	public Arena getArena(final User user) {
+		if (user == null) return null;
+
+		return this.arenas.stream().filter(arena -> arena.isInArena(user)).findFirst().orElse(null);
 	}
 
-	public static void registerArenas() {
-		LogUtils.log("Initial arenas registration.");
-		long start = System.currentTimeMillis();
+	public boolean isArena(final String arenaId) {
+		return arenaId != null && getArena(arenaId) != null;
+	}
 
-		arenas.clear();
+	public boolean isInArena(final User user) {
+		return this.getArena(user) != null;
+	}
 
-		FileConfiguration config = ConfigUtils.getConfig(plugin, "arenas");
-		ChatManager chatManager = plugin.getChatManager();
+	private void registerArenas() {
+		this.arenas.clear();
 
-		if (!config.contains("instances")) {
-			LogUtils.sendConsoleMessage(chatManager.message("validator.no-instances-created"));
-			return;
-		}
-
-		ConfigurationSection section = config.getConfigurationSection("instances");
+		final var config = ConfigUtils.getConfig(plugin, "arena");
+		final var section = config.getConfigurationSection("instance");
 
 		if (section == null) {
-			LogUtils.sendConsoleMessage(chatManager.message("validator.no-instances-created"));
+			plugin.getLogger().warning("Couldn't find 'instance' section in arena.yml, delete the file to regenerate it!");
 			return;
 		}
 
-		for (String id : section.getKeys(false)) {
-			String path = "instances." + id + ".";
-			Arena arena;
+		for (final var id : section.getKeys(false)) {
+			if (id.equals("default")) continue;
 
-			if (path.contains("default")) {
-				continue;
-			}
+			final var path = "instance.%s.".formatted(id);
+			final var arena = new Arena(id);
 
-			arena = new Arena(id);
-			arena.setReady(true);
+			this.registerArena(arena);
+
+			arena.setReady(config.getBoolean(path + "ready"));
 			arena.setMinimumPlayers(config.getInt(path + "minimumPlayers", 2));
 			arena.setMaximumPlayers(config.getInt(path + "maximumPlayers", 10));
 			arena.setMapName(config.getString(path + "mapName", "undefined"));
 			arena.setLobbyLocation(LocationSerializer.fromString(config.getString(path + "lobbyLocation")));
 			arena.setEndLocation(LocationSerializer.fromString(config.getString(path + "endLocation")));
 
-			registerArena(arena);
-
-			if (!config.getBoolean(path + "ready", false)) {
-				LogUtils.sendConsoleMessage(chatManager.message("validator.invalid-arena-configuration").replace("%arena%", id).replace("%error%", "NOT VALIDATED"));
-				arena.setReady(false);
-				continue;
+			if (!arena.isReady()) {
+				plugin.getLogger().log(Level.WARNING, "Setup of arena ''{0}'' is not finished yet!", id);
+				return;
 			}
 
 			arena.start();
-
-			LogUtils.sendConsoleMessage(chatManager.message("validator.instance-started").replace("%arena%", id));
 		}
-
-		LogUtils.log("Arenas registration completed, took {0} ms.", System.currentTimeMillis() - start);
-	}
-
-	public static List<Arena> getArenas() {
-		return arenas;
 	}
 }

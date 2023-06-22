@@ -1,17 +1,34 @@
 items:
-  leave-item:
-    name: "&c&lReturn to Lobby &7(Right Click)"
-    material: RED_BED
-    slot: 8
-    murderer-slot: 8
-    lore:
-      - "&7Right-click to leave to the lobby!"
   double-jump:
-    name: "&a&lDouble Jump &7(Right Click)"
+    name: "&a&lDouble Jump"
     material: FEATHER
     slot: 0
     lore:
       - "&7Right-click to double jump!"
+  leave-item:
+    name: "&c&lReturn to Lobby &7(Right Click)"
+    material: RED_BED
+    slot: 8
+    lore:
+      - "&7Right-click to leave to the lobby!"
+  play-again:
+    name: "&b&lPlay Again &7(Right Click)"
+    material: PAPER
+    slot: 7
+    lore:
+      - "&7Right-click to play another game!"
+  settings-item:
+    name: "&b&lSpectator Settings &7(Right Click)"
+    material: REPEATER
+    slot: 4
+    lore:
+      - "&7Right-click to change your spectator settings!"
+  teleporter-item:
+    name: "&a&lTeleporter &7(Right Click)"
+    material: COMPASS
+    slot: 0
+    lore:
+      - "&7Right-click to change open teleporter menu!"
   force-start-item:
     name: "&c&lForce start the Game &7(Right Click)"
     material: REDSTONE

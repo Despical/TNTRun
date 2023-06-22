@@ -22,18 +22,15 @@ import me.despical.commons.configuration.ConfigUtils;
 import me.despical.commons.sorter.SortUtils;
 import me.despical.tntrun.ConfigPreferences;
 import me.despical.tntrun.Main;
-import me.despical.tntrun.user.data.MysqlManager;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.*;
-import java.util.logging.Level;
-import java.util.stream.Collectors;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 /**
  * @author Despical
@@ -44,31 +41,37 @@ public class StatsStorage {
 
 	private static final Main plugin = JavaPlugin.getPlugin(Main.class);
 
+	@NotNull
+	@Contract("null -> fail")
 	public static Map<UUID, Integer> getStats(StatisticType stat) {
 		if (plugin.getConfigPreferences().getOption(ConfigPreferences.Option.DATABASE_ENABLED)) {
-			try (Connection connection = plugin.getMysqlDatabase().getConnection()) {
-				Statement statement = connection.createStatement();
-				ResultSet set = statement.executeQuery("SELECT UUID, " + stat.name + " FROM " + ((MysqlManager) plugin.getUserManager().getDatabase()).getTableName() + " ORDER BY " + stat.name);
-				Map<UUID, Integer> column = new HashMap<>();
+			try (final var connection = plugin.getMysqlDatabase().getConnection()) {
+				final var statement = connection.createStatement();
+				final var set = statement.executeQuery("SELECT UUID, " + stat.getName() + " FROM playerstats ORDER BY " + stat.getName());
+				final var column = new HashMap<UUID, Integer>();
 
 				while (set.next()) {
-					column.put(UUID.fromString(set.getString("UUID")), set.getInt(stat.name));
+					column.put(UUID.fromString(set.getString("UUID")), set.getInt(stat.getName()));
 				}
 
 				return column;
-			} catch (SQLException exception) {
-				plugin.getLogger().log(Level.WARNING, "SQL Exception occurred! " + exception.getSQLState() + " (" + exception.getErrorCode() + ")");
-				return null;
+			} catch (SQLException e) {
+				plugin.getLogger().warning("SQLException occured during getting statistics from database!");
+				return new HashMap<>();
 			}
 		}
 
-		FileConfiguration config = ConfigUtils.getConfig(plugin, "stats");
-		Map<UUID, Integer> stats = config.getKeys(false).stream().collect(Collectors.toMap(UUID::fromString, string -> config.getInt(string + "." + stat.name), (a, b) -> b));
+		final var config = ConfigUtils.getConfig(plugin, "stats");
+		final var stats = new HashMap<UUID, Integer>();
+
+		for (var string : config.getKeys(false)) {
+			stats.put(UUID.fromString(string), config.getInt(string + "." + stat.getName()));
+		}
 
 		return SortUtils.sortByValue(stats);
 	}
 
-	public static int getUserStats(Player player, StatisticType statisticType) {
+	public static int getUserStats(final Player player, final StatisticType statisticType) {
 		return plugin.getUserManager().getUser(player).getStat(statisticType);
 	}
 
@@ -78,7 +81,8 @@ public class StatsStorage {
 	public enum StatisticType {
 		COINS("coinsearned", true), GAMES_PLAYED("gamesplayed", true), LOCAL_COINS("local_coins", false),
 		LOCAL_DOUBLE_JUMPS("local_double_jumps", false), LOCAL_SURVIVE("local_survive", false), LONGEST_SURVIVE("longestsurvive", true),
-		LOSES("loses", true), WINS("wins", true);
+		LOSES("loses", true), WINS("wins", true), SPECTATOR_NIGHT_VISION("spectatornightvision", true),
+		SPECTATOR_SHOW_OTHERS("spectatorshowothers", true), SPECTATOR_SPEED("spectatorspeed", true);
 
 		final String name;
 		final boolean persistent;

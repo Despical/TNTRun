@@ -18,8 +18,7 @@
 
 package me.despical.tntrun.handlers.rewards;
 
-import me.despical.commons.util.LogUtils;
-import org.apache.commons.lang.StringUtils;
+import me.despical.tntrun.Main;
 
 /**
  * @author Despical
@@ -28,56 +27,59 @@ import org.apache.commons.lang.StringUtils;
  */
 public class Reward {
 
-	private final RewardType type;
-	private final RewardExecutor executor;
 	private String executableCode;
-	private final double chance;
+	private final int chance, executor;
+	private final RewardType type;
 
-	public Reward(RewardType type, String rawCode) {
+	public Reward(final Main plugin, final RewardType type, final String rawCode) {
 		this.type = type;
-		String processedCode = rawCode;
+
+		var processedCode = rawCode;
 
 		if (rawCode.contains("p:")) {
-			this.executor = RewardExecutor.PLAYER;
-			processedCode = StringUtils.replace(processedCode, "p:", "");
+			this.executor = 2;
+
+			processedCode = processedCode.replace("p:", "");
 		} else if (rawCode.contains("script:")) {
-			this.executor = RewardExecutor.SCRIPT;
-			processedCode = StringUtils.replace(processedCode, "script:", "");
+			this.executor = 3;
+
+			processedCode = processedCode.replace("script:", "");
 		} else {
-			this.executor = RewardExecutor.CONSOLE;
+			this.executor = 1;
 		}
 
 		if (processedCode.contains("chance(")) {
-			int loc = processedCode.indexOf(")");
+			var loc = processedCode.indexOf(")");
 
 			if (loc == -1) {
-				LogUtils.log("rewards.yml configuration is broken! Make sure you don't forget using ')' character in chance condition! Command: " + rawCode);
-				this.chance = 0.0;
+				plugin.getLogger().severe("Second '')'' is not found in chance condition! Command: %s".formatted(rawCode));
+
+				this.chance = 101;
 				return;
 			}
 
-			String chanceStr = processedCode;
+			var chanceStr = processedCode;
 			chanceStr = chanceStr.substring(0, loc).replaceAll("[^0-9]+", "");
-			double chance = Double.parseDouble(chanceStr);
 
-			processedCode = StringUtils.replace(processedCode, "chance(" + chanceStr + "):", "");
-			this.chance = chance;
+			processedCode = processedCode.replace("chance(%s):".formatted(chanceStr), "");
+
+			this.chance = Integer.parseInt(chanceStr);
 		} else {
-			this.chance = 100.0;
+			this.chance = 100;
 		}
 
 		this.executableCode = processedCode;
-	}
-
-	public RewardExecutor getExecutor() {
-		return executor;
 	}
 
 	public String getExecutableCode() {
 		return executableCode;
 	}
 
-	public double getChance() {
+	public int getExecutor() {
+		return executor;
+	}
+
+	public int getChance() {
 		return chance;
 	}
 
@@ -86,16 +88,16 @@ public class Reward {
 	}
 
 	public enum RewardType {
-		END_GAME("end-game"), LOSE("lose"), WIN("win");
 
-		String path;
+		WIN("Win"),
+		LOSE("Lose"),
+
+		END_GAME("End-Game");
+
+		final String path;
 
 		RewardType(String path) {
-			this.path = "rewards." + path;
+			this.path = "Rewards." + path;
 		}
-	}
-
-	public enum RewardExecutor {
-		CONSOLE, PLAYER, SCRIPT
 	}
 }

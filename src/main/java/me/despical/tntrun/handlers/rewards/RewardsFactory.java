@@ -20,15 +20,8 @@ package me.despical.tntrun.handlers.rewards;
 
 import me.despical.commons.configuration.ConfigUtils;
 import me.despical.commons.engine.ScriptEngine;
-import me.despical.commons.util.LogUtils;
-import me.despical.tntrun.ConfigPreferences;
 import me.despical.tntrun.Main;
-import me.despical.tntrun.arena.Arena;
-import me.despical.tntrun.arena.ArenaRegistry;
-import org.apache.commons.lang.StringUtils;
-import org.bukkit.Bukkit;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.entity.Player;
+import me.despical.tntrun.user.User;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -41,83 +34,61 @@ import java.util.concurrent.ThreadLocalRandom;
  */
 public class RewardsFactory {
 
-	private final Set<Reward> rewards = new HashSet<>();
-	private final FileConfiguration config;
-	private final boolean enabled;
+	private final Main plugin;
+	private final Set<Reward> rewards;
 
-	public RewardsFactory(Main plugin) {
-		enabled = plugin.getConfigPreferences().getOption(ConfigPreferences.Option.REWARDS_ENABLED);
-		config = ConfigUtils.getConfig(plugin, "rewards");
+	public RewardsFactory(final Main plugin) {
+		this.plugin = plugin;
+		this.rewards = new HashSet<>();
 
 		registerRewards();
 	}
 
-	public void performReward(Arena arena, Reward.RewardType type) {
-		if (!enabled) return;
+	public void performReward(final User user, final Reward.RewardType type) {
+		final var reward = rewards.stream().filter(rew -> rew.getType() == type).findFirst().orElse(null);
 
-		for (Player player : arena.getPlayers()) {
-			performReward(player, type);
-		}
-	}
+		if (reward == null) return;
+		if (ThreadLocalRandom.current().nextInt(0, 100) > reward.getChance()) return;
 
-	public void performReward(Player player, Reward.RewardType type) {
-		if (!enabled) return;
+		final var arena = user.getArena();
+		final var player = user.getPlayer();
+		final var command = formatCommandPlaceholders(reward, user);
 
-		Arena arena = ArenaRegistry.getArena(player);
-
-		for (Reward reward : rewards) {
-			if (reward.getType() == type) {
-				if (reward.getChance() != -1 && ThreadLocalRandom.current().nextInt(0, 100) > reward.getChance()) {
-					continue;
-				}
-
-				String command = reward.getExecutableCode();
-				command = StringUtils.replace(command, "%player%", player.getName());
-				command = formatCommandPlaceholders(command, arena);
-
-				switch (reward.getExecutor()) {
-					case CONSOLE:
-						Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), command);
-						break;
-					case PLAYER:
-						player.performCommand(command);
-						break;
-					case SCRIPT:
-						ScriptEngine engine = new ScriptEngine();
-						engine.setValue("player", player);
-						engine.setValue("server", Bukkit.getServer());
-						engine.setValue("arena", arena);
-						engine.execute(command);
-						break;
-					default:
-						break;
-				}
+		switch (reward.getExecutor()) {
+			case 1 -> plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(), command);
+			case 2 -> player.performCommand(command);
+			case 3 -> {
+				final var engine = new ScriptEngine();
+				engine.setValue("player", player);
+				engine.setValue("server", plugin.getServer());
+				engine.setValue("arena", arena);
+				engine.execute(command);
+			}
+			default -> {
 			}
 		}
 	}
 
-	private String formatCommandPlaceholders(String command, Arena arena) {
-		String formatted = command;
+	private String formatCommandPlaceholders(final Reward reward, final User user) {
+		var arena = user.getArena();
+		var formatted = reward.getExecutableCode();
 
-		formatted = StringUtils.replace(formatted, "%arena_id%", arena.getId());
-		formatted = StringUtils.replace(formatted, "%map_name%", arena.getMapName());
-		formatted = StringUtils.replace(formatted, "%players%", Integer.toString(arena.getPlayers().size()));
+		formatted = formatted.replace("%arena%", arena.getId());
+		formatted = formatted.replace("%map_name%", arena.getMapName());
+		formatted = formatted.replace("%player%", user.getName());
+		formatted = formatted.replace("%players%", Integer.toString(arena.getPlayers().size()));
 		return formatted;
 	}
 
 	private void registerRewards() {
-		if (!enabled) return;
+		var config = ConfigUtils.getConfig(plugin, "rewards");
 
-		LogUtils.log("[Rewards Factory] Starting rewards registration.");
+		if (!config.getBoolean("Rewards-Enabled")) return;
 
-		long start = System.currentTimeMillis();
-
-		for (Reward.RewardType rewardType : Reward.RewardType.values()) {
-			for (String reward : config.getStringList("rewards." + rewardType.path)) {
-				rewards.add(new Reward(rewardType, reward));
+		for (final var rewardType : Reward.RewardType.values()) {
+			for (final var reward : config.getStringList(rewardType.path)) {
+				rewards.add(new Reward(plugin, rewardType, reward));
 			}
 		}
-
-		LogUtils.log("[Rewards Factory] Registered all rewards took {0} ms", System.currentTimeMillis() - start);
 	}
 }

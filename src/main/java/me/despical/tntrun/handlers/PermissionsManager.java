@@ -20,6 +20,8 @@ package me.despical.tntrun.handlers;
 
 import me.despical.tntrun.ConfigPreferences;
 import me.despical.tntrun.Main;
+import me.despical.tntrun.arena.Arena;
+import me.despical.tntrun.user.User;
 import org.bukkit.entity.Player;
 
 import java.util.List;
@@ -33,19 +35,21 @@ public class PermissionsManager {
 
 	private final Main plugin;
 	private final int defaultDoubleJumps;
-	private final String joinPerm, joinFullPerm;
+	private final String joinPermission, joinFullPerm;
 	private final List<String> doubleJumpsPerms;
 
 	public PermissionsManager(Main plugin) {
 		this.plugin = plugin;
 		this.defaultDoubleJumps = plugin.getConfig().getInt("Default-Double-Jumps", 5);
-		this.joinPerm = plugin.getConfig().getString("Basic-Permissions.Join-Permission", "tntrun.join.<arena>");
+		this.joinPermission = plugin.getConfig().getString("Basic-Permissions.Join-Permission", "");
 		this.joinFullPerm = plugin.getConfig().getString("Basic-Permissions.Full-Games-Permission", "tntrun.fullgames");
 		this.doubleJumpsPerms = plugin.getConfig().getStringList("Double-Jumps");
 	}
 
-	public boolean hasJoinPerm(Player player, String replacement) {
-		return player.hasPermission(joinPerm.replace("<arena>", replacement));
+	public boolean hasPermission(final User user, final Arena arena) {
+		if (joinPermission.isEmpty()) return true;
+
+		return user.hasPermission(joinPermission.replace("<arena>", arena.getId()));
 	}
 
 	public boolean hasFullPerm(Player player) {
@@ -56,8 +60,8 @@ public class PermissionsManager {
 		return plugin.getConfigPreferences().getOption(ConfigPreferences.Option.UPDATE_NOTIFIER_ENABLED) && player.hasPermission("tntrun.updatenotify");
 	}
 
-	public String getJoinPerm() {
-		return joinPerm;
+	public String getJoinPermission() {
+		return joinPermission;
 	}
 
 	public int getDoubleJumps(Player player) {
