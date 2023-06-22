@@ -39,6 +39,8 @@ public class GameItemEvents extends EventListener {
 		final var user = plugin.getUserManager().getUser(player);
 
 		if (!user.isInArena()) return;
+		if (user.isSpectator()) return;
+		if (user.getArena().isDeathPlayer(user)) return;
 
 		if (user.getCooldown("double_jump") > 0) return;
 

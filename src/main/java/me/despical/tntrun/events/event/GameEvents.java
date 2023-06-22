@@ -59,7 +59,27 @@ public class GameEvents extends EventListener {
 
 		switch (e.getCause()) {
 			case DROWNING, FALL -> e.setCancelled(true);
-			case VOID -> victim.teleport(arena.getLobbyLocation());
+			case VOID -> {
+				victim.teleport(arena.getLobbyLocation());
+
+				if (!user.isSpectator()) {
+					user.setSpectator(true);
+					user.playDeathEffect();
+
+					arena.addDeathPlayer(user);
+
+					final var playersLeft = arena.getPlayersLeft();
+
+					if (playersLeft.size() == 1) {
+						arena.getWinners().add(arena.getWinner());
+
+						plugin.getArenaManager().stopGame(false, arena);
+						return;
+					}
+
+					arena.broadcastFormattedMessage("messages.in-game.fell-into-void", user);
+				}
+			}
 		}
 	}
 

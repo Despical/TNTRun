@@ -24,14 +24,15 @@ player-commands:
     footer: "&l[--------------------]"
     wins: "&aWins: &e"
     loses: "&aLoses: &e"
-    highest-score: "&aHighest score: &e"
+    coins: "&aCoins Earned: &e"
+    longest-survive: "&aLongest Survive: &e"
     games-played: "&aGames played: &e"
 
 messages:
   arena:
     no-permission: "&cYou don't have enough permission to join this arena!"
     not-configured: "&cThis arena is not ready yet to play!"
-    already-playing: "&cYou are already playing Murder Mystery!"
+    already-playing: "&cYou are already playing TNT Run!"
     not-playing: "&cYou cannot leave the game if you are not playing!"
     restarting: "&cYou cannot join while this arena is restarting!"
     waiting-for-players: "&cWaiting for players... We need at least %min_players% players to start."
@@ -39,11 +40,10 @@ messages:
     starts-in-10s: "&eThe game starts in &6%time%&e seconds!"
     starts-in-5s-and-less: "&eThe game starts in &c%time%&e seconds!"
     countdown-cancelled: "&c&lCountdown cancelled! There aren't enough players to start!"
-    game-started: "&c&lTeaming with the Murderers is not allowed!"
     join-arena: "&7%player%&e has joined (&b%players%&e/&b%max_players%&e)!"
     quit-arena: "&7%player%&e has quit!"
-    game-explanation: "&a&m-----------------------------------------------------\n
-    &f&lTNT Run\n\n&e&lAvoid the falling blocks and try to\n&e&lsurvive longer than everyone else!\n\n&a&m-----------------------------------------------------"
+    game-explanation: "&a&m---------------------------------------------------\n
+    &f&lTNT Run\n\n&e&lAvoid the falling blocks and try to\n&e&lsurvive longer than everyone else!\n\n&a&m---------------------------------------------------"
   spectators:
     show-spectators: "&aYou can now see other spectators!"
     hide-spectators: "&cYou can no longer see other spectators!"
@@ -62,6 +62,7 @@ messages:
     already-force-start: "&cThe game is already starting!"
     game-chat-format: "&7%player%: %message%"
     game-death-format: "&7[DEAD CHAT] "
+    fell-into-void: "&7%player% &cdied!\n&e%players_left% players remaining."
   score-actions:
     bonus-score: "&6%score% score! %action%"
     survive: "Survived 30 seconds"
@@ -70,16 +71,14 @@ messages:
       returning-lobby: "&a&lTeleporting you to the lobby in 3 seconds...\n&a&lRight-click again to cancel the teleport!"
       teleport-cancelled: "&c&lTeleport cancelled!"
   summary-message:
-    - "&a&m-------------------------------------------------"
-    - "&f&lMurder Mystery"
+    - "&a&m---------------------------------------------------"
+    - "&f&lTNT Run"
     - ""
-    - "&f&lWinner: %winner%"
+    - "&e&l1st Place: &f&l%player_1%"
+    - "&e&l2nd Place: &f&l%player_2%"
+    - "&e&l3rd Place: &f&l%player_3%"
     - ""
-    - "&7Detective: %detective%&r"
-    - "&7Murderer: %murderer%&r &7(&6%murderer_kills% &7Kills)"
-    - "&7Hero: %hero%"
-    - ""
-    - "&a&m-------------------------------------------------"
+    - "&a&m---------------------------------------------------"
 
 # Leave any message empty to hide bar in a specific arena state.
 game-bar:

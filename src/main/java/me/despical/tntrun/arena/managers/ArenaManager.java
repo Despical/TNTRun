@@ -17,6 +17,9 @@ import org.bukkit.GameMode;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
+import java.util.ArrayList;
+import java.util.Collections;
+
 /**
  * @author Despical
  * <p>
@@ -166,6 +169,7 @@ public record ArenaManager(Main plugin) {
 				user.setStat(StatsStorage.StatisticType.LONGEST_SURVIVE, localScore);
 			}
 
+			user.addStat(StatsStorage.StatisticType.COINS, user.getStat(StatsStorage.StatisticType.LOCAL_COINS));
 			user.addStat(StatsStorage.StatisticType.GAMES_PLAYED, 1);
 			user.addGameItems(true, "leave-item", "play-again");
 			user.removePotionEffectsExcept(PotionEffectType.BLINDNESS);
@@ -176,19 +180,35 @@ public record ArenaManager(Main plugin) {
 
 		if (quickStop) return;
 
-		final var summaryMessages = chatManager.getStringList("messages.game-end.summary-message");
+		final var summaryMessages = chatManager.getStringList("messages.summary-message");
 
 		for (final var user : arena.getPlayers()) {
 			user.performReward(Reward.RewardType.END_GAME);
 
 			for (final var msg : summaryMessages) {
-				MiscUtils.sendCenteredMessage(user.getPlayer(), formatSummaryPlaceholders(msg, arena, user));
+				final var message = formatSummaryPlaceholders(msg, arena, user);
+
+				if (message.contains("%skip_line%")) continue;
+
+				MiscUtils.sendCenteredMessage(user.getPlayer(), message);
 			}
 		}
 	}
 
 	private String formatSummaryPlaceholders(String msg, Arena arena, User user) {
 		var formatted = msg;
+
+		final var winners = new ArrayList<>(arena.getWinners());
+		Collections.reverse(winners);
+
+		for (int i = 0; i < 4; i++) {
+			if (i >= winners.size()) {
+				formatted = formatted.replace("%player_" + (i + 1) + '%', "%skip_line%");
+				continue;
+			}
+
+			formatted = formatted.replace("%player_" + (i + 1) + '%', winners.get(i).getName());
+		}
 
 		formatted = formatted.replace("%winner%", arena.getWinner().getName());
 		formatted = formatted.replace("%earned_coins%", Integer.toString(user.getStat(StatsStorage.StatisticType.LOCAL_COINS)));

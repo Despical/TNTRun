@@ -73,7 +73,7 @@ Disable-Fall-Damage: true
 Database-Enabled: false
 
 # Should we hide players' name tags in-game?
-Name-Tags-Hidden: true
+Name-Tags-Hidden: false
 
 # Should we format the chat messages?
 # See messages.yml to change format.

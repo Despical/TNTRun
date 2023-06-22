@@ -66,7 +66,8 @@ public class ChatManager {
 
 		message = message.replace("%time%", Integer.toString(arena.getTimer()));
 		message = message.replace("%formatted_time%", StringFormatUtils.formatIntoMMSS(arena.getTimer()));
-		message = message.replace("%players%", Integer.toString(arena.getPlayersLeft().size()));
+		message = message.replace("%players%", Integer.toString(arena.getPlayers().size()));
+		message = message.replace("%players_left%", Integer.toString(arena.getPlayersLeft().size()));
 		message = message.replace("%min_players%", Integer.toString(arena.getMinimumPlayers()));
 		message = message.replace("%max_players%", Integer.toString(arena.getMaximumPlayers()));
 

@@ -2,6 +2,7 @@ package me.despical.tntrun.commands.command;
 
 import me.despical.commandframework.Command;
 import me.despical.commandframework.CommandArguments;
+import me.despical.commons.string.StringFormatUtils;
 import me.despical.commons.string.StringMatcher;
 import me.despical.commons.string.StringUtils;
 import me.despical.tntrun.ConfigPreferences;
@@ -113,17 +114,17 @@ public class PlayerCommands extends AbstractCommand {
 		final var path = "player-commands.stats-command.";
 
 		if (player.equals(sender)) {
-			user.sendRawMessage(chatManager.message(path + "header", user));
+			sender.sendMessage(chatManager.message(path + "header", user));
 		} else {
-			user.sendRawMessage(chatManager.message(path + "header-other", user));
+			sender.sendMessage(chatManager.message(path + "header-other", user));
 		}
 
-		sender.sendRawMessage(chatManager.message(path + "wins", user) + user.getStat(StatsStorage.StatisticType.WINS));
-		sender.sendRawMessage(chatManager.message(path + "loses", user) + user.getStat(StatsStorage.StatisticType.LOSES));
-		sender.sendRawMessage(chatManager.message(path + "coins", user) + user.getStat(StatsStorage.StatisticType.COINS));
-		sender.sendRawMessage(chatManager.message(path + "games-played", user) + user.getStat(StatsStorage.StatisticType.GAMES_PLAYED));
-		sender.sendRawMessage(chatManager.message(path + "deaths", user) + user.getStat(StatsStorage.StatisticType.LONGEST_SURVIVE));
-		sender.sendRawMessage(chatManager.message(path + "footer", user));
+		sender.sendMessage(chatManager.message(path + "wins", user) + user.getStat(StatsStorage.StatisticType.WINS));
+		sender.sendMessage(chatManager.message(path + "loses", user) + user.getStat(StatsStorage.StatisticType.LOSES));
+		sender.sendMessage(chatManager.message(path + "coins", user) + user.getStat(StatsStorage.StatisticType.COINS));
+		sender.sendMessage(chatManager.message(path + "games-played", user) + user.getStat(StatsStorage.StatisticType.GAMES_PLAYED));
+		sender.sendMessage(chatManager.message(path + "longest-survive", user) + StringFormatUtils.formatIntoMMSS(user.getStat(StatsStorage.StatisticType.LONGEST_SURVIVE)));
+		sender.sendMessage(chatManager.message(path + "footer", user));
 	}
 
 	@Command(

@@ -61,7 +61,8 @@ public class Arena extends BukkitRunnable {
 	private final Map<GameLocation, Location> gameLocations;
 
 	private final Set<BlockState> destroyedBlocks;
-	private final List<User> players, spectators, deaths;
+	private final List<User> players, spectators, deaths, winners;
+
 
 	@NotNull
 	private final GameBarManager gameBarManager;
@@ -80,6 +81,7 @@ public class Arena extends BukkitRunnable {
 		this.players = new ArrayList<>();
 		this.spectators = new ArrayList<>();
 		this.deaths = new ArrayList<>();
+		this.winners = new ArrayList<>();
 		this.arenaOptions = new EnumMap<>(ArenaOption.class);
 		this.gameLocations = new EnumMap<>(GameLocation.class);
 		this.gameBarManager = new GameBarManager(this, plugin);
@@ -222,12 +224,20 @@ public class Arena extends BukkitRunnable {
 	public void addDeathPlayer(final User user) {
 		deaths.add(user);
 
+		if (this.getPlayersLeft().size() < 4) {
+			winners.add(user);
+		}
+
 		this.hideSpectator(user);
 		this.addSpectator(user);
 	}
 
 	public boolean isDeathPlayer(final User user) {
-		return deaths.contains(user);
+		return this.deaths.contains(user);
+	}
+
+	public List<User> getWinners() {
+		return winners;
 	}
 
 	public void addSpectator(final User user) {
@@ -311,8 +321,8 @@ public class Arena extends BukkitRunnable {
 		return this.players.stream().filter(user -> !user.isSpectator()).collect(Collectors.toSet());
 	}
 
-	public void broadcastFormattedMessage(final String path, final User user, boolean spectatorFilter) {
-		if (!spectatorFilter) {
+	public void broadcastFormattedMessage(final String path, final User user, boolean onlySpectators) {
+		if (!onlySpectators) {
 			this.broadcastFormattedMessage(path, user);
 			return;
 		}
@@ -332,7 +342,7 @@ public class Arena extends BukkitRunnable {
 
 	@Nullable
 	public User getWinner() {
-		for (final var user : this.players) return user;
+		for (final var user : this.getPlayersLeft()) return user;
 
 		return null;
 	}
@@ -520,6 +530,8 @@ public class Arena extends BukkitRunnable {
 				int timer = getTimer();
 
 				for (final var user : this.players) {
+					if (user.isSpectator() || isDeathPlayer(user)) continue;
+
 					final var player = user.getPlayer();
 
 					if (user.getCooldown("double_jump") > 0) {

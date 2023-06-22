@@ -80,7 +80,7 @@ public class PlayerAmountComponents extends AbstractComponent {
 			}
 
 			if (amount < 2) {
-				user.sendRawMessage("&c&l✘ Minimum players amount cannot be less than 2! Every arena must have at least one murderer, one detective and one innocent!");
+				user.sendRawMessage("&c&l✘ Minimum players amount cannot be less than 2!");
 
 				amount = 2;
 			}
@@ -115,7 +115,7 @@ public class PlayerAmountComponents extends AbstractComponent {
 			}
 
 			if (amount < arena.getMinimumPlayers()) {
-				user.sendRawMessage("&c&l✘ Maximum players amount cannot be less than 2! Every arena must have at least one murderer and one detective!");
+				user.sendRawMessage("&c&l✘ Maximum players amount cannot be less than 2!");
 
 				amount = arena.getMinimumPlayers();
 			}

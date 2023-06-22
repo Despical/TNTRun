@@ -27,6 +27,7 @@ import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -209,6 +210,13 @@ public class User {
 		if (gameItem == null) return;
 
 		this.player.getInventory().setItem(gameItem.getSlot(), gameItem.getItemStack());
+	}
+
+	public void playDeathEffect() {
+		player.setAllowFlight(true);
+		player.setFlying(true);
+		player.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, Integer.MAX_VALUE, 1, false, false, false));
+		player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 4 * 20, 1, false, false, false));
 	}
 
 	public static void cooldownHandlerTask() {
