@@ -1,0 +1,27 @@
+# # # # # # # # # # # # # # # # # # # # # #
+#                                         #
+#        Bungee-cord Configuration        #
+# Enable option before editing this file  #
+#                                         #
+# # # # # # # # # # # # # # # # # # # # # #
+
+# Your Bungee-cord server name where player will be teleported after game
+Hub: lobby
+
+# Should game server be closed after the game?
+Shutdown-When-Game-Ends: true
+
+# Should the player connect to hub?
+Connect-To-Hub: true
+
+# %state% - Current state of arena.
+MOTD:
+  Enabled: true
+  Message: "TNT Run by Despical (State is %state%)"
+  Game-States:
+    Waiting: "&lWaiting"
+    Starting: "&e&lStarting"
+    Playing: "&lIn-game"
+    Ending: "&lEnding"
+    Restarting: "&c&lRestarting"
+    Inactive: "&lInactive..."
