@@ -150,6 +150,8 @@ public class Main extends JavaPlugin {
 	}
 
 	private void setupConfigurationFiles() {
+		this.saveDefaultConfig();
+
 		Stream.of("arena", "rewards", "stats", "items", "mysql", "messages").filter(name -> !new File(getDataFolder(),name + ".yml").exists()).forEach(name -> saveResource(name + ".yml", false));
 	}
 
