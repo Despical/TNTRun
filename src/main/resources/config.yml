@@ -54,6 +54,9 @@ Join-Permission: ""
 # Should we create a game bar for in-game players?
 Game-Bar-Enabled: true
 
+# Should we enable our Bungee-cord server support?
+Bungee-Enabled: false
+
 # Enable if we should store players' inventories to restore them back
 # after the game or just disable it, so we just clear it every game?
 Inventory-Manager-Enabled: true

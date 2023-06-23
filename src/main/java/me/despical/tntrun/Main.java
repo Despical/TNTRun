@@ -32,6 +32,7 @@ import me.despical.tntrun.events.EventListener;
 import me.despical.tntrun.handlers.ChatManager;
 import me.despical.tntrun.handlers.PermissionsManager;
 import me.despical.tntrun.handlers.PlaceholderHandler;
+import me.despical.tntrun.handlers.bungee.BungeeManager;
 import me.despical.tntrun.handlers.items.GameItemManager;
 import me.despical.tntrun.handlers.rewards.RewardsFactory;
 import me.despical.tntrun.user.User;
@@ -54,6 +55,7 @@ public class Main extends JavaPlugin {
 
 	private ArenaRegistry arenaRegistry;
 	private ArenaManager arenaManager;
+	private BungeeManager bungeeManager;
 	private RewardsFactory rewardsFactory;
 	private MysqlDatabase database;
 	private ConfigPreferences configPreferences;
@@ -89,7 +91,6 @@ public class Main extends JavaPlugin {
 				if (configPreferences.getOption(ConfigPreferences.Option.INVENTORY_MANAGER_ENABLED)) {
 					InventorySerializer.loadInventory(this, player);
 				} else {
-
 					player.getInventory().clear();
 					player.getInventory().setArmorContents(null);
 					player.getActivePotionEffects().forEach(effect -> player.removePotionEffect(effect.getType()));
@@ -122,6 +123,10 @@ public class Main extends JavaPlugin {
 			this.database = new MysqlDatabase(this, "mysql");
 		}
 
+		if (configPreferences.getOption(ConfigPreferences.Option.BUNGEE_ENABLED)) {
+			this.bungeeManager = new BungeeManager(this);
+		}
+
 		if (getServer().getPluginManager().isPluginEnabled("PlaceholderAPI")) {
 			new PlaceholderHandler(this);
 		}
@@ -150,7 +155,9 @@ public class Main extends JavaPlugin {
 	}
 
 	private void setupConfigurationFiles() {
-		Stream.of("arena", "rewards", "stats", "items", "mysql", "messages").filter(name -> !new File(getDataFolder(),name + ".yml").exists()).forEach(name -> saveResource(name + ".yml", false));
+		this.saveDefaultConfig();
+
+		Stream.of("arena", "rewards", "stats", "items", "mysql", "messages", "bungee").filter(name -> !new File(getDataFolder(),name + ".yml").exists()).forEach(name -> saveResource(name + ".yml", false));
 	}
 
 	@NotNull
@@ -201,6 +208,11 @@ public class Main extends JavaPlugin {
 	@NotNull
 	public ArenaManager getArenaManager() {
 		return arenaManager;
+	}
+
+	@NotNull
+	public BungeeManager getBungeeManager() {
+		return bungeeManager;
 	}
 
 	private void saveAllUserStatistics() {

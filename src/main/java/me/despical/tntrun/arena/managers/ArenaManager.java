@@ -43,7 +43,7 @@ public record ArenaManager(Main plugin) {
 			return;
 		}
 
-		if (!plugin.getPermissionManager().hasPermission(user, arena)) {
+		if (!plugin.getConfigPreferences().getOption(ConfigPreferences.Option.BUNGEE_ENABLED) && !plugin.getPermissionManager().hasPermission(user, arena)) {
 			user.sendMessage("messages.arena.no-permission");
 			return;
 		}
@@ -138,7 +138,7 @@ public record ArenaManager(Main plugin) {
 
 		AttributeUtils.healPlayer(player);
 
-		if (plugin.getConfigPreferences().getOption(ConfigPreferences.Option.INVENTORY_MANAGER_ENABLED)) {
+		if (!plugin.getConfigPreferences().getOption(ConfigPreferences.Option.BUNGEE_ENABLED) && plugin.getConfigPreferences().getOption(ConfigPreferences.Option.INVENTORY_MANAGER_ENABLED)) {
 			InventorySerializer.loadInventory(plugin, player);
 		}
 

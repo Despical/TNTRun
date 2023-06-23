@@ -26,7 +26,9 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.logging.Level;
 
 /**
@@ -41,6 +43,8 @@ public class ArenaRegistry {
 
 	@NotNull
 	private final Set<Arena> arenas;
+
+	private int bungeeArena = -1;
 
 	public ArenaRegistry(final @NotNull Main plugin) {
 		this.plugin = plugin;
@@ -117,5 +121,14 @@ public class ArenaRegistry {
 
 			arena.start();
 		}
+	}
+
+	// Bungee methods
+	public void shuffleBungeeArena() {
+		bungeeArena = ThreadLocalRandom.current().nextInt(arenas.size());
+	}
+
+	public Arena getBungeeArena() {
+		return List.copyOf(arenas).get(bungeeArena == -1 ? bungeeArena = ThreadLocalRandom.current().nextInt(arenas.size()) : bungeeArena);
 	}
 }

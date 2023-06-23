@@ -120,6 +120,11 @@ public class Arena extends BukkitRunnable {
 	}
 
 	public void teleportToEndLocation(final User user) {
+		if (plugin.getConfigPreferences().getOption(ConfigPreferences.Option.BUNGEE_ENABLED)) {
+			plugin.getBungeeManager().connectToHub(user);
+			return;
+		}
+
 		this.teleportToGameLocation(user, GameLocation.END);
 	}
 
@@ -587,6 +592,10 @@ public class Arena extends BukkitRunnable {
 						teleportToEndLocation(user);
 					}
 
+					if (plugin.getConfigPreferences().getOption(ConfigPreferences.Option.BUNGEE_ENABLED) && plugin.getBungeeManager().isShutdownWhenGameEnds()) {
+						plugin.getServer().shutdown();
+					}
+
 					setArenaState(ArenaState.RESTARTING);
 				}
 
@@ -597,6 +606,16 @@ public class Arena extends BukkitRunnable {
 				cleanUpArena();
 
 				setArenaState(ArenaState.WAITING_FOR_PLAYERS);
+
+				if (plugin.getConfigPreferences().getOption(ConfigPreferences.Option.BUNGEE_ENABLED)) {
+					final var arenaRegistry = plugin.getArenaRegistry();
+
+					arenaRegistry.shuffleBungeeArena();
+
+					for (final var player : plugin.getServer().getOnlinePlayers()) {
+						plugin.getArenaManager().joinAttempt(plugin.getUserManager().getUser(player), arenaRegistry.getBungeeArena());
+					}
+				}
 			}
 		}
 	}

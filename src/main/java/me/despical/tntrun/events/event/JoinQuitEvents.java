@@ -9,6 +9,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerKickEvent;
+import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 /**
@@ -20,6 +21,15 @@ public class JoinQuitEvents extends EventListener {
 
 	public JoinQuitEvents(Main plugin) {
 		super(plugin);
+	}
+
+	@EventHandler
+	public void onLogin(PlayerLoginEvent e) {
+		if (!plugin.getConfigPreferences().getOption(ConfigPreferences.Option.BUNGEE_ENABLED) || e.getResult() != PlayerLoginEvent.Result.KICK_WHITELIST) {
+			return;
+		}
+
+		e.setResult(PlayerLoginEvent.Result.ALLOWED);
 	}
 
 	@EventHandler
