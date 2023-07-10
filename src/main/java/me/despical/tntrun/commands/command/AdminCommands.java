@@ -53,7 +53,7 @@ public class AdminCommands extends AbstractCommand {
 		name = "tntrun.create",
 		permission = "tntrun.admin.create",
 		desc = "Create an arena with default configuration.",
-		usage = "tntrun create <arena name>",
+		usage = "/tntrun create <arena name>",
 		senderType = PLAYER
 	)
 	public void createCommand(CommandArguments arguments) {
@@ -103,7 +103,7 @@ public class AdminCommands extends AbstractCommand {
 		name = "tntrun.delete",
 		permission = "tntrun.admin.delete",
 		desc = "Delete specified arena and its data",
-		usage = "tntrun delete <arena name>",
+		usage = "/tntrun delete <arena name>",
 		senderType = PLAYER
 	)
 	public void deleteCommand(CommandArguments arguments) {
@@ -141,7 +141,7 @@ public class AdminCommands extends AbstractCommand {
 		name = "tntrun.list",
 		permission = "tntrun.admin.list",
 		desc = "Get a list of registered arenas and their status",
-		usage = "tntrun list",
+		usage = "/tntrun list",
 		senderType = PLAYER
 	)
 	public void listCommand(CommandArguments arguments) {
@@ -161,7 +161,7 @@ public class AdminCommands extends AbstractCommand {
 		name = "tntrun.forcestart",
 		permission = "tntrun.admin.forcestart",
 		desc = "Forces arena to start without waiting time",
-		usage = "tntrun forcestart",
+		usage = "/tntrun forcestart",
 		senderType =  PLAYER
 	)
 	public void forceStartCommand(CommandArguments arguments) {
