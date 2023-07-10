@@ -56,6 +56,8 @@ public record ArenaManager(Main plugin) {
 
 		ArenaUtils.updateNameTagsVisibility(user);
 
+		user.cacheScoreboard();
+
 		arena.addUser(user);
 		arena.teleportToLobby(user);
 		arena.getScoreboardManager().createScoreboard(user);
@@ -72,7 +74,7 @@ public record ArenaManager(Main plugin) {
 		player.setAllowFlight(false);
 		player.setGlowing(false);
 
-		AttributeUtils.healPlayer(player);
+		if (plugin.getConfigPreferences().getOption(ConfigPreferences.Option.HEAL_PLAYER)) AttributeUtils.healPlayer(player);
 
 		user.removePotionEffectsExcept();
 		user.resetTemporaryStats();
@@ -123,6 +125,8 @@ public record ArenaManager(Main plugin) {
 		arena.getGameBar().doBarAction(user, 0);
 		arena.showUserOutsideTheGame(user);
 
+		user.removeScoreboard();
+
 		player.getInventory().clear();
 		player.getInventory().setArmorContents(null);
 		player.setFoodLevel(20);
@@ -136,7 +140,7 @@ public record ArenaManager(Main plugin) {
 		player.setGameMode(GameMode.SURVIVAL);
 		player.getInventory().setHeldItemSlot(0);
 
-		AttributeUtils.healPlayer(player);
+		if (plugin.getConfigPreferences().getOption(ConfigPreferences.Option.HEAL_PLAYER)) AttributeUtils.healPlayer(player);
 
 		if (!plugin.getConfigPreferences().getOption(ConfigPreferences.Option.BUNGEE_ENABLED) && plugin.getConfigPreferences().getOption(ConfigPreferences.Option.INVENTORY_MANAGER_ENABLED)) {
 			InventorySerializer.loadInventory(plugin, player);
@@ -214,7 +218,6 @@ public record ArenaManager(Main plugin) {
 		formatted = formatted.replace("%earned_coins%", Integer.toString(user.getStat(StatsStorage.StatisticType.LOCAL_COINS)));
 		formatted = formatted.replace("%survive_time%", Integer.toString(user.getStat(StatsStorage.StatisticType.LOCAL_SURVIVE)));
 		formatted = formatted.replace("%formatted_survive_time%", StringFormatUtils.formatIntoMMSS(user.getStat(StatsStorage.StatisticType.LOCAL_SURVIVE)));
-
 		return formatted;
 	}
 }

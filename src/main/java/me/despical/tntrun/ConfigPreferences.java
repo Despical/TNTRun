@@ -18,7 +18,11 @@
 
 package me.despical.tntrun;
 
+import me.despical.commons.serializer.InventorySerializer;
 import me.despical.commons.string.StringUtils;
+import me.despical.commons.util.function.DoubleSupplier;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.HashMap;
 import java.util.Locale;
@@ -31,9 +35,11 @@ import java.util.Map;
  */
 public class ConfigPreferences {
 
+	private static final Main plugin = JavaPlugin.getPlugin(Main.class);
+
 	private final Map<Option, Boolean> options;
 
-	public ConfigPreferences(Main plugin) {
+	public ConfigPreferences() {
 		this.options = new HashMap<>();
 
 		for (final var option : Option.values()) {
@@ -48,7 +54,13 @@ public class ConfigPreferences {
 	public enum Option {
 
 		BUNGEE_ENABLED(false), GAME_BAR_ENABLED, INVENTORY_MANAGER_ENABLED, DISABLE_FALL_DAMAGE, DATABASE_ENABLED(false),
-		NAME_TAGS_HIDDEN(false), CHAT_FORMAT_ENABLED, DISABLE_SEPARATE_CHAT(false), UPDATE_NOTIFIER_ENABLED;
+		NAME_TAGS_HIDDEN(false), CHAT_FORMAT_ENABLED, DISABLE_SEPARATE_CHAT(false), UPDATE_NOTIFIER_ENABLED,
+		HEAL_PLAYER((config) -> {
+			final var list = config.getStringList("Inventory-Manager.Do-Not-Restore");
+			list.forEach(InventorySerializer::addNonSerializableElements);
+
+			return !list.contains("health");
+		});;
 
 		final String path;
 		final boolean def;
@@ -60,6 +72,11 @@ public class ConfigPreferences {
 		Option(boolean def) {
 			this.def = def;
 			this.path = StringUtils.capitalize(name().replace('_', '-').toLowerCase(Locale.ENGLISH), '-', '.');
+		}
+
+		Option(DoubleSupplier<FileConfiguration, Boolean> supplier) {
+			this.path = "";
+			this.def = supplier.accept(plugin.getConfig());
 		}
 	}
 }

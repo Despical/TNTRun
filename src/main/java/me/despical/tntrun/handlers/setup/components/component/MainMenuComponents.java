@@ -54,10 +54,7 @@ public class MainMenuComponents extends AbstractComponent {
 		final var notReadyItem = new ItemBuilder(XMaterial.BLACK_STAINED_GLASS_PANE).name("&cArena configuration is not validated yet!");
 		final var lobbyLocationsItem = new ItemBuilder(XMaterial.WHITE_CONCRETE).name("&e&lSet Lobby/End Locations").lore("&7Click to set lobby and ending locations.").lore("", "&7Lobby Location: " + isOptionDoneBool("lobbyLocation"), "&7End Location:    " + isOptionDoneBool("endLocation"));
 		final var playerAmountsItem = new ItemBuilder(XMaterial.GLOWSTONE_DUST).name("&e&lSet Min/Max Players").lore("&7Click to set player amounts.").lore("", "&a&l✔ &7Minimum  Players Amount: &8" + arena.getMinimumPlayers()).lore("&a&l✔ &7Maximum Players Amount: &8" + arena.getMaximumPlayers()).enchantment(Enchantment.ARROW_INFINITE).flag(ItemFlag.HIDE_ENCHANTS);
-
-		final var supportLatestVer = ReflectionUtils.supports(20);
-		final var mapNameItem = !supportLatestVer ? new ItemBuilder(XMaterial.NAME_TAG).name("&e&lSet Map Name").lore("&7Click to set arena map name.").lore("", "&7Currently: " + arena.getMapName()).enchantment(Enchantment.ARROW_INFINITE).flag(ItemFlag.HIDE_ENCHANTS) :
-			new ItemBuilder(XMaterial.BARRIER).name("&c&l&mUnsupported Version For Sign Menus&m").lore("&7The library we're using for 'Sign menus' is not", "&7supporting this version of Minecraft at the moment.", "&7Please use &a/mm setmapname &7command for now.");
+		final var mapNameItem = new ItemBuilder(XMaterial.NAME_TAG).name("&e&lSet Map Name").lore("&7Click to set arena map name.").lore("", "&7Currently: " + arena.getMapName()).enchantment(Enchantment.ARROW_INFINITE).flag(ItemFlag.HIDE_ENCHANTS);
 
 		if (isOptionDoneBoolean("lobbyLocation") && isOptionDoneBoolean("endLocation")) lobbyLocationsItem.enchantment(Enchantment.ARROW_INFINITE).flag(ItemFlag.HIDE_ENCHANTS);
 

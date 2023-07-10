@@ -15,11 +15,10 @@ import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
-import org.apache.logging.log4j.util.Strings;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.stream.Collectors;
 
 import static me.despical.commandframework.Command.SenderType.PLAYER;
@@ -48,47 +47,6 @@ public class AdminCommands extends AbstractCommand {
 				arguments.sendMessage(chatManager.rawMessage("&3Commands: &b/" + arguments.getLabel() + " help"));
 			}
 		}
-	}
-
-
-	@Command(
-		name = "tntrun.setmapname",
-		permission = "tr.admin",
-		desc = "Set map name of the arena.",
-		usage = "/tr setmapname <arena name> <map name>",
-		senderType = PLAYER
-	)
-	public void mmMapNameCommand(CommandArguments arguments) {
-		final var user = plugin.getUserManager().getUser(arguments.getSender());
-
-		if (plugin.getArenaRegistry().isInArena(user)) {
-			user.sendMessage("admin-commands.cannot-do-that-ingame");
-			return;
-		}
-
-		if (arguments.isArgumentsEmpty()) {
-			user.sendMessage("admin-commands.provide-an-arena-name");
-			return;
-		}
-
-		final var arenaId = arguments.getArgument(0);
-		final var arena = plugin.getArenaRegistry().getArena(arenaId);
-
-		if (arena == null) {
-			user.sendMessage("admin-commands.no-arena-found-with-that-name");
-			return;
-		}
-
-		final var path = "instance.%s.".formatted(arenaId);
-		final var allArgs = new ArrayList<>(Arrays.asList(arguments.getArguments()));
-		allArgs.remove(allArgs.get(0));
-
-		final var name = Strings.join(allArgs, ' ');
-
-		arenaConfig.set(path + "mapName", name);
-		saveConfig();
-
-		user.sendRawMessage("&e✔ Completed | &aName of arena &e%s &aset to &e%s", arena, name);
 	}
 
 	@Command(
@@ -288,25 +246,29 @@ public class AdminCommands extends AbstractCommand {
 	public void helpCommand(CommandArguments arguments) {
 		final var isPlayer = arguments.isSenderPlayer();
 		final var sender = arguments.getSender();
-		final var message = chatManager.rawMessage("&3&l---- TNT Run Help Menu ----");
+		final var message = chatManager.rawMessage("&3&l---- TNT Run Admin Commands ----");
 
 		arguments.sendMessage("");
 		if (isPlayer) MiscUtils.sendCenteredMessage((Player) sender, message); else arguments.sendMessage(message);
 		arguments.sendMessage("");
 
-		for (final var command : plugin.getCommandFramework().getCommands()) {
+		for (final var command : plugin.getCommandFramework().getCommands().stream().sorted(Collections
+			.reverseOrder(Comparator.comparingInt(cmd -> cmd.usage().length()))).toList()) {
 			String usage = command.usage(), desc = command.desc();
 
-			if (usage.isEmpty()) continue;
+			if (usage.isEmpty() || usage.contains("help")) continue;
 
 			if (isPlayer) {
-				((Player) sender).spigot().sendMessage(new ComponentBuilder(usage)
+				((Player) sender).spigot().sendMessage(new ComponentBuilder()
+					.color(ChatColor.DARK_GRAY)
+					.append(" • ")
+					.append(usage)
 					.color(ChatColor.AQUA)
 					.event(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, usage))
 					.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.fromLegacyText(desc)))
 					.create());
 			} else {
-				sender.sendMessage(chatManager.rawMessage("&b" + usage + " &3- &b" + desc));
+				sender.sendMessage(chatManager.rawMessage(" &8• &b" + usage + " &3- &b" + desc));
 			}
 		}
 

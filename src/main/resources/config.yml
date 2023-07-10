@@ -57,9 +57,15 @@ Game-Bar-Enabled: true
 # Should we enable our Bungee-cord server support?
 Bungee-Enabled: false
 
-# Enable if we should store players' inventories to restore them back
-# after the game or just disable it, so we just clear it every game?
-Inventory-Manager-Enabled: true
+# Enable Inventory Manager for your games? (Very useful feature for MULTI ARENA)
+# This saves inventory of players and restores it after player leaves arena.
+# Saved elements: max health, health, food, experience, full inventory, armor contents, and more.
+Inventory-Manager:
+  Enabled: true
+  # Usable elements: health, max-health, health-scale
+  Do-Not-Restore:
+    - "max-health"
+    - "health-scale"
 
 # Should we spawn golds if spawned golds' amount is equals or higher
 # than gold spawns amount?

@@ -29,6 +29,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.scoreboard.Scoreboard;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -44,11 +45,12 @@ public class User {
 	private static final Main plugin = JavaPlugin.getPlugin(Main.class);
 	private static long cooldownCounter;
 
-	private boolean spectator;
-
 	private final Player player;
 	private final Map<String, Double> cooldowns;
 	private final Map<StatsStorage.StatisticType, Integer> stats;
+
+	private boolean spectator;
+	private Scoreboard cachedScoreboard;
 
 	public User(Player player) {
 		this.player = player;
@@ -169,20 +171,6 @@ public class User {
 		}
 	}
 
-	public void removeGameItem(final String id) {
-		final var gameItem = plugin.getGameItemManager().getGameItem(id);
-
-		if (gameItem == null) return;
-
-		this.player.getInventory().setItem(gameItem.getSlot(), null);
-	}
-
-	public void removeGameItems(final String... ids) {
-		for (final var id : ids) {
-			this.removeGameItem(id);
-		}
-	}
-
 	public void addGameItems(final String... ids) {
 		this.addGameItems(true, ids);
 	}
@@ -217,6 +205,17 @@ public class User {
 		player.setFlying(true);
 		player.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, Integer.MAX_VALUE, 1, false, false, false));
 		player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 4 * 20, 1, false, false, false));
+	}
+
+	public void cacheScoreboard() {
+		this.cachedScoreboard = this.player.getScoreboard();
+	}
+
+	public void removeScoreboard() {
+		if (this.cachedScoreboard == null) return;
+
+		this.player.setScoreboard(this.cachedScoreboard);
+		this.cachedScoreboard = null;
 	}
 
 	public static void cooldownHandlerTask() {
