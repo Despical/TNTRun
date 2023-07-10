@@ -1,7 +1,9 @@
 package me.despical.tntrun.events.event;
 
+import me.despical.tntrun.ConfigPreferences;
 import me.despical.tntrun.Main;
 import me.despical.tntrun.api.StatsStorage;
+import me.despical.tntrun.arena.Arena;
 import me.despical.tntrun.arena.ArenaState;
 import me.despical.tntrun.events.EventListener;
 import me.despical.tntrun.events.spectator.SpectatorSettingsGUI;
@@ -201,6 +203,11 @@ public class GameItemEvents extends EventListener {
 		if (leaveItem == null) return;
 		if (!event.getItem().getItemMeta().equals(leaveItem.getItemStack().getItemMeta())) return;
 
+		if (plugin.getConfigPreferences().getOption(ConfigPreferences.Option.INSTANT_LEAVE)) {
+			this.leaveArena(user, arena);
+			return;
+		}
+
 		if (leaveConfirmations.contains(user)) {
 			this.leaveConfirmations.remove(user);
 
@@ -213,10 +220,18 @@ public class GameItemEvents extends EventListener {
 			plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
 				if (!this.leaveConfirmations.contains(user)) return;
 
-				plugin.getArenaManager().leaveAttempt(user, arena);
+				this.leaveArena(user, arena);
 
 				this.leaveConfirmations.remove(user);
 			}, 60);
+		}
+	}
+
+	private void leaveArena(User user, Arena arena) {
+		if (plugin.getConfigPreferences().getOption(ConfigPreferences.Option.BUNGEE_ENABLED)) {
+			plugin.getBungeeManager().connectToHub(user);
+		} else {
+			plugin.getArenaManager().leaveAttempt(user, arena);
 		}
 	}
 }

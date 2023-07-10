@@ -91,5 +91,8 @@ Chat-Format-Enabled: true
 # Should the messages stay between arena players or general?
 Disable-Separate-Chat: false
 
+# Should players instantly leave the arena using leave item?
+Instant-Leave: false
+
 # Should we check for any available updates?
 Update-Notifier-Enabled: true
