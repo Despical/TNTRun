@@ -88,6 +88,9 @@ public class Main extends JavaPlugin {
 
 				arena.teleportToEndLocation(user);
 
+				player.getInventory().clear();
+				player.getInventory().setArmorContents(null);
+
 				if (configPreferences.getOption(ConfigPreferences.Option.INVENTORY_MANAGER_ENABLED)) {
 					InventorySerializer.loadInventory(this, player);
 				} else {
