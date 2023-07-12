@@ -63,7 +63,6 @@ public class Arena extends BukkitRunnable {
 	private final Set<BlockState> destroyedBlocks;
 	private final List<User> players, spectators, deaths, winners;
 
-
 	@NotNull
 	private final GameBarManager gameBarManager;
 
@@ -356,6 +355,7 @@ public class Arena extends BukkitRunnable {
 		players.clear();
 		deaths.clear();
 		spectators.clear();
+		winners.clear();
 
 		final var iterator = destroyedBlocks.iterator();
 
@@ -576,6 +576,9 @@ public class Arena extends BukkitRunnable {
 						user.removePotionEffectsExcept(PotionEffectType.BLINDNESS);
 						user.setSpectator(false);
 
+						player.getInventory().clear();
+						player.getInventory().setArmorContents(null);
+
 						if (plugin.getConfigPreferences().getOption(ConfigPreferences.Option.INVENTORY_MANAGER_ENABLED)) {
 							InventorySerializer.loadInventory(plugin, player);
 						} else {
@@ -583,8 +586,6 @@ public class Arena extends BukkitRunnable {
 							player.setWalkSpeed(0.2f);
 							player.setFlying(false);
 							player.setAllowFlight(false);
-							player.getInventory().clear();
-							player.getInventory().setArmorContents(null);
 							player.setFireTicks(0);
 							player.setFoodLevel(20);
 						}
@@ -609,11 +610,13 @@ public class Arena extends BukkitRunnable {
 
 				if (plugin.getConfigPreferences().getOption(ConfigPreferences.Option.BUNGEE_ENABLED)) {
 					final var arenaRegistry = plugin.getArenaRegistry();
+					final var arenaManager = plugin.getArenaManager();
+					final var userManager = plugin.getUserManager();
 
 					arenaRegistry.shuffleBungeeArena();
 
 					for (final var player : plugin.getServer().getOnlinePlayers()) {
-						plugin.getArenaManager().joinAttempt(plugin.getUserManager().getUser(player), arenaRegistry.getBungeeArena());
+						arenaManager.joinAttempt(userManager.getUser(player), arenaRegistry.getBungeeArena());
 					}
 				}
 			}
