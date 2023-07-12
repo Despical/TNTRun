@@ -149,3 +149,18 @@ spectator-gui:
       - "&7Click to hide other spectators!"
     disabled-lore:
       - "&7Click to show other spectators!"
+
+signs:
+  game-states:
+    waiting: "&lWaiting..."
+    starting: "&e&lStarting"
+    playing: "&lIn-game"
+    full-game: "&c&lFULL"
+    ending: "&lEnding"
+    restarting: "&c&lRestarting"
+    inactive: "&lInactive..."
+  lines:
+    - "&4&lTNT Run"
+    - "%state%"
+    - "%map_name%"
+    - "&5[%players%/%max_players%]"

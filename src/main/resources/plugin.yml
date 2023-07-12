@@ -3,7 +3,7 @@ main: me.despical.tntrun.Main
 author: Despical
 version: ${project.version}
 api-version: 1.13
-softdepend: [Multiverse-Core, PlaceholderAPI]
+softdepend: [ PlaceholderAPI, Multiverse-Core, WorldGuard ]
 
 permissions:
   tntrun.admin.*:
@@ -17,3 +17,5 @@ permissions:
       tntrun.admin.help: true
       tntrun.admin.forcestart: true
       tntrun.admin.stop: true
+      tntrun.sign.create: true
+      tntrun.sign.break: true

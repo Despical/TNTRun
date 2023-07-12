@@ -17,6 +17,7 @@ import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.entity.Player;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.stream.Collectors;
@@ -87,6 +88,7 @@ public class AdminCommands extends AbstractCommand {
 		arenaConfig.set(path + "maximumPlayers", 12);
 		arenaConfig.set(path + "endLocation", LocationSerializer.SERIALIZED_LOCATION);
 		arenaConfig.set(path + "lobbyLocation", LocationSerializer.SERIALIZED_LOCATION);
+		arenaConfig.set(path + "signs", new ArrayList<>());
 
 		saveConfig();
 

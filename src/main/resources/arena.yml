@@ -6,3 +6,4 @@ instance:
     ready: false
     lobbyLocation: world, -994.000, 4.000, 853.000, 0.000, 0.000
     endLocation: world, -994.000, 4.000, 853.000, 0.000, 0.000
+    signs: []

@@ -54,7 +54,7 @@ public class PlayerAmountComponents extends AbstractComponent {
 			.lore("&8(how many players are needed")
 			.lore("&8for game to start lobby countdown)")
 			.lore("", isOptionDone("minimumPlayers"))
-			.amount(minValueHigherThan("minimumPlayers", 0));
+			.amount(minValueHigherThan("minimumPlayers", 2));
 
 		final var maxPlayersItem = new ItemBuilder(XMaterial.GLOWSTONE_DUST)
 			.name("&e&lSet Maximum Players")
@@ -94,6 +94,7 @@ public class PlayerAmountComponents extends AbstractComponent {
 			}
 
 			arena.setMinimumPlayers(amount);
+			arena.updateSigns();
 
 			config.set(path + "minimumPlayers", amount);
 			saveConfig();
@@ -121,6 +122,7 @@ public class PlayerAmountComponents extends AbstractComponent {
 			}
 
 			arena.setMaximumPlayers(amount);
+			arena.updateSigns();
 
 			config.set(path + "maximumPlayers", amount);
 			saveConfig();

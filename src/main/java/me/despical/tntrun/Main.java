@@ -35,6 +35,7 @@ import me.despical.tntrun.handlers.PlaceholderHandler;
 import me.despical.tntrun.handlers.bungee.BungeeManager;
 import me.despical.tntrun.handlers.items.GameItemManager;
 import me.despical.tntrun.handlers.rewards.RewardsFactory;
+import me.despical.tntrun.handlers.sign.SignManager;
 import me.despical.tntrun.user.User;
 import me.despical.tntrun.user.UserManager;
 import me.despical.tntrun.user.data.MysqlManager;
@@ -64,6 +65,7 @@ public class Main extends JavaPlugin {
 	private GameItemManager gameItemManager;
 	private PermissionsManager permissionManager;
 	private CommandFramework commandFramework;
+	private SignManager signManager;
 
 	@Override
 	public void onEnable() {
@@ -112,6 +114,7 @@ public class Main extends JavaPlugin {
 		this.gameItemManager = new GameItemManager(this);
 		this.permissionManager = new PermissionsManager(this);
 		this.rewardsFactory = new RewardsFactory(this);
+		this.signManager = new SignManager(this);
 
 		ScoreboardLib.setPluginInstance(this);
 		AbstractCommand.registerCommands(this);
@@ -212,6 +215,10 @@ public class Main extends JavaPlugin {
 	@NotNull
 	public BungeeManager getBungeeManager() {
 		return bungeeManager;
+	}
+
+	public SignManager getSignManager() {
+		return signManager;
 	}
 
 	private void saveAllUserStatistics() {

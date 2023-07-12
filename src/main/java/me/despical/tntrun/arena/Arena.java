@@ -136,6 +136,7 @@ public class Arena extends BukkitRunnable {
 	public void setArenaState(final ArenaState arenaState) {
 		this.arenaState = arenaState;
 		this.gameBarManager.handleGameBar();
+		this.updateSigns();
 	}
 
 	public boolean isReady() {
@@ -469,6 +470,14 @@ public class Arena extends BukkitRunnable {
 		}
 	}
 
+	public void updateSigns() {
+		final var signManager = plugin.getSignManager();
+
+		if (signManager == null) return;
+
+		signManager.updateSign(this);
+	}
+
 	private int getOption(ArenaOption option) {
 		return arenaOptions.get(option);
 	}
@@ -551,6 +560,7 @@ public class Arena extends BukkitRunnable {
 
 						user.resetTemporaryStats();
 						user.addGameItems("double-jump");
+						user.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, Integer.MAX_VALUE, 0, false, false, false));
 
 						ArenaUtils.updateNameTagsVisibility(user);
 					}

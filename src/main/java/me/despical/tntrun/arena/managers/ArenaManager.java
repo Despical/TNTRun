@@ -63,6 +63,7 @@ public record ArenaManager(Main plugin) {
 		arena.getScoreboardManager().createScoreboard(user);
 		arena.getGameBar().doBarAction(user, 1);
 		arena.hideUserOutsideTheGame(user);
+		arena.updateSigns();
 
 		player.setLevel(0);
 		player.setExp(0);
@@ -124,6 +125,7 @@ public record ArenaManager(Main plugin) {
 		arena.getScoreboardManager().removeScoreboard(user);
 		arena.getGameBar().doBarAction(user, 0);
 		arena.showUserOutsideTheGame(user);
+		arena.updateSigns();
 
 		user.removeScoreboard();
 

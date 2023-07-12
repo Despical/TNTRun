@@ -19,18 +19,20 @@
 package me.despical.tntrun.handlers.setup.components.component;
 
 import de.rapha149.signgui.SignGUI;
-import me.despical.commons.ReflectionUtils;
 import me.despical.commons.compat.XMaterial;
+import me.despical.commons.configuration.ConfigUtils;
 import me.despical.commons.item.ItemBuilder;
 import me.despical.commons.serializer.LocationSerializer;
 import me.despical.inventoryframework.GuiItem;
 import me.despical.inventoryframework.pane.PaginatedPane;
 import me.despical.inventoryframework.pane.StaticPane;
+import me.despical.tntrun.ConfigPreferences;
 import me.despical.tntrun.arena.ArenaState;
 import me.despical.tntrun.handlers.setup.ArenaEditorGUI;
 import me.despical.tntrun.handlers.setup.components.AbstractComponent;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
+import org.bukkit.block.Sign;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
@@ -60,15 +62,10 @@ public class MainMenuComponents extends AbstractComponent {
 
 		pane.fillWith(arena.isReady() ? readyItem.build() : notReadyItem.build());
 		pane.fillProgressBorder(GuiItem.of(readyItem.build()), GuiItem.of(notReadyItem.build()), arena.getSetupProgress());
-		pane.addItem(GuiItem.of(lobbyLocationsItem.build(), event -> this.gui.setPage("   Set LOBBY and END locations", 3, 1)), 2, 1);
-		pane.addItem(GuiItem.of(playerAmountsItem.build(), event -> this.gui.setPage(" Set MIN and MAX player amount", 3, 3)), 6, 1);
+		pane.addItem(GuiItem.of(lobbyLocationsItem.build(), event -> this.gui.setPage("   Set LOBBY and END locations", 3, 1)), 1, 1);
+		pane.addItem(GuiItem.of(playerAmountsItem.build(), event -> this.gui.setPage(" Set MIN and MAX player amount", 3, 3)), 7, 1);
 
 		pane.addItem(GuiItem.of(mapNameItem.build(), event -> {
-			if (ReflectionUtils.supports(20)) {
-				event.setCancelled(true);
-				return;
-			}
-
 			user.closeOpenedInventory();
 
 			new SignGUI()
@@ -85,6 +82,8 @@ public class MainMenuComponents extends AbstractComponent {
 						config.set(path + "mapName", name);
 						saveConfig();
 
+						plugin.getServer().getScheduler().runTask(plugin, arena::updateSigns); // must be in main thread cuz SignGUI works async
+
 						user.sendRawMessage("&e✔ Completed | &aName of arena &e%s &aset to &e%s.", arena, name);
 						return null;
 					} else {
@@ -92,7 +91,53 @@ public class MainMenuComponents extends AbstractComponent {
 						return lines;
 					}
 				}).open(user.getPlayer());
-		}), 4, 1);
+		}), 3, 1);
+
+		ItemBuilder gameSignItem = new ItemBuilder(XMaterial.OAK_SIGN).name("&e&lAdd Game Sign");
+
+		if (!plugin.getConfigPreferences().getOption(ConfigPreferences.Option.BUNGEE_ENABLED)) {
+			gameSignItem = gameSignItem
+				.lore("&7Target a sign and click this.", "")
+				.lore("&8(this will set target sign as game sign)");
+		} else {
+			gameSignItem = gameSignItem
+				.lore("&cThis option disabled in Bungee-cord mode.", "")
+				.lore("&8Bungee mode is meant to be one arena per server.")
+				.lore("&8If you wish to have multi arena, disable bungee in config!");
+		}
+
+		pane.addItem(GuiItem.of(gameSignItem.build(), e -> {
+			if (plugin.getConfigPreferences().getOption(ConfigPreferences.Option.BUNGEE_ENABLED)) return;
+
+			user.closeOpenedInventory();
+
+			var block = user.getPlayer().getTargetBlock(null, 10);
+
+			if (!(block.getState() instanceof Sign)) {
+				user.sendRawMessage("&cYou are not looking at any sign block!");
+				return;
+			}
+
+			final var signManager = plugin.getSignManager();
+
+			if (signManager.isGameSign(block)) {
+				user.sendRawMessage("&cThis sign is already a game sign!");
+				return;
+			}
+
+			final var config = ConfigUtils.getConfig(plugin, "arena");
+			final var path = "instance.%s.signs".formatted(arena);
+			final var locations = config.getStringList(path);
+			locations.add(LocationSerializer.toString(block.getLocation()));
+
+			config.set(path, locations);
+			ConfigUtils.saveConfig(plugin, config, "arena");
+
+			signManager.addArenaSign(block, arena);
+			signManager.updateSign(arena);
+
+			user.sendRawMessage("&aArena sign has been created successfully!");
+		}), 5, 1);
 
 		ItemStack registerItem;
 
