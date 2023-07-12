@@ -302,7 +302,7 @@ public class Arena extends BukkitRunnable {
 	private List<Block> getRemovableBlocks(User user) {
 		List<Block> removableBlocks = new ArrayList<>();
 		Location loc = user.getLocation();
-		int SCAN_DEPTH = user.getPlayer().isOnGround() ? 2 : 6, y = loc.getBlockY();
+		int SCAN_DEPTH = getOption(user.getPlayer().isOnGround() ? ArenaOption.MIN_DEPTH : ArenaOption.MAX_DEPTH), y = loc.getBlockY();
 
 		Block block;
 

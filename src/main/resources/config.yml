@@ -36,6 +36,11 @@ Double-Jumps:
     - tntrun.doublejumps.3
     - tntrun.doublejumps.5
 
+# How many blocks should we scan on different scenarios?
+Scanning-Depth:
+  On-Ground: 2
+  In-Air: 6
+
 # The block list that we are going to remove these when player is on these blocks in-game.
 Whitelisted-Blocks:
   - TNT

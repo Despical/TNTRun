@@ -34,6 +34,10 @@ public enum ArenaOption {
 
 	MAXIMUM_PLAYERS(12),
 
+	MIN_DEPTH("Scanning-Depth.On-Ground", 2),
+
+	MAX_DEPTH("Scanning-Depth.In-Air", 6),
+
 	START_BLOCK_REMOVING("Time-Settings.Start-Block-Removing", 5),
 
 	BLOCK_REMOVE_DELAY("Time-Settings.Block-Remove-Delay", 12),
