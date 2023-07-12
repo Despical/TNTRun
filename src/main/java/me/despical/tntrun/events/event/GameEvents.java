@@ -3,7 +3,6 @@ package me.despical.tntrun.events.event;
 import me.despical.commons.compat.XMaterial;
 import me.despical.tntrun.ConfigPreferences;
 import me.despical.tntrun.Main;
-import me.despical.tntrun.arena.ArenaState;
 import me.despical.tntrun.events.EventListener;
 import me.despical.tntrun.user.User;
 import org.bukkit.ChatColor;
@@ -139,7 +138,7 @@ public class GameEvents extends EventListener {
 		final var user = plugin.getUserManager().getUser(player);
 		final var arena = user.getArena();
 
-		if (arena == null || arena.getArenaState() == ArenaState.IN_GAME) return;
+		if (arena == null) return;
 
 		event.setCancelled(true);
 		player.setFireTicks(0);
