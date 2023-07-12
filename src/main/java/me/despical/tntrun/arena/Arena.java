@@ -349,6 +349,10 @@ public class Arena extends BukkitRunnable {
 		return this.players.stream().filter(user -> !user.isSpectator()).collect(Collectors.toSet());
 	}
 
+	public void playSound(XSound sound) {
+		this.players.forEach(user -> sound.play(user.getPlayer()));
+	}
+
 	public void broadcastFormattedMessage(final String path, final User user, boolean onlySpectators) {
 		if (!onlySpectators) {
 			this.broadcastFormattedMessage(path, user);
@@ -518,27 +522,29 @@ public class Arena extends BukkitRunnable {
 					break;
 				}
 
-				if (getTimer() == 15) {
-					broadcastMessage("messages.arena.starts-in-15s");
+				if (getTimer() == 20) {
+					broadcastMessage("messages.arena.starts-in-20s");
 
-					this.players.forEach(user -> XSound.UI_BUTTON_CLICK.play(user.getPlayer()));
+					this.playSound(XSound.UI_BUTTON_CLICK);
 				}
 
 				if (getTimer() == 10) {
 					broadcastMessage("messages.arena.starts-in-10s");
 
-					this.players.forEach(user -> XSound.UI_BUTTON_CLICK.play(user.getPlayer()));
+					this.playSound(XSound.UI_BUTTON_CLICK);
 				}
 
 				if (getTimer() <= 5 && getTimer() != 0) {
 					broadcastMessage("messages.arena.starts-in-5s-and-less");
 
-					this.players.forEach(user -> XSound.UI_BUTTON_CLICK.play(user.getPlayer()));
+					this.playSound(XSound.UI_BUTTON_CLICK);
 				}
 
 				if (getTimer() == 0) {
 					setArenaState(ArenaState.IN_GAME);
 					broadcastMessage("messages.in-game.game-started");
+
+					this.playSound(XSound.ENTITY_ENDER_DRAGON_GROWL);
 
 					for (final var user : this.players) {
 						teleportToLobby(user);
