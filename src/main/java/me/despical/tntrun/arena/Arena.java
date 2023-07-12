@@ -28,16 +28,14 @@ import me.despical.tntrun.arena.managers.ScoreboardManager;
 import me.despical.tntrun.arena.options.ArenaOption;
 import me.despical.tntrun.handlers.ChatManager;
 import me.despical.tntrun.user.User;
-import org.bukkit.GameMode;
-import org.bukkit.Location;
-import org.bukkit.Material;
+import org.bukkit.*;
 import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.util.NumberConversions;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -192,10 +190,6 @@ public class Arena extends BukkitRunnable {
 		gameLocations.put(GameLocation.LOBBY, lobbyLocation);
 	}
 
-	public Location getEndLocation() {
-		return gameLocations.get(GameLocation.END);
-	}
-
 	public void setEndLocation(Location endLocation) {
 		gameLocations.put(GameLocation.END, endLocation);
 	}
@@ -277,7 +271,7 @@ public class Arena extends BukkitRunnable {
 		this.players.forEach(user -> plugin.getArenaManager().leaveAttempt(user, this));
 	}
 
-	public void startBlockRemoving() {
+	private void startBlockRemoving() {
 		final var startBlockRemoving = ArenaOption.START_BLOCK_REMOVING.getIntegerValue();
 		final var blockRemoveDelay = ArenaOption.BLOCK_REMOVE_DELAY.getIntegerValue();
 		final var removableBlocks = plugin.getConfig().getStringList("Whitelisted-Blocks");
@@ -305,20 +299,50 @@ public class Arena extends BukkitRunnable {
 	}
 
 	private List<Block> getRemovableBlocks(User user) {
-		var removableBlocks = new ArrayList<Block>();
-		var playerLocation = user.getLocation();
+		List<Block> removableBlocks = new ArrayList<>();
+		Location loc = user.getLocation();
+		int SCAN_DEPTH = user.getPlayer().isOnGround() ? 2 : 6, y = loc.getBlockY();
 
-		for (var ox = -0.2; ox <= 0.2; ox += 0.2) {
-			for (var oz = -0.2; oz <= 0.2; oz += 0.2) {
-				var block = playerLocation.clone().add(ox, 0, oz).getBlock().getRelative(BlockFace.DOWN);
+		Block block;
 
+		for (int i = 0; i <= SCAN_DEPTH; i++) {
+			block = getBlockUnderPlayer(y--, loc);
+
+			if (block != null) {
 				removableBlocks.add(block);
-				removableBlocks.add(block.getRelative(BlockFace.DOWN));
-				removableBlocks.add(block.getRelative(BlockFace.DOWN).getRelative(BlockFace.DOWN));
 			}
 		}
 
 		return removableBlocks;
+	}
+
+	private Block getBlockUnderPlayer(int y, Location location) {
+		Position loc = new Position(location.getX(), y, location.getZ());
+		Block b1 = loc.getBlock(location.getWorld(), 0.3, -0.3);
+
+		if (b1.getType() != Material.AIR) {
+			return b1;
+		}
+
+		Block b2 = loc.getBlock(location.getWorld(), -0.3, 0.3);
+
+		if (b2.getType() != Material.AIR) {
+			return b2;
+		}
+
+		Block b3 = loc.getBlock(location.getWorld(), 0.3, 0.3);
+
+		if (b3.getType() != Material.AIR) {
+			return b3;
+		}
+
+		Block b4 = loc.getBlock(location.getWorld(), -0.3, -0.3);
+
+		if (b4.getType() != Material.AIR) {
+			return b4;
+		}
+
+		return null;
 	}
 
 	public Set<User> getPlayersLeft() {
@@ -635,5 +659,12 @@ public class Arena extends BukkitRunnable {
 
 	public enum GameLocation {
 		LOBBY, END
+	}
+
+	private record Position(double x, int y, double z) {
+
+		public Block getBlock(World world, double addx, double addz) {
+			return world.getBlockAt(NumberConversions.floor(x + addx), y, NumberConversions.floor(z + addz));
+		}
 	}
 }
