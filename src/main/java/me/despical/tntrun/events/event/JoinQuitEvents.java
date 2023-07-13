@@ -73,8 +73,7 @@ public class JoinQuitEvents extends EventListener {
 	}
 
 	private void checkForUpdates(final User user) {
-		if (!plugin.getConfigPreferences().getOption(ConfigPreferences.Option.UPDATE_NOTIFIER_ENABLED)) return;
-		if (!user.getPlayer().isOp() || !user.hasPermission("tntrun.admin.*")) return;
+		if (!plugin.getPermissionManager().hasNotifyPerm(user.getPlayer())) return;
 
 		UpdateChecker.init(plugin, 83196).requestUpdateCheck().whenComplete((result, exception) -> {
 			if (result.requiresUpdate()) {

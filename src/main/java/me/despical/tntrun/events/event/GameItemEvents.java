@@ -50,7 +50,7 @@ public class GameItemEvents extends EventListener {
 			event.setCancelled(true);
 
 			user.addStat(StatsStorage.StatisticType.LOCAL_DOUBLE_JUMPS, -1);
-			user.setCooldown("double_jump", plugin.getConfig().getInt("Double-Jump-Delay", 4));
+			user.setCooldown("double_jump", plugin.getPermissionManager().getDoubleJumpDelay());
 
 			player.setFlying(false);
 			player.setVelocity(player.getLocation().getDirection().multiply(1.5D).setY(0.7D));
@@ -82,7 +82,7 @@ public class GameItemEvents extends EventListener {
 				event.setCancelled(true);
 
 				user.addStat(StatsStorage.StatisticType.LOCAL_DOUBLE_JUMPS, -1);
-				user.setCooldown("double_jump", plugin.getConfig().getInt("Double-Jump-Delay", 4));
+				user.setCooldown("double_jump", plugin.getPermissionManager().getDoubleJumpDelay());
 
 				player.setVelocity(player.getLocation().getDirection().multiply(1.5D).setY(0.7D));
 				player.setFlying(false);

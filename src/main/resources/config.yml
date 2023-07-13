@@ -29,7 +29,7 @@ Double-Jumps:
   # Default amount of double jumps for each of in-game players that doesn't have double jump permission.
   Default: 5
   # The duration between using double jumps as seconds.
-  Double-Jump-Delay: 4
+  Delay: 4
   # https://github.com/Despical/TNTRun/wiki/Commands-and-permissions#double-jump-permissions
   Permissions:
     - tntrun.doublejumps.1

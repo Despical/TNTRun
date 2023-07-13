@@ -34,16 +34,19 @@ import java.util.List;
 public class PermissionsManager {
 
 	private final Main plugin;
-	private final int defaultDoubleJumps;
-	private final String joinPermission, joinFullPerm;
+	private final int defaultDoubleJumps, doubleJumpDelay;
+	private final String joinPermission;
 	private final List<String> doubleJumpsPerms;
 
 	public PermissionsManager(Main plugin) {
 		this.plugin = plugin;
-		this.defaultDoubleJumps = plugin.getConfig().getInt("Default-Double-Jumps", 5);
-		this.joinPermission = plugin.getConfig().getString("Basic-Permissions.Join-Permission", "");
-		this.joinFullPerm = plugin.getConfig().getString("Basic-Permissions.Full-Games-Permission", "tntrun.fullgames");
-		this.doubleJumpsPerms = plugin.getConfig().getStringList("Double-Jumps");
+
+		final var config = plugin.getConfig();
+
+		this.defaultDoubleJumps = config.getInt("Double-Jumps.Default", 5);
+		this.doubleJumpDelay = config.getInt("Double-Jumps.Delay", 4);
+		this.joinPermission = config.getString("Join-Permission", "");
+		this.doubleJumpsPerms = config.getStringList("Double-Jumps.Permissions");
 	}
 
 	public boolean hasPermission(final User user, final Arena arena) {
@@ -52,16 +55,12 @@ public class PermissionsManager {
 		return user.hasPermission(joinPermission.replace("<arena>", arena.getId()));
 	}
 
-	public boolean hasFullPerm(Player player) {
-		return player.hasPermission(joinFullPerm);
-	}
-
 	public boolean hasNotifyPerm(Player player) {
 		return plugin.getConfigPreferences().getOption(ConfigPreferences.Option.UPDATE_NOTIFIER_ENABLED) && player.hasPermission("tntrun.updatenotify");
 	}
 
-	public String getJoinPermission() {
-		return joinPermission;
+	public int getDoubleJumpDelay() {
+		return doubleJumpDelay;
 	}
 
 	public int getDoubleJumps(Player player) {
