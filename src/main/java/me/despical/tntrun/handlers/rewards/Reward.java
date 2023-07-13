@@ -62,10 +62,6 @@ public class Reward {
 				this.executor = 2;
 
 				processedCode = processedCode.replace("p:", "");
-			} else if (rawCode.contains("script:")) {
-				this.executor = 3;
-
-				processedCode = processedCode.replace("script:", "");
 			} else {
 				this.executor = 1;
 			}

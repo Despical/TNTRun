@@ -19,12 +19,6 @@
 #    - p:chance(99):spawn                         # Player has %99 chance to teleport to spawn                                #
 #    - chance(50):eco give %player% 10            # Console has %50 chance to give player 10$                                 #
 #                                                                                                                             #
-#   Just add example reward:                                                                                                  #
-#    - script:player.sendMessage("oh, hi %player%");      # It will send "oh, hi <player name>" to player! %100 plain Java!   #
-#    - script:server.broadcastMessage("hello everyone");  # Broadcasts "hello everyone" to whole server                       #
-#    - script:player.getInventory().addItem(new org.bukkit.inventory.ItemStack(org.bukkit.Material.DIRT));                    #
-#         ^ Gives player dirt item (you must always use direct package names for not provided objects)                        #
-#                                                                                                                             #
 #             All object documents that can be used in commands:                                                              #
 #                                                                                                                             #
 #       arena  - Arena object  (NOT PUBLIC DOCUMENTATION / JOIN OUR DISCORD SERVER INSTEAD)                                   #
@@ -44,4 +38,3 @@ Rewards:
     - p:say I lost the game!
   End-Game:
     - p:say %map_name% has ended!
-    - script:server.broadcastMessage("%players% were playing the game!");

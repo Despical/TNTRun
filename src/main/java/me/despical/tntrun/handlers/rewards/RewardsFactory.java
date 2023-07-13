@@ -19,7 +19,6 @@
 package me.despical.tntrun.handlers.rewards;
 
 import me.despical.commons.configuration.ConfigUtils;
-import me.despical.commons.engine.ScriptEngine;
 import me.despical.tntrun.Main;
 import me.despical.tntrun.user.User;
 
@@ -53,20 +52,12 @@ public class RewardsFactory {
 			for (final var reward : mainRewards.getRewards()){
 				if (ThreadLocalRandom.current().nextInt(0, 100) > reward.getChance()) continue;
 
-				final var arena = user.getArena();
 				final var player = user.getPlayer();
 				final var command = formatCommandPlaceholders(reward, user);
 
 				switch (reward.getExecutor()) {
 					case 1 -> plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(), command);
 					case 2 -> player.performCommand(command);
-					case 3 -> {
-						final var engine = new ScriptEngine();
-						engine.setValue("player", player);
-						engine.setValue("server", plugin.getServer());
-						engine.setValue("arena", arena);
-						engine.execute(command);
-					}
 				}
 			}
 		}
