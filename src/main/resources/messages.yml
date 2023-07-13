@@ -63,6 +63,7 @@ messages:
     game-chat-format: "&7%player%: %message%"
     game-death-format: "&7[DEAD CHAT] "
     fell-into-void: "&7%player% &cdied!\n&e%players_left% players remaining."
+    cooldown-format: "&6CHARGING &8&l[%progress%&8&l] &6%time%s"
   score-actions:
     bonus-score: "&6%score% score! %action%"
     survive: "Survived 30 seconds"

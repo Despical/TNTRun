@@ -32,9 +32,9 @@ Double-Jumps:
   Delay: 4
   # https://github.com/Despical/TNTRun/wiki/Commands-and-permissions#double-jump-permissions
   Permissions:
-    - tntrun.doublejumps.1
     - tntrun.doublejumps.3
-    - tntrun.doublejumps.5
+    - tntrun.doublejumps.2
+    - tntrun.doublejumps.1
 
 # How many blocks should we scan on different scenarios?
 Scanning-Depth:
@@ -54,6 +54,10 @@ Whitelisted-Blocks:
 # Leave this section empty so everyone can join.
 # Op-ed players will override all the permissions.
 Join-Permission: ""
+
+# Should we create a progress bar to show how many seconds left
+# to use a new double jump?
+Jump-Bar: true
 
 # See messages.yml for game bar messages.
 # Should we create a game bar for in-game players?

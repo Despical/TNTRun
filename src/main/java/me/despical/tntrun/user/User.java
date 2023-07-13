@@ -18,10 +18,12 @@
 
 package me.despical.tntrun.user;
 
+import me.despical.tntrun.ConfigPreferences;
 import me.despical.tntrun.Main;
 import me.despical.tntrun.api.StatsStorage;
 import me.despical.tntrun.arena.Arena;
 import me.despical.tntrun.handlers.rewards.Reward;
+import me.despical.tntrun.utils.Utils;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Location;
@@ -159,6 +161,16 @@ public class User {
 		setStat(StatsStorage.StatisticType.LOCAL_DOUBLE_JUMPS, plugin.getPermissionManager().getDoubleJumps(this.player));
 
 		this.spectator = false;
+	}
+
+	public void applyDoubleJumpDelay() {
+		final int cooldown = plugin.getPermissionManager().getDoubleJumpDelay();
+
+		addStat(StatsStorage.StatisticType.LOCAL_DOUBLE_JUMPS, -1);
+		setCooldown("double_jump", cooldown);
+
+		if (plugin.getConfigPreferences().getOption(ConfigPreferences.Option.JUMP_BAR) && getStat(StatsStorage.StatisticType.LOCAL_DOUBLE_JUMPS) > 0)
+			Utils.applyActionBarCooldown(this, cooldown);
 	}
 
 	public void removePotionEffectsExcept(final PotionEffectType... effectTypes) {

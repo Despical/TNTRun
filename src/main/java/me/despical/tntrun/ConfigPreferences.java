@@ -53,8 +53,9 @@ public class ConfigPreferences {
 
 	public enum Option {
 
-		BUNGEE_ENABLED(false), GAME_BAR_ENABLED, INVENTORY_MANAGER_ENABLED, DISABLE_FALL_DAMAGE, DATABASE_ENABLED(false),
+		BUNGEE_ENABLED(false), GAME_BAR_ENABLED, INVENTORY_MANAGER_ENABLED, DISABLE_FALL_DAMAGE, DATABASE_ENABLED(false), JUMP_BAR,
 		NAME_TAGS_HIDDEN(false), CHAT_FORMAT_ENABLED, DISABLE_SEPARATE_CHAT(false), UPDATE_NOTIFIER_ENABLED, INSTANT_LEAVE(false),
+
 		HEAL_PLAYER((config) -> {
 			final var list = config.getStringList("Inventory-Manager.Do-Not-Restore");
 			list.forEach(InventorySerializer::addNonSerializableElements);
