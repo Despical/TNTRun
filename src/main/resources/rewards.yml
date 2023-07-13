@@ -1,45 +1,47 @@
-#
-#             TNT Run Rewards Configuration
-#
-#                    Placeholders list:
-#             %player% - Current player name
-#             %map_name% - Name of map
-#             %arena_id% - Arena Identifier
-#             %players% - Number of players in game
-#
-#        Commands are executed by default bY CONSOLE, use "p:" to preform command by player
-#  You can use chance to execute command adding "chance(NUMBER):" (ex chance(10):) at the beginning of command
-#
-#  Commands examples:
-#    - p:say Hello everyone in %mapname%!             # Player will say "Hello everyone in <map name here>"
-#    - broadcast Game %arena-id% has ended!           # Will broadcast "Game <arena name here> has ended" message
-#    - chance(1):p:say I was very lucky!              # Player has 1% chance to say "I was very lucky!"
-#    - p:chance(99):spawn                             # Player has 99% chance to teleport to spawn
-#       ^ YOU CANt EVEN SWAP CHANCE WITH PLAYER!
-#    - chance(50):eco give %player% 10                # Console has 50% chance to give player 10$
-#
-#    Just add example reward:
-#    - script:player.sendMessage("oh, hi %player%");      # It will send "oh, hi <player name>" to player! 100% plain java!
-#    - script:server.broadcastMessage("hello everyone");  # Broadcasts "hello everyone" to whole server
-#    - script:player.getInventory().addItem(new org.bukkit.inventory.ItemStack(org.bukkit.Material.DIRT));
-#         ^ Gives player dirt item (you must always use direct package names for not provided objects)
-#
-#                               All script provided objects:
-#            player - Player object (API methods https://hub.spigotmc.org/javadocs/spigot/org/bukkit/entity/Player.html)
-#     arena - TNT Run arena object (API methods https://javadoc.jitpack.io/com/github/Despical/TNTRun/latest/javadoc/me/despical/tntrun/arena/Arena.html)
-#            server - Bukkit server object (API methods https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Server.html)
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+#                                                                                                                             #
+#              TNT Run Rewards Configuration                                                                                  #
+#                                                                                                                             #
+#                    Placeholders list:                                                                                       #
+#                                                                                                                             #
+#             %player%   - Player name.                                                                                       #
+#             %arena%    - Arena identifier.                                                                                  #
+#             %map_name% - Map name of arena.                                                                                 #
+#             %players%  - Number of players in arena.                                                                        #
+#                                                                                                                             #
+#      Commands are executed by default by CONSOLE, use "p:" to perform command by player                                     #
+#   You can use chance to execute command adding "chance(NUMBER):" at the beginning of command                                #
+#                                                                                                                             #
+#   Commands examples:                                                                                                        #
+#    - p:say Hello everyone in %arena%!           # Player will say "Hello everyone in <arena name here>"                     #
+#    - broadcast Game %arena% has ended!          # Will broadcast "Game <arena name here> has ended" message                 #
+#    - chance(1):p:say I was very lucky!          # Player has %1 chance to say "I was very lucky!"                           #
+#    - p:chance(99):spawn                         # Player has %99 chance to teleport to spawn                                #
+#    - chance(50):eco give %player% 10            # Console has %50 chance to give player 10$                                 #
+#                                                                                                                             #
+#   Just add example reward:                                                                                                  #
+#    - script:player.sendMessage("oh, hi %player%");      # It will send "oh, hi <player name>" to player! %100 plain Java!   #
+#    - script:server.broadcastMessage("hello everyone");  # Broadcasts "hello everyone" to whole server                       #
+#    - script:player.getInventory().addItem(new org.bukkit.inventory.ItemStack(org.bukkit.Material.DIRT));                    #
+#         ^ Gives player dirt item (you must always use direct package names for not provided objects)                        #
+#                                                                                                                             #
+#             All object documents that can be used in commands:                                                              #
+#                                                                                                                             #
+#       arena  - Arena object  (NOT PUBLIC DOCUMENTATION / JOIN OUR DISCORD SERVER INSTEAD)                                   #
+#       player - Player object (API methods https://hub.spigotmc.org/javadocs/spigot/org/bukkit/entity/Player.html)           #
+#       server - Server object (API methods https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Server.html)                  #
+#                                                                                                                             #
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
-# Rewards must be enabled via config.yml first!
-rewards:
-  # Commands performed when game is finished
-  end-game:
-    - p:say %map_name% has ended!
-    - say Ooh and there were playing %players% players
-  # Commands executed when player wins the game
-  win:
+Rewards-Enabled: true
+
+Rewards:
+  Win:
     - eco give %player% 2
     - p:say I won the game!
-  # Commands executed when player loses the game
-  lose:
+  Lose:
     - chance(10):eco give %player% 8
     - p:say I lost the game!
+  End-Game:
+    - p:say %map_name% has ended!
+    - script:server.broadcastMessage("%players% were playing the game!");

@@ -45,31 +45,34 @@ public class RewardsFactory {
 	}
 
 	public void performReward(final User user, final Reward.RewardType type) {
-		final var reward = rewards.stream().filter(rew -> rew.getType() == type).findFirst().orElse(null);
+		final var rewardList = rewards.stream().filter(rew -> rew.getType() == type).toList();
 
-		if (reward == null) return;
-		if (ThreadLocalRandom.current().nextInt(0, 100) > reward.getChance()) return;
+		if (rewardList.isEmpty()) return;
 
-		final var arena = user.getArena();
-		final var player = user.getPlayer();
-		final var command = formatCommandPlaceholders(reward, user);
+		for (final var mainRewards : rewardList) {
+			for (final var reward : mainRewards.getRewards()){
+				if (ThreadLocalRandom.current().nextInt(0, 100) > reward.getChance()) continue;
 
-		switch (reward.getExecutor()) {
-			case 1 -> plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(), command);
-			case 2 -> player.performCommand(command);
-			case 3 -> {
-				final var engine = new ScriptEngine();
-				engine.setValue("player", player);
-				engine.setValue("server", plugin.getServer());
-				engine.setValue("arena", arena);
-				engine.execute(command);
-			}
-			default -> {
+				final var arena = user.getArena();
+				final var player = user.getPlayer();
+				final var command = formatCommandPlaceholders(reward, user);
+
+				switch (reward.getExecutor()) {
+					case 1 -> plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(), command);
+					case 2 -> player.performCommand(command);
+					case 3 -> {
+						final var engine = new ScriptEngine();
+						engine.setValue("player", player);
+						engine.setValue("server", plugin.getServer());
+						engine.setValue("arena", arena);
+						engine.execute(command);
+					}
+				}
 			}
 		}
 	}
 
-	private String formatCommandPlaceholders(final Reward reward, final User user) {
+	private String formatCommandPlaceholders(final Reward.SubReward reward, final User user) {
 		var arena = user.getArena();
 		var formatted = reward.getExecutableCode();
 
@@ -86,9 +89,7 @@ public class RewardsFactory {
 		if (!config.getBoolean("Rewards-Enabled")) return;
 
 		for (final var rewardType : Reward.RewardType.values()) {
-			for (final var reward : config.getStringList(rewardType.path)) {
-				rewards.add(new Reward(plugin, rewardType, reward));
-			}
+			rewards.add(new Reward(plugin, rewardType, config.getStringList(rewardType.path)));
 		}
 	}
 }
