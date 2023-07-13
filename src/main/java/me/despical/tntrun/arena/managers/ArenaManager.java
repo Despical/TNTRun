@@ -127,8 +127,6 @@ public record ArenaManager(Main plugin) {
 		arena.showUserOutsideTheGame(user);
 		arena.updateSigns();
 
-		user.removeScoreboard();
-
 		player.getInventory().clear();
 		player.getInventory().setArmorContents(null);
 		player.setFoodLevel(20);

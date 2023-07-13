@@ -82,6 +82,8 @@ public class ScoreboardManager {
 			if (board.getHolder().equals(player)) {
 				scoreboards.remove(board);
 				board.deactivate();
+
+				user.removeScoreboard();
 				return;
 			}
 		}
