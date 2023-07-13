@@ -72,13 +72,6 @@ Inventory-Manager:
     - "max-health"
     - "health-scale"
 
-# Should we spawn golds if spawned golds' amount is equals or higher
-# than gold spawns amount?
-Disable-Gold-Limiter: true
-
-# Should we spawn golds randomly or at every spawner in each time?
-Spawn-Gold-Every-Spawner-Mode: true
-
 # Should we disable fall damage?
 Disable-Fall-Damage: true
 
