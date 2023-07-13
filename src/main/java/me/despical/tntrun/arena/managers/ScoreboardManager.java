@@ -25,7 +25,6 @@ import me.despical.commons.scoreboard.type.Scoreboard;
 import me.despical.commons.scoreboard.type.ScoreboardHandler;
 import me.despical.commons.string.StringFormatUtils;
 import me.despical.tntrun.Main;
-import me.despical.tntrun.api.StatsStorage;
 import me.despical.tntrun.arena.Arena;
 import me.despical.tntrun.arena.ArenaState;
 import me.despical.tntrun.handlers.ChatManager;
@@ -33,7 +32,12 @@ import me.despical.tntrun.user.User;
 import org.bukkit.entity.Player;
 
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import static me.despical.tntrun.api.StatsStorage.StatisticType.*;
 
 /**
  * @author Despical
@@ -48,12 +52,14 @@ public class ScoreboardManager {
 	private final Arena arena;
 	private final Main plugin;
 	private final ChatManager chatManager;
+	private final String[] doubleJumpColors;
 	private final Set<Scoreboard> scoreboards;
 
 	public ScoreboardManager(final Arena arena, final Main plugin) {
 		this.arena = arena;
 		this.plugin = plugin;
 		this.chatManager = plugin.getChatManager();
+		this.doubleJumpColors = chatManager.message("Scoreboard.Double-Jumps").split(":");
 		this.scoreboards = new HashSet<>();
 	}
 
@@ -116,10 +122,21 @@ public class ScoreboardManager {
 		formattedLine = formattedLine.replace("%max_players%", Integer.toString(arena.getMaximumPlayers()));
 		formattedLine = formattedLine.replace("%time%", Integer.toString(arena.getTimer()));
 		formattedLine = formattedLine.replace("%formatted_time%", StringFormatUtils.formatIntoMMSS(arena.getTimer()));
-		formattedLine = formattedLine.replace("%coins_earned%", Integer.toString(user.getStat(StatsStorage.StatisticType.LOCAL_COINS)));
-		formattedLine = formattedLine.replace("%double_jumps%", Integer.toString(user.getStat(StatsStorage.StatisticType.LOCAL_DOUBLE_JUMPS)));
-		formattedLine = formattedLine.replace("%max_double_jumps%", Integer.toString(plugin.getPermissionManager().getDoubleJumps(user.getPlayer())));
+		formattedLine = formattedLine.replace("%coins_earned%", Integer.toString(user.getStat(LOCAL_COINS)));
+
+		int jumps = user.getStat(LOCAL_DOUBLE_JUMPS), max = plugin.getPermissionManager().getDoubleJumps(user.getPlayer());
+
+		formattedLine = formattedLine.replace("%double_jumps%", getDoubleJumpColor(jumps, max) + jumps);
+		formattedLine = formattedLine.replace("%max_double_jumps%", Integer.toString(max));
 
 		return chatManager.rawMessage(formattedLine);
+	}
+
+	private String getDoubleJumpColor(int amount, int max) {
+		final int perc = (amount * 100) / max;
+
+		if (perc == 0) return doubleJumpColors[2];
+		if (perc >= 60) return doubleJumpColors[0];
+		return doubleJumpColors[1];
 	}
 }

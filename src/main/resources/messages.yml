@@ -90,6 +90,8 @@ game-bar:
 
 Scoreboard:
   Title: " &e&lTNT Run "
+  # > %75, < %50, EMPTY
+  Double-Jumps: "&a:&e:&c"
   Waiting:
     - "&7%date%"
     - ""
@@ -118,7 +120,7 @@ Scoreboard:
   Playing:
     - "&7Duration: %formatted_time%"
     - ""
-    - "&fDouble Jump: &a%double_jumps%&7/%max_double_jumps%"
+    - "&fDouble Jump: %double_jumps%&7/%max_double_jumps%"
     - ""
     - "&fPlayers Alive: &a%players_left%"
     - ""
