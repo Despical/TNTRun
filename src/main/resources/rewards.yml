@@ -31,7 +31,6 @@ Rewards-Enabled: true
 
 Rewards:
   Win:
-    - eco give %player% 2
     - p:say I won the game!
   Lose:
     - chance(10):eco give %player% 8
