@@ -1,6 +1,5 @@
 package me.despical.tntrun.arena.managers;
 
-import me.despical.commons.miscellaneous.AttributeUtils;
 import me.despical.commons.miscellaneous.MiscUtils;
 import me.despical.commons.serializer.InventorySerializer;
 import me.despical.commons.string.StringFormatUtils;
@@ -74,8 +73,7 @@ public record ArenaManager(Main plugin) {
 		player.setAllowFlight(false);
 		player.setGlowing(false);
 
-		if (plugin.getConfigPreferences().getOption(ConfigPreferences.Option.HEAL_PLAYER)) AttributeUtils.healPlayer(player);
-
+		user.heal();
 		user.removePotionEffectsExcept();
 		user.resetTemporaryStats();
 		user.addGameItem("leave-item");
@@ -138,14 +136,13 @@ public record ArenaManager(Main plugin) {
 		player.setGameMode(GameMode.SURVIVAL);
 		player.getInventory().setHeldItemSlot(0);
 
-		if (plugin.getConfigPreferences().getOption(ConfigPreferences.Option.HEAL_PLAYER)) AttributeUtils.healPlayer(player);
+		user.heal();
+		user.setSpectator(false);
+		user.removePotionEffectsExcept();
 
 		if (!plugin.getConfigPreferences().getOption(ConfigPreferences.Option.BUNGEE_ENABLED) && plugin.getConfigPreferences().getOption(ConfigPreferences.Option.INVENTORY_MANAGER_ENABLED)) {
 			InventorySerializer.loadInventory(plugin, player);
 		}
-
-		user.setSpectator(false);
-		user.removePotionEffectsExcept();
 
 		plugin.getUserManager().saveStatistics(user);
 

@@ -35,11 +35,9 @@ import java.util.Map;
  */
 public class ConfigPreferences {
 
-	private static final Main plugin = JavaPlugin.getPlugin(Main.class);
-
 	private final Map<Option, Boolean> options;
 
-	public ConfigPreferences() {
+	public ConfigPreferences(Main plugin) {
 		this.options = new HashMap<>();
 
 		for (final var option : Option.values()) {
@@ -53,15 +51,15 @@ public class ConfigPreferences {
 
 	public enum Option {
 
-		BUNGEE_ENABLED(false), GAME_BAR_ENABLED, INVENTORY_MANAGER_ENABLED, DISABLE_FALL_DAMAGE, DATABASE_ENABLED(false), JUMP_BAR,
-		NAME_TAGS_HIDDEN(false), CHAT_FORMAT_ENABLED, DISABLE_SEPARATE_CHAT(false), UPDATE_NOTIFIER_ENABLED, INSTANT_LEAVE(false),
+		BUNGEE_ENABLED(false), GAME_BAR_ENABLED, INVENTORY_MANAGER_ENABLED("Inventory-Manager.Enabled"), DISABLE_FALL_DAMAGE, DATABASE_ENABLED(false),
+		JUMP_BAR, NAME_TAGS_HIDDEN(false), CHAT_FORMAT_ENABLED, DISABLE_SEPARATE_CHAT(false), UPDATE_NOTIFIER_ENABLED, INSTANT_LEAVE(false),
 
 		HEAL_PLAYER((config) -> {
 			final var list = config.getStringList("Inventory-Manager.Do-Not-Restore");
 			list.forEach(InventorySerializer::addNonSerializableElements);
 
 			return !list.contains("health");
-		});;
+		});
 
 		final String path;
 		final boolean def;
@@ -75,9 +73,14 @@ public class ConfigPreferences {
 			this.path = StringUtils.capitalize(name().replace('_', '-').toLowerCase(Locale.ENGLISH), '-', '.');
 		}
 
+		Option(String path) {
+			this.def = true;
+			this.path = path;
+		}
+
 		Option(DoubleSupplier<FileConfiguration, Boolean> supplier) {
 			this.path = "";
-			this.def = supplier.accept(plugin.getConfig());
+			this.def = supplier.accept(JavaPlugin.getPlugin(Main.class).getConfig());
 		}
 	}
 }

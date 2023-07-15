@@ -18,6 +18,7 @@
 
 package me.despical.tntrun.user;
 
+import me.despical.commons.miscellaneous.AttributeUtils;
 import me.despical.tntrun.ConfigPreferences;
 import me.despical.tntrun.Main;
 import me.despical.tntrun.api.StatsStorage;
@@ -161,6 +162,10 @@ public class User {
 		setStat(StatsStorage.StatisticType.LOCAL_DOUBLE_JUMPS, plugin.getPermissionManager().getDoubleJumps(this.player));
 
 		this.spectator = false;
+	}
+
+	public void heal() {
+		if (plugin.getConfigPreferences().getOption(ConfigPreferences.Option.HEAL_PLAYER)) AttributeUtils.healPlayer(player);
 	}
 
 	public void applyDoubleJumpDelay() {
