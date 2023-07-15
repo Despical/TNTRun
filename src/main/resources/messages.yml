@@ -51,8 +51,6 @@ messages:
     removed-night-vision: "&cYou no longer have night vision!"
     auto-teleport-enabled: "&aOnce you select a player using your compass, it will auto teleport you to them!"
     auto-teleport-disabled: "&cYou will no longer auto teleport to targets!"
-    first-person-enabled: "&aYou will now by default use First Person spectating!"
-    first-person-disabled: "&cYou will now by default use Third Person spectating!"
     have-speed: "&aYou now have Speed %speed%!"
     no-longer-speed: "&cYou no longer have any speed effects!"
   in-game:
