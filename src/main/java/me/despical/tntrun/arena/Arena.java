@@ -243,10 +243,16 @@ public class Arena extends BukkitRunnable {
 		this.spectators.add(user);
 
 		final var nightVision = user.getStat(StatsStorage.StatisticType.SPECTATOR_NIGHT_VISION);
+		final var player = user.getPlayer();
 
 		if (nightVision == 1) {
-			user.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, Integer.MAX_VALUE, 0, false, false, false));
+			player.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, Integer.MAX_VALUE, 0, false, false, false));
 		}
+
+		final var level = user.getStat(StatsStorage.StatisticType.SPECTATOR_SPEED);
+
+		player.setFlySpeed(.1F + (level + 1) * .05F);
+		player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, Integer.MAX_VALUE, level, false, false, false));
 	}
 
 	public void removeSpectator(final User user) {
@@ -623,7 +629,7 @@ public class Arena extends BukkitRunnable {
 							InventorySerializer.loadInventory(plugin, player);
 						} else {
 							player.setGameMode(GameMode.SURVIVAL);
-							player.setWalkSpeed(0.2f);
+							player.setWalkSpeed(.2F);
 							player.setFlying(false);
 							player.setAllowFlight(false);
 							player.setFireTicks(0);
