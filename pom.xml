@@ -65,6 +65,10 @@
 									<shadedPattern>me.despical.tntrun.utils</shadedPattern>
 								</relocation>
 								<relocation>
+									<pattern>de.rapha149.signgui</pattern>
+									<shadedPattern>me.despical.tntrun.utils</shadedPattern>
+								</relocation>
+								<relocation>
 									<pattern>com.zaxxer.hikari</pattern>
 									<shadedPattern>me.despical.tntrun.database</shadedPattern>
 								</relocation>                                <relocation>
@@ -122,7 +126,7 @@
 		<dependency>
 			<groupId>com.github.Despical</groupId>
 			<artifactId>CommandFramework</artifactId>
-			<version>1.1.9</version>
+			<version>1.2.0</version>
 		</dependency>
 		<dependency>
 			<groupId>com.github.Despical</groupId>
