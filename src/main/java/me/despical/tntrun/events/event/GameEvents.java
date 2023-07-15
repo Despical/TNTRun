@@ -32,7 +32,7 @@ public class GameEvents extends EventListener {
 	}
 
 	@EventHandler
-	public void onFoodLevelChangeEvent(final FoodLevelChangeEvent event) {
+	public void onFoodLevelChangeEvent(FoodLevelChangeEvent event) {
 		if (!(event.getEntity() instanceof Player player)) return;
 
 		final var user = plugin.getUserManager().getUser(player);
@@ -41,14 +41,14 @@ public class GameEvents extends EventListener {
 	}
 
 	@EventHandler
-	public void onDropItemEvent(final PlayerDropItemEvent event) {
+	public void onDropItemEvent(PlayerDropItemEvent event) {
 		final var user = plugin.getUserManager().getUser(event.getPlayer());
 
 		if (user.isInArena()) event.setCancelled(true);
 	}
 
 	@EventHandler
-	public void onEntityDamage(final EntityDamageEvent e) {
+	public void onEntityDamage(EntityDamageEvent e) {
 		if (!(e.getEntity() instanceof Player victim)) return;
 
 		final var user = plugin.getUserManager().getUser(victim);
@@ -66,6 +66,8 @@ public class GameEvents extends EventListener {
 					user.playDeathEffect();
 
 					arena.addDeathPlayer(user);
+
+					user.addGameItems("leave-item", "settings-item", "teleporter-item");
 
 					final var playersLeft = arena.getPlayersLeft();
 
@@ -92,7 +94,7 @@ public class GameEvents extends EventListener {
 	}
 
 	@EventHandler
-	public void onCraft(final PlayerInteractEvent event) {
+	public void onCraft(PlayerInteractEvent event) {
 		final var player = event.getPlayer();
 		final var user = plugin.getUserManager().getUser(player);
 
@@ -104,7 +106,7 @@ public class GameEvents extends EventListener {
 	}
 
 	@EventHandler
-	public void onItemSwap(final PlayerSwapHandItemsEvent event) {
+	public void onItemSwap(PlayerSwapHandItemsEvent event) {
 		final var user = plugin.getUserManager().getUser(event.getPlayer());
 
 		if (!user.isInArena()) return;
@@ -113,7 +115,7 @@ public class GameEvents extends EventListener {
 	}
 
 	@EventHandler
-	public void onDrop(final PlayerDropItemEvent event) {
+	public void onDrop(PlayerDropItemEvent event) {
 		final var user = plugin.getUserManager().getUser(event.getPlayer());
 
 		if (!user.isInArena()) return;
@@ -122,7 +124,7 @@ public class GameEvents extends EventListener {
 	}
 
 	@EventHandler
-	public void onBlockBreakEvent(final BlockBreakEvent event) {
+	public void onBlockBreakEvent(BlockBreakEvent event) {
 		final var user = plugin.getUserManager().getUser(event.getPlayer());
 
 		if (user.isInArena()) {
@@ -145,7 +147,7 @@ public class GameEvents extends EventListener {
 	}
 
 	@EventHandler
-	public void onChatEvent(final AsyncPlayerChatEvent event) {
+	public void onChatEvent(AsyncPlayerChatEvent event) {
 		final var user = plugin.getUserManager().getUser(event.getPlayer());
 		final var arena = user.getArena();
 

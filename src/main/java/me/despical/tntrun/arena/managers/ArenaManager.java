@@ -14,7 +14,6 @@ import me.despical.tntrun.arena.options.ArenaOption;
 import me.despical.tntrun.handlers.rewards.Reward;
 import me.despical.tntrun.user.User;
 import org.bukkit.GameMode;
-import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import java.util.ArrayList;
@@ -86,13 +85,12 @@ public record ArenaManager(Main plugin) {
 		if (arena.isArenaState(ArenaState.IN_GAME, ArenaState.ENDING)) {
 			user.setSpectator(true);
 			user.sendMessage("messages.in-game.you-are-spectator-now");
-			user.addGameItems("settings-item", "teleporter-item", "leave-item");
+			user.addGameItems(false,"settings-item", "teleporter-item");
 
 			arena.hideSpectator(user);
-			arena.addSpectator(user);
 			arena.teleportToLobby(user);
+			arena.addSpectator(user);
 
-			player.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, Integer.MAX_VALUE, 0, false, false, false));
 			player.setAllowFlight(true);
 			player.setFlying(true);
 			return;
