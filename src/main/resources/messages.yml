@@ -129,6 +129,14 @@ Scoreboard:
 
 spectator-gui:
   title: "         Spectator Settings"
+  close-item: "&cClose"
+  speed-prefix: "&aSpeed "
+  no-speed: "&aNo Speed"
+  teleporter:
+    title: "Teleporter"
+    skull-name: "&7%player%"
+    lore:
+      - "&7Click to teleport!"
   auto-teleport-item:
     enable: "&aEnable Auto Teleport"
     disable: "&cDisable Auto Teleport"
