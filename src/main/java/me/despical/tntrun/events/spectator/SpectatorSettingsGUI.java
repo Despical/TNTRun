@@ -40,7 +40,7 @@ public class SpectatorSettingsGUI {
 	}
 
 	private void registerComponents(final StaticPane pane) {
-		final SpectatorSettingComponent mainComponents = new SettingComponents();
+		final var mainComponents = new SettingComponents();
 		mainComponents.registerComponents(this, pane);
 	}
 
@@ -61,10 +61,5 @@ public class SpectatorSettingsGUI {
 	@NotNull
 	public User getUser() {
 		return user;
-	}
-
-	public interface SpectatorSettingComponent {
-
-		void registerComponents(SpectatorSettingsGUI spectatorGui, StaticPane pane);
 	}
 }

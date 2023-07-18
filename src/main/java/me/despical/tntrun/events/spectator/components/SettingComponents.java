@@ -22,20 +22,20 @@ import java.util.function.Consumer;
  * <p>
  * Created at 10.02.2023
  */
-public class SettingComponents implements SpectatorSettingsGUI.SpectatorSettingComponent {
+public class SettingComponents {
 
 	private Main plugin;
 
-	@Override
 	public void registerComponents(SpectatorSettingsGUI spectatorGui, StaticPane pane) {
 		this.plugin = spectatorGui.getPlugin();
 
-		var prefix = "&aSpeed ";
+		var chatManager = plugin.getChatManager();
+		var prefix = chatManager.message("spectator-gui.speed-prefix");
 		var user = spectatorGui.getUser();
 		var arena = spectatorGui.getArena();
 		var player = spectatorGui.getUser().getPlayer();
 
-		pane.addItem(new GuiItem(new ItemBuilder(XMaterial.LEATHER_BOOTS).name("&aNo Speed").flag(ItemFlag.HIDE_ATTRIBUTES).build(), e -> setSpeed(user, -1, "0")),2,1);
+		pane.addItem(new GuiItem(new ItemBuilder(XMaterial.LEATHER_BOOTS).name(chatManager.message("spectator-gui.no-speed")).flag(ItemFlag.HIDE_ATTRIBUTES).build(), e -> setSpeed(user, -1, "0")),2,1);
 		pane.addItem(new GuiItem(new ItemBuilder(XMaterial.CHAINMAIL_BOOTS).name(prefix + "I").flag(ItemFlag.HIDE_ATTRIBUTES).build(), e -> setSpeed(user, 1, "I")),3,1);
 		pane.addItem(new GuiItem(new ItemBuilder(XMaterial.IRON_BOOTS).name(prefix + "II").flag(ItemFlag.HIDE_ATTRIBUTES).build(), e -> setSpeed(user, 2, "II")),4,1);
 		pane.addItem(new GuiItem(new ItemBuilder(XMaterial.GOLDEN_BOOTS).name(prefix + "III").flag(ItemFlag.HIDE_ATTRIBUTES).build(), e -> setSpeed(user, 3, "III")),5,1);

@@ -18,17 +18,17 @@ import java.util.List;
  * <p>
  * Created at 21.05.2023
  */
-public class TeleporterComponents implements SpectatorTeleporterGUI.SpectatorTeleporterComponent {
+public class TeleporterComponents {
 
 	private final static List<Integer> headPlaces = List.of(10, 11, 12, 13, 14, 15, 16, 19, 20, 21, 22, 23, 24, 25, 28, 29, 30, 31, 32, 33, 34);
 
-	@Override
 	public void registerComponents(SpectatorTeleporterGUI teleporterGui, StaticPane pane) {
 		var u = teleporterGui.getUser();
 		var p = u.getPlayer();
 		var arena = teleporterGui.getArena();
+		var chatManager = teleporterGui.getPlugin().getChatManager();
 
-		pane.addItem(new GuiItem(new ItemBuilder(XMaterial.BARRIER).name("&cClose").flag(ItemFlag.HIDE_ATTRIBUTES).build(), e -> e.getWhoClicked().closeInventory()),4,4);
+		pane.addItem(new GuiItem(new ItemBuilder(XMaterial.BARRIER).name(chatManager.message("spectator-gui.close-item")).flag(ItemFlag.HIDE_ATTRIBUTES).build(), e -> e.getWhoClicked().closeInventory()),4,4);
 
 		var players = new ArrayList<>(arena.getPlayersLeft());
 		players.remove(u);
@@ -42,7 +42,9 @@ public class TeleporterComponents implements SpectatorTeleporterGUI.SpectatorTel
 			ItemUtils.setPlayerHead(player, skullMeta);
 			skullItem.setItemMeta(skullMeta);
 
-			var guiItem = new ItemBuilder(skullItem).name("&7" + player.getName()).lore("&7Click to teleport!").build();
+			var guiItem = new ItemBuilder(skullItem)
+				.name(chatManager.message("spectator-gui.teleporter.skull-name").replace("%player%", player.getName()))
+				.lore(chatManager.getStringList("spectator-gui.teleporter.lore")).build();
 			var xy = GeometryUtil.slotToXY(headPlaces.get(i));
 			int x = xy[0][0], y = xy[0][1];
 

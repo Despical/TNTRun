@@ -34,7 +34,7 @@ public class SpectatorTeleporterGUI {
 		this.arena = arena;
 
 		final var pane = new StaticPane(9, 5);
-		this.gui = new GuiBuilder(plugin, 5, "Teleporter").globalClick(event -> event.setCancelled(true)).pane(pane).build();
+		this.gui = new GuiBuilder(plugin, 5, plugin.getChatManager().message("spectator-gui.teleporter.title")).globalClick(event -> event.setCancelled(true)).pane(pane).build();
 
 		this.registerComponents(pane);
 	}
@@ -61,10 +61,5 @@ public class SpectatorTeleporterGUI {
 	@NotNull
 	public User getUser() {
 		return user;
-	}
-
-	public interface SpectatorTeleporterComponent {
-
-		void registerComponents(SpectatorTeleporterGUI teleporterGui, StaticPane pane);
 	}
 }
