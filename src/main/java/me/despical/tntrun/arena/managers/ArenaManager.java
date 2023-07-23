@@ -6,6 +6,9 @@ import me.despical.commons.string.StringFormatUtils;
 import me.despical.tntrun.ConfigPreferences;
 import me.despical.tntrun.Main;
 import me.despical.tntrun.api.StatsStorage;
+import me.despical.tntrun.api.events.game.TRGameJoinAttemptEvent;
+import me.despical.tntrun.api.events.game.TRGameLeaveAttemptEvent;
+import me.despical.tntrun.api.events.game.TRGameStopEvent;
 import me.despical.tntrun.arena.Arena;
 import me.despical.tntrun.arena.ArenaState;
 import me.despical.tntrun.arena.ArenaUtils;
@@ -26,6 +29,13 @@ import java.util.Collections;
 public record ArenaManager(Main plugin) {
 
 	public void joinAttempt(final User user, final Arena arena) {
+		final var player = user.getPlayer();
+		final var gameJoinEvent = new TRGameJoinAttemptEvent(player, arena);
+
+		plugin.getServer().getPluginManager().callEvent(gameJoinEvent);
+
+		if (gameJoinEvent.isCancelled()) return;
+
 		if (!arena.isReady()) {
 			user.sendMessage("messages.arena.not-configured");
 			return;
@@ -45,8 +55,6 @@ public record ArenaManager(Main plugin) {
 			user.sendMessage("messages.arena.no-permission");
 			return;
 		}
-
-		final var player = user.getPlayer();
 
 		if (plugin.getConfigPreferences().getOption(ConfigPreferences.Option.INVENTORY_MANAGER_ENABLED)) {
 			InventorySerializer.saveInventoryToFile(plugin, player);
@@ -104,6 +112,9 @@ public record ArenaManager(Main plugin) {
 	}
 
 	public void leaveAttempt(final User user, final Arena arena) {
+		final var player = user.getPlayer();
+
+		plugin.getServer().getPluginManager().callEvent(new TRGameLeaveAttemptEvent(player, arena));
 		plugin.getUserManager().saveStatistics(user);
 
 		final var localScore = user.getStat(StatsStorage.StatisticType.LOCAL_SURVIVE);
@@ -111,8 +122,6 @@ public record ArenaManager(Main plugin) {
 		if (localScore > user.getStat(StatsStorage.StatisticType.LONGEST_SURVIVE)) {
 			user.setStat(StatsStorage.StatisticType.LONGEST_SURVIVE, localScore);
 		}
-
-		final var player = user.getPlayer();
 
 		arena.broadcastFormattedMessage("messages.arena.quit-arena", user, true);
 		arena.removeUser(user);
@@ -154,6 +163,8 @@ public record ArenaManager(Main plugin) {
 	}
 
 	public void stopGame(boolean quickStop, Arena arena) {
+		plugin.getServer().getPluginManager().callEvent(new TRGameStopEvent(arena, quickStop));
+
 		arena.setArenaState(ArenaState.ENDING);
 		arena.setTimer(quickStop ? 2 : ArenaOption.LOBBY_ENDING_TIME.getIntegerValue());
 		arena.showPlayers();
