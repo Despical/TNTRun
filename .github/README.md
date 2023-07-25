@@ -5,7 +5,6 @@
 [![Build](https://github.com/Despical/TNTRun/actions/workflows/build.yml/badge.svg)](https://github.com/Despical/TNTRun/actions/workflows/build.yml)
 [![](https://jitpack.io/v/Despical/TNTRun.svg)](https://jitpack.io/#Despical/TNTRun)
 [![](https://img.shields.io/badge/JavaDocs-latest-lime.svg)](https://javadoc.jitpack.io/com/github/Despical/TNTRun/latest/javadoc/index.html)
-[![Discord](https://img.shields.io/discord/719922452259668000.svg?color=lime&label=Discord)](https://discord.gg/rVkaGmyszE)
 [![Support](https://img.shields.io/badge/Patreon-Support-lime.svg?logo=Patreon)](https://www.patreon.com/despical)
 
 TNT Run is an old Minecraft minigame that supports almost every version. Jump on the blocks but don't fall into void, show your parkour talent!
@@ -15,8 +14,6 @@ TNT Run is an old Minecraft minigame that supports almost every version. Jump on
 ## Documentation
 - [Wiki](https://github.com/Despical/TNTRun/wiki)
 - [JavaDocs](https://javadoc.jitpack.io/com/github/Despical/TNTRun/latest/javadoc/index.html)
-- [Discord Community](https://www.discord.gg/rVkaGmyszE)
-
 ## Donations
 - [Patreon](https://www.patreon.com/despical)
 - [Buy Me A Coffe](https://www.buymeacoffee.com/despical)
