@@ -7,7 +7,6 @@ import me.despical.tntrun.Main;
 import me.despical.tntrun.arena.ArenaState;
 import me.despical.tntrun.events.EventListener;
 import me.despical.tntrun.user.User;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -26,21 +25,22 @@ public class BungeeManager extends EventListener {
 
 	private final String motd, hubName;
 	private final boolean motdEnabled, shutdownWhenGameEnds, connectToHub;
-	private final FileConfiguration config;
 	private final Map<ArenaState, String> gameStates;
 
 	public BungeeManager(Main plugin) {
 		super(plugin);
 		this.gameStates = new EnumMap<>(ArenaState.class);
-		this.config = ConfigUtils.getConfig(plugin, "bungee");
-		this.motd = plugin.getChatManager().message("MOTD.Message");
+
+		final var config = ConfigUtils.getConfig(plugin, "bungee");
+
+		this.motd = plugin.getChatManager().rawMessage(config.getString("MOTD.Message"));
 		this.hubName = config.getString("Hub");
 		this.motdEnabled = config.getBoolean("MOTD.Enabled");
 		this.shutdownWhenGameEnds = config.getBoolean("Shutdown-When-Game-Ends");
 		this.connectToHub = config.getBoolean("Connect-To-Hub");
 
 		for (final var state : ArenaState.values()) {
-			gameStates.put(state, plugin.getChatManager().message("MOTD.Game-States." + state.getFormattedName()));
+			gameStates.put(state, plugin.getChatManager().rawMessage(config.getString("MOTD.Game-States." + state.getFormattedName())));
 		}
 
 		plugin.getServer().getMessenger().registerOutgoingPluginChannel(plugin, "BungeeCord");
