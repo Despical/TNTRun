@@ -101,7 +101,7 @@ public class SignManager extends EventListener {
 		arenaSigns.remove(arenaSign);
 
 		final var location = LocationSerializer.toString(block.getLocation());
-		final var path = "instance.%s.signs".formatted(arenaSign.getArena());
+		final var path = "instance.%s.signs".formatted(arenaSign.arena());
 		final var config = ConfigUtils.getConfig(plugin, "arena");
 		final var signs = config.getStringList(path);
 
@@ -125,7 +125,7 @@ public class SignManager extends EventListener {
 		final var arenaSign = getArenaSignByBlock(event.getClickedBlock());
 
 		if (event.getAction() == Action.RIGHT_CLICK_BLOCK && arenaSign != null) {
-			final var arena = arenaSign.getArena();
+			final var arena = arenaSign.arena();
 
 			if (arena == null) return;
 
@@ -161,14 +161,14 @@ public class SignManager extends EventListener {
 	}
 
 	public void updateSign(final Arena arena) {
-		this.arenaSigns.stream().filter(arenaSign -> arenaSign.getArena().equals(arena)).forEach(this::updateSign);
+		this.arenaSigns.stream().filter(arenaSign -> arenaSign.arena().equals(arena)).forEach(this::updateSign);
 	}
 
 	private void updateSign(final ArenaSign arenaSign) {
-		final var sign = arenaSign.getSign();
+		final var sign = arenaSign.sign();
 
 		for (int i = 0; i < signLines.size(); i++) {
-			sign.setLine(i, formatSign(signLines.get(i), arenaSign.getArena()));
+			sign.setLine(i, formatSign(signLines.get(i), arenaSign.arena()));
 		}
 
 		sign.update();
@@ -176,10 +176,10 @@ public class SignManager extends EventListener {
 
 	public void updateSigns() {
 		for (final var arenaSign : arenaSigns) {
-			final var sign = arenaSign.getSign();
+			final var sign = arenaSign.sign();
 
 			for (int i = 0; i < signLines.size(); i++) {
-				sign.setLine(i, formatSign(signLines.get(i), arenaSign.getArena()));
+				sign.setLine(i, formatSign(signLines.get(i), arenaSign.arena()));
 			}
 
 			sign.update();
@@ -187,7 +187,7 @@ public class SignManager extends EventListener {
 	}
 
 	public boolean isGameSign(Block block) {
-		return this.arenaSigns.stream().anyMatch(sign -> sign.getSign().getLocation().equals(block.getLocation()));
+		return this.arenaSigns.stream().anyMatch(sign -> sign.sign().getLocation().equals(block.getLocation()));
 	}
 
 	public void addArenaSign(Block block, Arena arena) {
@@ -212,6 +212,6 @@ public class SignManager extends EventListener {
 	}
 
 	private ArenaSign getArenaSignByBlock(Block block) {
-		return block == null || !(block.getState() instanceof Sign) ? null : arenaSigns.stream().filter(sign -> sign.getSign().getLocation().equals(block.getLocation())).findFirst().orElse(null);
+		return block == null || !(block.getState() instanceof Sign) ? null : arenaSigns.stream().filter(sign -> sign.sign().getLocation().equals(block.getLocation())).findFirst().orElse(null);
 	}
 }
