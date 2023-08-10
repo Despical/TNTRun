@@ -172,7 +172,6 @@ public class Main extends JavaPlugin {
 		return configPreferences;
 	}
 
-	@NotNull
 	public MysqlDatabase getMysqlDatabase() {
 		return database;
 	}

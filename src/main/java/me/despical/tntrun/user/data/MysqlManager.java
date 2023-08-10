@@ -33,13 +33,16 @@ import java.sql.SQLException;
  */
 public non-sealed class MysqlManager extends IUserDatabase {
 
-	private final MysqlDatabase database;
+	private MysqlDatabase database;
 
 	public MysqlManager(Main plugin) {
 		super(plugin);
-		this.database = plugin.getMysqlDatabase();
 
 		plugin.getServer().getScheduler().runTaskAsynchronously(plugin, () -> {
+			this.database = plugin.getMysqlDatabase();
+
+			this.checkInitializedAndSleep();
+
 			try (final var connection = database.getConnection()) {
 				final var statement = connection.createStatement();
 
@@ -63,7 +66,11 @@ public non-sealed class MysqlManager extends IUserDatabase {
 
 	@Override
 	public void saveStatistic(@NotNull User user, StatsStorage.StatisticType statisticType) {
-		plugin.getServer().getScheduler().runTaskAsynchronously(plugin, () -> database.executeUpdate("UPDATE playerstats SET %s=%d WHERE UUID='%s';".formatted(statisticType.getName(), user.getStat(statisticType), user.getUniqueId().toString())));
+		plugin.getServer().getScheduler().runTaskAsynchronously(plugin, () -> {
+			this.checkInitializedAndSleep();
+
+			database.executeUpdate("UPDATE playerstats SET %s=%d WHERE UUID='%s';".formatted(statisticType.getName(), user.getStat(statisticType), user.getUniqueId().toString()));
+		});
 	}
 
 	@Override
@@ -84,15 +91,24 @@ public non-sealed class MysqlManager extends IUserDatabase {
 		}
 
 		final var update = builder.toString();
-		plugin.getServer().getScheduler().runTaskAsynchronously(plugin, () -> database.executeUpdate("UPDATE playerstats%s WHERE UUID='%s';".formatted(update, user.getUniqueId().toString())));
+
+		plugin.getServer().getScheduler().runTaskAsynchronously(plugin, () -> {
+			this.checkInitializedAndSleep();
+
+			database.executeUpdate("UPDATE playerstats%s WHERE UUID='%s';".formatted(update, user.getUniqueId().toString()));
+		});
 	}
 
 	@Override
 	public void loadStatistics(@NotNull User user) {
+		final var uuid = user.getUniqueId().toString();
+
 		plugin.getServer().getScheduler().runTaskAsynchronously(plugin, () -> {
+			this.checkInitializedAndSleep();
+
 			try (final var connection = database.getConnection()) {
 				final var statement = connection.createStatement();
-				final var result = statement.executeQuery("SELECT * from playerstats WHERE UUID='%s';".formatted(user.getUniqueId().toString()));
+				final var result = statement.executeQuery("SELECT * from playerstats WHERE UUID='%s';".formatted(uuid));
 
 				if (result.next()) {
 					for (final var stat : StatsStorage.StatisticType.values()) {
@@ -101,7 +117,7 @@ public non-sealed class MysqlManager extends IUserDatabase {
 						user.setStat(stat, result.getInt(stat.getName()));
 					}
 				} else {
-					statement.executeUpdate("INSERT INTO playerstats (UUID,name) VALUES ('%s','%s');".formatted(user.getUniqueId().toString(), user.getName()));
+					statement.executeUpdate("INSERT INTO playerstats (UUID,name) VALUES ('%s','%s');".formatted(uuid, user.getName()));
 
 					for (final var stat : StatsStorage.StatisticType.values()) {
 						if (!stat.isPersistent()) continue;
@@ -118,5 +134,17 @@ public non-sealed class MysqlManager extends IUserDatabase {
 	@NotNull
 	public MysqlDatabase getDatabase() {
 		return database;
+	}
+
+	private void checkInitializedAndSleep() {
+		try {
+			if (plugin.getMysqlDatabase() == null || this.database == null) {
+				Thread.sleep(5000L);
+
+				if (plugin.getMysqlDatabase() != null) this.database = plugin.getMysqlDatabase();
+			}
+		} catch (InterruptedException exception) {
+			throw new RuntimeException(exception);
+		}
 	}
 }
