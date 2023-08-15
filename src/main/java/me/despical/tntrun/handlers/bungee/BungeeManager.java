@@ -44,7 +44,6 @@ public class BungeeManager extends EventListener {
 		}
 
 		plugin.getServer().getMessenger().registerOutgoingPluginChannel(plugin, "BungeeCord");
-		plugin.getServer().getPluginManager().registerEvents(this, plugin);
 	}
 
 	public void connectToHub(final User user) {
