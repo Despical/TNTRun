@@ -41,8 +41,6 @@ public non-sealed class MysqlManager extends IUserDatabase {
 		plugin.getServer().getScheduler().runTaskAsynchronously(plugin, () -> {
 			this.database = plugin.getMysqlDatabase();
 
-			this.checkInitializedAndSleep();
-
 			try (final var connection = database.getConnection()) {
 				final var statement = connection.createStatement();
 
@@ -53,8 +51,11 @@ public non-sealed class MysqlManager extends IUserDatabase {
 						  `wins` int(11) NOT NULL DEFAULT '0',
 						  `loses` int(11) NOT NULL DEFAULT '0',
 						  `longestsurvive` int(11) NOT NULL DEFAULT '0',
-						  `gamesplayed` int(11) NOT NULL DEFAULT '1',"
-						  `coinsearned` int(11) NOT NULL DEFAULT '1',"
+						  `gamesplayed` int(11) NOT NULL DEFAULT '1',
+						  `coinsearned` int(11) NOT NULL DEFAULT '1',
+						  `spectatornightvision` int(11) NOT NULL DEFAULT '0',
+						  `spectatorshowothers` int(11) NOT NULL DEFAULT '1',
+						  `spectatorspeed` int(11) NOT NULL DEFAULT '1'
 						);""");
 			} catch (SQLException exception) {
 				exception.printStackTrace();
@@ -66,11 +67,7 @@ public non-sealed class MysqlManager extends IUserDatabase {
 
 	@Override
 	public void saveStatistic(@NotNull User user, StatsStorage.StatisticType statisticType) {
-		plugin.getServer().getScheduler().runTaskAsynchronously(plugin, () -> {
-			this.checkInitializedAndSleep();
-
-			database.executeUpdate("UPDATE playerstats SET %s=%d WHERE UUID='%s';".formatted(statisticType.getName(), user.getStat(statisticType), user.getUniqueId().toString()));
-		});
+		plugin.getServer().getScheduler().runTaskAsynchronously(plugin, () -> database.executeUpdate("UPDATE playerstats SET %s=%d WHERE UUID='%s';".formatted(statisticType.getName(), user.getStat(statisticType), user.getUniqueId().toString())));
 	}
 
 	@Override
@@ -92,11 +89,7 @@ public non-sealed class MysqlManager extends IUserDatabase {
 
 		final var update = builder.toString();
 
-		plugin.getServer().getScheduler().runTaskAsynchronously(plugin, () -> {
-			this.checkInitializedAndSleep();
-
-			database.executeUpdate("UPDATE playerstats%s WHERE UUID='%s';".formatted(update, user.getUniqueId().toString()));
-		});
+		plugin.getServer().getScheduler().runTaskAsynchronously(plugin, () -> database.executeUpdate("UPDATE playerstats%s WHERE UUID='%s';".formatted(update, user.getUniqueId().toString())));
 	}
 
 	@Override
@@ -104,8 +97,6 @@ public non-sealed class MysqlManager extends IUserDatabase {
 		final var uuid = user.getUniqueId().toString();
 
 		plugin.getServer().getScheduler().runTaskAsynchronously(plugin, () -> {
-			this.checkInitializedAndSleep();
-
 			try (final var connection = database.getConnection()) {
 				final var statement = connection.createStatement();
 				final var result = statement.executeQuery("SELECT * from playerstats WHERE UUID='%s';".formatted(uuid));
@@ -134,17 +125,5 @@ public non-sealed class MysqlManager extends IUserDatabase {
 	@NotNull
 	public MysqlDatabase getDatabase() {
 		return database;
-	}
-
-	private void checkInitializedAndSleep() {
-		try {
-			if (plugin.getMysqlDatabase() == null || this.database == null) {
-				Thread.sleep(5000L);
-
-				if (plugin.getMysqlDatabase() != null) this.database = plugin.getMysqlDatabase();
-			}
-		} catch (InterruptedException exception) {
-			throw new RuntimeException(exception);
-		}
 	}
 }
