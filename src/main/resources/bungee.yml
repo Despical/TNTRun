@@ -17,7 +17,7 @@ Connect-To-Hub: true
 # %state% - Current state of arena.
 MOTD:
   Enabled: true
-  Message: "TNT Run by Despical (State is %state%)"
+  Message: "&e&lTNT Run &r&lby &b&lDespical &7&l(&e&lState is &a&l%state%&7&l)"
   Game-States:
     Waiting: "&lWaiting"
     Starting: "&e&lStarting"
