@@ -29,8 +29,8 @@ public class PlayerCommands extends AbstractCommand {
 	public PlayerCommands(Main plugin) {
 		super(plugin);
 
-		plugin.getCommandFramework().setAnyMatch(arguments -> {
-			if (arguments.isArgumentsEmpty()) return;
+		plugin.getCommandFramework().setMatchFunction(arguments -> {
+			if (arguments.isArgumentsEmpty()) return false;
 
 			String label = arguments.getLabel(), arg = arguments.getArgument(0);
 
@@ -38,7 +38,10 @@ public class PlayerCommands extends AbstractCommand {
 
 			if (!matches.isEmpty()) {
 				arguments.sendMessage(chatManager.message("admin-commands.did-you-mean").replace("%command%", label + " " + matches.get(0).getMatch()));
+				return true;
 			}
+
+			return false;
 		});
 	}
 
