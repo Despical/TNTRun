@@ -15,6 +15,3 @@ user: <user>
 
 # MySQL user password.
 password: <password>
-
-# MySQL table name for player statistics.
-table: playerstats
