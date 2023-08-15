@@ -72,7 +72,7 @@ public class Main extends JavaPlugin {
 		initializeClasses();
 		checkUpdate();
 
-		getLogger().info("Initialization finished. Join our Discord server: https://discord.gg/rVkaGmyszE");
+		getLogger().info("Initialization finished. Consider donating: https://buymeacoffee.com/despical");
 	}
 
 	@Override
