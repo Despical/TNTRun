@@ -105,7 +105,10 @@ public class Main extends JavaPlugin {
 	private void initializeClasses() {
 		this.setupConfigurationFiles();
 
-		this.configPreferences = new ConfigPreferences(this);
+		if ((configPreferences = new ConfigPreferences(this)).getOption(ConfigPreferences.Option.DATABASE_ENABLED)) {
+			this.database = new MysqlDatabase(this, "mysql");
+		}
+
 		this.chatManager = new ChatManager(this);
 		this.userManager = new UserManager(this);
 		this.commandFramework = new CommandFramework(this);
@@ -120,14 +123,6 @@ public class Main extends JavaPlugin {
 		AbstractCommand.registerCommands(this);
 		EventListener.registerEvents(this);
 		User.cooldownHandlerTask();
-
-		if (configPreferences.getOption(ConfigPreferences.Option.DATABASE_ENABLED)) {
-			this.database = new MysqlDatabase(this, "mysql");
-		}
-
-		if (configPreferences.getOption(ConfigPreferences.Option.BUNGEE_ENABLED)) {
-			this.bungeeManager = new BungeeManager(this);
-		}
 
 		if (getServer().getPluginManager().isPluginEnabled("PlaceholderAPI")) {
 			new PlaceholderHandler(this);
@@ -234,14 +229,15 @@ public class Main extends JavaPlugin {
 					final var name = stat.getName();
 
 					if (builder.toString().equalsIgnoreCase(" SET ")) {
-						builder.append(name).append("'='").append(value);
+						builder.append(name).append("=").append(value);
 					}
 
-					builder.append(", ").append(name).append("'='").append(value);
+					builder.append(", ").append(name).append("=").append(value);
 				}
 
 				final var update = builder.toString();
-				mysqlManager.getDatabase().executeUpdate("UPDATE playerstats" + update + " WHERE UUID='" + user.getUniqueId().toString() + "';");
+
+				mysqlManager.getDatabase().executeUpdate("UPDATE %s%s WHERE UUID='%s';".formatted(mysqlManager.getTable(), update, user.getUniqueId().toString()));
 				continue;
 			}
 

@@ -20,8 +20,8 @@ package me.despical.tntrun.api;
 
 import me.despical.commons.configuration.ConfigUtils;
 import me.despical.commons.sorter.SortUtils;
-import me.despical.tntrun.ConfigPreferences;
 import me.despical.tntrun.Main;
+import me.despical.tntrun.user.data.MysqlManager;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.Contract;
@@ -44,10 +44,10 @@ public class StatsStorage {
 	@NotNull
 	@Contract("null -> fail")
 	public static Map<UUID, Integer> getStats(StatisticType stat) {
-		if (plugin.getConfigPreferences().getOption(ConfigPreferences.Option.DATABASE_ENABLED)) {
+		if (plugin.getUserManager().getUserDatabase() instanceof MysqlManager mysqlManager) {
 			try (final var connection = plugin.getMysqlDatabase().getConnection()) {
 				final var statement = connection.createStatement();
-				final var set = statement.executeQuery("SELECT UUID, " + stat.getName() + " FROM playerstats ORDER BY " + stat.getName());
+				final var set = statement.executeQuery("SELECT UUID, %s FROM %s ORDER BY %s".formatted(stat.getName(), mysqlManager.getTable(), stat.getName()));
 				final var column = new HashMap<UUID, Integer>();
 
 				while (set.next()) {
@@ -56,7 +56,7 @@ public class StatsStorage {
 
 				return column;
 			} catch (SQLException e) {
-				plugin.getLogger().warning("SQLException occured during getting statistics from database!");
+				plugin.getLogger().warning("SQLException occurred during getting statistics from database!");
 				return new HashMap<>();
 			}
 		}

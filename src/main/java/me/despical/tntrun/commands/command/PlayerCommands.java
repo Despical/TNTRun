@@ -5,11 +5,11 @@ import me.despical.commandframework.CommandArguments;
 import me.despical.commons.string.StringFormatUtils;
 import me.despical.commons.string.StringMatcher;
 import me.despical.commons.string.StringUtils;
-import me.despical.tntrun.ConfigPreferences;
 import me.despical.tntrun.Main;
 import me.despical.tntrun.api.StatsStorage;
 import me.despical.tntrun.arena.ArenaState;
 import me.despical.tntrun.commands.AbstractCommand;
+import me.despical.tntrun.user.data.MysqlManager;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -162,10 +162,10 @@ public class PlayerCommands extends AbstractCommand {
 			} catch (NullPointerException ex) {
 				var current = (UUID) stats.keySet().toArray()[stats.keySet().toArray().length - 1];
 
-				if (plugin.getConfigPreferences().getOption(ConfigPreferences.Option.DATABASE_ENABLED)) {
+				if (plugin.getUserManager().getUserDatabase() instanceof MysqlManager mysqlManager) {
 					try (final var connection = plugin.getMysqlDatabase().getConnection()) {
 						var statement = connection.createStatement();
-						var set = statement.executeQuery("SELECT name FROM playerstats WHERE UUID='" + current.toString() + "'");
+						var set = statement.executeQuery("SELECT name FROM %s WHERE UUID='%s'".formatted(mysqlManager.getTable(), current.toString()));
 
 						if (set.next()) {
 							sender.sendMessage(formatMessage(statistic, set.getString(1), i + 1, stats.get(current)));

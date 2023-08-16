@@ -10,8 +10,11 @@
 # Replace <databaseName> with your database
 address: jdbc:mysql://localhost:3306/<databaseName>?useSSL=false&autoReConnect=true
 
-# MySQL user name.
+# MySQL username.
 user: <user>
 
-# MySQL user password.
+# MySQL password.
 password: <password>
+
+# MySQL table name.
+table: tntrun_stats
