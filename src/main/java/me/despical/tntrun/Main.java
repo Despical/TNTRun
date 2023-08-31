@@ -124,6 +124,10 @@ public class Main extends JavaPlugin {
 		EventListener.registerEvents(this);
 		User.cooldownHandlerTask();
 
+		if (configPreferences.getOption(ConfigPreferences.Option.BUNGEE_ENABLED)) {
+			this.bungeeManager = new BungeeManager(this);
+		}
+
 		if (getServer().getPluginManager().isPluginEnabled("PlaceholderAPI")) {
 			new PlaceholderHandler(this);
 		}
