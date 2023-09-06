@@ -169,7 +169,7 @@ public class User {
 	}
 
 	public void heal() {
-		if (plugin.getConfigPreferences().getOption(ConfigPreferences.Option.HEAL_PLAYER)) AttributeUtils.healPlayer(player);
+		if (plugin.getOption(ConfigPreferences.Option.HEAL_PLAYER)) AttributeUtils.healPlayer(player);
 	}
 
 	public void applyDoubleJumpDelay() {
@@ -178,7 +178,7 @@ public class User {
 		addStat(StatsStorage.StatisticType.LOCAL_DOUBLE_JUMPS, -1);
 		setCooldown("double_jump", cooldown);
 
-		if (plugin.getConfigPreferences().getOption(ConfigPreferences.Option.JUMP_BAR) && getStat(StatsStorage.StatisticType.LOCAL_DOUBLE_JUMPS) > 0)
+		if (plugin.getOption(ConfigPreferences.Option.JUMP_BAR) && getStat(StatsStorage.StatisticType.LOCAL_DOUBLE_JUMPS) > 0)
 			Utils.applyActionBarCooldown(this, cooldown);
 	}
 

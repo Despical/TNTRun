@@ -51,12 +51,12 @@ public record ArenaManager(Main plugin) {
 			return;
 		}
 
-		if (!plugin.getConfigPreferences().getOption(ConfigPreferences.Option.BUNGEE_ENABLED) && !plugin.getPermissionManager().hasPermission(user, arena)) {
+		if (!plugin.getOption(ConfigPreferences.Option.BUNGEE_ENABLED) && !plugin.getPermissionManager().hasPermission(user, arena)) {
 			user.sendMessage("messages.arena.no-permission");
 			return;
 		}
 
-		if (plugin.getConfigPreferences().getOption(ConfigPreferences.Option.INVENTORY_MANAGER_ENABLED)) {
+		if (plugin.getOption(ConfigPreferences.Option.INVENTORY_MANAGER_ENABLED)) {
 			InventorySerializer.saveInventoryToFile(plugin, player);
 		}
 
@@ -149,7 +149,7 @@ public record ArenaManager(Main plugin) {
 		user.setSpectator(false);
 		user.removePotionEffectsExcept();
 
-		if (!plugin.getConfigPreferences().getOption(ConfigPreferences.Option.BUNGEE_ENABLED) && plugin.getConfigPreferences().getOption(ConfigPreferences.Option.INVENTORY_MANAGER_ENABLED)) {
+		if (!plugin.getOption(ConfigPreferences.Option.BUNGEE_ENABLED) && plugin.getOption(ConfigPreferences.Option.INVENTORY_MANAGER_ENABLED)) {
 			InventorySerializer.loadInventory(plugin, player);
 		}
 

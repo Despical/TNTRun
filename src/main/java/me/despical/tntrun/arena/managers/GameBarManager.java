@@ -26,7 +26,7 @@ public class GameBarManager {
 	public GameBarManager(final Arena arena, final Main plugin) {
 		this.arena = arena;
 		this.plugin = plugin;
-		this.enabled = plugin.getConfigPreferences().getOption(ConfigPreferences.Option.GAME_BAR_ENABLED);
+		this.enabled = plugin.getOption(ConfigPreferences.Option.GAME_BAR_ENABLED);
 
 		if (enabled) {
 			this.gameBar = plugin.getServer().createBossBar("", BarColor.BLUE, BarStyle.SOLID);

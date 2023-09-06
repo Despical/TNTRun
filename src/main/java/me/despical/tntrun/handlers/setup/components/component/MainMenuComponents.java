@@ -95,7 +95,7 @@ public class MainMenuComponents extends AbstractComponent {
 
 		ItemBuilder gameSignItem = new ItemBuilder(XMaterial.OAK_SIGN).name("&e&lAdd Game Sign");
 
-		if (!plugin.getConfigPreferences().getOption(ConfigPreferences.Option.BUNGEE_ENABLED)) {
+		if (!plugin.getOption(ConfigPreferences.Option.BUNGEE_ENABLED)) {
 			gameSignItem = gameSignItem
 				.lore("&7Target a sign and click this.", "")
 				.lore("&8(this will set target sign as game sign)");
@@ -107,7 +107,7 @@ public class MainMenuComponents extends AbstractComponent {
 		}
 
 		pane.addItem(GuiItem.of(gameSignItem.build(), e -> {
-			if (plugin.getConfigPreferences().getOption(ConfigPreferences.Option.BUNGEE_ENABLED)) return;
+			if (plugin.getOption(ConfigPreferences.Option.BUNGEE_ENABLED)) return;
 
 			user.closeOpenedInventory();
 

@@ -93,7 +93,7 @@ public class Main extends JavaPlugin {
 				player.getInventory().clear();
 				player.getInventory().setArmorContents(null);
 
-				if (configPreferences.getOption(ConfigPreferences.Option.INVENTORY_MANAGER_ENABLED)) {
+				if (getOption(ConfigPreferences.Option.INVENTORY_MANAGER_ENABLED)) {
 					InventorySerializer.loadInventory(this, player);
 				}
 			}
@@ -105,10 +105,7 @@ public class Main extends JavaPlugin {
 	private void initializeClasses() {
 		this.setupConfigurationFiles();
 
-		if ((configPreferences = new ConfigPreferences(this)).getOption(ConfigPreferences.Option.DATABASE_ENABLED)) {
-			this.database = new MysqlDatabase(this, "mysql");
-		}
-
+		this.configPreferences = new ConfigPreferences(this);
 		this.chatManager = new ChatManager(this);
 		this.userManager = new UserManager(this);
 		this.commandFramework = new CommandFramework(this);
@@ -124,25 +121,29 @@ public class Main extends JavaPlugin {
 		EventListener.registerEvents(this);
 		User.cooldownHandlerTask();
 
-		if (configPreferences.getOption(ConfigPreferences.Option.BUNGEE_ENABLED)) {
+		if (getOption(ConfigPreferences.Option.BUNGEE_ENABLED)) {
 			this.bungeeManager = new BungeeManager(this);
+		}
+
+		if (getOption(ConfigPreferences.Option.DATABASE_ENABLED)) {
+			this.database = new MysqlDatabase(this, "mysql");
 		}
 
 		if (getServer().getPluginManager().isPluginEnabled("PlaceholderAPI")) {
 			new PlaceholderHandler(this);
 		}
 
-		if (configPreferences.getOption(ConfigPreferences.Option.NAME_TAGS_HIDDEN)) {
+		if (getOption(ConfigPreferences.Option.NAME_TAGS_HIDDEN)) {
 			getServer().getScheduler().scheduleSyncRepeatingTask(this, () -> userManager.getUsers().forEach(ArenaUtils::updateNameTagsVisibility), 60, 140);
 		}
 
 		final var metrics = new Metrics(this, 8147);
-		metrics.addCustomChart(new SimplePie("database_enabled", () -> configPreferences.getOption(ConfigPreferences.Option.DATABASE_ENABLED) ? "Enabled" : "Disabled"));
-		metrics.addCustomChart(new SimplePie("update_notifier", () -> configPreferences.getOption(ConfigPreferences.Option.UPDATE_NOTIFIER_ENABLED) ? "Enabled" : "Disabled"));
+		metrics.addCustomChart(new SimplePie("database_enabled", () -> getOption(ConfigPreferences.Option.DATABASE_ENABLED) ? "Enabled" : "Disabled"));
+		metrics.addCustomChart(new SimplePie("update_notifier", () -> getOption(ConfigPreferences.Option.UPDATE_NOTIFIER_ENABLED) ? "Enabled" : "Disabled"));
 	}
 
 	private void checkUpdate() {
-		if (!configPreferences.getOption(ConfigPreferences.Option.UPDATE_NOTIFIER_ENABLED)) return;
+		if (!getOption(ConfigPreferences.Option.UPDATE_NOTIFIER_ENABLED)) return;
 
 		UpdateChecker.init(this, 83196).requestUpdateCheck().whenComplete((result, exception) -> {
 			if (result.requiresUpdate()) {
@@ -161,14 +162,13 @@ public class Main extends JavaPlugin {
 		Stream.of("arena", "rewards", "stats", "items", "mysql", "messages", "bungee").filter(name -> !new File(getDataFolder(),name + ".yml").exists()).forEach(name -> saveResource(name + ".yml", false));
 	}
 
-	@NotNull
-	public RewardsFactory getRewardsFactory() {
-		return rewardsFactory;
+	public boolean getOption(ConfigPreferences.Option option) {
+		return configPreferences.getOption(option);
 	}
 
 	@NotNull
-	public ConfigPreferences getConfigPreferences() {
-		return configPreferences;
+	public RewardsFactory getRewardsFactory() {
+		return rewardsFactory;
 	}
 
 	public MysqlDatabase getMysqlDatabase() {

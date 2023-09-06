@@ -25,7 +25,7 @@ public class JoinQuitEvents extends EventListener {
 
 	@EventHandler
 	public void onLogin(PlayerLoginEvent e) {
-		if (!plugin.getConfigPreferences().getOption(ConfigPreferences.Option.BUNGEE_ENABLED) || e.getResult() != PlayerLoginEvent.Result.KICK_WHITELIST) {
+		if (!plugin.getOption(ConfigPreferences.Option.BUNGEE_ENABLED) || e.getResult() != PlayerLoginEvent.Result.KICK_WHITELIST) {
 			return;
 		}
 

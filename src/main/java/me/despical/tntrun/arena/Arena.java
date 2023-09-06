@@ -122,7 +122,7 @@ public class Arena extends BukkitRunnable {
 	}
 
 	public void teleportToEndLocation(final User user) {
-		if (plugin.getConfigPreferences().getOption(ConfigPreferences.Option.BUNGEE_ENABLED)) {
+		if (plugin.getOption(ConfigPreferences.Option.BUNGEE_ENABLED)) {
 			plugin.getBungeeManager().connectToHub(user);
 			return;
 		}
@@ -634,7 +634,7 @@ public class Arena extends BukkitRunnable {
 						player.getInventory().clear();
 						player.getInventory().setArmorContents(null);
 
-						if (plugin.getConfigPreferences().getOption(ConfigPreferences.Option.INVENTORY_MANAGER_ENABLED)) {
+						if (plugin.getOption(ConfigPreferences.Option.INVENTORY_MANAGER_ENABLED)) {
 							InventorySerializer.loadInventory(plugin, player);
 						} else {
 							player.setGameMode(GameMode.SURVIVAL);
@@ -648,7 +648,7 @@ public class Arena extends BukkitRunnable {
 						teleportToEndLocation(user);
 					}
 
-					if (plugin.getConfigPreferences().getOption(ConfigPreferences.Option.BUNGEE_ENABLED) && plugin.getBungeeManager().isShutdownWhenGameEnds()) {
+					if (plugin.getOption(ConfigPreferences.Option.BUNGEE_ENABLED) && plugin.getBungeeManager().isShutdownWhenGameEnds()) {
 						plugin.getServer().shutdown();
 					}
 
@@ -663,7 +663,7 @@ public class Arena extends BukkitRunnable {
 
 				setArenaState(ArenaState.WAITING_FOR_PLAYERS);
 
-				if (plugin.getConfigPreferences().getOption(ConfigPreferences.Option.BUNGEE_ENABLED)) {
+				if (plugin.getOption(ConfigPreferences.Option.BUNGEE_ENABLED)) {
 					final var arenaRegistry = plugin.getArenaRegistry();
 					final var arenaManager = plugin.getArenaManager();
 					final var userManager = plugin.getUserManager();

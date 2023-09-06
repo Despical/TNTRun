@@ -201,7 +201,7 @@ public class GameItemEvents extends EventListener {
 		if (leaveItem == null) return;
 		if (!event.getItem().getItemMeta().equals(leaveItem.getItemStack().getItemMeta())) return;
 
-		if (plugin.getConfigPreferences().getOption(ConfigPreferences.Option.INSTANT_LEAVE)) {
+		if (plugin.getOption(ConfigPreferences.Option.INSTANT_LEAVE)) {
 			this.leaveArena(user, arena);
 			return;
 		}
@@ -226,7 +226,7 @@ public class GameItemEvents extends EventListener {
 	}
 
 	private void leaveArena(User user, Arena arena) {
-		if (plugin.getConfigPreferences().getOption(ConfigPreferences.Option.BUNGEE_ENABLED)) {
+		if (plugin.getOption(ConfigPreferences.Option.BUNGEE_ENABLED)) {
 			plugin.getBungeeManager().connectToHub(user);
 		} else {
 			plugin.getArenaManager().leaveAttempt(user, arena);

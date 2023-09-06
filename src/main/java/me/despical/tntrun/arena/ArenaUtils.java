@@ -37,7 +37,7 @@ public class ArenaUtils {
 	private static final ChatManager chatManager = plugin.getChatManager();
 
 	public static void updateNameTagsVisibility(User u) {
-		if (!plugin.getConfigPreferences().getOption(ConfigPreferences.Option.NAME_TAGS_HIDDEN)) return;
+		if (!plugin.getOption(ConfigPreferences.Option.NAME_TAGS_HIDDEN)) return;
 
 		for (final var user : plugin.getUserManager().getUsers()) {
 			final var arena = user.getArena();

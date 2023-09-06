@@ -56,7 +56,7 @@ public class PermissionsManager {
 	}
 
 	public boolean hasNotifyPerm(Player player) {
-		return plugin.getConfigPreferences().getOption(ConfigPreferences.Option.UPDATE_NOTIFIER_ENABLED) && player.hasPermission("tntrun.updatenotify");
+		return plugin.getOption(ConfigPreferences.Option.UPDATE_NOTIFIER_ENABLED) && player.hasPermission("tntrun.updatenotify");
 	}
 
 	public int getDoubleJumpDelay() {

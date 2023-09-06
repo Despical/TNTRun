@@ -152,17 +152,17 @@ public class GameEvents extends EventListener {
 		final var arena = user.getArena();
 
 		if (arena == null) {
-			if (!plugin.getConfigPreferences().getOption(ConfigPreferences.Option.DISABLE_SEPARATE_CHAT)) {
+			if (!plugin.getOption(ConfigPreferences.Option.DISABLE_SEPARATE_CHAT)) {
 				plugin.getArenaRegistry().getArenas().forEach(loopArena -> loopArena.getPlayers().forEach(u -> event.getRecipients().remove(u.getPlayer())));
 			}
 
 			return;
 		}
 
-		if (plugin.getConfigPreferences().getOption(ConfigPreferences.Option.CHAT_FORMAT_ENABLED)) {
+		if (plugin.getOption(ConfigPreferences.Option.CHAT_FORMAT_ENABLED)) {
 			var message = formatChatPlaceholders(chatManager.message("messages.in-game.game-chat-format"), user, event.getMessage());
 
-			if (!plugin.getConfigPreferences().getOption(ConfigPreferences.Option.DISABLE_SEPARATE_CHAT)) {
+			if (!plugin.getOption(ConfigPreferences.Option.DISABLE_SEPARATE_CHAT)) {
 				event.setCancelled(true);
 
 				var dead = arena.isDeathPlayer(user) || arena.isSpectator(user);
