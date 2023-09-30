@@ -115,7 +115,6 @@ public record ArenaManager(Main plugin) {
 		final var player = user.getPlayer();
 
 		plugin.getServer().getPluginManager().callEvent(new TRGameLeaveAttemptEvent(player, arena));
-		plugin.getUserManager().saveStatistics(user);
 
 		final var localScore = user.getStat(StatsStorage.StatisticType.LOCAL_SURVIVE);
 
@@ -181,7 +180,7 @@ public record ArenaManager(Main plugin) {
 
 			user.addStat(StatsStorage.StatisticType.COINS, user.getStat(StatsStorage.StatisticType.LOCAL_COINS));
 			user.addStat(StatsStorage.StatisticType.GAMES_PLAYED, 1);
-			user.addGameItems(true, "leave-item", "play-again");
+			user.addGameItems("leave-item", "play-again");
 			user.removePotionEffectsExcept(PotionEffectType.BLINDNESS);
 			user.addStat(user.equals(winner) ? StatsStorage.StatisticType.WINS : StatsStorage.StatisticType.LOSES, 1);
 

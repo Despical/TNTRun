@@ -50,8 +50,7 @@ public class GameBarManager {
 	}
 
 	public void handleGameBar() {
-		if (this.gameBar != null)
-
+		if (this.gameBar != null) {
 			switch (arena.getArenaState()) {
 				case WAITING_FOR_PLAYERS -> setTitle("game-bar.waiting-for-players");
 				case STARTING -> setTitle("game-bar.starting");
@@ -59,7 +58,8 @@ public class GameBarManager {
 				case ENDING -> setTitle("game-bar.ending");
 			}
 
-		gameBar.setVisible(!this.gameBar.getTitle().isEmpty());
+			gameBar.setVisible(!this.gameBar.getTitle().isEmpty());
+		}
 	}
 
 	private void setTitle(final String path) {

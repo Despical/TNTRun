@@ -62,7 +62,7 @@ public non-sealed class MysqlManager extends IUserDatabase {
 						  `spectatorspeed` int(11) NOT NULL DEFAULT '1'
 						);""".formatted(table));
 			} catch (SQLException exception) {
-				exception.printStackTrace();
+				exception.fillInStackTrace();
 
 				plugin.getLogger().severe("Couldn't create statistics table on MySQL database!");
 			}
@@ -121,7 +121,7 @@ public non-sealed class MysqlManager extends IUserDatabase {
 					}
 				}
 			} catch (SQLException exception) {
-				exception.printStackTrace();
+				exception.fillInStackTrace();
 			}
 		});
 	}

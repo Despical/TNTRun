@@ -1,21 +1,18 @@
-package me.despical.tntrun.commands.command;
+package me.despical.tntrun.commands;
 
 import me.despical.commandframework.Command;
 import me.despical.commandframework.CommandArguments;
 import me.despical.commons.string.StringFormatUtils;
-import me.despical.commons.string.StringMatcher;
 import me.despical.commons.string.StringUtils;
 import me.despical.tntrun.Main;
 import me.despical.tntrun.api.StatsStorage;
 import me.despical.tntrun.arena.ArenaState;
-import me.despical.tntrun.commands.AbstractCommand;
 import me.despical.tntrun.user.data.MysqlManager;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.sql.SQLException;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import static me.despical.commandframework.Command.SenderType.PLAYER;
 
@@ -28,21 +25,6 @@ public class PlayerCommands extends AbstractCommand {
 
 	public PlayerCommands(Main plugin) {
 		super(plugin);
-
-		plugin.getCommandFramework().setMatchFunction(arguments -> {
-			if (arguments.isArgumentsEmpty()) return false;
-
-			String label = arguments.getLabel(), arg = arguments.getArgument(0);
-
-			var matches = StringMatcher.match(arg, plugin.getCommandFramework().getCommands().stream().map(cmd -> cmd.name().replace(label + ".", "")).collect(Collectors.toList()));
-
-			if (!matches.isEmpty()) {
-				arguments.sendMessage(chatManager.message("admin-commands.did-you-mean").replace("%command%", label + " " + matches.get(0).getMatch()));
-				return true;
-			}
-
-			return false;
-		});
 	}
 
 	@Command(

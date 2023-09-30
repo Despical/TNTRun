@@ -18,11 +18,12 @@
 
 package me.despical.tntrun.handlers.setup.components.component;
 
-import de.rapha149.signgui.SignGUI;
 import me.despical.commons.compat.XMaterial;
 import me.despical.commons.configuration.ConfigUtils;
 import me.despical.commons.item.ItemBuilder;
 import me.despical.commons.serializer.LocationSerializer;
+import me.despical.commons.util.Strings;
+import me.despical.commons.util.conversation.ConversationBuilder;
 import me.despical.inventoryframework.GuiItem;
 import me.despical.inventoryframework.pane.PaginatedPane;
 import me.despical.inventoryframework.pane.StaticPane;
@@ -30,12 +31,14 @@ import me.despical.tntrun.ConfigPreferences;
 import me.despical.tntrun.arena.ArenaState;
 import me.despical.tntrun.handlers.setup.ArenaEditorGUI;
 import me.despical.tntrun.handlers.setup.components.AbstractComponent;
-import org.bukkit.DyeColor;
-import org.bukkit.Material;
 import org.bukkit.block.Sign;
+import org.bukkit.conversations.ConversationContext;
+import org.bukkit.conversations.Prompt;
+import org.bukkit.conversations.StringPrompt;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * @author Despical
@@ -68,29 +71,27 @@ public class MainMenuComponents extends AbstractComponent {
 		pane.addItem(GuiItem.of(mapNameItem.build(), event -> {
 			user.closeOpenedInventory();
 
-			new SignGUI()
-				.lines("Type name in 2. line", "", "", "Click done to set")
-				.type(Material.DARK_OAK_SIGN)
-				.color(DyeColor.LIGHT_GRAY)
-				.onFinish((p, lines) -> {
+			new ConversationBuilder(plugin).withPrompt(new StringPrompt() {
 
-					if (!lines[1].isEmpty() && !lines[3].isEmpty()) {
-						final var name = lines[1];
+				@Override
+				@NotNull
+				public String getPromptText(@NotNull ConversationContext context) {
+					return Strings.format("&ePlease type in chat arena name. You can use color codes.");
+				}
 
-						arena.setMapName(name);
+				@Override
+				public Prompt acceptInput(@NotNull ConversationContext context, String input) {
+					var name = Strings.format(input);
 
-						config.set(path + "mapName", name);
-						saveConfig();
+					arena.setMapName(name);
 
-						plugin.getServer().getScheduler().runTask(plugin, arena::updateSigns); // must be in main thread cuz SignGUI works async
+					config.set(path + "mapName", name);
+					saveConfig();
 
-						user.sendRawMessage("&e✔ Completed | &aName of arena &e%s &aset to &e%s.", arena, name);
-						return null;
-					} else {
-						user.sendRawMessage("&c✘ Not Completed | &aName of arena can not be empty!");
-						return lines;
-					}
-				}).open(user.getPlayer());
+					plugin.getServer().getScheduler().runTask(plugin, () -> user.sendRawMessage("&e✔ Completed | &aName of arena &e%s &aset to &e%s", arena, name));
+					return Prompt.END_OF_CONVERSATION;
+				}
+			}).buildFor(user.getPlayer());
 		}), 3, 1);
 
 		ItemBuilder gameSignItem = new ItemBuilder(XMaterial.OAK_SIGN).name("&e&lAdd Game Sign");

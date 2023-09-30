@@ -1,13 +1,14 @@
-package me.despical.tntrun.commands.command;
+package me.despical.tntrun.commands;
 
 import me.despical.commandframework.Command;
 import me.despical.commandframework.CommandArguments;
+import me.despical.commandframework.Completer;
+import me.despical.commons.configuration.ConfigUtils;
 import me.despical.commons.miscellaneous.MiscUtils;
 import me.despical.commons.serializer.LocationSerializer;
 import me.despical.tntrun.Main;
 import me.despical.tntrun.arena.Arena;
 import me.despical.tntrun.arena.ArenaState;
-import me.despical.tntrun.commands.AbstractCommand;
 import me.despical.tntrun.handlers.setup.ArenaEditorGUI;
 import me.despical.tntrun.user.User;
 import net.md_5.bungee.api.ChatColor;
@@ -16,10 +17,12 @@ import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.entity.Player;
+import org.bukkit.util.StringUtil;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import static me.despical.commandframework.Command.SenderType.PLAYER;
@@ -42,7 +45,7 @@ public class AdminCommands extends AbstractCommand {
 	)
 	public void mainCommand(CommandArguments arguments) {
 		if (arguments.isArgumentsEmpty()) {
-			arguments.sendMessage(chatManager.rawMessage("&3This server is running &bTNT Run " + plugin.getDescription().getVersion() + " &3by &bDespical."));
+			arguments.sendMessage(chatManager.rawMessage("&3This server is running &bTNT Run " + plugin.getDescription().getVersion() + " &3by &bDespical&3!"));
 
 			if (arguments.hasPermission("tntrun.admin")) {
 				arguments.sendMessage(chatManager.rawMessage("&3Commands: &b/" + arguments.getLabel() + " help"));
@@ -82,15 +85,16 @@ public class AdminCommands extends AbstractCommand {
 
 		plugin.getArenaRegistry().registerArena(arena);
 
-		arenaConfig.set(path + "ready", false);
-		arenaConfig.set(path + "mapName", id);
-		arenaConfig.set(path + "minimumPlayers", 2);
-		arenaConfig.set(path + "maximumPlayers", 12);
-		arenaConfig.set(path + "endLocation", LocationSerializer.SERIALIZED_LOCATION);
-		arenaConfig.set(path + "lobbyLocation", LocationSerializer.SERIALIZED_LOCATION);
-		arenaConfig.set(path + "signs", new ArrayList<>());
+		final var config = ConfigUtils.getConfig(plugin, "arena");
+		config.set(path + "ready", false);
+		config.set(path + "mapName", id);
+		config.set(path + "minimumPlayers", 2);
+		config.set(path + "maximumPlayers", 12);
+		config.set(path + "endLocation", LocationSerializer.SERIALIZED_LOCATION);
+		config.set(path + "lobbyLocation", LocationSerializer.SERIALIZED_LOCATION);
+		config.set(path + "signs", new ArrayList<>());
 
-		saveConfig();
+		ConfigUtils.saveConfig(plugin, config, "arena");
 
 		final var player = user.getPlayer();
 
@@ -131,8 +135,10 @@ public class AdminCommands extends AbstractCommand {
 		final var arena = plugin.getArenaRegistry().getArena(arenaId);
 		arena.stop();
 
-		arenaConfig.set("instance." + arenaId, null);
-		saveConfig();
+		final var config = ConfigUtils.getConfig(plugin, "arena");
+		config.set("instance." + arenaId, null);
+
+		ConfigUtils.saveConfig(plugin, config, "arena");
 
 		plugin.getArenaRegistry().unregisterArena(arena);
 
@@ -287,5 +293,41 @@ public class AdminCommands extends AbstractCommand {
 				.append(" on the commands!", ComponentBuilder.FormatRetention.NONE).color(ChatColor.GRAY)
 				.create());
 		}
+	}
+
+	@Completer(
+		name = "tntrun",
+		aliases = {"tr"}
+	)
+	public List<String> onTabComplete(CommandArguments arguments) {
+		final List<String> completions = new ArrayList<>(), commands = plugin.getCommandFramework().getCommands().stream().map(cmd -> cmd.name().replace(arguments.getLabel() + '.', "")).collect(Collectors.toList());
+		final String args[] = arguments.getArguments(), arg = args[0];
+
+		commands.remove("tntrun");
+
+		if (args.length == 1) {
+			StringUtil.copyPartialMatches(arg, arguments.hasPermission("tntrun.admin") || arguments.getSender().isOp() ? commands : List.of("top", "stats", "join", "leave", "randomjoin"), completions);
+		}
+
+		if (args.length == 2) {
+			if (List.of("create", "list", "randomjoin", "leave").contains(arg)) return null;
+
+			if (arg.equalsIgnoreCase("top")) {
+				return List.of("wins", "loses", "highest_score", "games_played");
+			}
+
+			if (arg.equalsIgnoreCase("stats")) {
+				return plugin.getServer().getOnlinePlayers().stream().map(Player::getName).collect(Collectors.toList());
+			}
+
+			final List<String> arenas = plugin.getArenaRegistry().getArenas().stream().map(Arena::getId).collect(Collectors.toList());
+
+			StringUtil.copyPartialMatches(args[1], arenas, completions);
+			arenas.sort(null);
+			return arenas;
+		}
+
+		completions.sort(null);
+		return completions;
 	}
 }

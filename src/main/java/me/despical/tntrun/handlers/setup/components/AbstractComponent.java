@@ -45,30 +45,6 @@ public abstract class AbstractComponent {
 		return config.isSet(path) ? "&a&l✔ Completed &7(value: &8" + config.getString(path) + "&7)" : "&c&l✘ Not Completed";
 	}
 
-	protected String isOptionDoneList(String path, int minimum) {
-		path = "instance.%s.%s".formatted(arena, path);
-
-		if (config.isSet(path)) {
-			var size = config.getStringList(path).size();
-
-			return size < minimum ? "&c&l✘ Not Completed &c| &c&lPlease add more spawns" : "&a&l✔ Completed &7(value: &8" + size + "&7)";
-		}
-
-		return "&c&l✘ Not Completed";
-	}
-
-	protected boolean isOptionDoneListBoolean(String path, int minimum) {
-		path = "instance.%s.%s".formatted(arena, path);
-
-		if (config.isSet(path)) {
-			int size = config.getStringList(path).size();
-
-			return size >= minimum;
-		}
-
-		return false;
-	}
-
 	protected String isOptionDoneBool(String path) {
 		path = "instance.%s.%s".formatted(arena, path);
 
