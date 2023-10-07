@@ -73,6 +73,9 @@ public class PlaceholderHandler extends PlaceholderExpansion {
 			case "loses" -> Integer.toString(user.getStat(StatsStorage.StatisticType.LOSES));
 			case "games_played" -> Integer.toString(user.getStat(StatsStorage.StatisticType.GAMES_PLAYED));
 			case "longest_survive" -> Integer.toString(user.getStat(StatsStorage.StatisticType.LONGEST_SURVIVE));
+			case "local_coins" -> Integer.toString(user.getStat(StatsStorage.StatisticType.LOCAL_COINS));
+			case "local_survive" -> Integer.toString(user.getStat(StatsStorage.StatisticType.LOCAL_SURVIVE));
+			case "local_double_jumps" -> Integer.toString(user.getStat(StatsStorage.StatisticType.LOCAL_DOUBLE_JUMPS));
 			case "coins" -> Integer.toString(user.getStat(StatsStorage.StatisticType.COINS));
 			default -> handleArenaPlaceholderRequest(id);
 		};
