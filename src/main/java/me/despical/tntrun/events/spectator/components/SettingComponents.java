@@ -1,3 +1,21 @@
+/*
+ * TNT Run - Don't stop running to win!
+ * Copyright (C) 2023 Despical
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package me.despical.tntrun.events.spectator.components;
 
 import me.despical.commons.compat.XMaterial;
@@ -35,11 +53,11 @@ public class SettingComponents {
 		var arena = spectatorGui.getArena();
 		var player = spectatorGui.getUser().getPlayer();
 
-		pane.addItem(new GuiItem(new ItemBuilder(XMaterial.LEATHER_BOOTS).name(chatManager.message("spectator-gui.no-speed")).flag(ItemFlag.HIDE_ATTRIBUTES).build(), e -> setSpeed(user, -1, "0")),2,1);
-		pane.addItem(new GuiItem(new ItemBuilder(XMaterial.CHAINMAIL_BOOTS).name(prefix + "I").flag(ItemFlag.HIDE_ATTRIBUTES).build(), e -> setSpeed(user, 1, "I")),3,1);
-		pane.addItem(new GuiItem(new ItemBuilder(XMaterial.IRON_BOOTS).name(prefix + "II").flag(ItemFlag.HIDE_ATTRIBUTES).build(), e -> setSpeed(user, 2, "II")),4,1);
-		pane.addItem(new GuiItem(new ItemBuilder(XMaterial.GOLDEN_BOOTS).name(prefix + "III").flag(ItemFlag.HIDE_ATTRIBUTES).build(), e -> setSpeed(user, 3, "III")),5,1);
-		pane.addItem(new GuiItem(new ItemBuilder(Material.DIAMOND_BOOTS).name(prefix + "IV").flag(ItemFlag.HIDE_ATTRIBUTES).build(), e -> setSpeed(user, 4, "IV")),6,1);
+		pane.addItem(GuiItem.of(new ItemBuilder(XMaterial.LEATHER_BOOTS).name(chatManager.message("spectator-gui.no-speed")).flag(ItemFlag.HIDE_ATTRIBUTES).build(), e -> setSpeed(user, -1, "0")),2,1);
+		pane.addItem(GuiItem.of(new ItemBuilder(XMaterial.CHAINMAIL_BOOTS).name(prefix + "I").flag(ItemFlag.HIDE_ATTRIBUTES).build(), e -> setSpeed(user, 1, "I")),3,1);
+		pane.addItem(GuiItem.of(new ItemBuilder(XMaterial.IRON_BOOTS).name(prefix + "II").flag(ItemFlag.HIDE_ATTRIBUTES).build(), e -> setSpeed(user, 2, "II")),4,1);
+		pane.addItem(GuiItem.of(new ItemBuilder(XMaterial.GOLDEN_BOOTS).name(prefix + "III").flag(ItemFlag.HIDE_ATTRIBUTES).build(), e -> setSpeed(user, 3, "III")),5,1);
+		pane.addItem(GuiItem.of(new ItemBuilder(Material.DIAMOND_BOOTS).name(prefix + "IV").flag(ItemFlag.HIDE_ATTRIBUTES).build(), e -> setSpeed(user, 4, "IV")),6,1);
 
 		var hasNightVision = player.hasPotionEffect(PotionEffectType.NIGHT_VISION);
 		var shouldHaveNightVision = user.getStat(StatsStorage.StatisticType.SPECTATOR_NIGHT_VISION) == 1;

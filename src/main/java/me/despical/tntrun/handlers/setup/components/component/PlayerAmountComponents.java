@@ -99,7 +99,7 @@ public class PlayerAmountComponents extends AbstractComponent {
 			config.set(path + "minimumPlayers", amount);
 			saveConfig();
 
-			new ArenaEditorGUI(plugin, user, arena).showGuiFromPage(new ArenaEditorGUI.Page(arena, " Set MIN and MAX player amount", 3, 3));
+			gui.reshowGuiFromCurrentPage();
 		}), 3, 1);
 
 		pane.addItem(GuiItem.of(maxPlayersItem.build(), event -> {
@@ -127,7 +127,7 @@ public class PlayerAmountComponents extends AbstractComponent {
 			config.set(path + "maximumPlayers", amount);
 			saveConfig();
 
-			new ArenaEditorGUI(plugin, user, arena).showGuiFromPage(new ArenaEditorGUI.Page(arena, " Set MIN and MAX player amount", 3, 3));
+			gui.reshowGuiFromCurrentPage();
 		}), 5, 1);
 
 		paginatedPane.addPane(3, pane);

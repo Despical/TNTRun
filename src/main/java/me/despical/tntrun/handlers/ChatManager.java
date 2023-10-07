@@ -74,10 +74,6 @@ public class ChatManager {
 		return message;
 	}
 
-	public ConfigurationSection getConfigurationSection(final String path) {
-		return config.getConfigurationSection(path);
-	}
-
 	public String rawMessage(final String message) {
 		return Strings.format(message);
 	}

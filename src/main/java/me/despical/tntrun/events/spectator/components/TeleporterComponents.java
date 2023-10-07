@@ -1,3 +1,21 @@
+/*
+ * TNT Run - Don't stop running to win!
+ * Copyright (C) 2023 Despical
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package me.despical.tntrun.events.spectator.components;
 
 import me.despical.commons.compat.XMaterial;
@@ -28,7 +46,7 @@ public class TeleporterComponents {
 		var arena = teleporterGui.getArena();
 		var chatManager = teleporterGui.getPlugin().getChatManager();
 
-		pane.addItem(new GuiItem(new ItemBuilder(XMaterial.BARRIER).name(chatManager.message("spectator-gui.close-item")).flag(ItemFlag.HIDE_ATTRIBUTES).build(), e -> e.getWhoClicked().closeInventory()),4,4);
+		pane.addItem(GuiItem.of(new ItemBuilder(XMaterial.BARRIER).name(chatManager.message("spectator-gui.close-item")).flag(ItemFlag.HIDE_ATTRIBUTES).build(), e -> e.getWhoClicked().closeInventory()),4,4);
 
 		var players = new ArrayList<>(arena.getPlayersLeft());
 		players.remove(u);
@@ -48,7 +66,7 @@ public class TeleporterComponents {
 			var xy = GeometryUtil.slotToXY(headPlaces.get(i));
 			int x = xy[0][0], y = xy[0][1];
 
-			pane.addItem(new GuiItem(guiItem, e -> p.teleport(player)), x, y);
+			pane.addItem(GuiItem.of(guiItem, e -> p.teleport(player)), x, y);
 		}
 	}
 }

@@ -177,6 +177,7 @@ public class User {
 
 		addStat(StatsStorage.StatisticType.LOCAL_DOUBLE_JUMPS, -1);
 		setCooldown("double_jump", cooldown);
+		performReward(Reward.RewardType.DOUBLE_JUMP);
 
 		if (plugin.getOption(ConfigPreferences.Option.JUMP_BAR) && getStat(StatsStorage.StatisticType.LOCAL_DOUBLE_JUMPS) > 0)
 			Utils.applyActionBarCooldown(this, cooldown);

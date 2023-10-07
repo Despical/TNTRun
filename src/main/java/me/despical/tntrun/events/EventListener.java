@@ -53,7 +53,7 @@ public abstract class EventListener implements Listener {
 				listenerAdapter.getConstructor(Main.class).newInstance(plugin);
 			}
 		} catch (Exception exception) {
-			exception.fillInStackTrace();
+			exception.printStackTrace();
 		}
 	}
 }

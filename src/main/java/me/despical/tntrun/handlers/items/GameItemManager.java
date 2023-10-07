@@ -57,8 +57,8 @@ public class GameItemManager {
 		}
 
 		for (final var id : section.getKeys(false)) {
-			final String path = "items.%s.".formatted(id);
-			final GameItem gameItem = new GameItem(config.getString(path + "name"), XMaterial.valueOf(config.getString(path + "material")).parseMaterial(), config.getInt(path + "slot"), config.getStringList(path + "lore"));
+			final var path = "items.%s.".formatted(id);
+			final var gameItem = new GameItem(config.getString(path + "name"), XMaterial.valueOf(config.getString(path + "material")).parseMaterial(), config.getInt(path + "slot"), config.getStringList(path + "lore"));
 
 			this.gameItems.put(id, gameItem);
 		}

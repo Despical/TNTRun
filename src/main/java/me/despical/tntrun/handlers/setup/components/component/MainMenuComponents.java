@@ -126,12 +126,10 @@ public class MainMenuComponents extends AbstractComponent {
 				return;
 			}
 
-			final var config = ConfigUtils.getConfig(plugin, "arena");
-			final var path = "instance.%s.signs".formatted(arena);
-			final var locations = config.getStringList(path);
+			final var locations = config.getStringList(path + "signs");
 			locations.add(LocationSerializer.toString(block.getLocation()));
 
-			config.set(path, locations);
+			config.set(path + "signs", locations);
 			ConfigUtils.saveConfig(plugin, config, "arena");
 
 			signManager.addArenaSign(block, arena);

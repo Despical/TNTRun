@@ -5,7 +5,7 @@
 
 	<groupId>me.despical</groupId>
 	<artifactId>tnt-run</artifactId>
-	<version>2.4.4</version>
+	<version>2.4.5-SNAPSHOT</version>
 
 	<name>TNT Run</name>
 	<packaging>jar</packaging>
@@ -43,6 +43,7 @@
 				<artifactId>maven-jar-plugin</artifactId>
 				<version>3.1.0</version>
 				<configuration>
+					<outputDirectory>C:\Users\berke\OneDrive\Masaüstü\Server\plugins</outputDirectory>
 					<archive>
 						<addMavenDescriptor>false</addMavenDescriptor>
 					</archive>

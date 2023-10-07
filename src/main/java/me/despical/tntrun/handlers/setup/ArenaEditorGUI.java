@@ -78,28 +78,17 @@ public class ArenaEditorGUI {
 		this.gui.show(this.user.getPlayer());
 	}
 
-	public void showGui(@Nullable String title, int rows, int page) {
-		this.setPage(title, rows, page, false);
-
-		this.showGui();
-	}
-
 	public void showGuiFromPage(final Page page) {
-		this.setPage(page.title, page.rows, page.page, true);
+		this.setPage(page.title, page.rows, page.page);
 
 		this.gui.show(this.user.getPlayer());
 	}
 
 	public void setPage(@Nullable String title, int rows, int page) {
-		this.setPage(title, rows, page, true);
-	}
-
-	private void setPage(@Nullable String title, int rows, int page, boolean update) {
 		this.gui.setTitle(title != null ? title : this.gui.getTitle());
 		this.gui.setRows(rows);
 		this.paginatedPane.setPage(page);
-
-		if (update) this.gui.update();
+		this.gui.update();
 	}
 
 	public void restorePage() {
@@ -107,6 +96,10 @@ public class ArenaEditorGUI {
 		gui.setRows(4);
 		gui.setTitle("    TNT Run Arena Editor");
 		gui.update();
+	}
+
+	public void reshowGuiFromCurrentPage() {
+		new ArenaEditorGUI(plugin, user, arena).showGuiFromPage(new Page(arena, gui.getTitle(), gui.getRows(), paginatedPane.getPage()));
 	}
 
 	@NotNull
@@ -130,6 +123,5 @@ public class ArenaEditorGUI {
 	}
 
 	public record Page(Arena arena, String title, int rows, int page) {
-
 	}
 }
