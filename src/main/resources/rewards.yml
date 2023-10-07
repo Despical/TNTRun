@@ -32,8 +32,12 @@ Rewards-Enabled: true
 Rewards:
   Win:
     - p:say I won the game!
+
   Lose:
     - chance(10):eco give %player% 8
     - p:say I lost the game!
+
   End-Game:
     - p:say %map_name% has ended!
+
+  Double-Jump: []

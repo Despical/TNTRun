@@ -106,7 +106,8 @@ public class Reward {
 
 		WIN("Win"),
 		LOSE("Lose"),
-		END_GAME("End-Game");
+		END_GAME("End-Game"),
+		DOUBLE_JUMP("Double-Jump");
 
 		final String path;
 
