@@ -275,7 +275,7 @@ public class AdminCommands extends AbstractCommand {
 		final var message = chatManager.rawMessage("&3&l---- TNT Run Admin Commands ----");
 
 		arguments.sendMessage("");
-		if (isPlayer) MiscUtils.sendCenteredMessage((Player) sender, message); else arguments.sendMessage(message);
+		MiscUtils.sendCenteredMessage(sender, message);
 		arguments.sendMessage("");
 
 		for (final var command : plugin.getCommandFramework().getCommands().stream().sorted(Collections
