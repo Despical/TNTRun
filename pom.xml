@@ -5,7 +5,7 @@
 
 	<groupId>me.despical</groupId>
 	<artifactId>tnt-run</artifactId>
-	<version>2.4.5-SNAPSHOT</version>
+	<version>2.4.6</version>
 
 	<name>TNT Run</name>
 	<packaging>jar</packaging>
