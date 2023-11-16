@@ -206,7 +206,7 @@ public class GameEvents extends EventListener {
 	private String formatChatPlaceholders(final String message, final User user, final String saidMessage) {
 		var formatted = message;
 
-		formatted = formatted.replace("%player%", user.getPlayer().getName());
+		formatted = formatted.replace("%player%", user.getName());
 		formatted = formatted.replace("%message%", ChatColor.stripColor(saidMessage));
 
 		return chatManager.rawMessage(formatted);

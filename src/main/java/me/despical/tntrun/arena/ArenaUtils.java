@@ -61,9 +61,9 @@ public class ArenaUtils {
 			team.setOption(Team.Option.NAME_TAG_VISIBILITY, Team.OptionStatus.NEVER);
 
 			if (arena.isArenaState(ArenaState.WAITING_FOR_PLAYERS, ArenaState.STARTING) || arena.getArenaState() == ArenaState.IN_GAME) {
-				team.addEntry(u.getPlayer().getName());
+				team.addEntry(u.getName());
 			} else {
-				team.removeEntry(u.getPlayer().getName());
+				team.removeEntry(u.getName());
 			}
 
 			player.setScoreboard(scoreboard);

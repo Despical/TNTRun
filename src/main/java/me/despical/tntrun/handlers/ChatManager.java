@@ -49,14 +49,14 @@ public class ChatManager {
 	public String message(final String path, final User user) {
 		String message = this.message(path);
 
-		message = message.replace("%player%", user.getPlayer().getName());
+		message = message.replace("%player%", user.getName());
 		return message;
 	}
 
 	public String message(final String path, final Arena arena, final User user) {
 		String message = this.message(path, arena);
 
-		message = message.replace("%player%", user.getPlayer().getName());
+		message = message.replace("%player%", user.getName());
 
 		return message;
 	}

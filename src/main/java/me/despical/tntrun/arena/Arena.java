@@ -98,8 +98,10 @@ public class Arena extends BukkitRunnable {
 		return user != null && this.players.contains(user);
 	}
 
-	public boolean isArenaState(final ArenaState first, final ArenaState second) {
-		return this.arenaState == first || this.arenaState == second;
+	public boolean isArenaState(final ArenaState... states) {
+		for (var state : states) if (this.arenaState == state) return true;
+
+		return false;
 	}
 
 	private void teleportToGameLocation(final User user, final GameLocation gameLocation) {

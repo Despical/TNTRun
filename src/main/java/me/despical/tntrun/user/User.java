@@ -49,15 +49,15 @@ public class User {
 	private static final Main plugin = JavaPlugin.getPlugin(Main.class);
 	private static long cooldownCounter;
 
-	private final Player player;
+	private final UUID uuid;
 	private final Map<String, Double> cooldowns;
 	private final Map<StatsStorage.StatisticType, Integer> stats;
 
 	private boolean spectator;
 	private Scoreboard cachedScoreboard;
 
-	public User(Player player) {
-		this.player = player;
+	public User(UUID uuid) {
+		this.uuid = uuid;
 		this.cooldowns = new HashMap<>();
 		this.stats = new EnumMap<>(StatsStorage.StatisticType.class);
 	}
@@ -71,11 +71,11 @@ public class User {
 	}
 
 	public void sendRawMessage(final String message) {
-		this.player.sendMessage(plugin.getChatManager().rawMessage(message));
+		this.getPlayer().sendMessage(plugin.getChatManager().rawMessage(message));
 	}
 
 	public void sendRawMessage(final String message, final Object... args) {
-		this.player.sendMessage(plugin.getChatManager().rawMessage(String.format(message, args)));
+		this.getPlayer().sendMessage(plugin.getChatManager().rawMessage(String.format(message, args)));
 	}
 
 	public void performReward(final Reward.RewardType rewardType) {
@@ -84,7 +84,7 @@ public class User {
 
 
 	public void closeOpenedInventory() {
-		this.player.closeInventory();
+		this.getPlayer().closeInventory();
 	}
 
 	public boolean isInArena() {
@@ -97,19 +97,21 @@ public class User {
 	}
 
 	public Player getPlayer() {
-		return player;
+		return plugin.getServer().getPlayer(uuid);
 	}
 
 	public String getName() {
-		return player.getName();
+		final var player = getPlayer();
+
+		return player != null ? player.getName() : "";
 	}
 
 	public Location getLocation() {
-		return player.getLocation();
+		return getPlayer().getLocation();
 	}
 
 	public UUID getUniqueId() {
-		return player.getUniqueId();
+		return getPlayer().getUniqueId();
 	}
 
 	public boolean isSpectator() {
@@ -135,7 +137,7 @@ public class User {
 		stats.put(stat, value);
 
 		if (plugin.isEnabled())
-			plugin.getServer().getScheduler().runTask(plugin, () -> plugin.getServer().getPluginManager().callEvent(new TRPlayerStatisticChangeEvent(getArena(), player, stat, value)));
+			plugin.getServer().getScheduler().runTask(plugin, () -> plugin.getServer().getPluginManager().callEvent(new TRPlayerStatisticChangeEvent(getArena(), getPlayer(), stat, value)));
 	}
 
 	public void addStat(StatsStorage.StatisticType stat, int value) {
@@ -143,7 +145,7 @@ public class User {
 	}
 
 	public boolean hasPermission(final String permission) {
-		return this.player.hasPermission(permission);
+		return this.getPlayer().hasPermission(permission);
 	}
 
 	public void setCooldown(String s, double seconds) {
@@ -163,13 +165,13 @@ public class User {
 			setStat(statistic, 0);
 		}
 
-		setStat(StatsStorage.StatisticType.LOCAL_DOUBLE_JUMPS, plugin.getPermissionManager().getDoubleJumps(this.player));
+		setStat(StatsStorage.StatisticType.LOCAL_DOUBLE_JUMPS, plugin.getPermissionManager().getDoubleJumps(this.getPlayer()));
 
 		this.spectator = false;
 	}
 
 	public void heal() {
-		if (plugin.getOption(ConfigPreferences.Option.HEAL_PLAYER)) AttributeUtils.healPlayer(player);
+		if (plugin.getOption(ConfigPreferences.Option.HEAL_PLAYER)) AttributeUtils.healPlayer(getPlayer());
 	}
 
 	public void applyDoubleJumpDelay() {
@@ -185,8 +187,9 @@ public class User {
 
 	public void removePotionEffectsExcept(final PotionEffectType... effectTypes) {
 		final var setOfEffects = Set.of(effectTypes);
+		final var player = this.getPlayer();
 
-		for (final var activePotion : this.player.getActivePotionEffects()) {
+		for (final var activePotion : player.getActivePotionEffects()) {
 			if (setOfEffects.contains(activePotion.getType())) continue;
 
 			player.removePotionEffect(activePotion.getType());
@@ -200,18 +203,20 @@ public class User {
 	@SuppressWarnings("all")
 	public void sendActionBar(@NotNull String message) {
 		try {
-			this.player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(message));
+			getPlayer().spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(message));
 		} catch (Exception | Error ignored) { }
 	}
 
 	public void addGameItems(boolean clearInventory, final String... ids) {
-		if (clearInventory) this.player.getInventory().clear();
+		var player = this.getPlayer();
+
+		if (clearInventory) player.getInventory().clear();
 
 		for (final var id : ids) {
 			this.addGameItem(id);
 		}
 
-		this.player.updateInventory();
+		player.updateInventory();
 	}
 
 	public void addGameItem(final String id) {
@@ -219,10 +224,12 @@ public class User {
 
 		if (gameItem == null) return;
 
-		this.player.getInventory().setItem(gameItem.getSlot(), gameItem.getItemStack());
+		this.getPlayer().getInventory().setItem(gameItem.getSlot(), gameItem.getItemStack());
 	}
 
 	public void playDeathEffect() {
+		final var player = this.getPlayer();
+
 		player.setAllowFlight(true);
 		player.setFlying(true);
 		player.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, Integer.MAX_VALUE, 1, false, false, false));
@@ -230,13 +237,13 @@ public class User {
 	}
 
 	public void cacheScoreboard() {
-		this.cachedScoreboard = this.player.getScoreboard();
+		this.cachedScoreboard = this.getPlayer().getScoreboard();
 	}
 
 	public void removeScoreboard() {
 		if (this.cachedScoreboard == null) return;
 
-		this.player.setScoreboard(this.cachedScoreboard);
+		this.getPlayer().setScoreboard(this.cachedScoreboard);
 		this.cachedScoreboard = null;
 	}
 
