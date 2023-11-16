@@ -52,6 +52,8 @@ public class TeleporterComponents {
 		players.remove(u);
 
 		for (int i = 0; i < players.size(); i++) {
+			if (i == 21) break;
+
 			var user = players.get(i);
 			var player = user.getPlayer();
 			var skullItem = ItemUtils.PLAYER_HEAD_ITEM.clone();
