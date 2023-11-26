@@ -325,27 +325,36 @@ public class AdminCommands extends AbstractCommand {
 
 		if (args.length == 1) {
 			StringUtil.copyPartialMatches(arg, arguments.hasPermission("tntrun.admin") || arguments.getSender().isOp() ? commands : List.of("top", "stats", "join", "leave", "randomjoin"), completions);
+			return completions;
 		}
 
 		if (args.length == 2) {
 			if (List.of("create", "list", "randomjoin", "leave").contains(arg)) return null;
 
 			if (arg.equalsIgnoreCase("top")) {
-				return List.of("wins", "loses", "highest_score", "games_played");
+				StringUtil.copyPartialMatches(
+								args[1],
+								List.of("wins", "loses", "highest_score", "games_played"),
+								completions);
+				return completions;
 			}
 
 			if (arg.equalsIgnoreCase("stats")) {
-				return plugin.getServer().getOnlinePlayers().stream().map(Player::getName).collect(Collectors.toList());
+				StringUtil.copyPartialMatches(
+								args[1],
+								plugin.getServer().getOnlinePlayers().stream().map(Player::getName).collect(Collectors.toList()),
+								completions
+				);
+				return completions;
 			}
 
-			final List<String> arenas = plugin.getArenaRegistry().getArenas().stream().map(Arena::getId).collect(Collectors.toList());
-
-			StringUtil.copyPartialMatches(args[1], arenas, completions);
-			arenas.sort(null);
-			return arenas;
+			StringUtil.copyPartialMatches(
+								args[1],
+								plugin.getArenaRegistry().getArenas().stream().map(Arena::getId).collect(Collectors.toList()),
+								completions);
+			return completions;
 		}
 
-		completions.sort(null);
 		return completions;
 	}
 }
