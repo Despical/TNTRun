@@ -122,15 +122,8 @@ public class User {
 		this.spectator = spectator;
 	}
 
-	public int getStat(StatsStorage.StatisticType stat) {
-		final var statistic = stats.get(stat);
-
-		if (statistic == null) {
-			stats.put(stat, 0);
-			return 0;
-		}
-
-		return statistic;
+	public int getStat(StatsStorage.StatisticType statisticType) {
+		return stats.computeIfAbsent(statisticType, stat -> 0);
 	}
 
 	public void setStat(StatsStorage.StatisticType stat, int value) {
