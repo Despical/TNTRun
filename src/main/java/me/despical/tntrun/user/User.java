@@ -50,14 +50,16 @@ public class User {
 	private static long cooldownCounter;
 
 	private final UUID uuid;
+	private final String playerName;
 	private final Map<String, Double> cooldowns;
 	private final Map<StatsStorage.StatisticType, Integer> stats;
 
 	private boolean spectator;
 	private Scoreboard cachedScoreboard;
 
-	public User(UUID uuid) {
-		this.uuid = uuid;
+	public User(Player player) {
+		this.uuid = player.getUniqueId();
+		this.playerName = player.getName();
 		this.cooldowns = new HashMap<>();
 		this.stats = new EnumMap<>(StatsStorage.StatisticType.class);
 	}
@@ -82,7 +84,6 @@ public class User {
 		plugin.getRewardsFactory().performReward(this, rewardType);
 	}
 
-
 	public void closeOpenedInventory() {
 		this.getPlayer().closeInventory();
 	}
@@ -101,9 +102,7 @@ public class User {
 	}
 
 	public String getName() {
-		final var player = getPlayer();
-
-		return player != null ? player.getName() : "";
+		return playerName;
 	}
 
 	public Location getLocation() {

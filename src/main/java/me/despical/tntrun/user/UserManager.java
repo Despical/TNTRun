@@ -53,7 +53,7 @@ public class UserManager {
 
 	@NotNull
 	public User addUser(final Player player) {
-		final User user = new User(player.getUniqueId());
+		final User user = new User(player);
 
 		this.users.add(user);
 		return user;
@@ -86,7 +86,7 @@ public class UserManager {
 		return this.userDatabase;
 	}
 
-	public void saveStatistic(final User user, final StatsStorage.StatisticType statisticType) {
+	public void saveStatistic(final User user, StatsStorage.StatisticType statisticType) {
 		if (!statisticType.isPersistent()) return;
 
 		this.userDatabase.saveStatistics(user);

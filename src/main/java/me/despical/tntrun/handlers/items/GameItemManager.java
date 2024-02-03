@@ -52,7 +52,7 @@ public class GameItemManager {
 		final var section = config.getConfigurationSection("items");
 
 		if (section == null) {
-			plugin.getLogger().warning("Couldn't find 'items' section in items.yml, delete the file to regenerate it!");
+			plugin.getLogger().warning("Couldn't find ''items'' section in items.yml, delete the file to regenerate it!");
 			return;
 		}
 

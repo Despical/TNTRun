@@ -46,14 +46,8 @@ public abstract class EventListener implements Listener {
 	}
 
 	public static void registerEvents(final Main plugin) {
-		final Class<?>[] listenerAdapters = {JoinQuitEvents.class, GameItemEvents.class, GameEvents.class};
-
-		try {
-			for (Class<?> listenerAdapter : listenerAdapters) {
-				listenerAdapter.getConstructor(Main.class).newInstance(plugin);
-			}
-		} catch (Exception exception) {
-			exception.printStackTrace();
-		}
+		new JoinQuitEvents(plugin);
+		new GameItemEvents(plugin);
+		new GameEvents(plugin);
 	}
 }

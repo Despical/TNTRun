@@ -1,31 +1,30 @@
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-#                                                                                                                             #
-#              TNT Run Rewards Configuration                                                                                  #
-#                                                                                                                             #
-#                    Placeholders list:                                                                                       #
-#                                                                                                                             #
-#             %player%   - Player name.                                                                                       #
-#             %arena%    - Arena identifier.                                                                                  #
-#             %map_name% - Map name of arena.                                                                                 #
-#             %players%  - Number of players in arena.                                                                        #
-#                                                                                                                             #
-#      Commands are executed by default by CONSOLE, use "p:" to perform command by player                                     #
-#   You can use chance to execute command adding "chance(NUMBER):" at the beginning of command                                #
-#                                                                                                                             #
-#   Commands examples:                                                                                                        #
-#    - p:say Hello everyone in %arena%!           # Player will say "Hello everyone in <arena name here>"                     #
-#    - broadcast Game %arena% has ended!          # Will broadcast "Game <arena name here> has ended" message                 #
-#    - chance(1):p:say I was very lucky!          # Player has %1 chance to say "I was very lucky!"                           #
-#    - p:chance(99):spawn                         # Player has %99 chance to teleport to spawn                                #
-#    - chance(50):eco give %player% 10            # Console has %50 chance to give player 10$                                 #
-#                                                                                                                             #
-#             All object documents that can be used in commands:                                                              #
-#                                                                                                                             #
-#       arena  - Arena object  (NOT PUBLIC DOCUMENTATION / JOIN OUR DISCORD SERVER INSTEAD)                                   #
-#       player - Player object (API methods https://hub.spigotmc.org/javadocs/spigot/org/bukkit/entity/Player.html)           #
-#       server - Server object (API methods https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Server.html)                  #
-#                                                                                                                             #
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+#                                                                                                                       #
+#              TNT Run Rewards Configuration                                                                            #
+#                                                                                                                       #
+#                    Placeholders list:                                                                                 #
+#                                                                                                                       #
+#             %player%   - Player name.                                                                                 #
+#             %arena%    - Arena identifier.                                                                            #
+#             %map_name% - Map name of arena.                                                                           #
+#             %players%  - Number of players in arena.                                                                  #                                                                                                                       #
+#      Commands are executed by default by CONSOLE, use "p:" to perform command by player                               #
+#   You can use chance to execute command adding "chance(NUMBER):" at the beginning of command                          #
+#                                                                                                                       #
+#   Commands examples:                                                                                                  #
+#    - p:say Hello everyone in %arena%!           # Player will say "Hello everyone in <arena name here>"               #
+#    - broadcast Game %arena% has ended!          # Will broadcast "Game <arena name here> has ended" message           #
+#    - chance(1):p:say I was very lucky!          # Player has %1 chance to say "I was very lucky!"                     #
+#    - p:chance(99):spawn                         # Player has %99 chance to teleport to spawn                          #
+#    - chance(50):eco give %player% 10            # Console has %50 chance to give player 10$                           #
+#                                                                                                                       #
+#             All object documents that can be used in commands:                                                        #
+#                                                                                                                       #
+#       arena  - Arena object  (API DOCUMENTS AVAILABLE ON GITHUB or PM ME ON SPIGOT/DISCORD)                           #
+#       player - Player object (API methods https://hub.spigotmc.org/javadocs/spigot/org/bukkit/entity/Player.html)     #
+#       server - Server object (API methods https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Server.html)            #
+#                                                                                                                       #
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 Rewards-Enabled: true
 

@@ -44,8 +44,7 @@ public class Utils {
 			public void run() {
 				final var arena = user.getArena();
 
-				if (arena == null || arena.getArenaState() != ArenaState.IN_GAME) cancel();
-				if (arena.isDeathPlayer(user)) cancel();
+				if (arena == null || arena.getArenaState() != ArenaState.IN_GAME || arena.isDeathPlayer(user)) cancel();
 				if (ticks >= seconds * 20) {
 					cancel();
 				}

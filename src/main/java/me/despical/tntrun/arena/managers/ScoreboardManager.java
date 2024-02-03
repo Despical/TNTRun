@@ -46,8 +46,7 @@ import static me.despical.tntrun.api.StatsStorage.StatisticType.*;
  */
 public class ScoreboardManager {
 
-	private final static SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yy");
-	private final static String date = formatter.format(new Date());
+	private final static String date = new SimpleDateFormat("dd/MM/yy").format(new Date());
 
 	private final Arena arena;
 	private final Main plugin;
@@ -133,10 +132,12 @@ public class ScoreboardManager {
 	}
 
 	private String getDoubleJumpColor(int amount, int max) {
-		final int perc = (amount * 100) / max;
+		final int percentage = (amount * 100) / max;
 
-		if (perc == 0) return doubleJumpColors[2];
-		if (perc >= 60) return doubleJumpColors[0];
+		if (percentage == 0)
+			return doubleJumpColors[2];
+		if (percentage >= 60)
+			return doubleJumpColors[0];
 		return doubleJumpColors[1];
 	}
 }

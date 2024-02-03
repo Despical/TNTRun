@@ -79,10 +79,18 @@ public class StatsStorage {
 	 * Available statistics to get.
 	 */
 	public enum StatisticType {
-		COINS("coinsearned", true), GAMES_PLAYED("gamesplayed", true), LOCAL_COINS("local_coins", false),
-		LOCAL_DOUBLE_JUMPS("local_double_jumps", false), LOCAL_SURVIVE("local_survive", false), LONGEST_SURVIVE("longestsurvive", true),
-		LOSES("loses", true), WINS("wins", true), SPECTATOR_NIGHT_VISION("spectatornightvision", true),
-		SPECTATOR_SHOW_OTHERS("spectatorshowothers", true), SPECTATOR_SPEED("spectatorspeed", true);
+
+		WINS("wins", true),
+		LOSES("loses", true),
+		COINS("coinsearned", true),
+		GAMES_PLAYED("gamesplayed", true),
+		LONGEST_SURVIVE("longestsurvive", true),
+		SPECTATOR_NIGHT_VISION("spectatornightvision", true),
+		SPECTATOR_SHOW_OTHERS("spectatorshowothers", true),
+		SPECTATOR_SPEED("spectatorspeed", true),
+		LOCAL_COINS("local_coins", false),
+		LOCAL_DOUBLE_JUMPS("local_double_jumps", false),
+		LOCAL_SURVIVE("local_survive", false);
 
 		final String name;
 		final boolean persistent;
