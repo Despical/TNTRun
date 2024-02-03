@@ -24,11 +24,11 @@ import me.despical.commandframework.Completer;
 import me.despical.commons.configuration.ConfigUtils;
 import me.despical.commons.miscellaneous.MiscUtils;
 import me.despical.commons.serializer.LocationSerializer;
+import me.despical.commons.string.StringMatcher;
 import me.despical.tntrun.Main;
 import me.despical.tntrun.arena.Arena;
 import me.despical.tntrun.arena.ArenaState;
 import me.despical.tntrun.handlers.setup.ArenaEditorGUI;
-import me.despical.tntrun.user.User;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
@@ -54,6 +54,20 @@ public class AdminCommands extends AbstractCommand {
 
 	public AdminCommands(Main plugin) {
 		super(plugin);
+		this.plugin.getCommandFramework().setMatchFunction(arguments -> {
+			if (arguments.isArgumentsEmpty()) return false;
+
+			String label = arguments.getLabel(), arg = arguments.getArgument(0);
+
+			var matches = StringMatcher.match(arg, plugin.getCommandFramework().getCommands().stream().map(cmd -> cmd.name().replace(label + ".", "")).collect(Collectors.toList()));
+
+			if (!matches.isEmpty()) {
+				arguments.sendMessage(chatManager.message("admin-commands.did-you-mean").replace("%command%", label + " " + matches.get(0).getMatch()));
+				return true;
+			}
+
+			return false;
+		});
 	}
 
 	@Command(
@@ -76,6 +90,7 @@ public class AdminCommands extends AbstractCommand {
 		permission = "tntrun.admin.create",
 		desc = "Create an arena with default configuration.",
 		usage = "/tntrun create <arena name>",
+		allowInfiniteArgs = true,
 		senderType = PLAYER
 	)
 	public void createCommand(CommandArguments arguments) {
@@ -128,6 +143,7 @@ public class AdminCommands extends AbstractCommand {
 		permission = "tntrun.admin.delete",
 		desc = "Delete specified arena and its data",
 		usage = "/tntrun delete <arena name>",
+		allowInfiniteArgs = true,
 		senderType = PLAYER
 	)
 	public void deleteCommand(CommandArguments arguments) {
@@ -188,7 +204,7 @@ public class AdminCommands extends AbstractCommand {
 		permission = "tntrun.admin.forcestart",
 		desc = "Forces arena to start without waiting time",
 		usage = "/tntrun forcestart",
-		senderType =  PLAYER
+		senderType = PLAYER
 	)
 	public void forceStartCommand(CommandArguments arguments) {
 		final var user = plugin.getUserManager().getUser(arguments.getSender());
@@ -226,8 +242,8 @@ public class AdminCommands extends AbstractCommand {
 		senderType = PLAYER
 	)
 	public void stopCommand(CommandArguments arguments) {
-		final User user = plugin.getUserManager().getUser(arguments.getSender());
-		final Arena arena = user.getArena();
+		final var user = plugin.getUserManager().getUser(arguments.getSender());
+		final var arena = user.getArena();
 
 		if (arena == null) {
 			user.sendMessage("admin-commands.must-be-in-arena");
@@ -244,6 +260,7 @@ public class AdminCommands extends AbstractCommand {
 		permission = "tntrun.admin.edit",
 		desc = "Open arena editor for specified arena",
 		usage = "/tntrun edit <arena name>",
+		allowInfiniteArgs = true,
 		senderType = PLAYER
 	)
 	public void editCommand(CommandArguments arguments) {
@@ -334,7 +351,7 @@ public class AdminCommands extends AbstractCommand {
 			if (arg.equalsIgnoreCase("top")) {
 				StringUtil.copyPartialMatches(
 								args[1],
-								List.of("wins", "loses", "highest_score", "games_played"),
+								List.of("wins", "loses", "coins", "games_played", "longest_survive"),
 								completions);
 				return completions;
 			}
