@@ -32,8 +32,8 @@ TNT Run is an old Minecraft minigame that supports almost every version. Jump on
 <dependency>
     <groupId>com.github.Despical</groupId>
     <artifactId>TNTRun</artifactId>
-    <version>2.4.7</version>
-    <scope>compile</scope>
+    <version>2.4.8</version>
+    <scope>provided</scope>
 </dependency>
 ```
 
@@ -49,7 +49,7 @@ repositories {
 ```
 ```
 dependencies {
-    compileOnly group: "com.github.Despical", name: "TNTRun", version: "2.4.7";
+    compileOnly group: "com.github.Despical", name: "TNTRun", version: "2.4.8";
 }
 ```
 </details>
@@ -80,4 +80,5 @@ git clone https://www.github.com/Despical/TNTRun.git && cd TNTRun
 mvn clean package -Dmaven.javadoc.skip=true
 ```
 
-> **Note** Don't forget to install Maven before building.
+> [!NOTE]  
+> Don't forget to install Maven before building.
