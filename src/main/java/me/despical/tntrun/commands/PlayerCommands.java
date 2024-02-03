@@ -47,6 +47,7 @@ public class PlayerCommands extends AbstractCommand {
 
 	@Command(
 		name = "tntrun.join",
+		allowInfiniteArgs = true,
 		senderType = PLAYER
 	)
 	public void joinCommand(CommandArguments arguments) {
@@ -69,6 +70,7 @@ public class PlayerCommands extends AbstractCommand {
 
 	@Command(
 		name = "tntrun.randomjoin",
+		allowInfiniteArgs = true,
 		senderType = PLAYER
 	)
 	public void randomJoinCommand(CommandArguments arguments) {
@@ -103,6 +105,7 @@ public class PlayerCommands extends AbstractCommand {
 
 	@Command(
 		name = "tntrun.stats",
+		allowInfiniteArgs = true,
 		senderType = Command.SenderType.PLAYER
 	)
 	public void statsCommand(CommandArguments arguments) {
@@ -131,7 +134,8 @@ public class PlayerCommands extends AbstractCommand {
 	}
 
 	@Command(
-		name = "tntrun.top"
+		name = "tntrun.top",
+		allowInfiniteArgs = true
 	)
 	public void leaderboardCommand(CommandArguments arguments) {
 		if (arguments.isArgumentsEmpty()) {
@@ -184,7 +188,7 @@ public class PlayerCommands extends AbstractCommand {
 
 		message = message.replace("%position%", Integer.toString(position));
 		message = message.replace("%name%", playerName);
-		message = message.replace("%value%", Integer.toString(value));
+		message = message.replace("%value%", statisticName.startsWith("Longest") ? StringFormatUtils.formatIntoMMSS(value) : Integer.toString(value));
 		message = message.replace("%statistic%", statisticName);
 		return message;
 	}
