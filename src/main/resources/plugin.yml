@@ -17,5 +17,5 @@ permissions:
       tntrun.admin.help: true
       tntrun.admin.forcestart: true
       tntrun.admin.stop: true
-      tntrun.sign.create: true
-      tntrun.sign.break: true
+      tntrun.admin.sign.create: true
+      tntrun.admin.sign.break: true
