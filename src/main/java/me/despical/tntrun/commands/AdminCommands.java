@@ -125,7 +125,7 @@ public class AdminCommands extends AbstractCommand {
 		config.set(path + "maximumPlayers", 12);
 		config.set(path + "endLocation", LocationSerializer.SERIALIZED_LOCATION);
 		config.set(path + "lobbyLocation", LocationSerializer.SERIALIZED_LOCATION);
-		config.set(path + "signs", new ArrayList<>());
+		config.set(path + "signs", Collections.EMPTY_LIST);
 
 		ConfigUtils.saveConfig(plugin, config, "arena");
 
@@ -171,9 +171,9 @@ public class AdminCommands extends AbstractCommand {
 
 		final var config = ConfigUtils.getConfig(plugin, "arena");
 		config.set("instance." + arenaId, null);
-
 		ConfigUtils.saveConfig(plugin, config, "arena");
 
+		plugin.getSignManager().removeArenaSigns(arena);
 		plugin.getArenaRegistry().unregisterArena(arena);
 
 		user.sendMessage("admin-commands.deleted-arena-successfully", arena);

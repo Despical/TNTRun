@@ -63,13 +63,13 @@ public class SignManager extends EventListener {
 	public void onSignChange(SignChangeEvent event) {
 		final var user = plugin.getUserManager().getUser(event.getPlayer());
 
-		if (!user.hasPermission("tr.admin.sign.create") || !event.getLine(0).equalsIgnoreCase("[tntrun]")) {
+		if (!user.hasPermission("tntrun.admin.sign.create") || !"[tntrun]".equalsIgnoreCase(event.getLine(0))) {
 			return;
 		}
 
 		final var line = event.getLine(1);
 
-		if (line.isEmpty()) {
+		if ("".equalsIgnoreCase(line)) {
 			user.sendMessage("admin-commands.provide-an-arena-name");
 			return;
 		}
@@ -109,7 +109,7 @@ public class SignManager extends EventListener {
 
 		final var user = plugin.getUserManager().getUser(event.getPlayer());
 
-		if (!user.hasPermission("tr.admin.sign.break")) {
+		if (!user.hasPermission("tntrun.admin.sign.break")) {
 			event.setCancelled(true);
 
 			user.sendRawMessage("&cYou don't have enough permission to break this sign!");
@@ -163,14 +163,14 @@ public class SignManager extends EventListener {
 
 		final var config = ConfigUtils.getConfig(plugin, "arena");
 
-		for (final var path : config.getConfigurationSection("instance").getKeys(false)) {
-			for (final var location : config.getStringList("instance." + path + ".signs")) {
+		for (final var arenaId : config.getConfigurationSection("instance").getKeys(false)) {
+			for (final var location : config.getStringList("instance." + arenaId + ".signs")) {
 				final var loc = LocationSerializer.fromString(location);
 
 				if (loc.getBlock().getState() instanceof Sign sign) {
-					arenaSigns.add(new ArenaSign(sign, plugin.getArenaRegistry().getArena(path)));
+					arenaSigns.add(new ArenaSign(sign, plugin.getArenaRegistry().getArena(arenaId)));
 				} else {
-					plugin.getLogger().log(Level.WARNING, "Block at location {0} for arena {1} is not a sign!", new Object[] { loc, path });
+					plugin.getLogger().log(Level.WARNING, "Block at location {0} for arena {1} is not a sign!", new Object[] { location, arenaId });
 				}
 			}
 		}
@@ -210,6 +210,10 @@ public class SignManager extends EventListener {
 
 	public void addArenaSign(Block block, Arena arena) {
 		arenaSigns.add(new ArenaSign((Sign) block.getState(), arena));
+	}
+
+	public void removeArenaSigns(Arena arena) {
+		arenaSigns.removeIf(sign -> sign.arena().equals(arena));
 	}
 
 	private String formatSign(String msg, Arena arena) {
