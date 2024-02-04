@@ -2,12 +2,13 @@
 
 <div align="center">
 
-[![Build](https://github.com/Despical/TNTRun/actions/workflows/build.yml/badge.svg)](https://github.com/Despical/TNTRun/actions/workflows/build.yml)
+[![](https://github.com/Despical/TNTRun/actions/workflows/build.yml/badge.svg)](https://github.com/Despical/TNTRun/actions/workflows/build.yml)
 [![](https://jitpack.io/v/Despical/TNTRun.svg)](https://jitpack.io/#Despical/TNTRun)
 [![](https://img.shields.io/badge/JavaDocs-latest-lime.svg)](https://javadoc.jitpack.io/com/github/Despical/TNTRun/latest/javadoc/index.html)
-[![Support](https://img.shields.io/badge/Patreon-Support-lime.svg?logo=Patreon)](https://www.patreon.com/despical)
+[![](https://img.shields.io/badge/Patreon-Support-lime.svg?logo=Patreon)](https://www.patreon.com/despical)
+[![](https://img.shields.io/badge/BuyMeACoffee-Support-lime.svg?logo=BuyMeACoffee)](https://www.buymeacoffee.com/despical)
 
-TNT Run is an old Minecraft minigame that supports almost every version. Jump on the blocks but don't fall into void, show your parkour talent!
+Players (up to 12 or 24, mostly, depending on the map) are placed on sand/gravel floors. Blocks you run or stand on will disappear or "fall" after a brief delay. Once you fall, you will end up on the next floor below. Each map multiple floors to run on, the lowest floor being above the void which eliminates you. The goal is to be the last player alive which gets progressively more difficult as the space available diminishes
 
 </div>
 
@@ -16,7 +17,7 @@ TNT Run is an old Minecraft minigame that supports almost every version. Jump on
 - [JavaDocs](https://javadoc.jitpack.io/com/github/Despical/TNTRun/latest/javadoc/index.html)
 ## Donations
 - [Patreon](https://www.patreon.com/despical)
-- [Buy Me A Coffe](https://www.buymeacoffee.com/despical)
+- [Buy Me A Coffee](https://www.buymeacoffee.com/despical)
 
 ## TNT Run API
 <details>
@@ -80,5 +81,5 @@ git clone https://www.github.com/Despical/TNTRun.git && cd TNTRun
 mvn clean package -Dmaven.javadoc.skip=true
 ```
 
-> [!NOTE]  
+> [!IMPORTANT]  
 > Don't forget to install Maven before building.
