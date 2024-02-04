@@ -32,7 +32,7 @@ TNT Run is an old Minecraft minigame that supports almost every version. Jump on
 <dependency>
     <groupId>com.github.Despical</groupId>
     <artifactId>TNTRun</artifactId>
-    <version>2.4.8</version>
+    <version>2.4.9</version>
     <scope>provided</scope>
 </dependency>
 ```
@@ -49,7 +49,7 @@ repositories {
 ```
 ```
 dependencies {
-    compileOnly group: "com.github.Despical", name: "TNTRun", version: "2.4.8";
+    compileOnly group: "com.github.Despical", name: "TNTRun", version: "2.4.9";
 }
 ```
 </details>
