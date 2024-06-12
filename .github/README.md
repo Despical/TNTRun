@@ -32,7 +32,7 @@ Players (up to 12 or 24, mostly, depending on the map) are placed on sand/gravel
 <dependency>
     <groupId>com.github.Despical</groupId>
     <artifactId>TNTRun</artifactId>
-    <version>2.4.9</version>
+    <version>LATEST_VERSION</version>
     <scope>provided</scope>
 </dependency>
 ```
@@ -49,7 +49,7 @@ repositories {
 ```
 ```
 dependencies {
-    compileOnly group: "com.github.Despical", name: "TNTRun", version: "2.4.9";
+    compileOnly group: "com.github.Despical", name: "TNTRun", version: "LATEST_VERSION";
 }
 ```
 </details>
