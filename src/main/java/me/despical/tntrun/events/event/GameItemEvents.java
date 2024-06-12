@@ -32,6 +32,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerToggleFlightEvent;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -57,11 +58,9 @@ public class GameItemEvents extends EventListener {
 		if (!event.isFlying() && player.getGameMode() != GameMode.ADVENTURE) return;
 
 		final var user = plugin.getUserManager().getUser(player);
+		final var arena = user.getArena();
 
-		if (!user.isInArena()) return;
-		if (user.isSpectator()) return;
-		if (user.getArena().isDeathPlayer(user)) return;
-
+		if (arena == null || user.isSpectator() || arena.isDeathPlayer(user)) return;
 		if (user.getCooldown("double_jump") > 0) return;
 
 		if (user.getStat(StatsStorage.StatisticType.LOCAL_DOUBLE_JUMPS) > 0) {
@@ -92,7 +91,7 @@ public class GameItemEvents extends EventListener {
 
 		if (doubleJumpItem == null) return;
 
-		if (event.getItem().getType() == doubleJumpItem.getItemStack().getType()) {
+		if (doubleJumpItem.equals(event.getItem())) {
 			event.setCancelled(true);
 
 			if (user.getStat(StatsStorage.StatisticType.LOCAL_DOUBLE_JUMPS) > 0) {
@@ -107,7 +106,7 @@ public class GameItemEvents extends EventListener {
 	}
 
 	@EventHandler
-	public void onSpectatorTeleporterItemClicked(final PlayerInteractEvent event) {
+	public void onTeleporterItemClicked(final PlayerInteractEvent event) {
 		if (event.getAction() == Action.PHYSICAL) return;
 
 		final var user = plugin.getUserManager().getUser(event.getPlayer());
@@ -119,13 +118,13 @@ public class GameItemEvents extends EventListener {
 		final var teleporterItem = plugin.getGameItemManager().getGameItem( "teleporter-item");
 
 		if (teleporterItem == null) return;
-		if (!event.getItem().getItemMeta().equals(teleporterItem.getItemStack().getItemMeta())) return;
+		if (!teleporterItem.equals(event.getItem())) return;
 
 		new SpectatorTeleporterGUI(plugin, user, arena).showGui();
 	}
 
 	@EventHandler
-	public void onSpectatorSettingsItemClicked(final PlayerInteractEvent event) {
+	public void onSettingsItemClicked(final PlayerInteractEvent event) {
 		if (event.getAction() == Action.PHYSICAL) return;
 
 		final var user = plugin.getUserManager().getUser(event.getPlayer());
@@ -137,7 +136,7 @@ public class GameItemEvents extends EventListener {
 		final var settingsItem = plugin.getGameItemManager().getGameItem("settings-item");
 
 		if (settingsItem == null) return;
-		if (!event.getItem().getItemMeta().equals(settingsItem.getItemStack().getItemMeta())) return;
+		if (!settingsItem.equals(event.getItem())) return;
 
 		new SpectatorSettingsGUI(plugin, user, arena).showGui();
 	}
@@ -152,10 +151,10 @@ public class GameItemEvents extends EventListener {
 		if (arena == null) return;
 		if (event.getItem() == null) return;
 
-		final var leaveItem = plugin.getGameItemManager().getGameItem("play-again");
+		final var playAgainItem = plugin.getGameItemManager().getGameItem("play-again");
 
-		if (leaveItem == null) return;
-		if (!event.getItem().getItemMeta().equals(leaveItem.getItemStack().getItemMeta())) return;
+		if (playAgainItem == null) return;
+		if (!playAgainItem.equals(event.getItem())) return;
 
 		final var arenas = plugin.getArenaRegistry().getArenas().stream().filter(a -> a.isArenaState(ArenaState.WAITING_FOR_PLAYERS, ArenaState.STARTING) && a.getPlayers().size() < a.getMaximumPlayers()).toList();
 
@@ -181,10 +180,10 @@ public class GameItemEvents extends EventListener {
 		if (arena == null) return;
 		if (event.getItem() == null) return;
 
-		final var leaveItem = plugin.getGameItemManager().getGameItem("force-start-item");
+		final var forceStartItem = plugin.getGameItemManager().getGameItem("force-start-item");
 
-		if (leaveItem == null) return;
-		if (!event.getItem().getItemMeta().equals(leaveItem.getItemStack().getItemMeta())) return;
+		if (forceStartItem == null) return;
+		if (!forceStartItem.equals(event.getItem())) return;
 
 		if (arena.getPlayers().size() < 2) {
 			arena.broadcastMessage("messages.arena.waiting-for-players");
@@ -217,7 +216,7 @@ public class GameItemEvents extends EventListener {
 		final var leaveItem = plugin.getGameItemManager().getGameItem("leave-item");
 
 		if (leaveItem == null) return;
-		if (!event.getItem().getItemMeta().equals(leaveItem.getItemStack().getItemMeta())) return;
+		if (!leaveItem.equals(event.getItem())) return;
 
 		if (plugin.getOption(ConfigPreferences.Option.INSTANT_LEAVE)) {
 			this.leaveArena(user, arena);
@@ -233,13 +232,25 @@ public class GameItemEvents extends EventListener {
 
 			this.leaveConfirmations.add(user);
 
-			plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
-				if (!this.leaveConfirmations.contains(user)) return;
+			new BukkitRunnable() {
 
-				this.leaveArena(user, arena);
+				int ticks = 0;
 
-				this.leaveConfirmations.remove(user);
-			}, 60);
+				@Override
+				public void run() {
+					if (!leaveConfirmations.contains(user)) {
+						cancel();
+						return;
+					}
+
+					if ((ticks += 2) == 60) {
+						cancel();
+						leaveArena(user, arena);
+
+						leaveConfirmations.remove(user);
+					}
+				}
+			}.runTaskTimer(plugin, 0, 2);
 		}
 	}
 

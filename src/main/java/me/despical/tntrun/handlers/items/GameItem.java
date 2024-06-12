@@ -36,7 +36,13 @@ public class GameItem {
 	private final int slot;
 
 	public GameItem(final String displayName, final Material material, int slot, final List<String> lore) {
-		this.itemStack = new ItemBuilder(material).name(displayName).lore(lore).unbreakable(true).flag(ItemFlag.HIDE_UNBREAKABLE).flag(ItemFlag.HIDE_ATTRIBUTES).build();
+		this.itemStack = new ItemBuilder(material)
+			.name(displayName)
+			.lore(lore)
+			.unbreakable(true)
+			.flag(ItemFlag.HIDE_UNBREAKABLE)
+			.flag(ItemFlag.HIDE_ATTRIBUTES)
+			.build();
 		this.slot = slot;
 	}
 
@@ -46,5 +52,12 @@ public class GameItem {
 
 	public int getSlot() {
 		return slot;
+	}
+
+	public boolean equals(ItemStack item) {
+		final var meta = itemStack.getItemMeta();
+		return item.getType() == itemStack.getType() &&
+			meta.getDisplayName().equals(itemStack.getItemMeta().getDisplayName()) &&
+			meta.getLore() != null && meta.getLore().equals(itemStack.getLore());
 	}
 }
