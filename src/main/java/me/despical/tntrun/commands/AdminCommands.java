@@ -20,11 +20,13 @@ package me.despical.tntrun.commands;
 
 import me.despical.commandframework.Command;
 import me.despical.commandframework.CommandArguments;
+import me.despical.commandframework.CommandFramework;
 import me.despical.commandframework.Completer;
 import me.despical.commons.configuration.ConfigUtils;
 import me.despical.commons.miscellaneous.MiscUtils;
 import me.despical.commons.serializer.LocationSerializer;
 import me.despical.commons.string.StringMatcher;
+import me.despical.commons.util.Strings;
 import me.despical.tntrun.Main;
 import me.despical.tntrun.arena.Arena;
 import me.despical.tntrun.arena.ArenaState;
@@ -37,10 +39,8 @@ import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.entity.Player;
 import org.bukkit.util.StringUtil;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
+import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
 import static me.despical.commandframework.Command.SenderType.PLAYER;
@@ -54,25 +54,22 @@ public class AdminCommands extends AbstractCommand {
 
 	public AdminCommands(Main plugin) {
 		super(plugin);
-		this.plugin.getCommandFramework().setMatchFunction(arguments -> {
-			if (arguments.isArgumentsEmpty()) return false;
 
-			String label = arguments.getLabel(), arg = arguments.getArgument(0);
+		var commandFramework = plugin.getCommandFramework();
+		commandFramework.setColorFormatter(Strings::format);
+		commandFramework.addCustomParameter("User", args -> plugin.getUserManager().getUser(args.getSender()));
 
-			var matches = StringMatcher.match(arg, plugin.getCommandFramework().getCommands().stream().map(cmd -> cmd.name().replace(label + ".", "")).collect(Collectors.toList()));
+		BiFunction<Command, CommandArguments, Boolean> sendUsage = (command, arguments) -> {
+			arguments.sendMessage(chatManager.message("admin-commands.correct-usage").replace("%usage%", command.usage()));
+			return true;
+		};
 
-			if (!matches.isEmpty()) {
-				arguments.sendMessage(chatManager.message("admin-commands.did-you-mean").replace("%command%", label + " " + matches.get(0).getMatch()));
-				return true;
-			}
-
-			return false;
-		});
+		CommandFramework.SHORT_ARG_SIZE = CommandFramework.LONG_ARG_SIZE = sendUsage;
 	}
 
 	@Command(
 		name = "tntrun",
-		usage = "tntrun help",
+		usage = "/tntrun help",
 		desc = "Main command of TNT Run."
 	)
 	public void mainCommand(CommandArguments arguments) {
@@ -82,6 +79,32 @@ public class AdminCommands extends AbstractCommand {
 			if (arguments.hasPermission("tntrun.admin")) {
 				arguments.sendMessage(chatManager.rawMessage("&3Commands: &b/" + arguments.getLabel() + " help"));
 			}
+
+			return;
+		}
+
+		var commandFramework = plugin.getCommandFramework();
+		String label = arguments.getLabel(), arg = arguments.getArgument(0);
+		List<String> commands = commandFramework.getCommands().stream().map(cmd -> cmd.name().replace(label + ".", "")).collect(Collectors.toList());
+		List<StringMatcher.Match> matches = StringMatcher.match(arg, commands);
+
+		if (!matches.isEmpty()) {
+			Optional<Command> optionalMatch = commandFramework.getCommands().stream().filter(cmd -> cmd.name().equals(label + "." + matches.get(0).getMatch())).findFirst();
+
+			if (optionalMatch.isPresent()) {
+				String matchedName = getMatchingParts(optionalMatch.get().name(), label + "." + String.join(".", arguments.getArguments()));
+				Optional<Command> matchedCommand = commandFramework.getSubCommands().stream().filter(cmd -> cmd.name().equals(matchedName)).findFirst();
+
+				if (matchedCommand.isPresent()) {
+					arguments.sendMessage(chatManager.message("admin-commands.correct-usage").replace("%usage%", matchedCommand.get().usage()));
+					return;
+				}
+
+				arguments.sendMessage(chatManager.message("admin-commands.did-you-mean").replace("%command%", optionalMatch.get().usage()));
+				return;
+			}
+
+			arguments.sendMessage(chatManager.message("admin-commands.did-you-mean").replace("%command%", label));
 		}
 	}
 
@@ -90,7 +113,6 @@ public class AdminCommands extends AbstractCommand {
 		permission = "tntrun.admin.create",
 		desc = "Create an arena with default configuration.",
 		usage = "/tntrun create <arena name>",
-		allowInfiniteArgs = true,
 		senderType = PLAYER
 	)
 	public void createCommand(CommandArguments arguments) {
@@ -143,7 +165,6 @@ public class AdminCommands extends AbstractCommand {
 		permission = "tntrun.admin.delete",
 		desc = "Delete specified arena and its data",
 		usage = "/tntrun delete <arena name>",
-		allowInfiniteArgs = true,
 		senderType = PLAYER
 	)
 	public void deleteCommand(CommandArguments arguments) {
@@ -260,7 +281,6 @@ public class AdminCommands extends AbstractCommand {
 		permission = "tntrun.admin.edit",
 		desc = "Open arena editor for specified arena",
 		usage = "/tntrun edit <arena name>",
-		allowInfiniteArgs = true,
 		senderType = PLAYER
 	)
 	public void editCommand(CommandArguments arguments) {
@@ -289,29 +309,27 @@ public class AdminCommands extends AbstractCommand {
 	public void helpCommand(CommandArguments arguments) {
 		final var isPlayer = arguments.isSenderPlayer();
 		final var sender = arguments.getSender();
-		final var message = chatManager.rawMessage("&3&l---- TNT Run Admin Commands ----");
 
 		arguments.sendMessage("");
-		MiscUtils.sendCenteredMessage(sender, message);
+		MiscUtils.sendCenteredMessage(sender, "&3&l---- TNT Run Admin Commands ----");
 		arguments.sendMessage("");
 
-		for (final var command : plugin.getCommandFramework().getCommands().stream().sorted(Collections
-			.reverseOrder(Comparator.comparingInt(cmd -> cmd.usage().length()))).toList()) {
+		for (final var command : plugin.getCommandFramework().getCommands()) {
 			String usage = command.usage(), desc = command.desc();
 
-			if (usage.isEmpty() || usage.contains("help")) continue;
+			if (desc.isEmpty() || usage.isEmpty() || usage.contains("help")) continue;
 
 			if (isPlayer) {
 				((Player) sender).spigot().sendMessage(new ComponentBuilder()
 					.color(ChatColor.DARK_GRAY)
 					.append(" • ")
 					.append(usage)
-					.color(ChatColor.AQUA)
 					.event(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, usage))
 					.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.fromLegacyText(desc)))
+					.color(ChatColor.AQUA)
 					.create());
 			} else {
-				sender.sendMessage(chatManager.rawMessage(" &8• &b" + usage + " &3- &b" + desc));
+				arguments.sendMessage(" &8• &b" + usage + " &3- &b" + desc);
 			}
 		}
 
@@ -373,5 +391,19 @@ public class AdminCommands extends AbstractCommand {
 		}
 
 		return completions;
+	}
+
+	public String getMatchingParts(String matched, String current) {
+		String[] matchedArray = matched.split("\\."), currentArray = current.split("\\.");
+		int max = Math.min(matchedArray.length, currentArray.length);
+		List<String> matchingParts = new ArrayList<>();
+
+		for (int i = 0; i < max; i++) {
+			if (matchedArray[i].equals(currentArray[i])) {
+				matchingParts.add(matchedArray[i]);
+			}
+		}
+
+		return String.join(".", matchingParts);
 	}
 }

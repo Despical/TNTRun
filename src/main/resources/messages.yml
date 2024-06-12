@@ -1,5 +1,6 @@
 admin-commands:
-  did-you-mean: "&3Did you mean &b/%command%?"
+  did-you-mean: "&3Did you mean &b%command%?"
+  correct-usage: "&cCorrect usage: %usage%"
   cannot-do-that-ingame: "&cYou can not do that while playing!"
   provide-an-arena-name: "&cPlease provide an arena name!"
   there-is-already-an-arena: "&cThere is already an arena with that name!"

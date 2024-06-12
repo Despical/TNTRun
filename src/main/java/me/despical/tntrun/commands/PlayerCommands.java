@@ -47,7 +47,7 @@ public class PlayerCommands extends AbstractCommand {
 
 	@Command(
 		name = "tntrun.join",
-		allowInfiniteArgs = true,
+		usage = "/tntrun join <arena>",
 		senderType = PLAYER
 	)
 	public void joinCommand(CommandArguments arguments) {
@@ -70,7 +70,7 @@ public class PlayerCommands extends AbstractCommand {
 
 	@Command(
 		name = "tntrun.randomjoin",
-		allowInfiniteArgs = true,
+		usage = "/tntrun randomjoin",
 		senderType = PLAYER
 	)
 	public void randomJoinCommand(CommandArguments arguments) {
@@ -105,7 +105,7 @@ public class PlayerCommands extends AbstractCommand {
 
 	@Command(
 		name = "tntrun.stats",
-		allowInfiniteArgs = true,
+		usage = "/tntrun stats [player]",
 		senderType = Command.SenderType.PLAYER
 	)
 	public void statsCommand(CommandArguments arguments) {
@@ -135,7 +135,7 @@ public class PlayerCommands extends AbstractCommand {
 
 	@Command(
 		name = "tntrun.top",
-		allowInfiniteArgs = true
+		usage = "/tntrun top <statistic name>"
 	)
 	public void leaderboardCommand(CommandArguments arguments) {
 		if (arguments.isArgumentsEmpty()) {

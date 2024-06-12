@@ -20,7 +20,7 @@ package me.despical.tntrun;
 
 import me.despical.commons.serializer.InventorySerializer;
 import me.despical.commons.string.StringUtils;
-import me.despical.commons.util.function.DoubleSupplier;
+import me.despical.commons.util.function.BiSupplier;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -78,7 +78,7 @@ public class ConfigPreferences {
 			this.path = path;
 		}
 
-		Option(DoubleSupplier<FileConfiguration, Boolean> supplier) {
+		Option(BiSupplier<FileConfiguration, Boolean> supplier) {
 			this.path = "";
 			this.def = supplier.accept(JavaPlugin.getPlugin(Main.class).getConfig());
 		}
