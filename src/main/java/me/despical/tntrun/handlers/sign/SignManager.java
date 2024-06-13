@@ -161,18 +161,33 @@ public class SignManager extends EventListener {
 	public void loadSigns() {
 		arenaSigns.clear();
 
-		final var config = ConfigUtils.getConfig(plugin, "arena");
+		var config = ConfigUtils.getConfig(plugin, "arena");
+		boolean updateConfig = false, reloadConfig = false;
 
-		for (final var arenaId : config.getConfigurationSection("instance").getKeys(false)) {
-			for (final var location : config.getStringList("instance." + arenaId + ".signs")) {
+		for (final var path : config.getConfigurationSection("instance").getKeys(false)) {
+			final var locations = config.getStringList("instance." + path + ".signs");
+			final var iterator = locations.iterator();
+
+			while (iterator.hasNext()) {
+				final var location = iterator.next();
 				final var loc = LocationSerializer.fromString(location);
 
 				if (loc.getBlock().getState() instanceof Sign sign) {
-					arenaSigns.add(new ArenaSign(sign, plugin.getArenaRegistry().getArena(arenaId)));
+					arenaSigns.add(new ArenaSign(sign, plugin.getArenaRegistry().getArena(path)));
 				} else {
-					plugin.getLogger().log(Level.WARNING, "Block at location {0} for arena {1} is not a sign!", new Object[] { location, arenaId });
+					iterator.remove();
+					updateConfig = reloadConfig = true;
 				}
 			}
+
+			if (updateConfig) {
+				config.set("instance." + path + ".signs", locations);
+				updateConfig = false;
+			}
+		}
+
+		if (reloadConfig) {
+			ConfigUtils.saveConfig(plugin, config, "arena");
 		}
 
 		updateSigns();
