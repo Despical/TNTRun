@@ -37,7 +37,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static me.despical.tntrun.api.StatsStorage.StatisticType.*;
+import static me.despical.tntrun.api.StatsStorage.StatisticType.LOCAL_COINS;
+import static me.despical.tntrun.api.StatsStorage.StatisticType.LOCAL_DOUBLE_JUMPS;
 
 /**
  * @author Despical

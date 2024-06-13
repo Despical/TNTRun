@@ -22,8 +22,8 @@ import me.despical.tntrun.ConfigPreferences;
 import me.despical.tntrun.Main;
 import me.despical.tntrun.api.StatsStorage;
 import me.despical.tntrun.user.data.FileStatistics;
-import me.despical.tntrun.user.data.MysqlManager;
 import me.despical.tntrun.user.data.IUserDatabase;
+import me.despical.tntrun.user.data.MysqlManager;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 

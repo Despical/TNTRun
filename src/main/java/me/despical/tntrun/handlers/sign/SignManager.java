@@ -21,9 +21,9 @@ package me.despical.tntrun.handlers.sign;
 import me.despical.commons.configuration.ConfigUtils;
 import me.despical.commons.serializer.LocationSerializer;
 import me.despical.tntrun.Main;
-import me.despical.tntrun.events.EventListener;
 import me.despical.tntrun.arena.Arena;
 import me.despical.tntrun.arena.ArenaState;
+import me.despical.tntrun.events.EventListener;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.event.EventHandler;
@@ -33,7 +33,6 @@ import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 import java.util.*;
-import java.util.logging.Level;
 
 /**
  * @author Despical
