@@ -307,6 +307,7 @@ public class AdminCommands extends AbstractCommand {
 	@SuppressWarnings("deprecation")
 	@Command(
 		name = "tntrun.help",
+		usage = "/tntrun help",
 		permission = "tntrun.admin.help"
 	)
 	public void helpCommand(CommandArguments arguments) {
@@ -314,13 +315,13 @@ public class AdminCommands extends AbstractCommand {
 		final var sender = arguments.getSender();
 
 		arguments.sendMessage("");
-		MiscUtils.sendCenteredMessage(sender, "&3&l---- TNT Run Admin Commands ----");
+		MiscUtils.sendCenteredMessage(sender, "&3&l---- TNT Run Commands ----");
 		arguments.sendMessage("");
 
 		for (final var command : plugin.getCommandFramework().getCommands()) {
 			String usage = command.usage(), desc = command.desc();
 
-			if (desc.isEmpty() || usage.isEmpty() || usage.contains("help")) continue;
+			if (desc.isEmpty()) continue;
 
 			if (isPlayer) {
 				((Player) sender).spigot().sendMessage(new ComponentBuilder()
