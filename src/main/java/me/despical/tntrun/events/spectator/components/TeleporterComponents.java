@@ -66,7 +66,7 @@ public class TeleporterComponents {
 				.name(chatManager.message("spectator-gui.teleporter.skull-name").replace("%player%", player.getName()))
 				.lore(chatManager.getStringList("spectator-gui.teleporter.lore")).build();
 			var xy = GeometryUtil.slotToXY(headPlaces.get(i));
-			int x = xy[0][0], y = xy[0][1];
+			int x = xy[0], y = xy[1];
 
 			pane.addItem(GuiItem.of(guiItem, e -> p.teleport(player)), x, y);
 		}
