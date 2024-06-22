@@ -44,13 +44,18 @@ public class Utils {
 			public void run() {
 				final var arena = user.getArena();
 
-				if (arena == null || arena.getArenaState() != ArenaState.IN_GAME || arena.isDeathPlayer(user)) cancel();
-				if (ticks >= seconds * 20) {
+				if (arena == null || arena.getArenaState() != ArenaState.IN_GAME || arena.isDeathPlayer(user)) {
 					cancel();
 				}
 
+
 				var progress = getProgressBar(ticks, seconds * 20);
 				user.sendActionBar(plugin.getChatManager().message("messages.in-game.cooldown-format", user).replace("%progress%", progress).replace("%time%", Double.toString((double) ((seconds * 20) - ticks) / 20)));
+
+				if (ticks >= seconds * 20) {
+					cancel();
+					return;
+				}
 
 				ticks += 2;
 			}
