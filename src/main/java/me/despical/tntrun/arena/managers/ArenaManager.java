@@ -196,11 +196,14 @@ public record ArenaManager(Main plugin) {
 				user.setStat(StatsStorage.StatisticType.LONGEST_SURVIVE, localScore);
 			}
 
+			boolean isWinner = user.equals(winner);
+
 			user.addStat(StatsStorage.StatisticType.COINS, user.getStat(StatsStorage.StatisticType.LOCAL_COINS));
 			user.addStat(StatsStorage.StatisticType.GAMES_PLAYED, 1);
 			user.addGameItems("leave-item", "play-again");
 			user.removePotionEffectsExcept(PotionEffectType.BLINDNESS);
-			user.addStat(user.equals(winner) ? StatsStorage.StatisticType.WINS : StatsStorage.StatisticType.LOSES, 1);
+			user.addStat(isWinner ? StatsStorage.StatisticType.WINS : StatsStorage.StatisticType.LOSES, 1);
+			user.performReward(isWinner ? Reward.RewardType.WIN : Reward.RewardType.LOSE);
 
 			plugin.getUserManager().saveStatistics(user);
 		}
