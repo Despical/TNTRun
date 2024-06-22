@@ -110,7 +110,7 @@ public class User {
 	}
 
 	public UUID getUniqueId() {
-		return getPlayer().getUniqueId();
+		return this.uuid;
 	}
 
 	public boolean isSpectator() {
