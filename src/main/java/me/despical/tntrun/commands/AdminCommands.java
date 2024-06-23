@@ -31,6 +31,7 @@ import me.despical.tntrun.Main;
 import me.despical.tntrun.arena.Arena;
 import me.despical.tntrun.arena.ArenaState;
 import me.despical.tntrun.handlers.setup.ArenaEditorGUI;
+import me.despical.tntrun.user.User;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
@@ -118,9 +119,7 @@ public class AdminCommands extends AbstractCommand {
 		usage = "/tntrun create <arena name>",
 		senderType = PLAYER
 	)
-	public void createCommand(CommandArguments arguments) {
-		final var user = plugin.getUserManager().getUser(arguments.getSender());
-
+	public void createCommand(User user, CommandArguments arguments) {
 		if (plugin.getArenaRegistry().isInArena(user)) {
 			user.sendMessage("admin-commands.cannot-do-that-ingame");
 			return;
@@ -170,9 +169,7 @@ public class AdminCommands extends AbstractCommand {
 		usage = "/tntrun delete <arena name>",
 		senderType = PLAYER
 	)
-	public void deleteCommand(CommandArguments arguments) {
-		final var user = plugin.getUserManager().getUser(arguments.getSender());
-
+	public void deleteCommand(User user, CommandArguments arguments) {
 		if (plugin.getArenaRegistry().isInArena(user)) {
 			user.sendMessage("admin-commands.cannot-do-that-ingame");
 			return;
@@ -210,8 +207,7 @@ public class AdminCommands extends AbstractCommand {
 		usage = "/tntrun list",
 		senderType = PLAYER
 	)
-	public void listCommand(CommandArguments arguments) {
-		final var user = plugin.getUserManager().getUser(arguments.getSender());
+	public void listCommand(User user, CommandArguments arguments) {
 		final var arenas = plugin.getArenaRegistry().getArenas();
 
 		if (arenas.isEmpty()) {
@@ -230,9 +226,7 @@ public class AdminCommands extends AbstractCommand {
 		usage = "/tntrun forcestart",
 		senderType = PLAYER
 	)
-	public void forceStartCommand(CommandArguments arguments) {
-		final var user = plugin.getUserManager().getUser(arguments.getSender());
-
+	public void forceStartCommand(User user) {
 		if (!user.isInArena()) {
 			user.sendMessage("admin-commands.must-be-in-arena");
 			return;
@@ -265,8 +259,7 @@ public class AdminCommands extends AbstractCommand {
 		usage = "/tntrun stop",
 		senderType = PLAYER
 	)
-	public void stopCommand(CommandArguments arguments) {
-		final var user = plugin.getUserManager().getUser(arguments.getSender());
+	public void stopCommand(User user) {
 		final var arena = user.getArena();
 
 		if (arena == null) {
@@ -286,9 +279,7 @@ public class AdminCommands extends AbstractCommand {
 		usage = "/tntrun edit <arena name>",
 		senderType = PLAYER
 	)
-	public void editCommand(CommandArguments arguments) {
-		final var user = plugin.getUserManager().getUser(arguments.getSender());
-
+	public void editCommand(User user, CommandArguments arguments) {
 		if (arguments.isArgumentsEmpty()) {
 			user.sendMessage("admin-commands.provide-an-arena-name");
 			return;
@@ -302,6 +293,24 @@ public class AdminCommands extends AbstractCommand {
 		}
 
 		new ArenaEditorGUI(plugin, user, arena).showGui();
+	}
+
+	@Command(
+		name = "tntrun.reload",
+		permission = "tntrun.admin.reload",
+		desc = "Reloads all files and configurations.",
+		usage = "/tntrun reload",
+		senderType = PLAYER
+	)
+	public void reloadCommand(User user) {
+		plugin.reloadConfig();
+		chatManager.reload();
+
+		plugin.getSignManager().loadSigns();
+		plugin.getRewardsFactory().reload();
+		plugin.getGameItemManager().reload();
+
+		user.sendMessage("admin-commands.system-reloaded");
 	}
 
 	@SuppressWarnings("deprecation")
@@ -353,8 +362,7 @@ public class AdminCommands extends AbstractCommand {
 	}
 
 	@Completer(
-		name = "tntrun",
-		aliases = {"tr"}
+		name = "tntrun"
 	)
 	public List<String> onTabComplete(CommandArguments arguments) {
 		final List<String> completions = new ArrayList<>(), commands = plugin.getCommandFramework().getCommands().stream().map(cmd -> cmd.name().replace(arguments.getLabel() + '.', "")).collect(Collectors.toList());
@@ -368,7 +376,7 @@ public class AdminCommands extends AbstractCommand {
 		}
 
 		if (args.length == 2) {
-			if (List.of("create", "list", "randomjoin", "leave").contains(arg)) return null;
+			if (List.of("create", "list", "randomjoin", "leave", "reload").contains(arg)) return completions;
 
 			if (arg.equalsIgnoreCase("top")) {
 				StringUtil.copyPartialMatches(

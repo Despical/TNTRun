@@ -63,4 +63,9 @@ public class GameItemManager {
 			this.gameItems.put(id, gameItem);
 		}
 	}
+
+	public void reload() {
+		this.gameItems.clear();
+		this.registerItems();
+	}
 }

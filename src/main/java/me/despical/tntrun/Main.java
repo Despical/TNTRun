@@ -146,20 +146,17 @@ public class Main extends JavaPlugin {
 		if (!getOption(ConfigPreferences.Option.UPDATE_NOTIFIER_ENABLED)) return;
 
 		UpdateChecker.init(this, 83196).requestUpdateCheck().whenComplete((result, exception) -> {
-			if (result.requiresUpdate()) {
-				var logger = getLogger();
+			if (!result.requiresUpdate()) return;
 
-				logger.info("Found a new version available: v" + result.getNewestVersion());
-				logger.info("Download it on SpigotMC:");
-				logger.info("https://spigotmc.org/resources/83196");
-			}
+			var logger = getLogger();
+			logger.info("Found a new version available: v" + result.getNewestVersion());
+			logger.info("Download it on SpigotMC:");
+			logger.info("https://spigotmc.org/resources/83196");
 		});
 	}
 
 	private void setupConfigurationFiles() {
-		this.saveDefaultConfig();
-
-		Stream.of("arena", "rewards", "stats", "items", "mysql", "messages", "bungee").filter(name -> !new File(getDataFolder(),name + ".yml").exists()).forEach(name -> saveResource(name + ".yml", false));
+		Stream.of("config", "arena", "rewards", "stats", "items", "mysql", "messages", "bungee").filter(name -> !new File(getDataFolder(), name + ".yml").exists()).forEach(name -> saveResource(name + ".yml", false));
 	}
 
 	public boolean getOption(ConfigPreferences.Option option) {

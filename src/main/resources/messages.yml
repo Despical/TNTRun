@@ -7,6 +7,7 @@ admin-commands:
   no-arena-found-with-that-name: "&cNo arena found with that name!"
   deleted-arena-successfully: "&cDeleted arena called %s successfully!"
   must-be-in-arena: "&cYou must be in the arena to perform this command!"
+  system-reloaded: "&aSystem files and configurations successfully reloaded!"
   list-command:
     no-arenas-created: "&cThere aren't any arena to show!"
     format: "&aExisting arenas: &7%list%"

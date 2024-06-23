@@ -19,3 +19,4 @@ permissions:
       tntrun.admin.stop: true
       tntrun.admin.sign.create: true
       tntrun.admin.sign.break: true
+      tntrun.admin.reload: true

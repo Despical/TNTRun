@@ -83,4 +83,9 @@ public class RewardsFactory {
 			rewards.add(new Reward(plugin, rewardType, config.getStringList(rewardType.path)));
 		}
 	}
+
+	public void reload() {
+		this.rewards.clear();
+		this.registerRewards();
+	}
 }
