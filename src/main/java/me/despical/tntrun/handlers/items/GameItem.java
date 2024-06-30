@@ -55,9 +55,11 @@ public class GameItem {
 	}
 
 	public boolean equals(ItemStack item) {
-		final var meta = itemStack.getItemMeta();
+		final var meta = item.getItemMeta();
+		final var itemStackMeta = itemStack.getItemMeta();
+
 		return item.getType() == itemStack.getType() &&
-			meta.getDisplayName().equals(itemStack.getItemMeta().getDisplayName()) &&
-			meta.getLore() != null && meta.getLore().equals(itemStack.getLore());
+			meta.getDisplayName().equals(itemStackMeta.getDisplayName()) &&
+			meta.getLore() != null && meta.getLore().equals(itemStackMeta.getLore());
 	}
 }
