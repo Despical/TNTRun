@@ -128,7 +128,7 @@ public class PlayerCommands extends AbstractCommand {
 		message = message.replace("%header%", chatManager.message("player-commands.stats-command.header" + (self ? "" : "-other")));
 		message = message.replace("%player%", user.getName());
 		message = message.replace("%coins%", StatsStorage.StatisticType.COINS.from(user));
-		message = message.replace("%longest_survive%", StatsStorage.StatisticType.LONGEST_SURVIVE.from(user));
+		message = message.replace("%longest_survive%", StringFormatUtils.formatIntoMMSS(user.getStat(StatsStorage.StatisticType.LONGEST_SURVIVE)));
 		message = message.replace("%games_played%", StatsStorage.StatisticType.GAMES_PLAYED.from(user));
 		message = message.replace("%wins%", StatsStorage.StatisticType.WINS.from(user));
 		message = message.replace("%loses%", StatsStorage.StatisticType.LOSES.from(user));

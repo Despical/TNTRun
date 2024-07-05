@@ -136,7 +136,7 @@ public record ArenaManager(Main plugin) {
 
 		final var localScore = user.getStat(StatsStorage.StatisticType.LOCAL_SURVIVE);
 
-		if (localScore > user.getStat(StatsStorage.StatisticType.LONGEST_SURVIVE)) {
+		if (localScore > user.getStat(StatsStorage.StatisticType.LONGEST_SURVIVE) && !plugin.getOption(ConfigPreferences.Option.LONGEST_SURVIVE_ON_WINS)) {
 			user.setStat(StatsStorage.StatisticType.LONGEST_SURVIVE, localScore);
 		}
 
@@ -188,15 +188,18 @@ public record ArenaManager(Main plugin) {
 
 		final var chatManager = plugin.getChatManager();
 		final var winner = arena.getWinner();
+		final var updateOnWins = plugin.getOption(ConfigPreferences.Option.LONGEST_SURVIVE_ON_WINS);
 
 		for (final var user : arena.getPlayers()) {
 			final var localScore = user.getStat(StatsStorage.StatisticType.LOCAL_SURVIVE);
 
-			if (localScore > user.getStat(StatsStorage.StatisticType.LONGEST_SURVIVE)) {
-				user.setStat(StatsStorage.StatisticType.LONGEST_SURVIVE, localScore);
-			}
-
 			boolean isWinner = user.equals(winner);
+
+			if (localScore > user.getStat(StatsStorage.StatisticType.LONGEST_SURVIVE)) {
+				if (!updateOnWins || isWinner) {
+					user.setStat(StatsStorage.StatisticType.LONGEST_SURVIVE, localScore);
+				}
+			}
 
 			user.addStat(StatsStorage.StatisticType.COINS, user.getStat(StatsStorage.StatisticType.LOCAL_COINS));
 			user.addStat(StatsStorage.StatisticType.GAMES_PLAYED, 1);

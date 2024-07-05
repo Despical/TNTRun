@@ -96,5 +96,8 @@ Disable-Separate-Chat: false
 # Should players instantly leave the arena using leave item?
 Instant-Leave: false
 
+# Should we only update players' longest survive statistic when they win?
+Longest-Survive-On-Wins: false
+
 # Should we check for any available updates?
 Update-Notifier-Enabled: true
