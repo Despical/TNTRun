@@ -36,6 +36,7 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -98,9 +99,9 @@ public class Arena extends BukkitRunnable {
 		return user != null && this.players.contains(user);
 	}
 
-	public boolean isArenaState(final ArenaState... states) {
+	public boolean isArenaState(ArenaState arenaState, ArenaState... states) {
+		if (arenaState == this.arenaState) return true;
 		for (var state : states) if (this.arenaState == state) return true;
-
 		return false;
 	}
 
@@ -210,7 +211,11 @@ public class Arena extends BukkitRunnable {
 	}
 
 	public List<User> getPlayers() {
-		return players;
+		return this.players.stream().filter(user -> {
+			Player player = user.getPlayer();
+
+			return player != null && player.isOnline();
+		}).collect(Collectors.toList());
 	}
 
 	public void addUser(final User user) {
@@ -284,7 +289,7 @@ public class Arena extends BukkitRunnable {
 		if (arenaState != ArenaState.INACTIVE) this.cancel();
 
 		this.cleanUpArena();
-		this.players.forEach(user -> plugin.getArenaManager().leaveAttempt(user, this));
+		this.getPlayers().forEach(user -> plugin.getArenaManager().leaveAttempt(user, this));
 	}
 
 	private void startBlockRemoving() {
@@ -311,7 +316,6 @@ public class Arena extends BukkitRunnable {
 				}
 			}
 		}.runTaskTimerAsynchronously(plugin, 0, 1);
-
 	}
 
 	private List<Block> getRemovableBlocks(User user) {
@@ -362,11 +366,11 @@ public class Arena extends BukkitRunnable {
 	}
 
 	public Set<User> getPlayersLeft() {
-		return this.players.stream().filter(user -> !user.isSpectator()).collect(Collectors.toSet());
+		return this.getPlayers().stream().filter(user -> !user.isSpectator()).collect(Collectors.toSet());
 	}
 
 	public void playSound(XSound sound) {
-		this.players.forEach(user -> sound.play(user.getPlayer()));
+		this.getPlayers().forEach(user -> sound.play(user.getPlayer()));
 	}
 
 	public void broadcastFormattedMessage(final String path, final User user, boolean onlySpectators) {
@@ -376,22 +380,21 @@ public class Arena extends BukkitRunnable {
 		}
 
 		if (user.isSpectator()) {
-			this.players.stream().filter(u -> isSpectator(u) && !user.equals(u)).forEach(u -> u.sendRawMessage(chatManager.message(path, this, user)));
+			this.getPlayers().stream().filter(u -> isSpectator(u) && !user.equals(u)).forEach(u -> u.sendRawMessage(chatManager.message(path, this, user)));
 		}
 	}
 
 	public void broadcastFormattedMessage(final String path, final User user) {
-		this.players.forEach(u -> u.sendRawMessage(chatManager.message(path, this, user)));
+		this.getPlayers().forEach(u -> u.sendRawMessage(chatManager.message(path, this, user)));
 	}
 
 	public void broadcastMessage(final String path) {
-		this.players.forEach(user -> user.sendRawMessage(chatManager.message(path, this, user)));
+		this.getPlayers().forEach(user -> user.sendRawMessage(chatManager.message(path, this, user)));
 	}
 
 	@Nullable
 	public User getWinner() {
 		for (final var user : this.getPlayersLeft()) return user;
-
 		return null;
 	}
 

@@ -64,20 +64,21 @@ public class GameBarManager {
 	}
 
 	public void removeAll() {
-		if (this.gameBar != null) this.gameBar.removeAll();
+		if (this.gameBar != null)
+			this.gameBar.removeAll();
 	}
 
 	public void handleGameBar() {
-		if (this.gameBar != null) {
-			switch (arena.getArenaState()) {
-				case WAITING_FOR_PLAYERS -> setTitle("game-bar.waiting-for-players");
-				case STARTING -> setTitle("game-bar.starting");
-				case IN_GAME -> setTitle("game-bar.in-game");
-				case ENDING -> setTitle("game-bar.ending");
-			}
+		if (this.gameBar == null) return;
 
-			gameBar.setVisible(!this.gameBar.getTitle().isEmpty());
+		switch (arena.getArenaState()) {
+			case WAITING_FOR_PLAYERS -> setTitle("game-bar.waiting-for-players");
+			case STARTING -> setTitle("game-bar.starting");
+			case IN_GAME -> setTitle("game-bar.in-game");
+			case ENDING -> setTitle("game-bar.ending");
 		}
+
+		gameBar.setVisible(!this.gameBar.getTitle().isEmpty());
 	}
 
 	private void setTitle(final String path) {

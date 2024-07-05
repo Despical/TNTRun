@@ -30,6 +30,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * @author Despical
@@ -78,7 +79,11 @@ public class UserManager {
 
 	@NotNull
 	public Set<User> getUsers() {
-		return Set.copyOf(users);
+		return this.users.stream().filter(user -> {
+			var player = user.getPlayer();
+
+			return player != null && player.isOnline();
+		}).collect(Collectors.toSet());
 	}
 
 	@NotNull
