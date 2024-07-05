@@ -33,9 +33,6 @@ import org.bukkit.entity.Player;
 import java.sql.SQLException;
 import java.util.UUID;
 
-import static me.despical.commandframework.Command.SenderType.PLAYER;
-import static me.despical.tntrun.api.StatsStorage.StatisticType.*;
-
 /**
  * @author Despical
  * <p>
@@ -50,7 +47,7 @@ public class PlayerCommands extends AbstractCommand {
 	@Command(
 		name = "tntrun.join",
 		usage = "/tntrun join <arena>",
-		senderType = PLAYER
+		senderType = Command.SenderType.PLAYER
 	)
 	public void joinCommand(CommandArguments arguments) {
 		final var user = plugin.getUserManager().getUser(arguments.getSender());
@@ -73,7 +70,7 @@ public class PlayerCommands extends AbstractCommand {
 	@Command(
 		name = "tntrun.randomjoin",
 		usage = "/tntrun randomjoin",
-		senderType = PLAYER
+		senderType = Command.SenderType.PLAYER
 	)
 	public void randomJoinCommand(CommandArguments arguments) {
 		final var user = plugin.getUserManager().getUser(arguments.getSender());
@@ -91,7 +88,8 @@ public class PlayerCommands extends AbstractCommand {
 
 	@Command(
 		name = "tntrun.leave",
-		senderType = PLAYER
+		usage = "/tntrun leave",
+		senderType = Command.SenderType.PLAYER
 	)
 	public void leaveCommand(CommandArguments arguments) {
 		final var user = plugin.getUserManager().getUser(arguments.getSender());
@@ -129,11 +127,11 @@ public class PlayerCommands extends AbstractCommand {
 	private String formatStats(String message, boolean self, User user) {
 		message = message.replace("%header%", chatManager.message("player-commands.stats-command.header" + (self ? "" : "-other")));
 		message = message.replace("%player%", user.getName());
-		message = message.replace("%coins%", COINS.from(user));
-		message = message.replace("%longest_survive%", LONGEST_SURVIVE.from(user));
-		message = message.replace("%games_played%", GAMES_PLAYED.from(user));
-		message = message.replace("%wins%", WINS.from(user));
-		message = message.replace("%loses%", LOSES.from(user));
+		message = message.replace("%coins%", StatsStorage.StatisticType.COINS.from(user));
+		message = message.replace("%longest_survive%", StatsStorage.StatisticType.LONGEST_SURVIVE.from(user));
+		message = message.replace("%games_played%", StatsStorage.StatisticType.GAMES_PLAYED.from(user));
+		message = message.replace("%wins%", StatsStorage.StatisticType.WINS.from(user));
+		message = message.replace("%loses%", StatsStorage.StatisticType.LOSES.from(user));
 		return chatManager.rawMessage(message);
 	}
 
