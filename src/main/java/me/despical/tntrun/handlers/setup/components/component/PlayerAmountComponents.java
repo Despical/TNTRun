@@ -19,6 +19,7 @@
 package me.despical.tntrun.handlers.setup.components.component;
 
 import me.despical.commons.compat.XMaterial;
+import me.despical.commons.configuration.ConfigUtils;
 import me.despical.commons.item.ItemBuilder;
 import me.despical.inventoryframework.GuiItem;
 import me.despical.inventoryframework.pane.PaginatedPane;
@@ -41,63 +42,55 @@ public class PlayerAmountComponents extends AbstractComponent {
 	@Override
 	public void registerComponents(PaginatedPane paginatedPane) {
 		final var pane = new StaticPane(9, 3);
-		final var backgroundDone = isOptionDoneBoolean("lobbyLocation") && isOptionDoneBoolean("endLocation");
-
-		final var backgroundItem = backgroundDone ?
-			new ItemBuilder(XMaterial.LIME_STAINED_GLASS_PANE).name("&aGame locations set properly!") :
-			new ItemBuilder(XMaterial.BLACK_STAINED_GLASS_PANE).name("&cSet game locations properly!");
+		final var config = ConfigUtils.getConfig(plugin, "arena");
+		final var backgroundItem = new ItemBuilder(XMaterial.LIME_STAINED_GLASS_PANE).name("&aSet min/max player amounts!");
 
 		final var minPlayersItem = new ItemBuilder(XMaterial.GLOWSTONE_DUST)
-			.name("&e&lSet Minimum Players")
-			.lore("&7LEFT click to decrease")
-			.lore("&7RIGHT click to increase")
-			.lore("&8(how many players are needed")
-			.lore("&8for game to start lobby countdown)")
-			.lore("", isOptionDone("minimumPlayers"))
-			.amount(minValueHigherThan("minimumPlayers", 2));
+			.name("&e&l       Set Minimum Players")
+			.lore("&8• &7LEFT  click to increase")
+			.lore("&8• &7RIGHT click to decrease", "")
+			.lore("&8• &7How many players are needed for")
+			.lore("&7game to start the lobby countdown.")
+			.lore("", isOptionDone("minimumPlayers", config))
+			.amount(minValueHigherThan("minimumPlayers", 2, config));
 
 		final var maxPlayersItem = new ItemBuilder(XMaterial.GLOWSTONE_DUST)
-			.name("&e&lSet Maximum Players")
-			.lore("&7LEFT click to decrease")
-			.lore("&7RIGHT click to increase")
-			.lore("&8(player amount that arena")
-			.lore("&8can hold)")
-			.lore("", isOptionDone("maximumPlayers"))
-			.amount(minValueHigherThan("maximumPlayers", arena.getMinimumPlayers()));
+			.name("&e&l      Set Maximum Players")
+			.lore("&8• &7LEFT  click to increase")
+			.lore("&8• &7RIGHT click to decrease", "")
+			.lore("&8• &7Maximum player amount that arena", "&7can hold.")
+			.lore("", isOptionDone("maximumPlayers", config))
+			.amount(minValueHigherThan("maximumPlayers", arena.getMinimumPlayers(), config));
 
 		pane.fillWith(backgroundItem.build(), event -> event.setCancelled(true));
 		pane.addItem(GuiItem.of(mainMenuItem, event -> this.gui.restorePage()), 8, 2);
 
 		pane.addItem(GuiItem.of(minPlayersItem.build(), event -> {
 			var amount = event.getCurrentItem().getAmount();
+			var item = event.getCurrentItem();
 
-			if (event.getClick().isRightClick()) {
-				event.getCurrentItem().setAmount(++amount);
-			}
-
-			if (event.getClick().isLeftClick()) {
-				event.getCurrentItem().setAmount(--amount);
-			}
-
-			if (amount < 2) {
+			if (event.getCurrentItem().getAmount() < 2) {
 				user.sendRawMessage("&c&l✘ Minimum players amount cannot be less than 2!");
 
 				amount = 2;
+				item.setAmount(2);
 			}
 
-			if (amount > arena.getMaximumPlayers()) {
-				user.sendRawMessage("&c&l✘ Minimum players amount cannot be higher than maximum players amount! Setting the as the same value!");
+			if (item.getAmount() > arena.getMaximumPlayers()) {
+				user.sendRawMessage("&c&l✘ Minimum player amount cannot be higher than maximum players amount! Setting both as the same value!");
 
 				arena.setMaximumPlayers(amount);
 
 				config.set(path + "maximumPlayers", amount);
+
+				item.setAmount(amount);
 			}
 
 			arena.setMinimumPlayers(amount);
 			arena.updateSigns();
 
 			config.set(path + "minimumPlayers", amount);
-			saveConfig();
+			ConfigUtils.saveConfig(plugin, config, "arena");
 
 			gui.reshowGuiFromCurrentPage();
 		}), 3, 1);
@@ -107,25 +100,28 @@ public class PlayerAmountComponents extends AbstractComponent {
 			var amount = item.getAmount();
 			var click = event.getClick();
 
-			if (click.isRightClick()) {
-				item.setAmount(++amount);
-			}
+			item.setAmount(click.isRightClick() ? --amount : click.isLeftClick() ? ++amount : amount);
 
-			if (click.isLeftClick()) {
-				item.setAmount(--amount);
-			}
+			if (item.getAmount() < 2) {
+				user.sendRawMessage("&c&l✘ Maximum player amount cannot be less than 2!");
 
-			if (amount < arena.getMinimumPlayers()) {
-				user.sendRawMessage("&c&l✘ Maximum players amount cannot be less than 2!");
+				amount = 2;
+				item.setAmount(2);
+			} else if (item.getAmount() < arena.getMinimumPlayers()) {
+				user.sendRawMessage("&c&l✘ Maximum player amount cannot be less than minimum player amount! Setting both as the same value!");
 
-				amount = arena.getMinimumPlayers();
+				arena.setMinimumPlayers(amount);
+
+				config.set(path + "minimumPlayers", amount);
+
+				item.setAmount(amount);
 			}
 
 			arena.setMaximumPlayers(amount);
 			arena.updateSigns();
 
 			config.set(path + "maximumPlayers", amount);
-			saveConfig();
+			ConfigUtils.saveConfig(plugin, config, "arena");
 
 			gui.reshowGuiFromCurrentPage();
 		}), 5, 1);

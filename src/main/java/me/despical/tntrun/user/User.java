@@ -37,6 +37,7 @@ import org.bukkit.scoreboard.Scoreboard;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.text.MessageFormat;
 import java.util.*;
 
 /**
@@ -77,7 +78,7 @@ public class User {
 	}
 
 	public void sendRawMessage(final String message, final Object... args) {
-		this.getPlayer().sendMessage(plugin.getChatManager().rawMessage(String.format(message, args)));
+		this.getPlayer().sendMessage(plugin.getChatManager().rawMessage(MessageFormat.format(message, args)));
 	}
 
 	public void performReward(final Reward.RewardType rewardType) {
@@ -85,7 +86,7 @@ public class User {
 	}
 
 	public void closeOpenedInventory() {
-		this.getPlayer().closeInventory();
+		plugin.getServer().getScheduler().runTaskLater(plugin, () -> this.getPlayer().closeInventory(), 1L);
 	}
 
 	public boolean isInArena() {

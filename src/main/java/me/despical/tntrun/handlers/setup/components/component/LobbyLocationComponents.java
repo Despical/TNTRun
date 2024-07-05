@@ -19,6 +19,7 @@
 package me.despical.tntrun.handlers.setup.components.component;
 
 import me.despical.commons.compat.XMaterial;
+import me.despical.commons.configuration.ConfigUtils;
 import me.despical.commons.item.ItemBuilder;
 import me.despical.commons.serializer.LocationSerializer;
 import me.despical.inventoryframework.GuiItem;
@@ -42,55 +43,52 @@ public class LobbyLocationComponents extends AbstractComponent {
 	@Override
 	public void registerComponents(PaginatedPane paginatedPane) {
 		final var pane = new StaticPane(9, 3);
-		final var backgroundDone = isOptionDoneBoolean("lobbyLocation") && isOptionDoneBoolean("endLocation");
+		final var config = ConfigUtils.getConfig(plugin, "arena");
+		final var backgroundDone = isOptionDoneBoolean("lobbyLocation", config) && isOptionDoneBoolean("endLocation", config);
 
 		final var backgroundItem = backgroundDone ?
 			new ItemBuilder(XMaterial.LIME_STAINED_GLASS_PANE).name("&aGame locations set properly!") :
 			new ItemBuilder(XMaterial.BLACK_STAINED_GLASS_PANE).name("&cSet game locations properly!");
 
 		final var endLocationItem = new ItemBuilder(XMaterial.ORANGE_CONCRETE)
-			.name("&e&lSet Ending Location")
-			.lore("&7Click to set the ending location")
-			.lore("&7on place where you are standing.")
-			.lore("&8(location where players will be")
-			.lore("&8teleported after the game ended)")
-			.lore("", isOptionDoneBool("endLocation"));
+			.name("&e&l      Set Ending Location")
+			.lore("&7Click to set the ending location on")
+			.lore("&7the place where you are standing.")
+			.lore("", isOptionDoneBool("endLocation", config));
 
 		final var lobbyLocationItem = new ItemBuilder(XMaterial.CYAN_CONCRETE)
-			.name("&e&lSet Lobby Location")
-			.lore("&7Click to set lobby location")
-			.lore("&7on place where you are standing.")
-			.lore("&8(location where players will be")
-			.lore("&8teleported before the game starts)")
-			.lore("", isOptionDoneBool("lobbyLocation"));
+			.name("&e&l      Set Lobby Location")
+			.lore("&7Click to set lobby location on the")
+			.lore("&7place where you are standing.")
+			.lore("", isOptionDoneBool("lobbyLocation", config));
 
 		pane.fillWith(backgroundItem.build(), event -> event.setCancelled(true));
 		pane.addItem(GuiItem.of(mainMenuItem, event -> this.gui.restorePage()), 8, 2);
 
 		pane.addItem(GuiItem.of(lobbyLocationItem.build(), event -> {
+			user.closeOpenedInventory();
+
 			final var location = user.getLocation();
 
-			if (!event.isShiftClick()) user.closeOpenedInventory();
-
 			config.set(path + "lobbyLocation", LocationSerializer.toString(location));
-			saveConfig();
+			ConfigUtils.saveConfig(plugin, config, "arena");
 
 			arena.setLobbyLocation(location);
 
-			user.sendRawMessage("&e✔ Completed | &aLobby location for arena &e%s &aset at your location!", arena);
+			user.sendRawMessage("&e✔ Completed | &aLobby location for arena &e{0} &aset at your location!", arena.getId());
 		}), 3, 1);
 
 		pane.addItem(GuiItem.of(endLocationItem.build(), event -> {
+			user.closeOpenedInventory();
+
 			final var location = user.getLocation();
 
-			if (!event.isShiftClick()) user.closeOpenedInventory();
-
 			config.set(path + "endLocation", LocationSerializer.toString(location));
-			saveConfig();
+			ConfigUtils.saveConfig(plugin, config, "arena");
 
 			arena.setEndLocation(location);
 
-			user.sendRawMessage("&e✔ Completed | &aEnding location for arena &e%s &aset at your location!", arena);
+			user.sendRawMessage("&e✔ Completed | &aEnding location for arena &e{0} &aset at your location!", arena.getId());
 		}), 5, 1);
 
 		paginatedPane.addPane(1, pane);

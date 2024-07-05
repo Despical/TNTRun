@@ -18,6 +18,7 @@
 
 package me.despical.tntrun.handlers;
 
+import me.clip.placeholderapi.PlaceholderAPI;
 import me.despical.commons.configuration.ConfigUtils;
 import me.despical.commons.string.StringFormatUtils;
 import me.despical.commons.util.Strings;
@@ -51,6 +52,11 @@ public class ChatManager {
 		String message = this.message(path);
 
 		message = message.replace("%player%", user.getName());
+
+		if (plugin.getServer().getPluginManager().isPluginEnabled("PlaceholderAPI")) {
+			message = PlaceholderAPI.setPlaceholders(user.getPlayer(), message);
+		}
+
 		return message;
 	}
 
@@ -58,6 +64,10 @@ public class ChatManager {
 		String message = this.message(path, arena);
 
 		message = message.replace("%player%", user.getName());
+
+		if (plugin.getServer().getPluginManager().isPluginEnabled("PlaceholderAPI")) {
+			message = PlaceholderAPI.setPlaceholders(user.getPlayer(), message);
+		}
 
 		return message;
 	}

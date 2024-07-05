@@ -55,13 +55,16 @@ public class MainMenuComponents extends AbstractComponent {
 	@Override
 	public void registerComponents(PaginatedPane paginatedPane) {
 		final var pane = new StaticPane(9, 4);
+		final var config = ConfigUtils.getConfig(plugin, "arena");
 		final var readyItem = new ItemBuilder(XMaterial.LIME_STAINED_GLASS_PANE).name("&aArena is registered properly!");
 		final var notReadyItem = new ItemBuilder(XMaterial.BLACK_STAINED_GLASS_PANE).name("&cArena configuration is not validated yet!");
-		final var lobbyLocationsItem = new ItemBuilder(XMaterial.WHITE_CONCRETE).name("&e&lSet Lobby/End Locations").lore("&7Click to set lobby and ending locations.").lore("", "&7Lobby Location: " + isOptionDoneBool("lobbyLocation"), "&7End Location:    " + isOptionDoneBool("endLocation"));
-		final var playerAmountsItem = new ItemBuilder(XMaterial.GLOWSTONE_DUST).name("&e&lSet Min/Max Players").lore("&7Click to set player amounts.").lore("", "&a&l✔ &7Minimum  Players Amount: &8" + arena.getMinimumPlayers()).lore("&a&l✔ &7Maximum Players Amount: &8" + arena.getMaximumPlayers()).enchantment(Enchantment.ARROW_INFINITE).flag(ItemFlag.HIDE_ENCHANTS);
-		final var mapNameItem = new ItemBuilder(XMaterial.NAME_TAG).name("&e&lSet Map Name").lore("&7Click to set arena map name.").lore("", "&7Currently: " + arena.getMapName()).enchantment(Enchantment.ARROW_INFINITE).flag(ItemFlag.HIDE_ENCHANTS);
+		final var lobbyLocationsItem = new ItemBuilder(XMaterial.WHITE_CONCRETE).name("    &e&lSet Lobby/End Locations").lore("&7Click to set start and end locations.").lore("", "&7Lobby Location: " + isOptionDoneBool("lobbyLocation", config), "&7End Location:    " + isOptionDoneBool("endLocation", config));
+		final var playerAmountsItem = new ItemBuilder(XMaterial.GLOWSTONE_DUST).name("   &e&lSet Min/Max Players").lore(" &7Click to set player amounts.").lore("", "&a&l✔ &7Minimum  Players Amount: &8" + arena.getMinimumPlayers()).lore("&a&l✔ &7Maximum Players Amount: &8" + arena.getMaximumPlayers()).enchantment(Enchantment.ARROW_INFINITE).flag(ItemFlag.HIDE_ENCHANTS);
+		final var mapNameItem = new ItemBuilder(XMaterial.NAME_TAG).name("    &e&lSet Map Name").lore("&7Click to set map name.").lore("", "&7Currently: " + arena.getMapName()).enchantment(Enchantment.ARROW_INFINITE).flag(ItemFlag.HIDE_ENCHANTS);
 
-		if (isOptionDoneBoolean("lobbyLocation") && isOptionDoneBoolean("endLocation")) lobbyLocationsItem.enchantment(Enchantment.ARROW_INFINITE).flag(ItemFlag.HIDE_ENCHANTS);
+		if (isOptionDoneBoolean("lobbyLocation", config) && isOptionDoneBoolean("endLocation", config)) {
+			lobbyLocationsItem.enchantment(Enchantment.ARROW_INFINITE).flag(ItemFlag.HIDE_ENCHANTS);
+		}
 
 		pane.fillWith(arena.isReady() ? readyItem.build() : notReadyItem.build());
 		pane.fillProgressBorder(GuiItem.of(readyItem.build()), GuiItem.of(notReadyItem.build()), arena.getSetupProgress());
@@ -76,7 +79,7 @@ public class MainMenuComponents extends AbstractComponent {
 				@Override
 				@NotNull
 				public String getPromptText(@NotNull ConversationContext context) {
-					return Strings.format("&ePlease type in chat arena name. You can use color codes.");
+					return Strings.format("&ePlease type the map name of arena in the chat. You can use color codes.");
 				}
 
 				@Override
@@ -86,22 +89,20 @@ public class MainMenuComponents extends AbstractComponent {
 					arena.setMapName(name);
 
 					config.set(path + "mapName", name);
-					saveConfig();
+					ConfigUtils.saveConfig(plugin, config, "arena");
 
-					plugin.getServer().getScheduler().runTask(plugin, () -> user.sendRawMessage("&e✔ Completed | &aName of arena &e%s &aset to &e%s", arena, name));
+					plugin.getServer().getScheduler().runTask(plugin, () -> user.sendRawMessage("&e✔ Completed | &aMap name of arena &e{0} &aset to &e{1}&a.", arena.getId(), name));
 					return Prompt.END_OF_CONVERSATION;
 				}
 			}).buildFor(user.getPlayer());
 		}), 3, 1);
 
-		ItemBuilder gameSignItem = new ItemBuilder(XMaterial.OAK_SIGN).name("&e&lAdd Game Sign");
+		var gameSignItem = new ItemBuilder(XMaterial.OAK_SIGN).name("&e&l      Add Game Sign");
 
 		if (!plugin.getOption(ConfigPreferences.Option.BUNGEE_ENABLED)) {
-			gameSignItem = gameSignItem
-				.lore("&7Target a sign and click this.", "")
-				.lore("&8(this will set target sign as game sign)");
+			gameSignItem.lore("&7Target a sign and click this.");
 		} else {
-			gameSignItem = gameSignItem
+			gameSignItem
 				.lore("&cThis option disabled in Bungee-cord mode.", "")
 				.lore("&8Bungee mode is meant to be one arena per server.")
 				.lore("&8If you wish to have multi arena, disable bungee in config!");
@@ -142,18 +143,17 @@ public class MainMenuComponents extends AbstractComponent {
 
 		if (arena.isReady()) {
 			registerItem = new ItemBuilder(XMaterial.BARRIER)
-				.name("&a&lArena Registered - Congratulations")
-				.lore("&7This arena is already registered!")
+				.name("&a&l           Arena Registered")
 				.lore("&7Good job, you went through whole setup!")
-				.lore("&7You can play on this arena now!")
+				.lore("&7      You can play on this arena now!")
 				.enchantment(Enchantment.DURABILITY)
 				.flag(ItemFlag.HIDE_ENCHANTS)
 				.build();
 		} else {
 			registerItem = new ItemBuilder(XMaterial.FIREWORK_ROCKET)
-				.name("&e&lFinish Setup")
-				.lore("&7Click this when you're done with configuration.")
-				.lore("&7It will validate and register the arena.")
+				.name("       &e&lFinish Arena Setup")
+				.lore("&7  Click this when you are done.")
+				.lore("&7You'll still be able to edit arena.")
 				.build();
 		}
 
@@ -169,15 +169,15 @@ public class MainMenuComponents extends AbstractComponent {
 
 			for (final var location : locations) {
 				if (!config.isSet(path + location) || LocationSerializer.isDefaultLocation(config.getString(path + location))) {
-					user.sendRawMessage("&c&l✘ &cArena validation failed! Please configure following spawn properly: %s (cannot be world spawn location)", location);
+					user.sendRawMessage("&c&l✘ Arena validation failed! Please configure following spawn properly: {0} (cannot be world spawn location)", location);
 					return;
 				}
 			}
 
-			user.sendRawMessage("&a&l✔ &aValidation succeeded! Registering new arena instance: &e%s", arena);
+			user.sendRawMessage("&a&l✔ Validation succeeded! Registering new arena instance: &e{0}", arena.getId());
 
 			config.set(path + "ready", true);
-			saveConfig();
+			ConfigUtils.saveConfig(plugin, config, "arena");
 
 			arena.setReady(true);
 			arena.setArenaState(ArenaState.WAITING_FOR_PLAYERS);
