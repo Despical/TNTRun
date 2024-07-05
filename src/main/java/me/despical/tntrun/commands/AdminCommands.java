@@ -108,7 +108,7 @@ public class AdminCommands extends AbstractCommand {
 				return;
 			}
 
-			arguments.sendMessage(chatManager.message("admin-commands.did-you-mean").replace("%command%", label));
+			arguments.sendMessage(chatManager.message("admin-commands.did-you-mean").replace("%command%", "/" + label));
 		}
 	}
 
@@ -371,35 +371,31 @@ public class AdminCommands extends AbstractCommand {
 		commands.remove("tntrun");
 
 		if (args.length == 1) {
-			StringUtil.copyPartialMatches(arg, arguments.hasPermission("tntrun.admin") || arguments.getSender().isOp() ? commands : List.of("top", "stats", "join", "leave", "randomjoin"), completions);
-			return completions;
+			return StringUtil.copyPartialMatches(arg, arguments.hasPermission("tntrun.admin") || arguments.getSender().isOp() ? commands : List.of("top", "stats", "join", "leave", "randomjoin"), completions);
 		}
 
 		if (args.length == 2) {
 			if (List.of("create", "list", "randomjoin", "leave", "reload").contains(arg)) return completions;
 
 			if (arg.equalsIgnoreCase("top")) {
-				StringUtil.copyPartialMatches(
+				return StringUtil.copyPartialMatches(
 								args[1],
 								List.of("wins", "loses", "coins", "games_played", "longest_survive"),
 								completions);
-				return completions;
 			}
 
 			if (arg.equalsIgnoreCase("stats")) {
-				StringUtil.copyPartialMatches(
+				return StringUtil.copyPartialMatches(
 								args[1],
 								plugin.getServer().getOnlinePlayers().stream().map(Player::getName).collect(Collectors.toList()),
 								completions
 				);
-				return completions;
 			}
 
-			StringUtil.copyPartialMatches(
+			return StringUtil.copyPartialMatches(
 								args[1],
 								plugin.getArenaRegistry().getArenas().stream().map(Arena::getId).collect(Collectors.toList()),
 								completions);
-			return completions;
 		}
 
 		return completions;

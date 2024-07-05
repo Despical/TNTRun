@@ -21,6 +21,7 @@ package me.despical.tntrun.api;
 import me.despical.commons.configuration.ConfigUtils;
 import me.despical.commons.sorter.SortUtils;
 import me.despical.tntrun.Main;
+import me.despical.tntrun.user.User;
 import me.despical.tntrun.user.data.MysqlManager;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -106,6 +107,10 @@ public class StatsStorage {
 
 		public boolean isPersistent() {
 			return persistent;
+		}
+
+		public String from(User user) {
+			return Integer.toString(user.getStat(this));
 		}
 	}
 }

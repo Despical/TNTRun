@@ -23,12 +23,14 @@ player-commands:
   stats-command:
     header: "&l[-----YOUR STATS-----]"
     header-other: "&l[-----STATS FOR %player%-----]"
-    footer: "&l[--------------------]"
-    wins: "&aWins: &e"
-    loses: "&aLoses: &e"
-    coins: "&aCoins Earned: &e"
-    longest-survive: "&aLongest Survive: &e"
-    games-played: "&aGames played: &e"
+    messages:
+      - "%header%"
+      - "&8 • &fTotal Wins: &a%wins%"
+      - "&8 • &fTotal Loses: &a%loses%"
+      - "&8 • &fTotal Coins: &a%coins%"
+      - "&8 • &fLongest Survive: &a%longest_survive%"
+      - "&8 • &fGames Played: &a%games_played%"
+      - "&l[--------------------]"
 
 messages:
   arena:

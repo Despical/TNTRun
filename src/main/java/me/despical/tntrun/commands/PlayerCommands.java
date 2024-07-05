@@ -25,6 +25,7 @@ import me.despical.commons.string.StringUtils;
 import me.despical.tntrun.Main;
 import me.despical.tntrun.api.StatsStorage;
 import me.despical.tntrun.arena.ArenaState;
+import me.despical.tntrun.user.User;
 import me.despical.tntrun.user.data.MysqlManager;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -33,6 +34,7 @@ import java.sql.SQLException;
 import java.util.UUID;
 
 import static me.despical.commandframework.Command.SenderType.PLAYER;
+import static me.despical.tntrun.api.StatsStorage.StatisticType.*;
 
 /**
  * @author Despical
@@ -108,29 +110,31 @@ public class PlayerCommands extends AbstractCommand {
 		usage = "/tntrun stats [player]",
 		senderType = Command.SenderType.PLAYER
 	)
-	public void statsCommand(CommandArguments arguments) {
-		final Player sender = arguments.getSender(), player = !arguments.isArgumentsEmpty() ? plugin.getServer().getPlayer(arguments.getArgument(0)) : sender;
+	public void statsCommand(User user, CommandArguments arguments) {
+		final Player sender = arguments.getSender();
 
-		if (player == null) {
-			arguments.sendMessage(chatManager.message("player-commands.no-player-found"));
+		if (arguments.isArgumentsEmpty()) {
+			chatManager.getStringList("player-commands.stats-command.messages").stream().map(message -> formatStats(message, true, user)).forEach(user::sendRawMessage);
 			return;
 		}
 
-		final var user = plugin.getUserManager().getUser(player);
-		final var path = "player-commands.stats-command.";
+		arguments.getPlayer(0).ifPresentOrElse(player -> {
+			final var targetUser = plugin.getUserManager().getUser(player);
+			final var self = sender.equals(player);
 
-		if (player.equals(sender)) {
-			sender.sendMessage(chatManager.message(path + "header", user));
-		} else {
-			sender.sendMessage(chatManager.message(path + "header-other", user));
-		}
+			chatManager.getStringList("player-commands.stats-command.messages").stream().map(message -> formatStats(message, self, targetUser)).forEach(user::sendRawMessage);
+		}, () -> arguments.sendMessage(chatManager.message("player-commands.no-player-found")));
+	}
 
-		sender.sendMessage(chatManager.message(path + "wins", user) + user.getStat(StatsStorage.StatisticType.WINS));
-		sender.sendMessage(chatManager.message(path + "loses", user) + user.getStat(StatsStorage.StatisticType.LOSES));
-		sender.sendMessage(chatManager.message(path + "coins", user) + user.getStat(StatsStorage.StatisticType.COINS));
-		sender.sendMessage(chatManager.message(path + "games-played", user) + user.getStat(StatsStorage.StatisticType.GAMES_PLAYED));
-		sender.sendMessage(chatManager.message(path + "longest-survive", user) + StringFormatUtils.formatIntoMMSS(user.getStat(StatsStorage.StatisticType.LONGEST_SURVIVE)));
-		sender.sendMessage(chatManager.message(path + "footer", user));
+	private String formatStats(String message, boolean self, User user) {
+		message = message.replace("%header%", chatManager.message("player-commands.stats-command.header" + (self ? "" : "-other")));
+		message = message.replace("%player%", user.getName());
+		message = message.replace("%coins%", COINS.from(user));
+		message = message.replace("%longest_survive%", LONGEST_SURVIVE.from(user));
+		message = message.replace("%games_played%", GAMES_PLAYED.from(user));
+		message = message.replace("%wins%", WINS.from(user));
+		message = message.replace("%loses%", LOSES.from(user));
+		return chatManager.rawMessage(message);
 	}
 
 	@Command(
