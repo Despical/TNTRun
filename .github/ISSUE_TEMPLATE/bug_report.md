@@ -1,7 +1,7 @@
 ---
-name: Bug report
-about: Help us with issues related TNT Run
-title: "[Category] Short description"
+name: Bug Report
+about: Help us with issues related TNT Run.
+title: "Short description"
 labels: ''
 assignees: ''
 

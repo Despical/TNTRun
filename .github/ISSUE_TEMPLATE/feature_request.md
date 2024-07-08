@@ -1,7 +1,7 @@
 ---
-name: Feature request
-about: Suggest an idea for TNT Run
-title: "[Category] Short description"
+name: Feature Request
+about: Suggest an idea for TNT Run.
+title: "Short description"
 labels: ''
 assignees: ''
 
