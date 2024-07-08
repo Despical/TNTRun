@@ -32,7 +32,7 @@ Players (up to 12 or 24, mostly, depending on the map) are placed on sand/gravel
 <dependency>
     <groupId>com.github.Despical</groupId>
     <artifactId>TNTRun</artifactId>
-    <version>LATEST_VERSION</version>
+    <version>VERSION</version>
     <scope>provided</scope>
 </dependency>
 ```
@@ -49,7 +49,7 @@ repositories {
 ```
 ```
 dependencies {
-    compileOnly group: "com.github.Despical", name: "TNTRun", version: "LATEST_VERSION";
+    compileOnly group: "com.github.Despical", name: "TNTRun", version: "VERSION";
 }
 ```
 </details>
@@ -81,4 +81,4 @@ mvn clean package -Dmaven.javadoc.skip=true
 ```
 
 > [!IMPORTANT]  
-> Don't forget to install Maven before building.
+> **[Maven](https://maven.apache.org/)** must be installed to build TNT Run.
