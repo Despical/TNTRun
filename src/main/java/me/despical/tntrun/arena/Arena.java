@@ -45,6 +45,7 @@ import org.bukkit.util.NumberConversions;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.text.MessageFormat;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
@@ -388,8 +389,8 @@ public class Arena extends BukkitRunnable {
 		this.getPlayers().forEach(u -> u.sendRawMessage(chatManager.message(path, this, user)));
 	}
 
-	public void broadcastMessage(final String path) {
-		this.getPlayers().forEach(user -> user.sendRawMessage(chatManager.message(path, this, user)));
+	public void broadcastMessage(final String path, Object... params) {
+		this.getPlayers().forEach(user -> user.sendRawMessage(MessageFormat.format(chatManager.message(path, this, user), params)));
 	}
 
 	@Nullable
@@ -515,6 +516,11 @@ public class Arena extends BukkitRunnable {
 		return true;
 	}
 
+	public void broadcastWaitingForPlayers() {
+		int neededPlayers = this.getMinimumPlayers() - players.size();
+		broadcastMessage("messages.arena.waiting-for-players", neededPlayers, neededPlayers > 1 ? "s are" : " is");
+	}
+
 	@Override
 	public void run() {
 		if (players.isEmpty() && arenaState == ArenaState.WAITING_FOR_PLAYERS) {
@@ -528,7 +534,7 @@ public class Arena extends BukkitRunnable {
 				if (players.size() < minPlayers) {
 					if (getTimer() <= 0) {
 						setTimer(waitingTime);
-						broadcastMessage("messages.arena.waiting-for-players");
+						broadcastWaitingForPlayers();
 						break;
 					}
 				} else {

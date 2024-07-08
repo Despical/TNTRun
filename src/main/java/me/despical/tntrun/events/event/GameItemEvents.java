@@ -186,7 +186,7 @@ public class GameItemEvents extends EventListener {
 		if (!forceStartItem.equals(event.getItem())) return;
 
 		if (arena.getPlayers().size() < 2) {
-			arena.broadcastMessage("messages.arena.waiting-for-players");
+			arena.broadcastWaitingForPlayers();
 			return;
 		}
 

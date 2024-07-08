@@ -132,7 +132,7 @@ public class ScoreboardManager {
 		return chatManager.rawMessage(formattedLine);
 	}
 
-	private String getDoubleJumpColor(int amount, int max) {
+	public String getDoubleJumpColor(int amount, int max) {
 		final int percentage = (amount * 100) / max;
 
 		if (percentage == 0)

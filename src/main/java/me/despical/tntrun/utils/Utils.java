@@ -18,9 +18,13 @@
 
 package me.despical.tntrun.utils;
 
+import me.despical.commons.miscellaneous.DefaultFontInfo;
 import me.despical.tntrun.Main;
 import me.despical.tntrun.arena.ArenaState;
 import me.despical.tntrun.user.User;
+import net.md_5.bungee.api.chat.BaseComponent;
+import net.md_5.bungee.api.chat.ComponentBuilder;
+import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -70,5 +74,51 @@ public class Utils {
 			"■".repeat(Math.max(0, progressBars)) +
 			"§c" +
 			"■".repeat(Math.max(0, leftOver));
+	}
+
+	public static void sendCenteredMessage(CommandSender sender, BaseComponent[] components) {
+		BaseComponent[] message;
+		String[] lines = org.bukkit.ChatColor.translateAlternateColorCodes('&', BaseComponent.toLegacyText(components)).split("\n", 40);
+		StringBuilder returnMessage = new StringBuilder();
+		String[] linesCopy = lines;
+		int length = lines.length;
+
+		for (int i = 0; i < length; ++i) {
+			String line = linesCopy[i];
+			int messagePxSize = 0;
+			boolean previousCode = false, isBold = false;
+			char[] array = line.toCharArray();
+			int spaceLength = array.length, compensated;
+
+			for (compensated = 0; compensated < spaceLength; ++compensated) {
+				char c = array[compensated];
+
+				if (c == 167) {
+					previousCode = true;
+				} else if (previousCode) {
+					previousCode = false;
+					isBold = c == 'l';
+				} else {
+					DefaultFontInfo dFI = DefaultFontInfo.getDefaultFontInfo(c);
+					messagePxSize = isBold ? messagePxSize + dFI.getBoldLength() : messagePxSize + dFI.getLength();
+					++messagePxSize;
+				}
+			}
+
+			int toCompensate = 165 - messagePxSize / 2;
+			spaceLength = DefaultFontInfo.SPACE.getLength() + 1;
+			compensated = 0;
+
+			StringBuilder sb;
+
+			for (sb = new StringBuilder(); compensated < toCompensate; compensated += spaceLength) {
+				sb.append(" ");
+			}
+
+			returnMessage.append(sb);
+		}
+
+		message = new ComponentBuilder().append(returnMessage.toString()).append(components).create();
+		sender.spigot().sendMessage(message);
 	}
 }

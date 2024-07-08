@@ -33,10 +33,16 @@ import me.despical.tntrun.arena.ArenaUtils;
 import me.despical.tntrun.arena.options.ArenaOption;
 import me.despical.tntrun.handlers.rewards.Reward;
 import me.despical.tntrun.user.User;
+import me.despical.tntrun.utils.Utils;
+import net.md_5.bungee.api.chat.BaseComponent;
+import net.md_5.bungee.api.chat.ComponentBuilder;
+import net.md_5.bungee.api.chat.HoverEvent;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.GameMode;
 import org.bukkit.potion.PotionEffectType;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 
 /**
@@ -221,18 +227,25 @@ public record ArenaManager(Main plugin) {
 			for (final var msg : summaryMessages) {
 				final var message = formatSummaryPlaceholders(msg, arena, user);
 
-				if (message.contains("%skip_line%")) continue;
+				if (Arrays.stream(message).anyMatch(component -> component.toLegacyText().contains("%skip_line%"))) continue;
 
-				MiscUtils.sendCenteredMessage(user.getPlayer(), message);
+				Utils.sendCenteredMessage(user.getPlayer(), message);
 			}
 		}
 	}
 
-	private String formatSummaryPlaceholders(String msg, Arena arena, User user) {
+	public BaseComponent[] formatSummaryPlaceholders(String msg, Arena arena, User user) {
 		var formatted = msg;
 
 		final var winners = new ArrayList<>(arena.getWinners());
 		Collections.reverse(winners);
+
+		formatted = formatted.replace("%winner%", arena.getWinner().getName());
+		formatted = formatted.replace("%earned_coins%", Integer.toString(user.getStat(StatsStorage.StatisticType.LOCAL_COINS)));
+		formatted = formatted.replace("%survive_time%", Integer.toString(user.getStat(StatsStorage.StatisticType.LOCAL_SURVIVE)));
+		formatted = formatted.replace("%formatted_survive_time%", StringFormatUtils.formatIntoMMSS(user.getStat(StatsStorage.StatisticType.LOCAL_SURVIVE)));
+
+		var builder = new ComponentBuilder();
 
 		for (int i = 0; i < 4; i++) {
 			if (i >= winners.size()) {
@@ -240,13 +253,21 @@ public record ArenaManager(Main plugin) {
 				continue;
 			}
 
-			formatted = formatted.replace("%player_" + (i + 1) + '%', winners.get(i).getName());
+			var winner = winners.get(i);
+
+			if (msg.contains("%player_" + (i + 1))) {
+				int jumps = winner.getStat(StatsStorage.StatisticType.LOCAL_DOUBLE_JUMPS), max = plugin.getPermissionManager().getDoubleJumps(winner.getPlayer());
+
+				var hover = plugin.getChatManager().message("messages.summary-message-hover")
+					.replace("%double_jumps%", arena.getScoreboardManager().getDoubleJumpColor(jumps, max) + jumps)
+					.replace("%max_double_jumps%", Integer.toString(max));
+
+				builder.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.fromLegacyText(hover)));
+			}
+
+			formatted = formatted.replace("%player_" + (i + 1) + '%', winner.getName());
 		}
 
-		formatted = formatted.replace("%winner%", arena.getWinner().getName());
-		formatted = formatted.replace("%earned_coins%", Integer.toString(user.getStat(StatsStorage.StatisticType.LOCAL_COINS)));
-		formatted = formatted.replace("%survive_time%", Integer.toString(user.getStat(StatsStorage.StatisticType.LOCAL_SURVIVE)));
-		formatted = formatted.replace("%formatted_survive_time%", StringFormatUtils.formatIntoMMSS(user.getStat(StatsStorage.StatisticType.LOCAL_SURVIVE)));
-		return formatted;
+		return builder.append(formatted.replace("&", "§")).create();
 	}
 }
