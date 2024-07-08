@@ -66,8 +66,11 @@ public class PlayerAmountComponents extends AbstractComponent {
 		pane.addItem(GuiItem.of(mainMenuItem, event -> this.gui.restorePage()), 8, 2);
 
 		pane.addItem(GuiItem.of(minPlayersItem.build(), event -> {
-			var amount = event.getCurrentItem().getAmount();
 			var item = event.getCurrentItem();
+			var amount = item.getAmount();
+			var click = event.getClick();
+
+			item.setAmount(click.isRightClick() ? --amount : click.isLeftClick() ? ++amount : amount);
 
 			if (event.getCurrentItem().getAmount() < 2) {
 				user.sendRawMessage("&c&l✘ Minimum players amount cannot be less than 2!");
