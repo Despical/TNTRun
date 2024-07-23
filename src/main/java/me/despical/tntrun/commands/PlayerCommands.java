@@ -18,8 +18,8 @@
 
 package me.despical.tntrun.commands;
 
-import me.despical.commandframework.Command;
 import me.despical.commandframework.CommandArguments;
+import me.despical.commandframework.annotations.Command;
 import me.despical.commons.string.StringFormatUtils;
 import me.despical.commons.string.StringUtils;
 import me.despical.tntrun.Main;
