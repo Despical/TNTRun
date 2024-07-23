@@ -42,7 +42,7 @@ public class Reward {
 		}
 	}
 
-	public List<SubReward> getRewards() {
+	List<SubReward> getRewards() {
 		return rewards;
 	}
 
@@ -50,7 +50,7 @@ public class Reward {
 		return type;
 	}
 
-	final static class SubReward {
+	static final class SubReward {
 
 		private String executableCode;
 		private final int chance, executor;

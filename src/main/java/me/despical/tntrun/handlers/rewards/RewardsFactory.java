@@ -39,8 +39,7 @@ public class RewardsFactory {
 	public RewardsFactory(final Main plugin) {
 		this.plugin = plugin;
 		this.rewards = new HashSet<>();
-
-		registerRewards();
+		this.registerRewards();
 	}
 
 	public void performReward(final User user, final Reward.RewardType type) {

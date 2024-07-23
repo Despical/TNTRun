@@ -47,7 +47,7 @@ import static me.despical.tntrun.api.StatsStorage.StatisticType.LOCAL_DOUBLE_JUM
  */
 public class ScoreboardManager {
 
-	private final static String date = new SimpleDateFormat("dd/MM/yy").format(new Date());
+	private static final String date = new SimpleDateFormat("dd/MM/yy").format(new Date());
 
 	private final Arena arena;
 	private final Main plugin;

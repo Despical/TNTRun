@@ -18,10 +18,10 @@
 
 package me.despical.tntrun.commands;
 
-import me.despical.commandframework.Command;
 import me.despical.commandframework.CommandArguments;
-import me.despical.commandframework.CommandFramework;
-import me.despical.commandframework.Completer;
+import me.despical.commandframework.Message;
+import me.despical.commandframework.annotations.Command;
+import me.despical.commandframework.annotations.Completer;
 import me.despical.commons.configuration.ConfigUtils;
 import me.despical.commons.miscellaneous.MiscUtils;
 import me.despical.commons.serializer.LocationSerializer;
@@ -46,8 +46,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
-
-import static me.despical.commandframework.Command.SenderType.PLAYER;
+import java.util.stream.Stream;
 
 /**
  * @author Despical
@@ -60,15 +59,16 @@ public class AdminCommands extends AbstractCommand {
 		super(plugin);
 
 		var commandFramework = plugin.getCommandFramework();
-		commandFramework.setColorFormatter(Strings::format);
 		commandFramework.addCustomParameter("User", args -> plugin.getUserManager().getUser(args.getSender()));
+
+		Message.setColorFormatter(Strings::format);
 
 		BiFunction<Command, CommandArguments, Boolean> sendUsage = (command, arguments) -> {
 			arguments.sendMessage(chatManager.message("admin-commands.correct-usage").replace("%usage%", command.usage()));
 			return true;
 		};
 
-		CommandFramework.SHORT_ARG_SIZE = CommandFramework.LONG_ARG_SIZE = sendUsage;
+		Stream.of(Message.SHORT_ARG_SIZE, Message.LONG_ARG_SIZE).forEach(message -> message.setMessage(sendUsage));
 	}
 
 	@Command(
@@ -117,7 +117,7 @@ public class AdminCommands extends AbstractCommand {
 		permission = "tntrun.admin.create",
 		desc = "Create an arena with default configuration.",
 		usage = "/tntrun create <arena name>",
-		senderType = PLAYER
+		senderType = Command.SenderType.PLAYER
 	)
 	public void createCommand(User user, CommandArguments arguments) {
 		if (plugin.getArenaRegistry().isInArena(user)) {
@@ -167,7 +167,7 @@ public class AdminCommands extends AbstractCommand {
 		permission = "tntrun.admin.delete",
 		desc = "Delete specified arena and its data",
 		usage = "/tntrun delete <arena name>",
-		senderType = PLAYER
+		senderType = Command.SenderType.PLAYER
 	)
 	public void deleteCommand(User user, CommandArguments arguments) {
 		if (plugin.getArenaRegistry().isInArena(user)) {
@@ -205,7 +205,7 @@ public class AdminCommands extends AbstractCommand {
 		permission = "tntrun.admin.list",
 		desc = "Get a list of registered arenas and their status",
 		usage = "/tntrun list",
-		senderType = PLAYER
+		senderType = Command.SenderType.PLAYER
 	)
 	public void listCommand(User user, CommandArguments arguments) {
 		final var arenas = plugin.getArenaRegistry().getArenas();
@@ -224,7 +224,7 @@ public class AdminCommands extends AbstractCommand {
 		permission = "tntrun.admin.forcestart",
 		desc = "Forces arena to start without waiting time",
 		usage = "/tntrun forcestart",
-		senderType = PLAYER
+		senderType = Command.SenderType.PLAYER
 	)
 	public void forceStartCommand(User user) {
 		if (!user.isInArena()) {
@@ -257,7 +257,7 @@ public class AdminCommands extends AbstractCommand {
 		permission = "tntrun.admin.stop",
 		desc = "Stop the arena that you're in",
 		usage = "/tntrun stop",
-		senderType = PLAYER
+		senderType = Command.SenderType.PLAYER
 	)
 	public void stopCommand(User user) {
 		final var arena = user.getArena();
@@ -277,7 +277,7 @@ public class AdminCommands extends AbstractCommand {
 		permission = "tntrun.admin.edit",
 		desc = "Open arena editor for specified arena",
 		usage = "/tntrun edit <arena name>",
-		senderType = PLAYER
+		senderType = Command.SenderType.PLAYER
 	)
 	public void editCommand(User user, CommandArguments arguments) {
 		if (arguments.isArgumentsEmpty()) {
@@ -300,7 +300,7 @@ public class AdminCommands extends AbstractCommand {
 		permission = "tntrun.admin.reload",
 		desc = "Reloads all files and configurations.",
 		usage = "/tntrun reload",
-		senderType = PLAYER
+		senderType = Command.SenderType.PLAYER
 	)
 	public void reloadCommand(User user) {
 		plugin.reloadConfig();
