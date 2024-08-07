@@ -29,6 +29,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -142,7 +143,16 @@ public class GameEvents extends EventListener {
 	}
 
 	@EventHandler
-	public void onBlockBreakEvent(BlockBreakEvent event) {
+	public void onBlockBreak(BlockBreakEvent event) {
+		final var user = plugin.getUserManager().getUser(event.getPlayer());
+
+		if (user.isInArena()) {
+			event.setCancelled(true);
+		}
+	}
+
+	@EventHandler
+	public void onBlockPlace(BlockPlaceEvent event) {
 		final var user = plugin.getUserManager().getUser(event.getPlayer());
 
 		if (user.isInArena()) {
