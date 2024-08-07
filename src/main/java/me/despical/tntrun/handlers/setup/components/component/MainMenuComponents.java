@@ -174,7 +174,7 @@ public class MainMenuComponents extends AbstractComponent {
 				}
 			}
 
-			user.sendRawMessage("&a&l✔ Validation succeeded! Registering new arena instance: &e{0}", arena.getId());
+			user.sendRawMessage("&a&l✔ Validation succeeded! Registering new arena instance: &e&l{0}", arena.getId());
 
 			config.set(path + "ready", true);
 			ConfigUtils.saveConfig(plugin, config, "arena");
