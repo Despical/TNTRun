@@ -27,7 +27,8 @@ import me.despical.tntrun.api.StatsStorage;
 import me.despical.tntrun.arena.ArenaRegistry;
 import me.despical.tntrun.arena.ArenaUtils;
 import me.despical.tntrun.arena.managers.ArenaManager;
-import me.despical.tntrun.commands.AbstractCommand;
+import me.despical.tntrun.commands.AdminCommands;
+import me.despical.tntrun.commands.PlayerCommands;
 import me.despical.tntrun.events.EventListener;
 import me.despical.tntrun.handlers.ChatManager;
 import me.despical.tntrun.handlers.PermissionsManager;
@@ -117,9 +118,11 @@ public class Main extends JavaPlugin {
 		this.signManager = new SignManager(this);
 
 		ScoreboardLib.setPluginInstance(this);
-		AbstractCommand.registerCommands(this);
 		EventListener.registerEvents(this);
 		User.cooldownHandlerTask();
+
+		new AdminCommands(this);
+		new PlayerCommands(this);
 
 		if (getOption(ConfigPreferences.Option.BUNGEE_ENABLED)) {
 			this.bungeeManager = new BungeeManager(this);
