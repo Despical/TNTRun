@@ -73,8 +73,8 @@ public class AdminCommands extends AbstractCommand {
 
 	@Command(
 		name = "tntrun",
-		usage = "/tntrun help",
-		desc = "Main command of TNT Run."
+		usage = "/tntrun",
+		desc = "Main command of the TNT Run."
 	)
 	public void mainCommand(CommandArguments arguments) {
 		if (arguments.isArgumentsEmpty()) {
@@ -327,7 +327,7 @@ public class AdminCommands extends AbstractCommand {
 		MiscUtils.sendCenteredMessage(sender, "&3&l---- TNT Run Commands ----");
 		arguments.sendMessage("");
 
-		for (final var command : plugin.getCommandFramework().getCommands()) {
+		for (final var command : plugin.getCommandFramework().getSubCommands()) {
 			String usage = command.usage(), desc = command.desc();
 
 			if (desc.isEmpty()) continue;
