@@ -324,7 +324,7 @@ public class AdminCommands extends AbstractCommand {
 		final var sender = arguments.getSender();
 
 		arguments.sendMessage("");
-		MiscUtils.sendCenteredMessage(sender, "&3&l---- TNT Run Commands ----");
+		MiscUtils.sendCenteredMessage(sender, "&3&l---- TNT Run ----");
 		arguments.sendMessage("");
 
 		for (final var command : plugin.getCommandFramework().getSubCommands()) {
@@ -365,7 +365,7 @@ public class AdminCommands extends AbstractCommand {
 		name = "tntrun"
 	)
 	public List<String> onTabComplete(CommandArguments arguments) {
-		final List<String> completions = new ArrayList<>(), commands = plugin.getCommandFramework().getCommands().stream().map(cmd -> cmd.name().replace(arguments.getLabel() + '.', "")).collect(Collectors.toList());
+		final List<String> completions = new ArrayList<>(), commands = plugin.getCommandFramework().getSubCommands().stream().map(cmd -> cmd.name().replace(arguments.getLabel() + '.', "")).collect(Collectors.toList());
 		final String args[] = arguments.getArguments(), arg = args[0];
 
 		commands.remove("tntrun");
@@ -379,23 +379,25 @@ public class AdminCommands extends AbstractCommand {
 
 			if (arg.equalsIgnoreCase("top")) {
 				return StringUtil.copyPartialMatches(
-								args[1],
-								List.of("wins", "loses", "coins", "games_played", "longest_survive"),
-								completions);
+					args[1],
+					List.of("wins", "loses", "coins", "games_played", "longest_survive"),
+					completions);
 			}
 
 			if (arg.equalsIgnoreCase("stats")) {
 				return StringUtil.copyPartialMatches(
-								args[1],
-								plugin.getServer().getOnlinePlayers().stream().map(Player::getName).collect(Collectors.toList()),
-								completions
+					args[1],
+					plugin.getServer().getOnlinePlayers().stream().map(Player::getName).collect(Collectors.toList()),
+					completions
 				);
 			}
 
-			return StringUtil.copyPartialMatches(
-								args[1],
-								plugin.getArenaRegistry().getArenas().stream().map(Arena::getId).collect(Collectors.toList()),
-								completions);
+			if (List.of("edit", "delete", "join").contains(arg)) {
+				return StringUtil.copyPartialMatches(
+					args[1],
+					plugin.getArenaRegistry().getArenas().stream().map(Arena::getId).collect(Collectors.toList()),
+					completions);
+			}
 		}
 
 		return completions;
