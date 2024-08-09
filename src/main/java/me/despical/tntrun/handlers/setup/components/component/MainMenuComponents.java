@@ -154,6 +154,7 @@ public class MainMenuComponents extends AbstractComponent {
 				.name("       &e&lFinish Arena Setup")
 				.lore("&7  Click this when you are done.")
 				.lore("&7You'll still be able to edit arena.")
+				.flag(ItemFlag.HIDE_POTION_EFFECTS)
 				.build();
 		}
 
