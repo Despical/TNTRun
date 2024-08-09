@@ -159,6 +159,8 @@ public class GameItemEvents extends EventListener {
 		final var arenas = plugin.getArenaRegistry().getArenas().stream().filter(a -> a.isArenaState(ArenaState.WAITING_FOR_PLAYERS, ArenaState.STARTING) && a.getPlayers().size() < a.getMaximumPlayers()).toList();
 
 		if (!arenas.isEmpty()) {
+			arena.getScoreboardManager().removeScoreboard(user);
+			arena.getGameBar().doBarAction(user, 0);
 			arena.removeUser(user);
 
 			var newArena = arenas.get(0);
