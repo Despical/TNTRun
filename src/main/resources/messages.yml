@@ -5,7 +5,7 @@ admin-commands:
   provide-an-arena-name: "&cPlease provide an arena name!"
   there-is-already-an-arena: "&cThere is already an arena with that name!"
   no-arena-found-with-that-name: "&cNo arena found with that name!"
-  deleted-arena-successfully: "&cDeleted arena called %s successfully!"
+  deleted-arena-successfully: "&cDeleted arena called {0} successfully!"
   must-be-in-arena: "&cYou must be in the arena to perform this command!"
   system-reloaded: "&aSystem files and configurations successfully reloaded!"
   list-command:
