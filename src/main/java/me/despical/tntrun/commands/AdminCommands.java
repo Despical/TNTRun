@@ -89,11 +89,11 @@ public class AdminCommands extends AbstractCommand {
 
 		var commandFramework = plugin.getCommandFramework();
 		String label = arguments.getLabel(), arg = arguments.getArgument(0);
-		List<String> commands = commandFramework.getCommands().stream().map(cmd -> cmd.name().replace(label + ".", "")).collect(Collectors.toList());
+		List<String> commands = commandFramework.getSubCommands().stream().map(cmd -> cmd.name().replace(label + ".", "")).collect(Collectors.toList());
 		List<StringMatcher.Match> matches = StringMatcher.match(arg, commands);
 
 		if (!matches.isEmpty()) {
-			Optional<Command> optionalMatch = commandFramework.getCommands().stream().filter(cmd -> cmd.name().equals(label + "." + matches.get(0).getMatch())).findFirst();
+			Optional<Command> optionalMatch = commandFramework.getSubCommands().stream().filter(cmd -> cmd.name().equals(label + "." + matches.get(0).getMatch())).findFirst();
 
 			if (optionalMatch.isPresent()) {
 				String matchedName = getMatchingParts(optionalMatch.get().name(), label + "." + String.join(".", arguments.getArguments()));
