@@ -324,23 +324,23 @@ public class AdminCommands extends AbstractCommand {
 		final var sender = arguments.getSender();
 
 		arguments.sendMessage("");
-		MiscUtils.sendCenteredMessage(sender, "&3&l---- TNT Run ----");
+		MiscUtils.sendCenteredMessage(arguments.getSender(), "&3&lTNT Run");
+		MiscUtils.sendCenteredMessage(arguments.getSender(), "&3[&boptional argument&3] &b- &3<&brequired argument&3>");
 		arguments.sendMessage("");
 
 		for (final var command : plugin.getCommandFramework().getSubCommands()) {
-			String usage = command.usage(), desc = command.desc();
+			final String usage = formatCommandUsage("&3" + command.usage()), desc = command.desc();
 
 			if (desc.isEmpty()) continue;
 
 			if (isPlayer) {
-				((Player) sender).spigot().sendMessage(new ComponentBuilder()
-					.color(ChatColor.DARK_GRAY)
-					.append(" • ")
-					.append(usage)
-					.event(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, usage))
-					.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.fromLegacyText(desc)))
-					.color(ChatColor.AQUA)
-					.create());
+				((Player) sender).spigot().sendMessage(
+					new ComponentBuilder(ChatColor.DARK_GRAY + " • ")
+						.append(usage)
+						.event(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, command.usage()))
+						.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.fromLegacyText(desc)))
+						.color(ChatColor.AQUA)
+						.create());
 			} else {
 				arguments.sendMessage(" &8• &b" + usage + " &3- &b" + desc);
 			}
@@ -367,8 +367,6 @@ public class AdminCommands extends AbstractCommand {
 	public List<String> onTabComplete(CommandArguments arguments) {
 		final List<String> completions = new ArrayList<>(), commands = plugin.getCommandFramework().getSubCommands().stream().map(cmd -> cmd.name().replace(arguments.getLabel() + '.', "")).collect(Collectors.toList());
 		final String args[] = arguments.getArguments(), arg = args[0];
-
-		commands.remove("tntrun");
 
 		if (args.length == 1) {
 			return StringUtil.copyPartialMatches(arg, arguments.hasPermission("tntrun.admin") || arguments.getSender().isOp() ? commands : List.of("top", "stats", "join", "leave", "randomjoin"), completions);
@@ -403,7 +401,7 @@ public class AdminCommands extends AbstractCommand {
 		return completions;
 	}
 
-	public String getMatchingParts(String matched, String current) {
+	private String getMatchingParts(String matched, String current) {
 		String[] matchedArray = matched.split("\\."), currentArray = current.split("\\.");
 		int max = Math.min(matchedArray.length, currentArray.length);
 		List<String> matchingParts = new ArrayList<>();
@@ -415,5 +413,19 @@ public class AdminCommands extends AbstractCommand {
 		}
 
 		return String.join(".", matchingParts);
+	}
+
+	private String formatCommandUsage(String usage) {
+		final var array = usage.toCharArray();
+		final var buffer = new StringBuilder(usage);
+
+		for (int i = 0; i < array.length; i++) {
+			if (array[i] == '[' || array[i] == '<') {
+				buffer.insert(i, "&b");
+				return Strings.format(buffer.toString());
+			}
+		}
+
+		return Strings.format(usage);
 	}
 }
