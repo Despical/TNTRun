@@ -21,6 +21,7 @@ package me.despical.tntrun.arena.managers;
 import me.despical.commons.miscellaneous.MiscUtils;
 import me.despical.commons.serializer.InventorySerializer;
 import me.despical.commons.string.StringFormatUtils;
+import me.despical.commons.util.Strings;
 import me.despical.tntrun.ConfigPreferences;
 import me.despical.tntrun.Main;
 import me.despical.tntrun.api.StatsStorage;
@@ -269,6 +270,6 @@ public record ArenaManager(Main plugin) {
 			formatted = formatted.replace("%player_" + (i + 1) + '%', winner.getName());
 		}
 
-		return builder.append(formatted.replace("&", "§")).create();
+		return builder.append(TextComponent.fromLegacy(Strings.format(formatted))).create();
 	}
 }
