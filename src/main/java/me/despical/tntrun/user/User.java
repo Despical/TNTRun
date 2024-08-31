@@ -66,11 +66,11 @@ public class User {
 	}
 
 	public void sendMessage(final String path) {
-		this.sendRawMessage(plugin.getChatManager().message(path));
+		this.sendRawMessage(plugin.getChatManager().message(path, this));
 	}
 
 	public void sendMessage(final String path, final Object... args) {
-		this.sendRawMessage(plugin.getChatManager().message(path), args);
+		this.sendRawMessage(plugin.getChatManager().message(path, this), args);
 	}
 
 	public void sendRawMessage(final String message) {

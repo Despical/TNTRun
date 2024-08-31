@@ -18,6 +18,7 @@
 
 package me.despical.tntrun.events.event;
 
+import me.clip.placeholderapi.PlaceholderAPI;
 import me.despical.commons.compat.XMaterial;
 import me.despical.tntrun.ConfigPreferences;
 import me.despical.tntrun.Main;
@@ -218,6 +219,10 @@ public class GameEvents extends EventListener {
 
 		formatted = formatted.replace("%player%", user.getName());
 		formatted = formatted.replace("%message%", ChatColor.stripColor(saidMessage));
+
+		if (plugin.getServer().getPluginManager().isPluginEnabled("PlaceholderAPI")) {
+			formatted = PlaceholderAPI.setPlaceholders(user.getPlayer(), formatted);
+		}
 
 		return chatManager.rawMessage(formatted);
 	}
