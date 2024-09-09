@@ -110,6 +110,10 @@ public class StatsStorage {
 			return persistent;
 		}
 
+		public boolean shouldBeViewed() {
+			return persistent && !name().startsWith("SPECTATOR");
+		}
+
 		public String from(User user) {
 			return Integer.toString(user.getStat(this));
 		}

@@ -20,6 +20,7 @@ package me.despical.tntrun.handlers;
 
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import me.despical.commons.number.NumberUtils;
+import me.despical.commons.string.StringFormatUtils;
 import me.despical.commons.util.Collections;
 import me.despical.tntrun.Main;
 import me.despical.tntrun.api.StatsStorage;
@@ -102,6 +103,8 @@ public class PlaceholderHandler extends PlaceholderExpansion {
 			case "state" -> arena.getArenaState().name();
 			case "state_pretty" -> arena.getArenaState().getFormattedName();
 			case "map_name" -> arena.getMapName();
+			case "timer" -> Integer.toString(arena.getTimer());
+			case "timer_pretty" -> StringFormatUtils.formatIntoMMSS(arena.getTimer());
 			default -> null;
 		};
 	}
@@ -110,12 +113,8 @@ public class PlaceholderHandler extends PlaceholderExpansion {
 		final var split = id.substring(id.lastIndexOf('_') + 1).split(":");
 		final var stat = StatsStorage.StatisticType.match(split[0]);
 
-		if (stat == null) {
+		if (stat == null || !stat.shouldBeViewed()) {
 			return "There is no statistic name called " + id;
-		}
-
-		if (!stat.isPersistent()) {
-			return "Only the persistent statistics can be viewed.";
 		}
 
 		final var stats = Collections.listFromMap(StatsStorage.getStats(stat));
