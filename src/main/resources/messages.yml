@@ -65,6 +65,7 @@ messages:
     game-chat-format: "&7%player%: %message%"
     game-death-format: "&7[DEAD CHAT] "
     fell-into-void: "&7%player% &cdied!\n&e%players_left% players remaining."
+    last-one-fell-into-void: "&7%player% &cdied!"
     cooldown-format: "&6CHARGING &8&l[%progress%&8&l] &6%time%s"
   premium:
     kicked-for-premium-slot: "&c%player% got removed from the game to make a place for premium players!"

@@ -22,6 +22,7 @@ import me.clip.placeholderapi.PlaceholderAPI;
 import me.despical.commons.compat.XMaterial;
 import me.despical.tntrun.ConfigPreferences;
 import me.despical.tntrun.Main;
+import me.despical.tntrun.arena.ArenaState;
 import me.despical.tntrun.events.EventListener;
 import me.despical.tntrun.user.User;
 import org.bukkit.ChatColor;
@@ -81,6 +82,10 @@ public class GameEvents extends EventListener {
 			case VOID -> {
 				victim.teleport(arena.getLobbyLocation());
 
+				if (arena.isArenaState(ArenaState.ENDING)) {
+					return;
+				}
+
 				if (!user.isSpectator()) {
 					user.setSpectator(true);
 					user.playDeathEffect();
@@ -93,6 +98,7 @@ public class GameEvents extends EventListener {
 
 					if (playersLeft.size() == 1) {
 						arena.getWinners().add(arena.getWinner());
+						arena.broadcastFormattedMessage("messages.in-game.last-one-fell-into-void", user);
 
 						plugin.getArenaManager().stopGame(false, arena);
 						return;
