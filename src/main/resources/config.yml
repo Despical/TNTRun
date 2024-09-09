@@ -54,6 +54,8 @@ Whitelisted-Blocks:
 # Op-ed players will override all the permissions.
 Join-Permission: ""
 
+Join-Full-Game-Permission: "tntrun.fullgames"
+
 # Should we create a progress bar to show how many seconds left
 # to use a new double jump?
 Jump-Bar: true

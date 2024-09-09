@@ -35,7 +35,7 @@ public class PermissionsManager {
 
 	private final Main plugin;
 	private final int defaultDoubleJumps, doubleJumpDelay;
-	private final String joinPermission;
+	private final String joinPermission, fullJoin;
 	private final List<String> doubleJumpsPerms;
 
 	public PermissionsManager(Main plugin) {
@@ -46,6 +46,7 @@ public class PermissionsManager {
 		this.defaultDoubleJumps = config.getInt("Double-Jumps.Default", 5);
 		this.doubleJumpDelay = config.getInt("Double-Jumps.Delay", 4);
 		this.joinPermission = config.getString("Join-Permission", "");
+		this.fullJoin = config.getString("Join-Full-Game-Permission", "");
 		this.doubleJumpsPerms = config.getStringList("Double-Jumps.Permissions");
 	}
 
@@ -55,6 +56,10 @@ public class PermissionsManager {
 
 	public boolean hasNotifyPerm(Player player) {
 		return plugin.getOption(ConfigPreferences.Option.UPDATE_NOTIFIER_ENABLED) && player.hasPermission("tntrun.updatenotify");
+	}
+
+	public boolean hasFullGamePerm(Player player) {
+		return fullJoin.isEmpty() || player.hasPermission(fullJoin);
 	}
 
 	public int getDoubleJumpDelay() {

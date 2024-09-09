@@ -82,6 +82,34 @@ public record ArenaManager(Main plugin) {
 
 		final var player = user.getPlayer();
 
+		if (arena.getPlayers().size() >= arena.getMaximumPlayers() && arena.isArenaState(ArenaState.STARTING)) {
+			if (!plugin.getPermissionManager().hasFullGamePerm(player)) {
+				user.sendMessage("messages.premium.full-game-no-permission");
+				return;
+			}
+
+			boolean foundSlot = false;
+
+			for (User loopedUser : arena.getPlayers()) {
+				if (plugin.getPermissionManager().hasFullGamePerm(loopedUser.getPlayer())) {
+					continue;
+				}
+
+				this.leaveAttempt(loopedUser, arena);
+
+				loopedUser.sendMessage("messages.premium.you-were-kicked-for-premium-slot");
+				arena.broadcastFormattedMessage("messages.premium.kicked-for-premium-slot", loopedUser);
+
+				foundSlot = true;
+				break;
+			}
+
+			if (!foundSlot) {
+				user.sendMessage("messages.premium.no-slots-for-premium");
+				return;
+			}
+		}
+
 		if (plugin.getOption(ConfigPreferences.Option.INVENTORY_MANAGER_ENABLED)) {
 			InventorySerializer.saveInventoryToFile(plugin, player);
 		}
