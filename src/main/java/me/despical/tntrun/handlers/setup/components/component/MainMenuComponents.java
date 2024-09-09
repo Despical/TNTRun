@@ -35,7 +35,6 @@ import org.bukkit.block.Sign;
 import org.bukkit.conversations.ConversationContext;
 import org.bukkit.conversations.Prompt;
 import org.bukkit.conversations.StringPrompt;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -59,11 +58,11 @@ public class MainMenuComponents extends AbstractComponent {
 		final var readyItem = new ItemBuilder(XMaterial.LIME_STAINED_GLASS_PANE).name("&aArena is registered properly!");
 		final var notReadyItem = new ItemBuilder(XMaterial.BLACK_STAINED_GLASS_PANE).name("&cArena configuration is not validated yet!");
 		final var lobbyLocationsItem = new ItemBuilder(XMaterial.WHITE_CONCRETE).name("    &e&lSet Lobby/End Locations").lore("&7Click to set start and end locations.").lore("", "&7Lobby Location: " + isOptionDoneBool("lobbyLocation", config), "&7End Location:    " + isOptionDoneBool("endLocation", config));
-		final var playerAmountsItem = new ItemBuilder(XMaterial.GLOWSTONE_DUST).name("   &e&lSet Min/Max Players").lore(" &7Click to set player amounts.").lore("", "&a&l✔ &7Minimum  Players Amount: &8" + arena.getMinimumPlayers()).lore("&a&l✔ &7Maximum Players Amount: &8" + arena.getMaximumPlayers()).enchantment(Enchantment.ARROW_INFINITE).flag(ItemFlag.HIDE_ENCHANTS);
-		final var mapNameItem = new ItemBuilder(XMaterial.NAME_TAG).name("    &e&lSet Map Name").lore("&7Click to set map name.").lore("", "&7Currently: " + arena.getMapName()).enchantment(Enchantment.ARROW_INFINITE).flag(ItemFlag.HIDE_ENCHANTS);
+		final var playerAmountsItem = new ItemBuilder(XMaterial.GLOWSTONE_DUST).name("   &e&lSet Min/Max Players").lore(" &7Click to set player amounts.").lore("", "&a&l✔ &7Minimum  Players Amount: &8" + arena.getMinimumPlayers()).lore("&a&l✔ &7Maximum Players Amount: &8" + arena.getMaximumPlayers()).glow();
+		final var mapNameItem = new ItemBuilder(XMaterial.NAME_TAG).name("    &e&lSet Map Name").lore("&7Click to set map name.").lore("", "&7Currently: " + arena.getMapName()).glow();
 
 		if (isOptionDoneBoolean("lobbyLocation", config) && isOptionDoneBoolean("endLocation", config)) {
-			lobbyLocationsItem.enchantment(Enchantment.ARROW_INFINITE).flag(ItemFlag.HIDE_ENCHANTS);
+			lobbyLocationsItem.glow();
 		}
 
 		pane.fillWith(arena.isReady() ? readyItem.build() : notReadyItem.build());
@@ -146,8 +145,7 @@ public class MainMenuComponents extends AbstractComponent {
 				.name("&a&l           Arena Registered")
 				.lore("&7Good job, you went through whole setup!")
 				.lore("&7      You can play on this arena now!")
-				.enchantment(Enchantment.DURABILITY)
-				.flag(ItemFlag.HIDE_ENCHANTS)
+				.glow()
 				.build();
 		} else {
 			registerItem = new ItemBuilder(XMaterial.FIREWORK_ROCKET)

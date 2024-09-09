@@ -20,13 +20,13 @@ package me.despical.tntrun;
 
 import me.despical.commons.serializer.InventorySerializer;
 import me.despical.commons.string.StringUtils;
-import me.despical.commons.util.function.BiSupplier;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.function.Function;
 
 /**
  * @author Despical
@@ -70,8 +70,8 @@ public class ConfigPreferences {
 			return !list.contains("health");
 		});
 
-		final String path;
-		final boolean def;
+		private final String path;
+		private final boolean def;
 
 		Option() {
 			this(true);
@@ -87,9 +87,9 @@ public class ConfigPreferences {
 			this.path = path;
 		}
 
-		Option(BiSupplier<FileConfiguration, Boolean> supplier) {
+		Option(Function<FileConfiguration, Boolean> supplier) {
 			this.path = "";
-			this.def = supplier.accept(JavaPlugin.getPlugin(Main.class).getConfig());
+			this.def = supplier.apply(JavaPlugin.getPlugin(Main.class).getConfig());
 		}
 	}
 }

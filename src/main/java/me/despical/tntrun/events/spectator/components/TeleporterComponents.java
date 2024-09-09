@@ -38,7 +38,7 @@ import java.util.List;
  */
 public class TeleporterComponents {
 
-	private final static List<Integer> headPlaces = List.of(10, 11, 12, 13, 14, 15, 16, 19, 20, 21, 22, 23, 24, 25, 28, 29, 30, 31, 32, 33, 34);
+	private static final List<Integer> headPlaces = List.of(10, 11, 12, 13, 14, 15, 16, 19, 20, 21, 22, 23, 24, 25, 28, 29, 30, 31, 32, 33, 34);
 
 	public void registerComponents(SpectatorTeleporterGUI teleporterGui, StaticPane pane) {
 		var u = teleporterGui.getUser();

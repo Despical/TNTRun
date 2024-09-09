@@ -50,9 +50,7 @@ public class PermissionsManager {
 	}
 
 	public boolean hasPermission(final User user, final Arena arena) {
-		if (joinPermission.isEmpty()) return true;
-
-		return user.hasPermission(joinPermission.replace("<arena>", arena.getId()));
+		return joinPermission.isEmpty() || user.hasPermission(joinPermission.replace("<arena>", arena.getId()));
 	}
 
 	public boolean hasNotifyPerm(Player player) {

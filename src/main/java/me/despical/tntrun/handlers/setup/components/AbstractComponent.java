@@ -54,25 +54,25 @@ public abstract class AbstractComponent {
 
 	public abstract void registerComponents(final PaginatedPane paginatedPane);
 
-	protected String isOptionDone(String path, FileConfiguration config) {
+	protected final String isOptionDone(String path, FileConfiguration config) {
 		path = "instance.%s.%s".formatted(arena, path);
 
 		return config.isSet(path) ? "&a&l✔ Completed &7(value: &8" + config.getString(path) + "&7)" : "&c&l✘ Not Completed";
 	}
 
-	protected String isOptionDoneBool(String path, FileConfiguration config) {
+	protected final String isOptionDoneBool(String path, FileConfiguration config) {
 		path = "instance.%s.%s".formatted(arena, path);
 
 		return config.isSet(path) ? LocationSerializer.isDefaultLocation(config.getString(path)) ? "&c&l✘ Not Completed" : "&a&l✔ Completed" : "&c&l✘ Not Completed";
 	}
 
-	protected boolean isOptionDoneBoolean(String path, FileConfiguration config) {
+	protected final boolean isOptionDoneBoolean(String path, FileConfiguration config) {
 		path = "instance.%s.%s".formatted(arena, path);
 
 		return config.isSet(path) && !LocationSerializer.isDefaultLocation(config.getString(path));
 	}
 
-	protected int minValueHigherThan(String path, int higher, FileConfiguration config) {
+	protected final int minValueHigherThan(String path, int higher, FileConfiguration config) {
 		path = "instance.%s.%s".formatted(arena, path);
 
 		return Math.max(higher, config.getInt(path));
