@@ -20,7 +20,7 @@ package me.despical.tntrun.api.events.game;
 
 import me.despical.tntrun.api.events.TREvent;
 import me.despical.tntrun.arena.Arena;
-import org.bukkit.entity.Player;
+import me.despical.tntrun.user.User;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
@@ -34,13 +34,12 @@ public class TRGameJoinAttemptEvent extends TREvent implements Cancellable {
 
 	private static final HandlerList HANDLERS = new HandlerList();
 
-	private final Player player;
 	private boolean isCancelled;
+	private final User user;
 
-	public TRGameJoinAttemptEvent(Player player, Arena targetArena) {
+	public TRGameJoinAttemptEvent(User user, Arena targetArena) {
 		super(targetArena);
-		this.player = player;
-		this.isCancelled = false;
+		this.user = user;
 	}
 
 	public static HandlerList getHandlerList() {
@@ -53,15 +52,15 @@ public class TRGameJoinAttemptEvent extends TREvent implements Cancellable {
 		return HANDLERS;
 	}
 
+	public User getUser() {
+		return user;
+	}
+
 	public boolean isCancelled() {
 		return this.isCancelled;
 	}
 
 	public void setCancelled(boolean isCancelled) {
 		this.isCancelled = isCancelled;
-	}
-
-	public Player getPlayer() {
-		return player;
 	}
 }

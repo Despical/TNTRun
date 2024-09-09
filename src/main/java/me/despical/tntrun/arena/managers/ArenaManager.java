@@ -54,8 +54,7 @@ import java.util.Collections;
 public record ArenaManager(Main plugin) {
 
 	public void joinAttempt(final User user, final Arena arena) {
-		final var player = user.getPlayer();
-		final var gameJoinEvent = new TRGameJoinAttemptEvent(player, arena);
+		final var gameJoinEvent = new TRGameJoinAttemptEvent(user, arena);
 
 		plugin.getServer().getPluginManager().callEvent(gameJoinEvent);
 
@@ -80,6 +79,8 @@ public record ArenaManager(Main plugin) {
 			user.sendMessage("messages.arena.no-permission");
 			return;
 		}
+
+		final var player = user.getPlayer();
 
 		if (plugin.getOption(ConfigPreferences.Option.INVENTORY_MANAGER_ENABLED)) {
 			InventorySerializer.saveInventoryToFile(plugin, player);
@@ -138,9 +139,7 @@ public record ArenaManager(Main plugin) {
 	}
 
 	public void leaveAttempt(final User user, final Arena arena) {
-		final var player = user.getPlayer();
-
-		plugin.getServer().getPluginManager().callEvent(new TRGameLeaveAttemptEvent(player, arena));
+		plugin.getServer().getPluginManager().callEvent(new TRGameLeaveAttemptEvent(user, arena));
 
 		final var localScore = user.getStat(StatsStorage.StatisticType.LOCAL_SURVIVE);
 
@@ -157,6 +156,7 @@ public record ArenaManager(Main plugin) {
 		arena.showUserOutsideTheGame(user);
 		arena.updateSigns();
 
+		final var player = user.getPlayer();
 		player.getInventory().clear();
 		player.getInventory().setArmorContents(null);
 		player.setFoodLevel(20);

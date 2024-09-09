@@ -22,7 +22,7 @@ import me.despical.commons.miscellaneous.AttributeUtils;
 import me.despical.tntrun.ConfigPreferences;
 import me.despical.tntrun.Main;
 import me.despical.tntrun.api.StatsStorage;
-import me.despical.tntrun.api.events.player.TRPlayerStatisticChangeEvent;
+import me.despical.tntrun.api.events.player.TRStatisticChangeEvent;
 import me.despical.tntrun.arena.Arena;
 import me.despical.tntrun.handlers.rewards.Reward;
 import me.despical.tntrun.utils.Utils;
@@ -129,8 +129,9 @@ public class User {
 	public void setStat(StatsStorage.StatisticType stat, int value) {
 		stats.put(stat, value);
 
-		if (plugin.isEnabled())
-			plugin.getServer().getScheduler().runTask(plugin, () -> plugin.getServer().getPluginManager().callEvent(new TRPlayerStatisticChangeEvent(getArena(), getPlayer(), stat, value)));
+		if (plugin.isEnabled()) {
+			plugin.getServer().getScheduler().runTask(plugin, () -> plugin.getServer().getPluginManager().callEvent(new TRStatisticChangeEvent(getArena(), this, stat, value)));
+		}
 	}
 
 	public void addStat(StatsStorage.StatisticType stat, int value) {

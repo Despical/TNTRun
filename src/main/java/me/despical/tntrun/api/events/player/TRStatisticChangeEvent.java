@@ -21,7 +21,7 @@ package me.despical.tntrun.api.events.player;
 import me.despical.tntrun.api.StatsStorage;
 import me.despical.tntrun.api.events.TREvent;
 import me.despical.tntrun.arena.Arena;
-import org.bukkit.entity.Player;
+import me.despical.tntrun.user.User;
 import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
 
@@ -30,17 +30,17 @@ import org.jetbrains.annotations.NotNull;
  * <p>
  * Created at 23.07.2023
  */
-public class TRPlayerStatisticChangeEvent extends TREvent {
+public class TRStatisticChangeEvent extends TREvent {
 
 	private static final HandlerList HANDLERS = new HandlerList();
 
-	private final Player player;
+	private final User user;
 	private final StatsStorage.StatisticType statisticType;
 	private final int number;
 
-	public TRPlayerStatisticChangeEvent(Arena arena, Player player, StatsStorage.StatisticType statisticType, int number) {
+	public TRStatisticChangeEvent(Arena arena, User user, StatsStorage.StatisticType statisticType, int number) {
 		super(arena);
-		this.player = player;
+		this.user = user;
 		this.statisticType = statisticType;
 		this.number = number;
 	}
@@ -55,8 +55,8 @@ public class TRPlayerStatisticChangeEvent extends TREvent {
 		return HANDLERS;
 	}
 
-	public Player getPlayer() {
-		return player;
+	public User getUser() {
+		return user;
 	}
 
 	public StatsStorage.StatisticType getStatisticType() {
