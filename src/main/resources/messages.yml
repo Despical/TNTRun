@@ -178,3 +178,7 @@ signs:
     - "%state%"
     - "%map_name%"
     - "&5[%players%/%max_players%]"
+
+placeholders:
+  empty-position: "No Player"
+  empty-value: "NaN"

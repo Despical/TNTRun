@@ -19,6 +19,8 @@
 package me.despical.tntrun.handlers;
 
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
+import me.despical.commons.number.NumberUtils;
+import me.despical.commons.util.Collections;
 import me.despical.tntrun.Main;
 import me.despical.tntrun.api.StatsStorage;
 import org.bukkit.entity.Player;
@@ -35,8 +37,7 @@ public class PlaceholderHandler extends PlaceholderExpansion {
 
 	public PlaceholderHandler(Main plugin) {
 		this.plugin = plugin;
-
-		register();
+		this.register();
 	}
 
 	@Override
@@ -65,6 +66,10 @@ public class PlaceholderHandler extends PlaceholderExpansion {
 	@Override
 	public String onPlaceholderRequest(Player player, @NotNull String id) {
 		if (player == null) return null;
+
+		if (id.startsWith("leaderboard_")) {
+			return this.getLeaderboardEntry(id);
+		}
 
 		final var user = plugin.getUserManager().getUser(player);
 
@@ -99,5 +104,35 @@ public class PlaceholderHandler extends PlaceholderExpansion {
 			case "map_name" -> arena.getMapName();
 			default -> null;
 		};
+	}
+
+	private String getLeaderboardEntry(String id) {
+		final var split = id.substring(id.lastIndexOf('_') + 1).split(":");
+		final var stat = StatsStorage.StatisticType.match(split[0]);
+
+		if (stat == null) {
+			return "There is no statistic name called " + id;
+		}
+
+		if (!stat.isPersistent()) {
+			return "Only the persistent statistics can be viewed.";
+		}
+
+		final var stats = Collections.listFromMap(StatsStorage.getStats(stat));
+		final int position = stats.size() - NumberUtils.getInt(split[1]);
+
+		if (stats.size() == position) {
+			return "Out of Bounds";
+		}
+
+		final boolean isValue = split.length == 3 && "value".equals(split[2]);
+
+		if (position < 0) {
+			return plugin.getChatManager().message("placeholders.empty-" + (isValue ? "value" : "position"));
+		}
+
+		final var entry = stats.get(position);
+
+		return isValue ? Integer.toString(entry.getValue()) : plugin.getServer().getOfflinePlayer(entry.getKey()).getName();
 	}
 }

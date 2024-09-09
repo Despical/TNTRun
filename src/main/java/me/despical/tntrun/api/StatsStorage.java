@@ -32,6 +32,7 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Stream;
 
 /**
  * @author Despical
@@ -93,8 +94,8 @@ public class StatsStorage {
 		LOCAL_DOUBLE_JUMPS("local_double_jumps", false),
 		LOCAL_SURVIVE("local_survive", false);
 
-		final String name;
-		final boolean persistent;
+		private final String name;
+		private final boolean persistent;
 
 		StatisticType(String name, boolean persistent) {
 			this.name = name;
@@ -111,6 +112,10 @@ public class StatsStorage {
 
 		public String from(User user) {
 			return Integer.toString(user.getStat(this));
+		}
+
+		public static StatisticType match(String name) {
+			return Stream.of(values()).filter(statisticType -> statisticType.name.equals(name)).findFirst().orElse(null);
 		}
 	}
 }
