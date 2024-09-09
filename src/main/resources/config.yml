@@ -58,6 +58,9 @@ Join-Permission: ""
 # to use a new double jump?
 Jump-Bar: true
 
+# Should we create cool scoreboards for in-game players?
+Scoreboard-Enabled: true
+
 # See messages.yml for game bar messages.
 # Should we create a game bar for in-game players?
 Game-Bar-Enabled: true

@@ -24,6 +24,7 @@ import me.despical.commons.scoreboard.type.Entry;
 import me.despical.commons.scoreboard.type.Scoreboard;
 import me.despical.commons.scoreboard.type.ScoreboardHandler;
 import me.despical.commons.string.StringFormatUtils;
+import me.despical.tntrun.ConfigPreferences;
 import me.despical.tntrun.Main;
 import me.despical.tntrun.arena.Arena;
 import me.despical.tntrun.arena.ArenaState;
@@ -64,6 +65,10 @@ public class ScoreboardManager {
 	}
 
 	public void createScoreboard(final User user) {
+		if (!plugin.getOption(ConfigPreferences.Option.SCOREBOARD_ENABLED)) return;
+
+		user.cacheScoreboard();
+
 		var scoreboard = ScoreboardLib.createScoreboard(user.getPlayer()).setHandler(new ScoreboardHandler() {
 
 			@Override

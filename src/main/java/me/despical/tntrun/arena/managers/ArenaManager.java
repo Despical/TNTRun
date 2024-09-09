@@ -88,8 +88,6 @@ public record ArenaManager(Main plugin) {
 
 		ArenaUtils.updateNameTagsVisibility(user);
 
-		user.cacheScoreboard();
-
 		arena.addUser(user);
 		arena.teleportToLobby(user);
 		arena.getScoreboardManager().createScoreboard(user);

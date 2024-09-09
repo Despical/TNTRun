@@ -63,6 +63,7 @@ public class ConfigPreferences {
 		LONGEST_SURVIVE_ON_WINS(false),
 		NAME_TAGS_HIDDEN(false),
 		UPDATE_NOTIFIER_ENABLED,
+		SCOREBOARD_ENABLED,
 		HEAL_PLAYER((config) -> {
 			final var list = config.getStringList("Inventory-Manager.Do-Not-Restore");
 			list.forEach(InventorySerializer::addNonSerializableElements);
