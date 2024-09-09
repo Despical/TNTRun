@@ -158,7 +158,7 @@ public class AdminCommands extends AbstractCommand {
 		user.sendRawMessage("&3&l--------------------------------------------");
 		MiscUtils.sendCenteredMessage(player, "&bArena " + id + " created!");
 		user.sendRawMessage("");
-		MiscUtils.sendCenteredMessage(player, "&bEdit this arena via &e/tntrun edit " + id + "&b!");
+		MiscUtils.sendCenteredMessage(player, "&bEdit this arena via &3/tntrun edit " + id + "&b!");
 		user.sendRawMessage("&3&l--------------------------------------------");
 	}
 

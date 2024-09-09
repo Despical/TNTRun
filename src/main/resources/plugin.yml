@@ -3,7 +3,11 @@ main: me.despical.tntrun.Main
 author: Despical
 version: ${project.version}
 api-version: 1.13
-softdepend: [ PlaceholderAPI, Multiverse-Core, WorldGuard ]
+
+softdepend:
+  - PlaceholderAPI
+  - Multiverse-Core
+  - WorldGuard
 
 permissions:
   tntrun.admin.*:
