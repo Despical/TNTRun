@@ -24,6 +24,7 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @author Despical
@@ -60,6 +61,6 @@ public class GameItem {
 
 		return item.getType() == itemStack.getType() &&
 			meta.getDisplayName().equals(itemStackMeta.getDisplayName()) &&
-			meta.getLore() != null && meta.getLore().equals(itemStackMeta.getLore());
+			Objects.equals(meta.getLore(), itemStackMeta.getLore());
 	}
 }
