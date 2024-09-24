@@ -3,9 +3,10 @@
 <div align="center">
 
 [![](https://github.com/Despical/TNTRun/actions/workflows/build.yml/badge.svg)](https://github.com/Despical/TNTRun/actions/workflows/build.yml)
+[![](https://img.shields.io/github/v/release/Despical/TNTRun)](https://github.com/Despical/TNTRun/releases/latest)
 [![](https://jitpack.io/v/Despical/TNTRun.svg)](https://jitpack.io/#Despical/TNTRun)
-[![](https://img.shields.io/badge/JavaDocs-latest-lime.svg)](https://javadoc.jitpack.io/com/github/Despical/TNTRun/latest/javadoc/index.html)
-[![](https://img.shields.io/badge/BuyMeACoffee-Support-lime.svg?logo=BuyMeACoffee)](https://www.buymeacoffee.com/despical)
+[![](https://img.shields.io/badge/License-GPLv3-blue.svg)](../LICENSE)
+[![](https://img.shields.io/badge/javadoc-latest-lime.svg)](https://javadoc.jitpack.io/com/github/Despical/TNTRun/latest/javadoc/index.html)
 
 Players (up to 12 or 24, mostly, depending on the map) are placed on sand/gravel floors. Blocks you run or stand on will disappear or "fall" after a brief delay. Once you fall, you will end up on the next floor below. Each map multiple floors to run on, the lowest floor being above the void which eliminates you. The goal is to be the last player alive which gets progressively more difficult as the space available diminishes.
 
@@ -14,6 +15,7 @@ Players (up to 12 or 24, mostly, depending on the map) are placed on sand/gravel
 ## Documentation
 - [Wiki](https://github.com/Despical/TNTRun/wiki)
 - [JavaDocs](https://javadoc.jitpack.io/com/github/Despical/TNTRun/latest/javadoc/index.html)
+
 ## Donations
 - [Patreon](https://www.patreon.com/despical)
 - [Buy Me A Coffee](https://www.buymeacoffee.com/despical)
@@ -69,16 +71,16 @@ We are supporting multiple languages such as English, Turkish and German for now
 If you want to help us with translating take a look at our [language repository](https://github.com/Despical/LocaleStorage).
 
 ## License
-This code is under [GPL-3.0 License](http://www.gnu.org/licenses/gpl-3.0.html)
+This code is under [GPL-3.0 License](http://www.gnu.org/licenses/gpl-3.0.html).
 
-See the [LICENSE](https://github.com/Despical/TNTRun/blob/master/LICENSE) file for required notices and attributions.
+See the [LICENSE](../LICENSE) file for required notices and attributions.
 
 ## Building from source
 To build this project from source code, run the following from Git Bash:
 ```
-git clone https://www.github.com/Despical/TNTRun.git && cd TNTRun
+git clone https://www.github.com/Despical/TNTRun && cd TNTRun
 mvn clean package -Dmaven.javadoc.skip=true
 ```
 
 > [!IMPORTANT]  
-> **[Maven](https://maven.apache.org/)** must be installed to build TNT Run.
+> **[Maven](https://maven.apache.org/)** must be installed to build this project.
