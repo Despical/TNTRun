@@ -19,6 +19,7 @@
 package me.despical.tntrun.arena;
 
 import me.despical.commons.compat.XSound;
+import me.despical.commons.miscellaneous.PlayerUtils;
 import me.despical.commons.serializer.InventorySerializer;
 import me.despical.tntrun.ConfigPreferences;
 import me.despical.tntrun.Main;
@@ -416,15 +417,20 @@ public class Arena extends BukkitRunnable {
 		forceStart = false;
 	}
 
+	// TODO - Move visibility changer methods to another class, eg. VisibilityManager.
 	public void showPlayers() {
-		for (final var user : this.players) {
+		final var players = this.getPlayers();
+
+		for (final var user : players) {
 			var player = user.getPlayer();
 
 			user.removePotionEffectsExcept(PotionEffectType.BLINDNESS);
 
-			for (final User u : this.players) {
-				player.showPlayer(plugin, u.getPlayer());
-				u.getPlayer().showPlayer(plugin, player);
+			for (final User other : players) {
+				final var otherPlayer = other.getPlayer();
+
+				PlayerUtils.showPlayer(player, otherPlayer, plugin);
+				PlayerUtils.showPlayer(otherPlayer, player, plugin);
 			}
 		}
 	}
@@ -432,11 +438,11 @@ public class Arena extends BukkitRunnable {
 	public void showUserToArena(final User user) {
 		final var player = user.getPlayer();
 
-		for (final var targetUser : this.players) {
-			final var targetPlayer = targetUser.getPlayer();
+		for (final var otherUser : this.getPlayers()) {
+			final var otherPlayer = otherUser.getPlayer();
 
-			targetPlayer.showPlayer(plugin, player);
-			player.showPlayer(plugin, targetPlayer);
+			PlayerUtils.showPlayer(player, otherPlayer, plugin);
+			PlayerUtils.showPlayer(otherPlayer, player, plugin);
 		}
 	}
 
@@ -445,15 +451,15 @@ public class Arena extends BukkitRunnable {
 
 		final var player = user.getPlayer();
 
-		for (final var targetUser : this.players) {
-			final var targetPlayer = targetUser.getPlayer();
+		for (final var otherUser : this.getPlayers()) {
+			final var otherPlayer = otherUser.getPlayer();
 
-			player.showPlayer(plugin, targetPlayer);
+			PlayerUtils.showPlayer(player, otherPlayer, plugin);
 
-			if (targetUser.isSpectator()) {
-				targetPlayer.showPlayer(plugin, player);
+			if (otherUser.isSpectator()) {
+				PlayerUtils.showPlayer(otherPlayer, player, plugin);
 			} else {
-				targetPlayer.hidePlayer(plugin, player);
+				PlayerUtils.hidePlayer(otherPlayer, player, plugin);
 			}
 		}
 	}
@@ -461,14 +467,14 @@ public class Arena extends BukkitRunnable {
 	public void hideUserOutsideTheGame(final User user) {
 		final var player = user.getPlayer();
 
-		for (final var targetUser : plugin.getUserManager().getUsers()) {
-			final var targetPlayer = targetUser.getPlayer();
+		for (final var otherUser : plugin.getUserManager().getUsers()) {
+			final var otherPlayer = otherUser.getPlayer();
 
-			if (isInArena(targetUser)) {
-				this.showUserToArena(targetUser);
+			if (isInArena(otherUser)) {
+				this.showUserToArena(otherUser);
 			} else {
-				targetPlayer.hidePlayer(plugin, player);
-				player.hidePlayer(plugin, targetPlayer);
+				PlayerUtils.hidePlayer(player, otherPlayer, plugin);
+				PlayerUtils.hidePlayer(otherPlayer, player, plugin);
 			}
 		}
 	}
@@ -476,25 +482,21 @@ public class Arena extends BukkitRunnable {
 	public void showUserOutsideTheGame(final User user) {
 		final var player = user.getPlayer();
 
-		for (final var targetUser : plugin.getUserManager().getUsers()) {
-			final var targetPlayer = targetUser.getPlayer();
+		for (final var otherUser : plugin.getUserManager().getUsers()) {
+			final var otherPlayer = otherUser.getPlayer();
 
-			if (!isInArena(targetUser)) {
-				targetPlayer.showPlayer(plugin, player);
-				player.showPlayer(plugin, targetPlayer);
+			if (!this.isInArena(otherUser)) {
+				PlayerUtils.showPlayer(player, otherPlayer, plugin);
+				PlayerUtils.showPlayer(otherPlayer, player, plugin);
 			} else {
-				targetPlayer.hidePlayer(plugin, player);
-				player.hidePlayer(plugin, targetPlayer);
+				PlayerUtils.hidePlayer(player, otherPlayer, plugin);
+				PlayerUtils.hidePlayer(otherPlayer, player, plugin);
 			}
 		}
 	}
 
 	public void updateSigns() {
-		final var signManager = plugin.getSignManager();
-
-		if (signManager == null) return;
-
-		signManager.updateSign(this);
+		Optional.ofNullable(plugin.getSignManager()).ifPresent(signManager -> signManager.updateSign(this));
 	}
 
 	private int getOption(ArenaOption option) {
@@ -518,7 +520,8 @@ public class Arena extends BukkitRunnable {
 
 	public void broadcastWaitingForPlayers() {
 		int neededPlayers = this.getMinimumPlayers() - players.size();
-		broadcastMessage("messages.arena.waiting-for-players", neededPlayers, neededPlayers > 1 ? "s are" : " is");
+
+		this.broadcastMessage("messages.arena.waiting-for-players", neededPlayers, neededPlayers > 1 ? "s are" : " is");
 	}
 
 	@Override

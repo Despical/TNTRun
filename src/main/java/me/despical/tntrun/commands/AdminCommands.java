@@ -78,7 +78,7 @@ public class AdminCommands extends AbstractCommand {
 	)
 	public void mainCommand(CommandArguments arguments) {
 		if (arguments.isArgumentsEmpty()) {
-			arguments.sendMessage(chatManager.rawMessage("&3This server is running &bTNT Run " + plugin.getDescription().getVersion() + " &3by &bDespical&3!"));
+			arguments.sendMessage(chatManager.rawMessage("&3This server is running &bTNT Run " + plugin.getDescription().getVersion() + " &3by &bDespical&3."));
 
 			if (arguments.hasPermission("tntrun.admin")) {
 				arguments.sendMessage(chatManager.rawMessage("&3Commands: &b/" + arguments.getLabel() + " help"));
