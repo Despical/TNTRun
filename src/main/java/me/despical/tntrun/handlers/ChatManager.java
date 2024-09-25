@@ -41,7 +41,7 @@ public class ChatManager {
 
 	public ChatManager(Main plugin) {
 		this.plugin = plugin;
-		this.config = ConfigUtils.getConfig(plugin, "messages");
+		this.reload();
 	}
 
 	public String message(final String path) {
@@ -95,5 +95,7 @@ public class ChatManager {
 
 	public void reload() {
 		this.config = ConfigUtils.getConfig(plugin, "messages");
+
+		StringFormatUtils.setFormat(this.message("Scoreboard.Timer-Format"));
 	}
 }

@@ -115,6 +115,8 @@ Scoreboard:
   Title: " &e&lTNT Run "
   # > %75, < %50, EMPTY
   Double-Jumps: "&a:&e:&c"
+  # The timer format.
+  Timer-Format: "%02d:%02d"
   Waiting:
     - "&7%date%"
     - ""
