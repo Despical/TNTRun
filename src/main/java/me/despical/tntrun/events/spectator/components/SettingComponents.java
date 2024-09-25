@@ -19,6 +19,7 @@
 package me.despical.tntrun.events.spectator.components;
 
 import me.despical.commons.compat.XMaterial;
+import me.despical.commons.compat.XPotion;
 import me.despical.commons.item.ItemBuilder;
 import me.despical.commons.miscellaneous.PlayerUtils;
 import me.despical.inventoryframework.GuiItem;
@@ -30,8 +31,6 @@ import me.despical.tntrun.user.User;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemFlag;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 
 import java.util.function.Consumer;
 
@@ -59,14 +58,14 @@ public class SettingComponents {
 		pane.addItem(GuiItem.of(new ItemBuilder(XMaterial.GOLDEN_BOOTS).name(prefix + "III").flag(ItemFlag.HIDE_ATTRIBUTES).build(), e -> setSpeed(user, 3, "III")),5,1);
 		pane.addItem(GuiItem.of(new ItemBuilder(Material.DIAMOND_BOOTS).name(prefix + "IV").flag(ItemFlag.HIDE_ATTRIBUTES).build(), e -> setSpeed(user, 4, "IV")),6,1);
 
-		var hasNightVision = player.hasPotionEffect(PotionEffectType.NIGHT_VISION);
+		var hasNightVision = player.hasPotionEffect(XPotion.NIGHT_VISION.getPotionEffectType());
 		var shouldHaveNightVision = user.getStat(StatsStorage.StatisticType.SPECTATOR_NIGHT_VISION) == 1;
 
 		pane.addItem(this.buildItem("night-vision-item", shouldHaveNightVision ? XMaterial.ENDER_EYE : XMaterial.ENDER_PEARL, hasNightVision, event -> {
 			if (hasNightVision) {
-				player.removePotionEffect(PotionEffectType.NIGHT_VISION);
+				player.removePotionEffect(XPotion.NIGHT_VISION.getPotionEffectType());
 			} else {
-				player.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, Integer.MAX_VALUE, 2, false, false, false));
+				player.addPotionEffect(XPotion.NIGHT_VISION.buildPotionEffect(Integer.MAX_VALUE, 3).withIcon(false).withParticles(false).withAmbient(false));
 			}
 
 			user.setStat(StatsStorage.StatisticType.SPECTATOR_NIGHT_VISION, !hasNightVision ? 0 : 1);
@@ -105,10 +104,10 @@ public class SettingComponents {
 
 		player.closeInventory();
 		player.setFlySpeed(speed);
-		player.removePotionEffect(PotionEffectType.SPEED);
+		player.removePotionEffect(XPotion.SPEED.getPotionEffectType());
 
 		if (level != -1) {
-			player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, Integer.MAX_VALUE, level, false, false, false));
+			player.addPotionEffect(XPotion.SPEED.buildPotionEffect(Integer.MAX_VALUE, level).withIcon(false).withParticles(false).withAmbient(false));
 		}
 
 		user.setStat(StatsStorage.StatisticType.SPECTATOR_SPEED, level);

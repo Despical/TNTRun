@@ -18,6 +18,7 @@
 
 package me.despical.tntrun.user;
 
+import me.despical.commons.compat.XPotion;
 import me.despical.commons.miscellaneous.AttributeUtils;
 import me.despical.tntrun.ConfigPreferences;
 import me.despical.tntrun.Main;
@@ -31,14 +32,14 @@ import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scoreboard.Scoreboard;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.text.MessageFormat;
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * @author Despical
@@ -179,8 +180,8 @@ public class User {
 			Utils.applyActionBarCooldown(this, cooldown);
 	}
 
-	public void removePotionEffectsExcept(final PotionEffectType... effectTypes) {
-		final var setOfEffects = Set.of(effectTypes);
+	public void removePotionEffectsExcept(final XPotion... potions) {
+		final var setOfEffects = Stream.of(potions).map(XPotion::getPotionEffectType).collect(Collectors.toSet());
 		final var player = this.getPlayer();
 
 		for (final var activePotion : player.getActivePotionEffects()) {
@@ -226,8 +227,8 @@ public class User {
 
 		player.setAllowFlight(true);
 		player.setFlying(true);
-		player.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, Integer.MAX_VALUE, 1, false, false, false));
-		player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 4 * 20, 1, false, false, false));
+		player.addPotionEffect(XPotion.INVISIBILITY.buildPotionEffect(Integer.MAX_VALUE, 2).withIcon(false).withParticles(false).withAmbient(false));
+		player.addPotionEffect(XPotion.BLINDNESS.buildPotionEffect(4 * 20, 2).withIcon(false).withParticles(false).withAmbient(false));
 	}
 
 	public void cacheScoreboard() {

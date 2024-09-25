@@ -18,6 +18,7 @@
 
 package me.despical.tntrun.arena.managers;
 
+import me.despical.commons.compat.XPotion;
 import me.despical.commons.miscellaneous.MiscUtils;
 import me.despical.commons.serializer.InventorySerializer;
 import me.despical.commons.string.StringFormatUtils;
@@ -40,7 +41,6 @@ import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.GameMode;
-import org.bukkit.potion.PotionEffectType;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -238,7 +238,7 @@ public record ArenaManager(Main plugin) {
 			user.addStat(StatsStorage.StatisticType.COINS, user.getStat(StatsStorage.StatisticType.LOCAL_COINS));
 			user.addStat(StatsStorage.StatisticType.GAMES_PLAYED, 1);
 			user.addGameItems("leave-item", "play-again");
-			user.removePotionEffectsExcept(PotionEffectType.BLINDNESS);
+			user.removePotionEffectsExcept(XPotion.BLINDNESS);
 			user.addStat(isWinner ? StatsStorage.StatisticType.WINS : StatsStorage.StatisticType.LOSES, 1);
 			user.performReward(isWinner ? Reward.RewardType.WIN : Reward.RewardType.LOSE);
 
