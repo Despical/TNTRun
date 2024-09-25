@@ -90,12 +90,26 @@ messages:
     - "&a&l▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬"
   summary-message-hover: "&8Remaining Perks\n&7Double Jump: %double_jumps%&7/%max_double_jumps%"
 
-# Leave any message empty to hide bar in a specific arena state.
+# To hide the bar in a specific arena state, leave the message field empty for that state.
 game-bar:
-  waiting-for-players: "&e&lPLAYING &f&lTNT Run &e&lby &b&lDespical"
-  starting: "&e&lPLAYING &f&lTNT Run &e&lby &b&lDespical"
-  in-game: ""
-  ending: "&e&lPLAYING &f&lTNT Run &e&lby &b&lDespical"
+  waiting-for-players:
+    # This is the message displayed when the arena is in waiting for players state.
+    message: "&e&lPLAYING &f&lTNT Run &e&lby &b&lDespical"
+    # The color of the bar when waiting for players.
+    # If a color is not set for this state, the color from the previous state will be used.
+    color: BLUE
+    # The style of the bar when waiting for players.
+    # If a style is not set for this state, the style from the previous state will be used.
+    style: SOLID
+  starting:
+    # This is the message displayed when the arena is in starting state.
+    message: "&e&lPLAYING &f&lTNT Run &e&lby &b&lDespical"
+  in-game:
+    # The game bar won't be visible if the arena is in-game state because the message is empty.
+    message: ""
+  ending:
+    # This is the message displayed when the arena is in ending state.
+    message: "&e&lPLAYING &f&lTNT Run &e&lby &b&lDespical"
 
 Scoreboard:
   Title: " &e&lTNT Run "
