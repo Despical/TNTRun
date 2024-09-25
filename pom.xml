@@ -5,7 +5,7 @@
 
     <groupId>me.despical</groupId>
     <artifactId>tnt-run</artifactId>
-    <version>2.6.71</version>
+    <version>2.6.72</version>
 
     <name>TNT Run</name>
     <packaging>jar</packaging>
@@ -60,7 +60,7 @@
         <dependency>
             <groupId>com.github.Despical</groupId>
             <artifactId>Commons</artifactId>
-            <version>1.8.4</version>
+            <version>1.8.5</version>
         </dependency>
         <dependency>
             <groupId>com.github.Despical</groupId>
@@ -75,7 +75,7 @@
         <dependency>
             <groupId>org.bstats</groupId>
             <artifactId>bstats-bukkit</artifactId>
-            <version>3.0.2</version>
+            <version>3.1.0</version>
         </dependency>
         <dependency>
             <groupId>me.clip</groupId>
