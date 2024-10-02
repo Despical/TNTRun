@@ -81,7 +81,6 @@ public class ChatManager {
 		message = message.replace("%players_left%", Integer.toString(arena.getPlayersLeft().size()));
 		message = message.replace("%min_players%", Integer.toString(arena.getMinimumPlayers()));
 		message = message.replace("%max_players%", Integer.toString(arena.getMaximumPlayers()));
-
 		return message;
 	}
 
@@ -96,6 +95,7 @@ public class ChatManager {
 	public void reload() {
 		this.config = ConfigUtils.getConfig(plugin, "messages");
 
-		StringFormatUtils.setFormat(this.message("Scoreboard.Timer-Format"));
+		StringFormatUtils.setTimeFormat(this.message("Scoreboard.Timer-Format"));
+		StringFormatUtils.setDateFormat(this.message("Scoreboard.Date-Format"));
 	}
 }

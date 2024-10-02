@@ -124,6 +124,8 @@ Scoreboard:
   Double-Jumps: "&a:&e:&c"
   # The timer format.
   Timer-Format: "%02d:%02d"
+  # The date format.
+  Date-Format: "dd/MM/yy"
   Waiting:
     - "&7%date%"
     - ""
