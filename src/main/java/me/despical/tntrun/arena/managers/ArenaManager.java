@@ -159,9 +159,7 @@ public record ArenaManager(Main plugin) {
 		arena.teleportToLobby(user);
 		arena.broadcastFormattedMessage("messages.arena.join-arena", user);
 
-		for (final var message : plugin.getChatManager().message("messages.arena.game-explanation").split("\n")) {
-			MiscUtils.sendCenteredMessage(player, message);
-		}
+		plugin.getChatManager().getStringList("messages.arena.game-explanation").forEach(message -> MiscUtils.sendCenteredMessage(player, message));
 	}
 
 	public void leaveAttempt(final User user, final Arena arena) {

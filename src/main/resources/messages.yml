@@ -46,8 +46,14 @@ messages:
     countdown-cancelled: "&c&lCountdown cancelled! There aren't enough players to start!"
     join-arena: "&7%player%&e has joined (&b%players%&e/&b%max_players%&e)!"
     quit-arena: "&7%player%&e has quit!"
-    game-explanation: "&a&l▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬\n
-    &f&lTNT Run\n\n&e&lAvoid the falling blocks and try to\n&e&lsurvive longer than everyone else!\n\n&a&l▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬"
+    game-explanation:
+      - "%no_center%&a&l▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬"
+      - "&f&lTNT Run"
+      - ""
+      - "&e&lAvoid the falling blocks and try to"
+      - "&e&lsurvive longer than everyone else!"
+      - ""
+      - "%no_center%&a&l▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬"
   spectators:
     show-spectators: "&aYou can now see other spectators!"
     hide-spectators: "&cYou can no longer see other spectators!"
@@ -80,14 +86,14 @@ messages:
       returning-lobby: "&a&lTeleporting you to the lobby in 3 seconds...\n&a&lRight-click again to cancel the teleport!"
       teleport-cancelled: "&c&lTeleport cancelled!"
   summary-message:
-    - "&a&l▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬"
+    - "%no_center%&a&l▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬"
     - "&f&lTNT Run"
     - ""
     - "&e&l1st Place: &f&l%player_1%"
     - "&e&l2nd Place: &f&l%player_2%"
     - "&e&l3rd Place: &f&l%player_3%"
     - ""
-    - "&a&l▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬"
+    - "%no_center%&a&l▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬"
   summary-message-hover: "&8Remaining Perks\n&7Double Jump: %double_jumps%&7/%max_double_jumps%"
 
 # To hide the bar in a specific arena state, leave the message field empty for that state.
