@@ -142,6 +142,8 @@ public class SignManager extends EventListener {
 		final var arenaSign = getArenaSignByBlock(event.getClickedBlock());
 
 		if (event.getAction() == Action.RIGHT_CLICK_BLOCK && arenaSign != null) {
+			event.setCancelled(true);
+
 			final var arena = arenaSign.arena();
 
 			if (arena == null) return;
