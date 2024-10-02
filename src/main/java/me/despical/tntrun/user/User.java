@@ -18,6 +18,7 @@
 
 package me.despical.tntrun.user;
 
+import me.despical.commons.compat.ActionBar;
 import me.despical.commons.compat.XPotion;
 import me.despical.commons.miscellaneous.AttributeUtils;
 import me.despical.tntrun.ConfigPreferences;
@@ -27,8 +28,6 @@ import me.despical.tntrun.api.events.player.TRStatisticChangeEvent;
 import me.despical.tntrun.arena.Arena;
 import me.despical.tntrun.handlers.rewards.Reward;
 import me.despical.tntrun.utils.Utils;
-import net.md_5.bungee.api.ChatMessageType;
-import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -195,11 +194,8 @@ public class User {
 		this.addGameItems(true, ids);
 	}
 
-	@SuppressWarnings("all")
 	public void sendActionBar(@NotNull String message) {
-		try {
-			getPlayer().spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(message));
-		} catch (Exception | Error ignored) { }
+		ActionBar.sendActionBar(this.getPlayer(), message);
 	}
 
 	public void addGameItems(boolean clearInventory, final String... ids) {
