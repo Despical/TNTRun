@@ -19,6 +19,7 @@
 package me.despical.tntrun.utils;
 
 import me.despical.commons.miscellaneous.DefaultFontInfo;
+import me.despical.commons.util.Strings;
 import me.despical.tntrun.Main;
 import me.despical.tntrun.arena.ArenaState;
 import me.despical.tntrun.user.User;
@@ -69,11 +70,9 @@ public class Utils {
 	private static String getProgressBar(int current, int max) {
 		float percent = (float) current / max;
 		int progressBars = (int) (10 * percent), leftOver = (10 - progressBars);
+		String[] colors = plugin.getChatManager().message("messages.in-game.cooldown-progress-colors").split(":");
 
-		return "§a" +
-			"■".repeat(Math.max(0, progressBars)) +
-			"§c" +
-			"■".repeat(Math.max(0, leftOver));
+		return "%s%s%s%s".formatted(colors[0], colors[2].repeat(Math.max(0, progressBars)), colors[1], colors[2].repeat(Math.max(0, leftOver)));
 	}
 
 	public static void sendCenteredMessage(CommandSender sender, BaseComponent[] components) {
@@ -85,6 +84,12 @@ public class Utils {
 
 		for (int i = 0; i < length; ++i) {
 			String line = linesCopy[i];
+
+			if (line.startsWith("%no_center%")) {
+				sender.sendMessage(Strings.format(line));
+				continue;
+			}
+
 			int messagePxSize = 0;
 			boolean previousCode = false, isBold = false;
 			char[] array = line.toCharArray();

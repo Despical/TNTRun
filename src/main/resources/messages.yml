@@ -73,6 +73,7 @@ messages:
     fell-into-void: "&7%player% &cdied!\n&e%players_left% players remaining."
     last-one-fell-into-void: "&7%player% &cdied!"
     cooldown-format: "&6CHARGING &8&l[%progress%&8&l] &6%time%s"
+    cooldown-progress-format: "&a:&c:■"
   premium:
     kicked-for-premium-slot: "&c%player% got removed from the game to make a place for premium players!"
     you-were-kicked-for-premium-slot: "&cYou got kicked out of the game to make a place for a premium player!"
