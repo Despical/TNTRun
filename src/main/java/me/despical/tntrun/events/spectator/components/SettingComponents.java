@@ -65,7 +65,7 @@ public class SettingComponents {
 			if (hasNightVision) {
 				player.removePotionEffect(XPotion.NIGHT_VISION.getPotionEffectType());
 			} else {
-				player.addPotionEffect(XPotion.NIGHT_VISION.buildPotionEffect(Integer.MAX_VALUE, 3).withIcon(false).withParticles(false).withAmbient(false));
+				player.addPotionEffect(XPotion.NIGHT_VISION.buildInvisible(Integer.MAX_VALUE, 3).withIcon(false).withParticles(false).withAmbient(false));
 			}
 
 			user.setStat(StatsStorage.StatisticType.SPECTATOR_NIGHT_VISION, !hasNightVision ? 0 : 1);
@@ -107,7 +107,7 @@ public class SettingComponents {
 		player.removePotionEffect(XPotion.SPEED.getPotionEffectType());
 
 		if (level != -1) {
-			player.addPotionEffect(XPotion.SPEED.buildPotionEffect(Integer.MAX_VALUE, level).withIcon(false).withParticles(false).withAmbient(false));
+			player.addPotionEffect(XPotion.SPEED.buildInvisible(Integer.MAX_VALUE, level).withIcon(false).withParticles(false).withAmbient(false));
 		}
 
 		user.setStat(StatsStorage.StatisticType.SPECTATOR_SPEED, level);

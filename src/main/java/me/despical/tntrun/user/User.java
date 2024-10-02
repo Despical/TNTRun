@@ -227,8 +227,8 @@ public class User {
 
 		player.setAllowFlight(true);
 		player.setFlying(true);
-		player.addPotionEffect(XPotion.INVISIBILITY.buildPotionEffect(Integer.MAX_VALUE, 2).withIcon(false).withParticles(false).withAmbient(false));
-		player.addPotionEffect(XPotion.BLINDNESS.buildPotionEffect(4 * 20, 2).withIcon(false).withParticles(false).withAmbient(false));
+		player.addPotionEffect(XPotion.INVISIBILITY.buildInvisible(Integer.MAX_VALUE, 2).withIcon(false).withParticles(false).withAmbient(false));
+		player.addPotionEffect(XPotion.BLINDNESS.buildInvisible(4 * 20, 2).withIcon(false).withParticles(false).withAmbient(false));
 	}
 
 	public void cacheScoreboard() {
