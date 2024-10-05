@@ -24,7 +24,7 @@ import me.despical.commons.miscellaneous.AttributeUtils;
 import me.despical.tntrun.ConfigPreferences;
 import me.despical.tntrun.Main;
 import me.despical.tntrun.api.StatsStorage;
-import me.despical.tntrun.api.events.player.TRStatisticChangeEvent;
+import me.despical.tntrun.api.events.player.StatisticChangeEvent;
 import me.despical.tntrun.arena.Arena;
 import me.despical.tntrun.handlers.rewards.Reward;
 import me.despical.tntrun.utils.Utils;
@@ -130,7 +130,7 @@ public class User {
 		stats.put(stat, value);
 
 		if (plugin.isEnabled()) {
-			plugin.getServer().getScheduler().runTask(plugin, () -> plugin.getServer().getPluginManager().callEvent(new TRStatisticChangeEvent(getArena(), this, stat, value)));
+			plugin.getServer().getScheduler().runTask(plugin, () -> plugin.getServer().getPluginManager().callEvent(new StatisticChangeEvent(getArena(), this, stat, value)));
 		}
 	}
 
@@ -201,7 +201,9 @@ public class User {
 	public void addGameItems(boolean clearInventory, final String... ids) {
 		var player = this.getPlayer();
 
-		if (clearInventory) player.getInventory().clear();
+		if (clearInventory) {
+			player.getInventory().clear();
+		}
 
 		for (final var id : ids) {
 			this.addGameItem(id);

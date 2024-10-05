@@ -25,8 +25,8 @@ import me.despical.commons.serializer.InventorySerializer;
 import me.despical.tntrun.ConfigPreferences;
 import me.despical.tntrun.Main;
 import me.despical.tntrun.api.StatsStorage;
-import me.despical.tntrun.api.events.game.TRGameStartEvent;
-import me.despical.tntrun.api.events.game.TRGameStateChangeEvent;
+import me.despical.tntrun.api.events.game.GameStartEvent;
+import me.despical.tntrun.api.events.game.GameStateChangeEvent;
 import me.despical.tntrun.arena.managers.GameBarManager;
 import me.despical.tntrun.arena.managers.ScoreboardManager;
 import me.despical.tntrun.arena.options.ArenaOption;
@@ -143,11 +143,13 @@ public class Arena extends BukkitRunnable {
 	}
 
 	public void setArenaState(final ArenaState arenaState) {
+		final var event = new GameStateChangeEvent(this, this.arenaState);
+
 		this.arenaState = arenaState;
 		this.gameBarManager.handleGameBar();
 		this.updateSigns();
 
-		plugin.getServer().getPluginManager().callEvent(new TRGameStateChangeEvent(this, arenaState));
+		plugin.getServer().getPluginManager().callEvent(event);
 	}
 
 	public boolean isReady() {
@@ -579,7 +581,7 @@ public class Arena extends BukkitRunnable {
 					setArenaState(ArenaState.IN_GAME);
 					broadcastMessage("messages.in-game.game-started");
 
-					plugin.getServer().getPluginManager().callEvent(new TRGameStartEvent(this));
+					plugin.getServer().getPluginManager().callEvent(new GameStartEvent(this));
 
 					this.playSound(XSound.ENTITY_ENDER_DRAGON_GROWL);
 

@@ -26,9 +26,9 @@ import me.despical.commons.util.Strings;
 import me.despical.tntrun.ConfigPreferences;
 import me.despical.tntrun.Main;
 import me.despical.tntrun.api.StatsStorage;
-import me.despical.tntrun.api.events.game.TRGameJoinAttemptEvent;
-import me.despical.tntrun.api.events.game.TRGameLeaveAttemptEvent;
-import me.despical.tntrun.api.events.game.TRGameStopEvent;
+import me.despical.tntrun.api.events.game.GameJoinAttemptEvent;
+import me.despical.tntrun.api.events.game.GameLeaveEvent;
+import me.despical.tntrun.api.events.game.GameEndEvent;
 import me.despical.tntrun.arena.Arena;
 import me.despical.tntrun.arena.ArenaState;
 import me.despical.tntrun.arena.ArenaUtils;
@@ -54,7 +54,7 @@ import java.util.Collections;
 public record ArenaManager(Main plugin) {
 
 	public void joinAttempt(final User user, final Arena arena) {
-		final var gameJoinEvent = new TRGameJoinAttemptEvent(user, arena);
+		final var gameJoinEvent = new GameJoinAttemptEvent(user, arena);
 
 		plugin.getServer().getPluginManager().callEvent(gameJoinEvent);
 
@@ -163,7 +163,7 @@ public record ArenaManager(Main plugin) {
 	}
 
 	public void leaveAttempt(final User user, final Arena arena) {
-		plugin.getServer().getPluginManager().callEvent(new TRGameLeaveAttemptEvent(user, arena));
+		plugin.getServer().getPluginManager().callEvent(new GameLeaveEvent(user, arena));
 
 		final var localScore = user.getStat(StatsStorage.StatisticType.LOCAL_SURVIVE);
 
@@ -212,7 +212,7 @@ public record ArenaManager(Main plugin) {
 	}
 
 	public void stopGame(boolean quickStop, Arena arena) {
-		plugin.getServer().getPluginManager().callEvent(new TRGameStopEvent(arena, quickStop));
+		plugin.getServer().getPluginManager().callEvent(new GameEndEvent(arena, quickStop));
 
 		arena.setArenaState(ArenaState.ENDING);
 		arena.setTimer(quickStop ? 2 : ArenaOption.LOBBY_ENDING_TIME.getIntegerValue());
