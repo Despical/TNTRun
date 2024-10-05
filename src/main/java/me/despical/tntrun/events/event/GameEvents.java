@@ -174,6 +174,35 @@ public class GameEvents extends EventListener {
 	}
 
 	@EventHandler
+	public void onCommandExecute(PlayerCommandPreprocessEvent event) {
+		final var user = userManager.getUser(event.getPlayer());
+
+		if (!user.isInArena()) return;
+		if (!plugin.getOption(ConfigPreferences.Option.BLOCK_COMMANDS)) return;
+
+		String message = event.getMessage();
+
+		if (plugin.getConfig().getStringList("Whitelisted-Commands").stream().anyMatch(command -> {
+			boolean exact = command.startsWith("exact:");
+
+			if (exact) {
+				return command.substring(6).equals(message);
+			}
+
+			return message.startsWith(command);
+		})) {
+			return;
+		}
+
+		if (user.hasPermission("tntrun.command.override")) return;
+		if (message.equalsIgnoreCase("/tntrun leave")) return;
+
+		event.setCancelled(true);
+		user.sendMessage("player-commands.only-command-is-leave");
+	}
+
+
+	@EventHandler
 	public void onChatEvent(AsyncPlayerChatEvent event) {
 		final var user = this.userManager.getUser(event.getPlayer());
 		final var arena = user.getArena();

@@ -51,6 +51,7 @@ public class ConfigPreferences {
 
 	public enum Option {
 
+		BLOCK_COMMANDS(true),
 		BUNGEE_ENABLED(false),
 		CHAT_FORMAT_ENABLED,
 		DATABASE_ENABLED(false),

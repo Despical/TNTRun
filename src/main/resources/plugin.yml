@@ -24,3 +24,4 @@ permissions:
       tntrun.admin.sign.create: true
       tntrun.admin.sign.break: true
       tntrun.admin.reload: true
+      tntrun.command.override: true
