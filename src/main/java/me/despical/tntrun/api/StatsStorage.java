@@ -39,9 +39,12 @@ import java.util.stream.Stream;
  * <p>
  * Created at 10.07.2020
  */
-public class StatsStorage {
+public final class StatsStorage {
 
 	private static final Main plugin = JavaPlugin.getPlugin(Main.class);
+
+	private StatsStorage() {
+	}
 
 	@NotNull
 	@Contract("null -> fail")

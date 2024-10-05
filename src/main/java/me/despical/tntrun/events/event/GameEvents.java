@@ -26,7 +26,6 @@ import me.despical.tntrun.arena.ArenaState;
 import me.despical.tntrun.events.EventListener;
 import me.despical.tntrun.user.User;
 import org.bukkit.ChatColor;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
@@ -35,11 +34,7 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryType;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
-import org.bukkit.event.player.PlayerDropItemEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerSwapHandItemsEvent;
+import org.bukkit.event.player.*;
 
 /**
  * @author Despical
@@ -53,26 +48,28 @@ public class GameEvents extends EventListener {
 	}
 
 	@EventHandler
-	public void onFoodLevelChangeEvent(FoodLevelChangeEvent event) {
+	public void onFoodLevelChange(FoodLevelChangeEvent event) {
 		if (!(event.getEntity() instanceof Player player)) return;
+		
+		final var user = this.userManager.getUser(player);
 
-		final var user = plugin.getUserManager().getUser(player);
-
-		if (user.isInArena()) event.setCancelled(true);
+		if (user.isInArena()) {
+			event.setCancelled(true);
+		}
 	}
 
 	@EventHandler
-	public void onDropItemEvent(PlayerDropItemEvent event) {
-		final var user = plugin.getUserManager().getUser(event.getPlayer());
-
-		if (user.isInArena()) event.setCancelled(true);
+	public void onDropItem(PlayerDropItemEvent event) {
+		if (this.isInArena(event.getPlayer())) {
+			event.setCancelled(true);
+		}
 	}
 
 	@EventHandler
 	public void onEntityDamage(EntityDamageEvent e) {
 		if (!(e.getEntity() instanceof Player victim)) return;
 
-		final var user = plugin.getUserManager().getUser(victim);
+		final var user = this.userManager.getUser(victim);
 		final var arena = user.getArena();
 
 		if (arena == null) return;
@@ -89,14 +86,11 @@ public class GameEvents extends EventListener {
 				if (!user.isSpectator()) {
 					user.setSpectator(true);
 					user.playDeathEffect();
+					user.addGameItems("leave-item", "settings-item", "teleporter-item");
 
 					arena.addDeathPlayer(user);
 
-					user.addGameItems("leave-item", "settings-item", "teleporter-item");
-
-					final var playersLeft = arena.getPlayersLeft();
-
-					if (playersLeft.size() == 1) {
+					if (arena.getPlayersLeft().size() == 1) {
 						arena.getWinners().add(arena.getWinner());
 						arena.broadcastFormattedMessage("messages.in-game.last-one-fell-into-void", user);
 
@@ -111,20 +105,23 @@ public class GameEvents extends EventListener {
 	}
 
 	@EventHandler
-	public void onItemMove(InventoryClickEvent e) {
-		if (e.getWhoClicked() instanceof Player player && plugin.getUserManager().getUser(player).isInArena()) {
-			if (e.getView().getType() == InventoryType.CRAFTING || e.getView().getType() == InventoryType.PLAYER) {
-				e.setResult(Event.Result.DENY);
-			}
+	public void onItemMove(InventoryClickEvent event) {
+		if (!(event.getWhoClicked() instanceof Player player)) {
+			return;
+		}
+
+		if (this.isInArena(player)) {
+			event.setResult(Event.Result.DENY);
 		}
 	}
 
 	@EventHandler
 	public void onCraft(PlayerInteractEvent event) {
 		final var player = event.getPlayer();
-		final var user = plugin.getUserManager().getUser(player);
 
-		if (!user.isInArena()) return;
+		if (!this.isInArena(player)) {
+			return;
+		}
 
 		if (player.getTargetBlock(null, 7).getType() == XMaterial.CRAFTING_TABLE.parseMaterial()) {
 			event.setCancelled(true);
@@ -133,47 +130,37 @@ public class GameEvents extends EventListener {
 
 	@EventHandler
 	public void onItemSwap(PlayerSwapHandItemsEvent event) {
-		final var user = plugin.getUserManager().getUser(event.getPlayer());
-
-		if (!user.isInArena()) return;
-
-		event.setCancelled(true);
+		if (this.isInArena(event.getPlayer())) {
+			event.setCancelled(true);
+		}
 	}
 
 	@EventHandler
 	public void onDrop(PlayerDropItemEvent event) {
-		final var user = plugin.getUserManager().getUser(event.getPlayer());
-
-		if (!user.isInArena()) return;
-
-		event.setCancelled(true);
+		if (this.isInArena(event.getPlayer())) {
+			event.setCancelled(true);
+		}
 	}
 
 	@EventHandler
 	public void onBlockBreak(BlockBreakEvent event) {
-		final var user = plugin.getUserManager().getUser(event.getPlayer());
-
-		if (user.isInArena()) {
+		if (this.isInArena(event.getPlayer())) {
 			event.setCancelled(true);
 		}
 	}
 
 	@EventHandler
 	public void onBlockPlace(BlockPlaceEvent event) {
-		final var user = plugin.getUserManager().getUser(event.getPlayer());
-
-		if (user.isInArena()) {
+		if (this.isInArena(event.getPlayer())) {
 			event.setCancelled(true);
 		}
 	}
 
 	@EventHandler
 	public void onLobbyDamage(EntityDamageEvent event) {
-		if (event.getEntity().getType() != EntityType.PLAYER) return;
+		if (!(event.getEntity() instanceof Player player)) return;
 
-		final var player = (Player) event.getEntity();
-		final var user = plugin.getUserManager().getUser(player);
-		final var arena = user.getArena();
+		final var arena = this.userManager.getUser(player).getArena();
 
 		if (arena == null) return;
 
@@ -183,7 +170,7 @@ public class GameEvents extends EventListener {
 
 	@EventHandler
 	public void onChatEvent(AsyncPlayerChatEvent event) {
-		final var user = plugin.getUserManager().getUser(event.getPlayer());
+		final var user = this.userManager.getUser(event.getPlayer());
 		final var arena = user.getArena();
 
 		if (arena == null) {

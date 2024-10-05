@@ -18,7 +18,7 @@
 
 package me.despical.tntrun.api.events.game;
 
-import me.despical.tntrun.api.events.TREvent;
+import me.despical.tntrun.api.events.TNTRunEvent;
 import me.despical.tntrun.arena.Arena;
 import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
@@ -28,21 +28,28 @@ import org.jetbrains.annotations.NotNull;
  * <p>
  * Created at 23.07.2023
  */
-public class TRGameStartEvent extends TREvent {
+public class GameEndEvent extends TNTRunEvent {
 
-	private static final HandlerList HANDLERS = new HandlerList();
+	private static final HandlerList handlerList = new HandlerList();
 
-	public TRGameStartEvent(Arena arena) {
+	private final boolean quickStop;
+
+	public GameEndEvent(Arena arena, boolean quickStop) {
 		super(arena);
+		this.quickStop = quickStop;
 	}
 
-	public static HandlerList getHandlerList() {
-		return HANDLERS;
+	public boolean isQuickStop() {
+		return this.quickStop;
 	}
 
 	@NotNull
 	@Override
 	public HandlerList getHandlers() {
-		return HANDLERS;
+		return handlerList;
+	}
+
+	public static HandlerList getHandlerList() {
+		return handlerList;
 	}
 }

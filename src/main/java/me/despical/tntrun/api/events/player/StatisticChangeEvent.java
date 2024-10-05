@@ -19,51 +19,62 @@
 package me.despical.tntrun.api.events.player;
 
 import me.despical.tntrun.api.StatsStorage;
-import me.despical.tntrun.api.events.TREvent;
+import me.despical.tntrun.api.events.TNTRunEvent;
 import me.despical.tntrun.arena.Arena;
 import me.despical.tntrun.user.User;
 import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * @author Despical
  * <p>
  * Created at 23.07.2023
  */
-public class TRStatisticChangeEvent extends TREvent {
+public class StatisticChangeEvent extends TNTRunEvent {
 
-	private static final HandlerList HANDLERS = new HandlerList();
+	private static final HandlerList handlerList = new HandlerList();
 
 	private final User user;
 	private final StatsStorage.StatisticType statisticType;
-	private final int number;
+	private final int value;
 
-	public TRStatisticChangeEvent(Arena arena, User user, StatsStorage.StatisticType statisticType, int number) {
+	public StatisticChangeEvent(Arena arena, User user, StatsStorage.StatisticType statisticType, int value) {
 		super(arena);
 		this.user = user;
 		this.statisticType = statisticType;
-		this.number = number;
+		this.value = value;
 	}
 
-	public static HandlerList getHandlerList() {
-		return HANDLERS;
+	@Nullable
+	@Override
+	public Arena getArena() {
+		return super.getArena();
+	}
+
+	public User getUser() {
+		return this.user;
+	}
+
+	public StatsStorage.StatisticType getStatisticType() {
+		return this.statisticType;
+	}
+
+	public int getValue() {
+		return this.value;
+	}
+
+	public int getNewValue() {
+		return this.user.getStat(this.statisticType);
 	}
 
 	@NotNull
 	@Override
 	public HandlerList getHandlers() {
-		return HANDLERS;
+		return handlerList;
 	}
 
-	public User getUser() {
-		return user;
-	}
-
-	public StatsStorage.StatisticType getStatisticType() {
-		return statisticType;
-	}
-
-	public int getNumber() {
-		return number;
+	public static HandlerList getHandlerList() {
+		return handlerList;
 	}
 }

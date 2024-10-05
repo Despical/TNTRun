@@ -16,25 +16,42 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package me.despical.tntrun.api.events;
+package me.despical.tntrun.api.events.game;
 
+import me.despical.tntrun.api.events.TNTRunEvent;
 import me.despical.tntrun.arena.Arena;
-import org.bukkit.event.Event;
+import me.despical.tntrun.user.User;
+import org.bukkit.event.HandlerList;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * @author Despical
  * <p>
  * Created at 23.07.2023
  */
-public abstract class TREvent extends Event {
+public class GameLeaveEvent extends TNTRunEvent {
 
-	protected final Arena arena;
+	private static final HandlerList handlerList = new HandlerList();
 
-	public TREvent(Arena eventArena) {
-		this.arena = eventArena;
+	private final User user;
+
+	public GameLeaveEvent(User user, Arena arena) {
+		super(arena);
+		this.user = user;
 	}
 
-	public Arena getArena() {
-		return this.arena;
+	@NotNull
+	public User getUser() {
+		return this.user;
+	}
+
+	@NotNull
+	@Override
+	public HandlerList getHandlers() {
+		return handlerList;
+	}
+
+	public static HandlerList getHandlerList() {
+		return handlerList;
 	}
 }
