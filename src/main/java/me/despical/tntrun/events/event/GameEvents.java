@@ -22,6 +22,7 @@ import me.clip.placeholderapi.PlaceholderAPI;
 import me.despical.commons.compat.XMaterial;
 import me.despical.tntrun.ConfigPreferences;
 import me.despical.tntrun.Main;
+import me.despical.tntrun.api.events.player.PlayerEliminatedEvent;
 import me.despical.tntrun.arena.ArenaState;
 import me.despical.tntrun.events.EventListener;
 import me.despical.tntrun.user.User;
@@ -89,6 +90,8 @@ public class GameEvents extends EventListener {
 					user.addGameItems("leave-item", "settings-item", "teleporter-item");
 
 					arena.addDeathPlayer(user);
+
+					plugin.getServer().getPluginManager().callEvent(new PlayerEliminatedEvent(arena, user));
 
 					if (arena.getPlayersLeft().size() == 1) {
 						arena.getWinners().add(arena.getWinner());
