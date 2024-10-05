@@ -73,7 +73,9 @@ public class GameEvents extends EventListener {
 		final var user = this.userManager.getUser(victim);
 		final var arena = user.getArena();
 
-		if (arena == null) return;
+		if (arena == null) {
+			return;
+		}
 
 		switch (e.getCause()) {
 			case DROWNING, FALL -> e.setCancelled(true);

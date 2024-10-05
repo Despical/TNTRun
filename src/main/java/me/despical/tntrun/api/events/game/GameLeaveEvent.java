@@ -25,6 +25,8 @@ import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
 
 /**
+ * This event is called when a player leaves the game.
+ *
  * @author Despical
  * <p>
  * Created at 23.07.2023
