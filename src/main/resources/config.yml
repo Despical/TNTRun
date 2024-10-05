@@ -60,6 +60,13 @@ Join-Full-Game-Permission: "tntrun.fullgames"
 # to use a new double jump?
 Jump-Bar: true
 
+# Should we block commands that are not associated with MM?
+Block-Commands: true
+
+# Put 'exact:command here' to check for the exact command name.
+# By default, we'll check if the executed command starts with any command in the list.
+Whitelisted-Commands: []
+
 # Should we create cool scoreboards for in-game players?
 Scoreboard-Enabled: true
 
