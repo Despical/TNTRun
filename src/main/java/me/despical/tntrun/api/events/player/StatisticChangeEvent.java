@@ -27,6 +27,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
+ * This event is called when a statistic of a player is updated.
+ *
  * @author Despical
  * <p>
  * Created at 23.07.2023

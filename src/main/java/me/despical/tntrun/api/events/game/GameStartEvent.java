@@ -24,6 +24,8 @@ import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
 
 /**
+ * This event is called when an arena is started the game.
+ *
  * @author Despical
  * <p>
  * Created at 23.07.2023

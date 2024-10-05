@@ -26,6 +26,10 @@ import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
 
 /**
+ * This event is called when a player tries to join an arena.
+ * <p>
+ * Cancelling this event cancels the join attempt.
+ *
  * @author Despical
  * <p>
  * Created at 23.07.2023

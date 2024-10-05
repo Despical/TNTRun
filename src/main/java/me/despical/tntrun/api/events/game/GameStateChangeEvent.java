@@ -25,6 +25,12 @@ import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
 
 /**
+ * This event is called when the state of an arena changes.
+ * <p>
+ * Even if the arena state is updated via the {@code Arena#setArenaState} method,
+ * this event will still be triggered when the state changes.
+ * </p>
+ *
  * @author Despical
  * <p>
  * Created at 23.07.2023

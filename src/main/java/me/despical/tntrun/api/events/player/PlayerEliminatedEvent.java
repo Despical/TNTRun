@@ -25,6 +25,8 @@ import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
 
 /**
+ * This event is called when a player gets eliminated in a game.
+ *
  * @author Despical
  * <p>
  * Created at 5.10.2024

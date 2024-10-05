@@ -24,6 +24,8 @@ import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
 
 /**
+ * This event is called when the game ends.
+ *
  * @author Despical
  * <p>
  * Created at 23.07.2023
