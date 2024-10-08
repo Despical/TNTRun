@@ -25,7 +25,6 @@ import me.despical.inventoryframework.GuiItem;
 import me.despical.inventoryframework.pane.StaticPane;
 import me.despical.inventoryframework.util.GeometryUtil;
 import me.despical.tntrun.events.spectator.SpectatorTeleporterGUI;
-import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.meta.SkullMeta;
 
 import java.util.ArrayList;
@@ -46,7 +45,7 @@ public class TeleporterComponents {
 		var arena = teleporterGui.getArena();
 		var chatManager = teleporterGui.getPlugin().getChatManager();
 
-		pane.addItem(GuiItem.of(new ItemBuilder(XMaterial.BARRIER).name(chatManager.message("spectator-gui.close-item")).flag(ItemFlag.HIDE_ATTRIBUTES).build(), e -> e.getWhoClicked().closeInventory()),4,4);
+		pane.addItem(GuiItem.of(new ItemBuilder(XMaterial.BARRIER).name(chatManager.message("spectator-gui.close-item")).hideToolTip().build(), e -> teleporterGui.close()), 4, 4);
 
 		var players = new ArrayList<>(arena.getPlayersLeft());
 		players.remove(u);

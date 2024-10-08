@@ -82,7 +82,7 @@ public class GameEvents extends EventListener {
 			case VOID -> {
 				victim.teleport(arena.getLobbyLocation());
 
-				if (arena.isArenaState(ArenaState.ENDING)) {
+				if (!arena.isArenaState(ArenaState.IN_GAME)) {
 					return;
 				}
 

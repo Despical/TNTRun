@@ -263,13 +263,13 @@ public class Arena extends BukkitRunnable {
 		final var player = user.getPlayer();
 
 		if (nightVision == 1) {
-			player.addPotionEffect(XPotion.NIGHT_VISION.buildInvisible(Integer.MAX_VALUE, 1).withIcon(false).withParticles(false).withAmbient(false));
+			player.addPotionEffect(XPotion.NIGHT_VISION.buildInvisible(Integer.MAX_VALUE, 1));
 		}
 
 		final var level = user.getStat(StatsStorage.StatisticType.SPECTATOR_SPEED) + 1;
 
 		player.setFlySpeed(.1F + level * .05F);
-		player.addPotionEffect(XPotion.SPEED.buildInvisible(Integer.MAX_VALUE, level).withIcon(false).withParticles(false).withAmbient(false));
+		player.addPotionEffect(XPotion.SPEED.buildInvisible(Integer.MAX_VALUE, level));
 	}
 
 	public void removeSpectator(final User user) {
@@ -590,7 +590,7 @@ public class Arena extends BukkitRunnable {
 
 						user.resetTemporaryStats();
 						user.addGameItems("double-jump");
-						user.getPlayer().addPotionEffect(XPotion.NIGHT_VISION.buildInvisible(Integer.MAX_VALUE, 1).withIcon(false).withParticles(false).withAmbient(false));
+						user.getPlayer().addPotionEffect(XPotion.NIGHT_VISION.buildInvisible(Integer.MAX_VALUE, 1));
 
 						ArenaUtils.updateNameTagsVisibility(user);
 					}

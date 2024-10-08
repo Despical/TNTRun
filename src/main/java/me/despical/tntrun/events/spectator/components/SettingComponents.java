@@ -52,11 +52,11 @@ public class SettingComponents {
 		var arena = spectatorGui.getArena();
 		var player = spectatorGui.getUser().getPlayer();
 
-		pane.addItem(GuiItem.of(new ItemBuilder(XMaterial.LEATHER_BOOTS).name(chatManager.message("spectator-gui.no-speed")).flag(ItemFlag.HIDE_ATTRIBUTES).build(), e -> setSpeed(user, -1, "0")),2,1);
-		pane.addItem(GuiItem.of(new ItemBuilder(XMaterial.CHAINMAIL_BOOTS).name(prefix + "I").flag(ItemFlag.HIDE_ATTRIBUTES).build(), e -> setSpeed(user, 1, "I")),3,1);
-		pane.addItem(GuiItem.of(new ItemBuilder(XMaterial.IRON_BOOTS).name(prefix + "II").flag(ItemFlag.HIDE_ATTRIBUTES).build(), e -> setSpeed(user, 2, "II")),4,1);
-		pane.addItem(GuiItem.of(new ItemBuilder(XMaterial.GOLDEN_BOOTS).name(prefix + "III").flag(ItemFlag.HIDE_ATTRIBUTES).build(), e -> setSpeed(user, 3, "III")),5,1);
-		pane.addItem(GuiItem.of(new ItemBuilder(Material.DIAMOND_BOOTS).name(prefix + "IV").flag(ItemFlag.HIDE_ATTRIBUTES).build(), e -> setSpeed(user, 4, "IV")),6,1);
+		pane.addItem(GuiItem.of(new ItemBuilder(XMaterial.LEATHER_BOOTS).name(chatManager.message("spectator-gui.no-speed")).flag(ItemFlag.HIDE_ATTRIBUTES).hideToolTip().build(), e -> setSpeed(user, -1, "0")),2,1);
+		pane.addItem(GuiItem.of(new ItemBuilder(XMaterial.CHAINMAIL_BOOTS).name(prefix + "I").flag(ItemFlag.HIDE_ATTRIBUTES).hideToolTip().build(), e -> setSpeed(user, 1, "I")),3,1);
+		pane.addItem(GuiItem.of(new ItemBuilder(XMaterial.IRON_BOOTS).name(prefix + "II").flag(ItemFlag.HIDE_ATTRIBUTES).hideToolTip().build(), e -> setSpeed(user, 2, "II")),4,1);
+		pane.addItem(GuiItem.of(new ItemBuilder(XMaterial.GOLDEN_BOOTS).name(prefix + "III").flag(ItemFlag.HIDE_ATTRIBUTES).hideToolTip().build(), e -> setSpeed(user, 3, "III")),5,1);
+		pane.addItem(GuiItem.of(new ItemBuilder(Material.DIAMOND_BOOTS).name(prefix + "IV").flag(ItemFlag.HIDE_ATTRIBUTES).hideToolTip().build(), e -> setSpeed(user, 4, "IV")),6,1);
 
 		var hasNightVision = player.hasPotionEffect(XPotion.NIGHT_VISION.getPotionEffectType());
 		var shouldHaveNightVision = user.getStat(StatsStorage.StatisticType.SPECTATOR_NIGHT_VISION) == 1;
@@ -65,7 +65,7 @@ public class SettingComponents {
 			if (hasNightVision) {
 				player.removePotionEffect(XPotion.NIGHT_VISION.getPotionEffectType());
 			} else {
-				player.addPotionEffect(XPotion.NIGHT_VISION.buildInvisible(Integer.MAX_VALUE, 3).withIcon(false).withParticles(false).withAmbient(false));
+				player.addPotionEffect(XPotion.NIGHT_VISION.buildInvisible(Integer.MAX_VALUE, 3));
 			}
 
 			user.setStat(StatsStorage.StatisticType.SPECTATOR_NIGHT_VISION, !hasNightVision ? 0 : 1);
@@ -107,7 +107,7 @@ public class SettingComponents {
 		player.removePotionEffect(XPotion.SPEED.getPotionEffectType());
 
 		if (level != -1) {
-			player.addPotionEffect(XPotion.SPEED.buildInvisible(Integer.MAX_VALUE, level).withIcon(false).withParticles(false).withAmbient(false));
+			player.addPotionEffect(XPotion.SPEED.buildInvisible(Integer.MAX_VALUE, level));
 		}
 
 		user.setStat(StatsStorage.StatisticType.SPECTATOR_SPEED, level);

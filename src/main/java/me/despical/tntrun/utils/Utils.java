@@ -126,9 +126,7 @@ public class Utils {
 
 		message = new ComponentBuilder()
 			.append(returnMessage.toString().replace("%no_center%", ""))
-			.append(Arrays.stream(components)
-				.map(component -> TextComponent.fromLegacyText(component.toLegacyText().replace("%no_center%", "")))
-				.toArray(BaseComponent[]::new))
+			.append(components)
 			.create();
 
 		sender.spigot().sendMessage(message);

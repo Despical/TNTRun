@@ -90,7 +90,7 @@ public class GameItemEvents extends EventListener {
 
 		if (user.getCooldown("double_jump") > 0) return;
 
-		final var doubleJumpItem = plugin.getGameItemManager().getGameItem("double-jump");
+		final var doubleJumpItem = plugin.getItemManager().getItem("double-jump");
 
 		if (doubleJumpItem == null) return;
 
@@ -110,15 +110,13 @@ public class GameItemEvents extends EventListener {
 
 	@EventHandler
 	public void onTeleporterItemClicked(final PlayerInteractEvent event) {
-		if (event.getAction() == Action.PHYSICAL) return;
-
 		final var user = plugin.getUserManager().getUser(event.getPlayer());
 		final var arena = user.getArena();
 
 		if (arena == null) return;
 		if (event.getItem() == null) return;
 
-		final var teleporterItem = plugin.getGameItemManager().getGameItem( "teleporter-item");
+		final var teleporterItem = plugin.getItemManager().getItem( "teleporter-item");
 
 		if (teleporterItem == null) return;
 		if (!teleporterItem.equals(event.getItem())) return;
@@ -128,15 +126,13 @@ public class GameItemEvents extends EventListener {
 
 	@EventHandler
 	public void onSettingsItemClicked(final PlayerInteractEvent event) {
-		if (event.getAction() == Action.PHYSICAL) return;
-
 		final var user = plugin.getUserManager().getUser(event.getPlayer());
 		final var arena = user.getArena();
 
 		if (arena == null) return;
 		if (event.getItem() == null) return;
 
-		final var settingsItem = plugin.getGameItemManager().getGameItem("settings-item");
+		final var settingsItem = plugin.getItemManager().getItem("settings-item");
 
 		if (settingsItem == null) return;
 		if (!settingsItem.equals(event.getItem())) return;
@@ -146,15 +142,13 @@ public class GameItemEvents extends EventListener {
 
 	@EventHandler
 	public void onPlayAgainItemClicked(final PlayerInteractEvent event) {
-		if (event.getAction() == Action.PHYSICAL) return;
-
 		final var user = plugin.getUserManager().getUser(event.getPlayer());
 		final var arena = user.getArena();
 
 		if (arena == null) return;
 		if (event.getItem() == null) return;
 
-		final var playAgainItem = plugin.getGameItemManager().getGameItem("play-again");
+		final var playAgainItem = plugin.getItemManager().getItem("play-again");
 
 		if (playAgainItem == null) return;
 		if (!playAgainItem.equals(event.getItem())) return;
@@ -177,15 +171,13 @@ public class GameItemEvents extends EventListener {
 
 	@EventHandler
 	public void onForceStartItemClicked(final PlayerInteractEvent event) {
-		if (event.getAction() == Action.PHYSICAL) return;
-
 		final var user = plugin.getUserManager().getUser(event.getPlayer());
 		final var arena = user.getArena();
 
 		if (arena == null) return;
 		if (event.getItem() == null) return;
 
-		final var forceStartItem = plugin.getGameItemManager().getGameItem("force-start-item");
+		final var forceStartItem = plugin.getItemManager().getItem("force-start-item");
 
 		if (forceStartItem == null) return;
 		if (!forceStartItem.equals(event.getItem())) return;
@@ -210,15 +202,13 @@ public class GameItemEvents extends EventListener {
 
 	@EventHandler
 	public void onLeaveItemClicked(final PlayerInteractEvent event) {
-		if (event.getAction() == Action.PHYSICAL) return;
-
 		final var user = plugin.getUserManager().getUser(event.getPlayer());
 		final var arena = user.getArena();
 
 		if (arena == null) return;
 		if (event.getItem() == null) return;
 
-		final var leaveItem = plugin.getGameItemManager().getGameItem("leave-item");
+		final var leaveItem = plugin.getItemManager().getItem("leave-item");
 
 		if (leaveItem == null) return;
 		if (!leaveItem.equals(event.getItem())) return;

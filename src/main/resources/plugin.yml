@@ -1,13 +1,17 @@
 name: TNTRun
-main: me.despical.tntrun.Main
-author: Despical
 version: ${project.version}
+description: The ultimate TNT Run plugin.
+author: Despical
+
+main: me.despical.tntrun.Main
 api-version: 1.13
 
 softdepend:
   - PlaceholderAPI
   - Multiverse-Core
   - WorldGuard
+  - MultiWorld
+  - Oraxen
 
 permissions:
   tntrun.admin.*:

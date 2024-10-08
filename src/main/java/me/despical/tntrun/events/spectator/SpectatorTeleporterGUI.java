@@ -62,6 +62,10 @@ public class SpectatorTeleporterGUI {
 		teleporterComponents.registerComponents(this, pane);
 	}
 
+	public void close() {
+		plugin.getServer().getScheduler().runTaskLater(plugin, () -> this.user.getPlayer().closeInventory(), 1L);
+	}
+
 	public void showGui() {
 		this.gui.show(this.user.getPlayer());
 	}

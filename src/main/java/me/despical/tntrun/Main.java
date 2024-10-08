@@ -23,6 +23,8 @@ import me.despical.commons.database.MysqlDatabase;
 import me.despical.commons.scoreboard.ScoreboardLib;
 import me.despical.commons.serializer.InventorySerializer;
 import me.despical.commons.util.UpdateChecker;
+import me.despical.fileitems.ItemManager;
+import me.despical.fileitems.ItemOption;
 import me.despical.tntrun.api.StatsStorage;
 import me.despical.tntrun.arena.ArenaRegistry;
 import me.despical.tntrun.arena.ArenaUtils;
@@ -34,7 +36,6 @@ import me.despical.tntrun.handlers.ChatManager;
 import me.despical.tntrun.handlers.PermissionsManager;
 import me.despical.tntrun.handlers.PlaceholderHandler;
 import me.despical.tntrun.handlers.bungee.BungeeManager;
-import me.despical.tntrun.handlers.items.GameItemManager;
 import me.despical.tntrun.handlers.rewards.RewardsFactory;
 import me.despical.tntrun.handlers.sign.SignManager;
 import me.despical.tntrun.user.User;
@@ -42,6 +43,7 @@ import me.despical.tntrun.user.UserManager;
 import me.despical.tntrun.user.data.MysqlManager;
 import org.bstats.bukkit.Metrics;
 import org.bstats.charts.SimplePie;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
@@ -63,7 +65,7 @@ public class Main extends JavaPlugin {
 	private ConfigPreferences configPreferences;
 	private ChatManager chatManager;
 	private UserManager userManager;
-	private GameItemManager gameItemManager;
+	private ItemManager itemManager;
 	private PermissionsManager permissionManager;
 	private CommandFramework commandFramework;
 	private SignManager signManager;
@@ -112,7 +114,12 @@ public class Main extends JavaPlugin {
 		this.commandFramework = new CommandFramework(this);
 		this.arenaRegistry = new ArenaRegistry(this);
 		this.arenaManager = new ArenaManager(this);
-		this.gameItemManager = new GameItemManager(this);
+		this.itemManager = new ItemManager(this, manager -> {
+			ItemOption.enableOptions(ItemOption.GLOW);
+			manager.addCustomKeys("slot");
+			manager.editItemBuilder(builder -> builder.hideToolTip(true).unbreakable(true).flag(ItemFlag.HIDE_UNBREAKABLE));
+			manager.registerItems("items", "items");
+		});
 		this.permissionManager = new PermissionsManager(this);
 		this.rewardsFactory = new RewardsFactory(this);
 		this.signManager = new SignManager(this);
@@ -186,8 +193,8 @@ public class Main extends JavaPlugin {
 	}
 
 	@NotNull
-	public GameItemManager getGameItemManager() {
-		return gameItemManager;
+	public ItemManager getItemManager() {
+		return itemManager;
 	}
 
 	@NotNull

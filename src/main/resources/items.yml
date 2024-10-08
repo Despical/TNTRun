@@ -1,8 +1,13 @@
 items:
   double-jump:
     name: "&a&lDouble Jump"
+    # Custom-modeled items by the Oraxen plugin are supported.
+    # To use them, simply replace the material with oraxen:item_id_here.
     material: FEATHER
     slot: 0
+    # Should this item has a glowing effect?
+    # This option is optional and is false by default.
+    glow: false
     lore:
       - "&7Right-click to double jump!"
   leave-item:
