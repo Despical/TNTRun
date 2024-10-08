@@ -65,6 +65,7 @@ public class ConfigPreferences {
 		NAME_TAGS_HIDDEN(false),
 		UPDATE_NOTIFIER_ENABLED,
 		SCOREBOARD_ENABLED,
+		PVP_DISABLED("PVP-Disabled"),
 		HEAL_PLAYER((config) -> {
 			final var list = config.getStringList("Inventory-Manager.Do-Not-Restore");
 			list.forEach(InventorySerializer::addNonSerializableElements);
