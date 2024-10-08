@@ -245,6 +245,8 @@ public record ArenaManager(Main plugin) {
 			plugin.getUserManager().saveStatistics(user);
 		}
 
+		if (quickStop) return;
+
 		final var summaryMessages = chatManager.getStringList("messages.summary-message");
 
 		for (final var user : arena.getPlayers()) {
