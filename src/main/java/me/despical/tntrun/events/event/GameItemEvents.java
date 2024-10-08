@@ -238,6 +238,12 @@ public class GameItemEvents extends EventListener {
 						return;
 					}
 
+					if (!arena.isInArena(user)) {
+						cancel();
+						leaveConfirmations.remove(user);
+						return;
+					}
+
 					if ((ticks += 2) == 60) {
 						cancel();
 						leaveArena(user, arena);
