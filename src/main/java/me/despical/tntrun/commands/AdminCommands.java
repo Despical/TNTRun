@@ -74,7 +74,7 @@ public class AdminCommands extends AbstractCommand {
 	@Command(
 		name = "tntrun",
 		usage = "/tntrun",
-		desc = "Main command of the TNT Run."
+		desc = "Main command of the plugin."
 	)
 	public void mainCommand(CommandArguments arguments) {
 		if (arguments.isArgumentsEmpty()) {
@@ -115,7 +115,7 @@ public class AdminCommands extends AbstractCommand {
 	@Command(
 		name = "tntrun.create",
 		permission = "tntrun.admin.create",
-		desc = "Create an arena with default configuration.",
+		desc = "Creates an arena instance with the given ID.",
 		usage = "/tntrun create <arena name>",
 		senderType = Command.SenderType.PLAYER
 	)
@@ -165,7 +165,7 @@ public class AdminCommands extends AbstractCommand {
 	@Command(
 		name = "tntrun.delete",
 		permission = "tntrun.admin.delete",
-		desc = "Delete specified arena and its data",
+		desc = "Deletes the arena instance with the given ID, if it exists.",
 		usage = "/tntrun delete <arena name>",
 		senderType = Command.SenderType.PLAYER
 	)
@@ -201,9 +201,32 @@ public class AdminCommands extends AbstractCommand {
 	}
 
 	@Command(
+		name = "tntrun.edit",
+		permission = "tntrun.admin.edit",
+		desc = "Opens the arena editor menu.",
+		usage = "/tntrun edit <arena name>",
+		senderType = Command.SenderType.PLAYER
+	)
+	public void editCommand(User user, CommandArguments arguments) {
+		if (arguments.isArgumentsEmpty()) {
+			user.sendMessage("admin-commands.provide-an-arena-name");
+			return;
+		}
+
+		final var arena = plugin.getArenaRegistry().getArena(arguments.getArgument(0));
+
+		if (arena == null) {
+			user.sendMessage("admin-commands.no-arena-found-with-that-name");
+			return;
+		}
+
+		new ArenaEditorGUI(plugin, user, arena).showGui();
+	}
+
+	@Command(
 		name = "tntrun.list",
 		permission = "tntrun.admin.list",
-		desc = "Get a list of registered arenas and their status",
+		desc = "Shows the list of existing arena IDs.",
 		usage = "/tntrun list",
 		senderType = Command.SenderType.PLAYER
 	)
@@ -222,7 +245,7 @@ public class AdminCommands extends AbstractCommand {
 	@Command(
 		name = "tntrun.forcestart",
 		permission = "tntrun.admin.forcestart",
-		desc = "Forces arena to start without waiting time",
+		desc = "Forces the arena that the player is in to start, if there are enough players.",
 		usage = "/tntrun forcestart",
 		senderType = Command.SenderType.PLAYER
 	)
@@ -255,7 +278,7 @@ public class AdminCommands extends AbstractCommand {
 	@Command(
 		name = "tntrun.stop",
 		permission = "tntrun.admin.stop",
-		desc = "Stop the arena that you're in",
+		desc = "Forces the arena that the player is in to stop.",
 		usage = "/tntrun stop",
 		senderType = Command.SenderType.PLAYER
 	)
@@ -273,32 +296,9 @@ public class AdminCommands extends AbstractCommand {
 	}
 
 	@Command(
-		name = "tntrun.edit",
-		permission = "tntrun.admin.edit",
-		desc = "Open arena editor for specified arena",
-		usage = "/tntrun edit <arena name>",
-		senderType = Command.SenderType.PLAYER
-	)
-	public void editCommand(User user, CommandArguments arguments) {
-		if (arguments.isArgumentsEmpty()) {
-			user.sendMessage("admin-commands.provide-an-arena-name");
-			return;
-		}
-
-		final var arena = plugin.getArenaRegistry().getArena(arguments.getArgument(0));
-
-		if (arena == null) {
-			user.sendMessage("admin-commands.no-arena-found-with-that-name");
-			return;
-		}
-
-		new ArenaEditorGUI(plugin, user, arena).showGui();
-	}
-
-	@Command(
 		name = "tntrun.reload",
 		permission = "tntrun.admin.reload",
-		desc = "Reloads all files and configurations.",
+		desc = "Reloads the configuration files and arenas.",
 		usage = "/tntrun reload",
 		senderType = Command.SenderType.PLAYER
 	)
@@ -308,7 +308,6 @@ public class AdminCommands extends AbstractCommand {
 
 		plugin.getSignManager().loadSigns();
 		plugin.getRewardsFactory().reload();
-		plugin.getGameItemManager().reload();
 
 		user.sendMessage("admin-commands.system-reloaded");
 	}
@@ -317,6 +316,7 @@ public class AdminCommands extends AbstractCommand {
 	@Command(
 		name = "tntrun.help",
 		usage = "/tntrun help",
+		desc = "Displays a list of available commands along with their descriptions.",
 		permission = "tntrun.admin.help"
 	)
 	public void helpCommand(CommandArguments arguments) {
@@ -324,8 +324,8 @@ public class AdminCommands extends AbstractCommand {
 		final var sender = arguments.getSender();
 
 		arguments.sendMessage("");
-		MiscUtils.sendCenteredMessage(arguments.getSender(), "&3&lTNT Run");
-		MiscUtils.sendCenteredMessage(arguments.getSender(), "&3[&boptional argument&3] &b- &3<&brequired argument&3>");
+		MiscUtils.sendCenteredMessage(sender, "&3&lTNT Run");
+		MiscUtils.sendCenteredMessage(sender, "&3[&boptional argument&3] &b- &3<&brequired argument&3>");
 		arguments.sendMessage("");
 
 		for (final var command : plugin.getCommandFramework().getSubCommands()) {
@@ -347,7 +347,7 @@ public class AdminCommands extends AbstractCommand {
 		}
 
 		if (isPlayer) {
-			final var player = arguments.getSender();
+			Player player = arguments.getSender();
 			player.sendMessage("");
 			player.spigot().sendMessage(new ComponentBuilder("TIP:").color(ChatColor.YELLOW).bold(true)
 				.append(" Try to ", ComponentBuilder.FormatRetention.NONE).color(ChatColor.GRAY)

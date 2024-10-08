@@ -20,7 +20,7 @@ package me.despical.tntrun.arena.managers;
 
 import me.despical.tntrun.ConfigPreferences;
 import me.despical.tntrun.Main;
-import me.despical.tntrun.arena.Arena;
+import me.despical.tntrun.arena.data.ArenaData;
 import me.despical.tntrun.user.User;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
@@ -34,11 +34,11 @@ import org.bukkit.boss.BossBar;
 public final class GameBarManager {
 
 	private final BossBar gameBar;
-	private final Arena arena;
+	private final ArenaData data;
 	private final Main plugin;
 
-	public GameBarManager(final Arena arena, final Main plugin) {
-		this.arena = arena;
+	public GameBarManager(final ArenaData data, final Main plugin) {
+		this.data = data;
 		this.plugin = plugin;
 		this.gameBar = plugin.getOption(ConfigPreferences.Option.GAME_BAR_ENABLED) ? plugin.getServer().createBossBar("", BarColor.BLUE, BarStyle.SOLID) : null;
 	}
@@ -62,7 +62,7 @@ public final class GameBarManager {
 	public void handleGameBar() {
 		if (this.gameBar == null) return;
 
-		switch (arena.getArenaState()) {
+		switch (data.getArenaState()) {
 			case WAITING_FOR_PLAYERS -> updateState("waiting-for-players");
 			case STARTING -> updateState("starting");
 			case IN_GAME -> updateState("in-game");

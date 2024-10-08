@@ -45,13 +45,13 @@ public abstract class EventListener implements Listener {
 		this.plugin.getServer().getPluginManager().registerEvents(this, plugin);
 	}
 
+	protected final boolean isInArena(Player player) {
+		return this.userManager.getUser(player).isInArena();
+	}
+
 	public static void registerEvents(final Main plugin) {
 		new JoinQuitEvents(plugin);
 		new GameItemEvents(plugin);
 		new GameEvents(plugin);
-	}
-
-	protected final boolean isInArena(Player player) {
-		return this.userManager.getUser(player).isInArena();
 	}
 }

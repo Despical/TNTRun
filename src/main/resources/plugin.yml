@@ -8,6 +8,7 @@ softdepend:
   - PlaceholderAPI
   - Multiverse-Core
   - WorldGuard
+  - Oraxen
 
 permissions:
   tntrun.admin.*:

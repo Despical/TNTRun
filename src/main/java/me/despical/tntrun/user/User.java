@@ -213,11 +213,11 @@ public class User {
 	}
 
 	public void addGameItem(final String id) {
-		final var gameItem = plugin.getGameItemManager().getGameItem(id);
+		plugin.getItemManager().findItem(id).ifPresent(item -> {
+			int slot = item.<Integer>getCustomKey("slot");
 
-		if (gameItem == null) return;
-
-		this.getPlayer().getInventory().setItem(gameItem.getSlot(), gameItem.getItemStack());
+			this.getPlayer().getInventory().setItem(slot, item.getItemStack());
+		});
 	}
 
 	public void playDeathEffect() {
@@ -225,8 +225,8 @@ public class User {
 
 		player.setAllowFlight(true);
 		player.setFlying(true);
-		player.addPotionEffect(XPotion.INVISIBILITY.buildInvisible(Integer.MAX_VALUE, 2).withIcon(false).withParticles(false).withAmbient(false));
-		player.addPotionEffect(XPotion.BLINDNESS.buildInvisible(4 * 20, 2).withIcon(false).withParticles(false).withAmbient(false));
+		player.addPotionEffect(XPotion.INVISIBILITY.buildInvisible(Integer.MAX_VALUE, 2));
+		player.addPotionEffect(XPotion.BLINDNESS.buildInvisible(4 * 20, 2));
 	}
 
 	public void cacheScoreboard() {

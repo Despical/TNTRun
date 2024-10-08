@@ -76,7 +76,7 @@ public final class StatsStorage {
 		return SortUtils.sortByValue(stats);
 	}
 
-	public static int getUserStats(final Player player, final StatisticType statisticType) {
+	public static int getUserStats(final Player player, StatisticType statisticType) {
 		return plugin.getUserManager().getUser(player).getStat(statisticType);
 	}
 

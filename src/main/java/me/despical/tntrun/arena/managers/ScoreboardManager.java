@@ -26,14 +26,12 @@ import me.despical.commons.scoreboard.type.ScoreboardHandler;
 import me.despical.commons.string.StringFormatUtils;
 import me.despical.tntrun.ConfigPreferences;
 import me.despical.tntrun.Main;
-import me.despical.tntrun.arena.Arena;
 import me.despical.tntrun.arena.ArenaState;
+import me.despical.tntrun.arena.data.ArenaData;
 import me.despical.tntrun.handlers.ChatManager;
 import me.despical.tntrun.user.User;
 import org.bukkit.entity.Player;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -50,14 +48,14 @@ public class ScoreboardManager {
 
 	private static final String date = StringFormatUtils.formatToday();
 
-	private final Arena arena;
+	private final ArenaData arenaData;
 	private final Main plugin;
 	private final ChatManager chatManager;
 	private final String[] doubleJumpColors;
 	private final Set<Scoreboard> scoreboards;
 
-	public ScoreboardManager(final Arena arena, final Main plugin) {
-		this.arena = arena;
+	public ScoreboardManager(final ArenaData arenaData, final Main plugin) {
+		this.arenaData = arenaData;
 		this.plugin = plugin;
 		this.chatManager = plugin.getChatManager();
 		this.doubleJumpColors = chatManager.message("Scoreboard.Double-Jumps").split(":");
@@ -107,7 +105,7 @@ public class ScoreboardManager {
 
 	private List<Entry> formatScoreboard(User user) {
 		final var builder = new EntryBuilder();
-		final var path = "Scoreboard." + (arena.isArenaState(ArenaState.IN_GAME, ArenaState.ENDING) ? "Playing" : arena.getArenaState().getFormattedName());
+		final var path = "Scoreboard." + (arenaData.isArenaState(ArenaState.IN_GAME, ArenaState.ENDING) ? "Playing" : arenaData.getArenaState().getFormattedName());
 
 		for (final var line : chatManager.getStringList(path)) {
 			builder.next(formatScoreboardLine(line, user));
@@ -120,13 +118,13 @@ public class ScoreboardManager {
 		var formattedLine = line;
 
 		formattedLine = formattedLine.replace("%date%", date);
-		formattedLine = formattedLine.replace("%map%", arena.getMapName());
-		formattedLine = formattedLine.replace("%players%", Integer.toString(arena.getPlayers().size()));
-		formattedLine = formattedLine.replace("%players_left%", Integer.toString(arena.getPlayersLeft().size()));
-		formattedLine = formattedLine.replace("%min_players%", Integer.toString(arena.getMinimumPlayers()));
-		formattedLine = formattedLine.replace("%max_players%", Integer.toString(arena.getMaximumPlayers()));
-		formattedLine = formattedLine.replace("%time%", Integer.toString(arena.getTimer()));
-		formattedLine = formattedLine.replace("%formatted_time%", StringFormatUtils.formatIntoMMSS(arena.getTimer()));
+		formattedLine = formattedLine.replace("%map%", arenaData.getMapName());
+		formattedLine = formattedLine.replace("%players%", Integer.toString(arenaData.getPlayers().size()));
+		formattedLine = formattedLine.replace("%players_left%", Integer.toString(arenaData.getPlayersLeft().size()));
+		formattedLine = formattedLine.replace("%min_players%", Integer.toString(arenaData.getMinimumPlayers()));
+		formattedLine = formattedLine.replace("%max_players%", Integer.toString(arenaData.getMaximumPlayers()));
+		formattedLine = formattedLine.replace("%time%", Integer.toString(arenaData.getTimer()));
+		formattedLine = formattedLine.replace("%formatted_time%", StringFormatUtils.formatIntoMMSS(arenaData.getTimer()));
 		formattedLine = formattedLine.replace("%coins_earned%", Integer.toString(user.getStat(LOCAL_COINS)));
 
 		int jumps = user.getStat(LOCAL_DOUBLE_JUMPS), max = plugin.getPermissionManager().getDoubleJumps(user.getPlayer());

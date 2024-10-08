@@ -13,6 +13,7 @@ admin-commands:
     format: "&aExisting arenas: &7%list%"
 
 player-commands:
+  only-command-is-leave: "&cYou can only use /tntrun leave command while playing TNT Run!"
   no-player-found: "&cNo player found with that name!"
   no-free-arenas: "&cThere aren't any available arena to join!"
   statistics:

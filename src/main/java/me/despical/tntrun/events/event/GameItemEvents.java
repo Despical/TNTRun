@@ -90,7 +90,7 @@ public class GameItemEvents extends EventListener {
 
 		if (user.getCooldown("double_jump") > 0) return;
 
-		final var doubleJumpItem = plugin.getGameItemManager().getGameItem("double-jump");
+		final var doubleJumpItem = plugin.getItemManager().getItem("double-jump");
 
 		if (doubleJumpItem == null) return;
 
@@ -118,7 +118,7 @@ public class GameItemEvents extends EventListener {
 		if (arena == null) return;
 		if (event.getItem() == null) return;
 
-		final var teleporterItem = plugin.getGameItemManager().getGameItem( "teleporter-item");
+		final var teleporterItem = plugin.getItemManager().getItem( "teleporter-item");
 
 		if (teleporterItem == null) return;
 		if (!teleporterItem.equals(event.getItem())) return;
@@ -136,7 +136,7 @@ public class GameItemEvents extends EventListener {
 		if (arena == null) return;
 		if (event.getItem() == null) return;
 
-		final var settingsItem = plugin.getGameItemManager().getGameItem("settings-item");
+		final var settingsItem = plugin.getItemManager().getItem("settings-item");
 
 		if (settingsItem == null) return;
 		if (!settingsItem.equals(event.getItem())) return;
@@ -154,7 +154,7 @@ public class GameItemEvents extends EventListener {
 		if (arena == null) return;
 		if (event.getItem() == null) return;
 
-		final var playAgainItem = plugin.getGameItemManager().getGameItem("play-again");
+		final var playAgainItem = plugin.getItemManager().getItem("play-again");
 
 		if (playAgainItem == null) return;
 		if (!playAgainItem.equals(event.getItem())) return;
@@ -185,7 +185,7 @@ public class GameItemEvents extends EventListener {
 		if (arena == null) return;
 		if (event.getItem() == null) return;
 
-		final var forceStartItem = plugin.getGameItemManager().getGameItem("force-start-item");
+		final var forceStartItem = plugin.getItemManager().getItem("force-start-item");
 
 		if (forceStartItem == null) return;
 		if (!forceStartItem.equals(event.getItem())) return;
@@ -218,7 +218,7 @@ public class GameItemEvents extends EventListener {
 		if (arena == null) return;
 		if (event.getItem() == null) return;
 
-		final var leaveItem = plugin.getGameItemManager().getGameItem("leave-item");
+		final var leaveItem = plugin.getItemManager().getItem("leave-item");
 
 		if (leaveItem == null) return;
 		if (!leaveItem.equals(event.getItem())) return;
@@ -229,13 +229,13 @@ public class GameItemEvents extends EventListener {
 		}
 
 		if (leaveConfirmations.contains(user)) {
-			this.leaveConfirmations.remove(user);
+			leaveConfirmations.remove(user);
 
 			user.sendMessage("messages.game-items.leave-item.teleport-cancelled");
 		} else {
 			user.sendMessage("messages.game-items.leave-item.returning-lobby");
 
-			this.leaveConfirmations.add(user);
+			leaveConfirmations.add(user);
 
 			new BukkitRunnable() {
 
