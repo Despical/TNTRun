@@ -97,6 +97,9 @@ Database-Enabled: false
 # Should we hide players' name tags in-game?
 Name-Tags-Hidden: false
 
+# Should we allow players to hit others? (Damaging can not be enabled.)
+PVP-Disabled: true
+
 # Should we format the chat messages?
 # See messages.yml to change format.
 Chat-Format-Enabled: true

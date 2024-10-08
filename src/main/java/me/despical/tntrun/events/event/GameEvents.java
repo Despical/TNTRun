@@ -32,10 +32,13 @@ import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.*;
+
+import java.util.Optional;
 
 /**
  * @author Despical
@@ -80,6 +83,8 @@ public class GameEvents extends EventListener {
 		switch (e.getCause()) {
 			case DROWNING, FALL -> e.setCancelled(true);
 			case VOID -> {
+				e.setCancelled(true);
+
 				victim.teleport(arena.getLobbyLocation());
 
 				if (!arena.isArenaState(ArenaState.IN_GAME)) {
@@ -165,12 +170,34 @@ public class GameEvents extends EventListener {
 	public void onLobbyDamage(EntityDamageEvent event) {
 		if (!(event.getEntity() instanceof Player player)) return;
 
-		final var arena = this.userManager.getUser(player).getArena();
+		Optional.ofNullable(this.userManager.getUser(player).getArena()).ifPresent(arena -> {
+			if (arena.isArenaState(ArenaState.IN_GAME)) {
+				return;
+			}
 
-		if (arena == null) return;
+			event.setCancelled(true);
+			player.setFireTicks(0);
+		});
+	}
 
-		event.setCancelled(true);
-		player.setFireTicks(0);
+	@EventHandler
+	public void onGeneralDamage(EntityDamageByEntityEvent event) {
+		if (!(event.getEntity() instanceof Player victim)) return;
+		if (!(event.getDamager() instanceof Player)) return;
+
+		Optional.ofNullable(this.userManager.getUser(victim).getArena()).ifPresent(arena -> {
+			if (!arena.isArenaState(ArenaState.IN_GAME)) {
+				return;
+			}
+
+			if (plugin.getOption(ConfigPreferences.Option.PVP_DISABLED)) {
+				event.setCancelled(true);
+			} else {
+				event.setDamage(0);
+			}
+
+			victim.setFireTicks(0);
+		});
 	}
 
 	@EventHandler
