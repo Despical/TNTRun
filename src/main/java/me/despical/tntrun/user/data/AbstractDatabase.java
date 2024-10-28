@@ -21,6 +21,7 @@ package me.despical.tntrun.user.data;
 import me.despical.tntrun.Main;
 import me.despical.tntrun.api.StatsStorage;
 import me.despical.tntrun.user.User;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -28,18 +29,16 @@ import org.jetbrains.annotations.NotNull;
  * <p>
  * Created at 10.07.2020
  */
-public abstract sealed class IUserDatabase permits FileStatistics, MysqlManager {
+public abstract sealed class AbstractDatabase permits FlatFileStatistics, MySQLStatistics {
 
-	@NotNull
-	protected final Main plugin;
-
-	public IUserDatabase(final @NotNull Main plugin) {
-		this.plugin = plugin;
-	}
+	protected static final Main plugin = JavaPlugin.getPlugin(Main.class);
 
 	public abstract void saveStatistic(final @NotNull User user, final StatsStorage.StatisticType statisticType);
 
 	public abstract void saveStatistics(final @NotNull User user);
 
 	public abstract void loadStatistics(final @NotNull User user);
+
+	public void shutdown() {
+	}
 }

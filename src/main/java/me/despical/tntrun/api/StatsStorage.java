@@ -22,7 +22,7 @@ import me.despical.commons.configuration.ConfigUtils;
 import me.despical.commons.sorter.SortUtils;
 import me.despical.tntrun.Main;
 import me.despical.tntrun.user.User;
-import me.despical.tntrun.user.data.MysqlManager;
+import me.despical.tntrun.user.data.MySQLStatistics;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.Contract;
@@ -49,10 +49,10 @@ public final class StatsStorage {
 	@NotNull
 	@Contract("null -> fail")
 	public static Map<UUID, Integer> getStats(StatisticType stat) {
-		if (plugin.getUserManager().getUserDatabase() instanceof MysqlManager mysqlManager) {
+		if (plugin.getUserManager().getUserDatabase() instanceof MySQLStatistics mysqlManager) {
 			try (final var connection = plugin.getMysqlDatabase().getConnection()) {
 				final var statement = connection.createStatement();
-				final var set = statement.executeQuery("SELECT UUID, %s FROM %s ORDER BY %s".formatted(stat.getName(), mysqlManager.getTable(), stat.getName()));
+				final var set = statement.executeQuery("SELECT UUID, %s FROM %s ORDER BY %s".formatted(stat.getName(), mysqlManager.getTableName(), stat.getName()));
 				final var column = new HashMap<UUID, Integer>();
 
 				while (set.next()) {

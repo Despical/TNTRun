@@ -21,9 +21,9 @@ package me.despical.tntrun.user;
 import me.despical.tntrun.ConfigPreferences;
 import me.despical.tntrun.Main;
 import me.despical.tntrun.api.StatsStorage;
-import me.despical.tntrun.user.data.FileStatistics;
-import me.despical.tntrun.user.data.IUserDatabase;
-import me.despical.tntrun.user.data.MysqlManager;
+import me.despical.tntrun.user.data.FlatFileStatistics;
+import me.despical.tntrun.user.data.AbstractDatabase;
+import me.despical.tntrun.user.data.MySQLStatistics;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
@@ -44,11 +44,11 @@ public class UserManager {
 	private final Map<UUID, User> users;
 
 	@NotNull
-	private final IUserDatabase userDatabase;
+	private final AbstractDatabase userDatabase;
 
 	public UserManager(Main plugin) {
 		this.users = new HashMap<>();
-		this.userDatabase = plugin.getOption(ConfigPreferences.Option.DATABASE_ENABLED) ? new MysqlManager(plugin) : new FileStatistics(plugin);
+		this.userDatabase = plugin.getOption(ConfigPreferences.Option.DATABASE_ENABLED) ? new MySQLStatistics() : new FlatFileStatistics();
 
 		plugin.getServer().getOnlinePlayers().forEach(this::addUser);
 	}
@@ -84,7 +84,7 @@ public class UserManager {
 	}
 
 	@NotNull
-	public IUserDatabase getUserDatabase() {
+	public AbstractDatabase getUserDatabase() {
 		return userDatabase;
 	}
 

@@ -19,7 +19,6 @@
 package me.despical.tntrun.user.data;
 
 import me.despical.commons.configuration.ConfigUtils;
-import me.despical.tntrun.Main;
 import me.despical.tntrun.api.StatsStorage;
 import me.despical.tntrun.user.User;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -30,12 +29,11 @@ import org.jetbrains.annotations.NotNull;
  * <p>
  * Created at 10.07.2020
  */
-public non-sealed class FileStatistics extends IUserDatabase {
+public non-sealed class FlatFileStatistics extends AbstractDatabase {
 
 	private final FileConfiguration config;
 
-	public FileStatistics(Main plugin) {
-		super(plugin);
+	public FlatFileStatistics() {
 		this.config = ConfigUtils.getConfig(plugin, "stats");
 	}
 
@@ -48,9 +46,9 @@ public non-sealed class FileStatistics extends IUserDatabase {
 
 	@Override
 	public void saveStatistics(@NotNull User user) {
-		final String uuid = user.getUniqueId().toString();
+		String uuid = user.getUniqueId().toString();
 
-		for (StatsStorage.StatisticType stat : StatsStorage.StatisticType.values()) {
+		for (var stat : StatsStorage.StatisticType.values()) {
 			if (stat.isPersistent()) {
 				config.set(uuid + "." + stat.getName(), user.getStat(stat));
 			}
@@ -61,9 +59,9 @@ public non-sealed class FileStatistics extends IUserDatabase {
 
 	@Override
 	public void loadStatistics(@NotNull User user) {
-		final String uuid = user.getUniqueId().toString();
+		String uuid = user.getUniqueId().toString();
 
-		for (StatsStorage.StatisticType stat : StatsStorage.StatisticType.values()) {
+		for (var stat : StatsStorage.StatisticType.values()) {
 			user.setStat(stat, config.getInt(uuid + "." + stat.getName()));
 		}
 	}

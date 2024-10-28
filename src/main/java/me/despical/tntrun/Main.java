@@ -19,13 +19,13 @@
 package me.despical.tntrun;
 
 import me.despical.commandframework.CommandFramework;
-import me.despical.commons.database.MysqlDatabase;
 import me.despical.commons.scoreboard.ScoreboardLib;
 import me.despical.commons.serializer.InventorySerializer;
 import me.despical.commons.util.UpdateChecker;
 import me.despical.fileitems.ItemManager;
 import me.despical.fileitems.ItemOption;
 import me.despical.tntrun.api.StatsStorage;
+import me.despical.tntrun.arena.Arena;
 import me.despical.tntrun.arena.ArenaRegistry;
 import me.despical.tntrun.arena.ArenaUtils;
 import me.despical.tntrun.arena.managers.ArenaManager;
@@ -40,10 +40,10 @@ import me.despical.tntrun.handlers.rewards.RewardsFactory;
 import me.despical.tntrun.handlers.sign.SignManager;
 import me.despical.tntrun.user.User;
 import me.despical.tntrun.user.UserManager;
-import me.despical.tntrun.user.data.MysqlManager;
+import me.despical.tntrun.user.data.MySQLStatistics;
 import org.bstats.bukkit.Metrics;
 import org.bstats.charts.SimplePie;
-import org.bukkit.inventory.ItemFlag;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
@@ -61,7 +61,6 @@ public class Main extends JavaPlugin {
 	private ArenaManager arenaManager;
 	private BungeeManager bungeeManager;
 	private RewardsFactory rewardsFactory;
-	private MysqlDatabase database;
 	private ConfigPreferences configPreferences;
 	private ChatManager chatManager;
 	private UserManager userManager;
@@ -75,21 +74,20 @@ public class Main extends JavaPlugin {
 		initializeClasses();
 		checkUpdate();
 
-		getLogger().info("Initialization finished. Consider donating: https://buymeacoffee.com/despical");
+		getLogger().info("Initialization finished.");
+		getLogger().info("Join our Discord server: https://discord.gg/uXVU8jmtpU");
 	}
 
 	@Override
 	public void onDisable() {
 		saveAllUserStatistics();
 
-		if (database != null) database.shutdownConnPool();
-
-		for (final var arena : arenaRegistry.getArenas()) {
+		for (Arena arena : arenaRegistry.getArenas()) {
 			arena.getScoreboardManager().stopAllScoreboards();
 			arena.getGameBar().removeAll();
 
-			for (final var user : arena.getPlayers()) {
-				final var player = user.getPlayer();
+			for (User user : arena.getPlayers()) {
+				Player player = user.getPlayer();
 
 				arena.teleportToEndLocation(user);
 
@@ -117,7 +115,7 @@ public class Main extends JavaPlugin {
 		this.itemManager = new ItemManager(this, manager -> {
 			ItemOption.enableOptions(ItemOption.GLOW);
 			manager.addCustomKeys("slot");
-			manager.editItemBuilder(builder -> builder.hideToolTip(true).unbreakable(true).flag(ItemFlag.HIDE_UNBREAKABLE));
+			manager.editItemBuilder(builder -> builder.unbreakable(true).hideTooltip(true));
 			manager.registerItems("items", "items");
 		});
 		this.permissionManager = new PermissionsManager(this);
@@ -133,10 +131,6 @@ public class Main extends JavaPlugin {
 
 		if (getOption(ConfigPreferences.Option.BUNGEE_ENABLED)) {
 			this.bungeeManager = new BungeeManager(this);
-		}
-
-		if (getOption(ConfigPreferences.Option.DATABASE_ENABLED)) {
-			this.database = new MysqlDatabase(this, "mysql");
 		}
 
 		if (getServer().getPluginManager().isPluginEnabled("PlaceholderAPI")) {
@@ -176,10 +170,6 @@ public class Main extends JavaPlugin {
 	@NotNull
 	public RewardsFactory getRewardsFactory() {
 		return rewardsFactory;
-	}
-
-	public MysqlDatabase getMysqlDatabase() {
-		return database;
 	}
 
 	@NotNull
@@ -227,17 +217,19 @@ public class Main extends JavaPlugin {
 	}
 
 	private void saveAllUserStatistics() {
-		for (final var player : getServer().getOnlinePlayers()) {
-			final var user = userManager.getUser(player);
+		var database = userManager.getUserDatabase();
 
-			if (userManager.getUserDatabase() instanceof MysqlManager mysqlManager) {
-				final var builder = new StringBuilder(" SET ");
+		for (Player player : getServer().getOnlinePlayers()) {
+			User user = userManager.getUser(player);
 
-				for (final var stat : StatsStorage.StatisticType.values()) {
+			if (database instanceof MySQLStatistics mySQLManager) {
+				StringBuilder builder = new StringBuilder(" SET ");
+
+				for (var stat : StatsStorage.StatisticType.values()) {
 					if (!stat.isPersistent()) continue;
 
-					final var value = user.getStat(stat);
-					final var name = stat.getName();
+					int value = user.getStat(stat);
+					String name = stat.getName();
 
 					if (builder.toString().equalsIgnoreCase(" SET ")) {
 						builder.append(name).append("=").append(value);
@@ -246,13 +238,15 @@ public class Main extends JavaPlugin {
 					builder.append(", ").append(name).append("=").append(value);
 				}
 
-				final var update = builder.toString();
+				String update = builder.toString();
 
-				mysqlManager.getDatabase().executeUpdate("UPDATE %s%s WHERE UUID='%s';".formatted(mysqlManager.getTable(), update, user.getUniqueId().toString()));
+				mySQLManager.getDatabase().executeUpdate("UPDATE %s%s WHERE UUID='%s';".formatted(mySQLManager.getTableName(), update, user.getUniqueId().toString()));
 				continue;
 			}
 
-			userManager.getUserDatabase().saveStatistics(user);
+			database.saveStatistics(user);
 		}
+
+		database.shutdown();
 	}
 }
