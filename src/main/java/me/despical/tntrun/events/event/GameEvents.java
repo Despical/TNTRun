@@ -185,7 +185,9 @@ public class GameEvents extends EventListener {
 		if (!(event.getEntity() instanceof Player victim)) return;
 		if (!(event.getDamager() instanceof Player)) return;
 
-		Optional.ofNullable(this.userManager.getUser(victim).getArena()).ifPresent(arena -> {
+		User user = userManager.getUser(victim);
+
+		Optional.ofNullable(user.getArena()).ifPresent(arena -> {
 			if (!arena.isArenaState(ArenaState.IN_GAME)) {
 				return;
 			}
@@ -193,7 +195,9 @@ public class GameEvents extends EventListener {
 			if (plugin.getOption(ConfigPreferences.Option.PVP_DISABLED)) {
 				event.setCancelled(true);
 			} else {
-				event.setDamage(0);
+				if (!user.isSpectator()) {
+					event.setDamage(0);
+				}
 			}
 
 			victim.setFireTicks(0);
