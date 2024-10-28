@@ -18,8 +18,8 @@
 
 package me.despical.tntrun.events.event;
 
-import me.despical.commons.util.UpdateChecker;
 import me.despical.tntrun.Main;
+import me.despical.tntrun.arena.Arena;
 import me.despical.tntrun.events.EventListener;
 import me.despical.tntrun.user.User;
 import org.bukkit.entity.Player;
@@ -28,6 +28,10 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+
 /**
  * @author Despical
  * <p>
@@ -35,23 +39,33 @@ import org.bukkit.event.player.PlayerQuitEvent;
  */
 public class JoinQuitEvents extends EventListener {
 
+	private final Map<UUID, Arena> teleportToEnd;
+
 	public JoinQuitEvents(Main plugin) {
 		super(plugin);
+		this.teleportToEnd = new HashMap<>();
 	}
 
 	@EventHandler
-	public void onJoinEvent(final PlayerJoinEvent event) {
-		final var eventPlayer = event.getPlayer();
-		final var user = plugin.getUserManager().getUser(eventPlayer);
+	public void onJoinEvent(PlayerJoinEvent event) {
+		Player eventPlayer = event.getPlayer();
 
-		plugin.getUserManager().loadStatistics(user);
+		plugin.getUserManager().addUser(eventPlayer);
 
-		this.checkForUpdates(user);
+		Arena arena = teleportToEnd.get(eventPlayer.getUniqueId());
 
-		for (final var targetUser : plugin.getUserManager().getUsers()) {
-			if (!targetUser.isInArena()) continue;
+		if (arena != null) {
+			plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
+				eventPlayer.teleport(arena.getEndLocation());
 
-			final var player = targetUser.getPlayer();
+				teleportToEnd.remove(eventPlayer.getUniqueId());
+			}, 1L);
+		}
+
+		for (User user : plugin.getUserManager().getUsers()) {
+			if (!user.isInArena()) continue;
+
+			Player player = user.getPlayer();
 
 			eventPlayer.hidePlayer(plugin, player);
 			player.hidePlayer(plugin, eventPlayer);
@@ -59,35 +73,25 @@ public class JoinQuitEvents extends EventListener {
 	}
 
 	@EventHandler
-	public void onQuitEvent(final PlayerQuitEvent event) {
-		this.handleQuitEvent(event.getPlayer());
+	public void onQuit(PlayerQuitEvent event) {
+		this.handleQuit(event.getPlayer());
 	}
 
 	@EventHandler
-	public void onKickEvent(final PlayerKickEvent event) {
-		this.handleQuitEvent(event.getPlayer());
+	public void onKick(PlayerKickEvent event) {
+		this.handleQuit(event.getPlayer());
 	}
 
-	private void handleQuitEvent(final Player player) {
-		final var user = plugin.getUserManager().getUser(player);
-		final var arena = user.getArena();
+	private void handleQuit(Player player) {
+		User user = plugin.getUserManager().getUser(player);
+		Arena arena = user.getArena();
 
 		if (arena != null) {
 			plugin.getArenaManager().leaveAttempt(user, arena);
+
+			teleportToEnd.put(player.getUniqueId(), arena);
 		}
 
 		plugin.getUserManager().removeUser(player);
-	}
-
-	private void checkForUpdates(final User user) {
-		if (!plugin.getPermissionManager().hasNotifyPerm(user.getPlayer())) return;
-
-		UpdateChecker.init(plugin, 83196).requestUpdateCheck().whenComplete((result, exception) -> {
-			if (result.requiresUpdate()) {
-				user.sendRawMessage("&bFound a new version available: v" + result.getNewestVersion());
-				user.sendRawMessage("&bDownload it on SpigotMC:");
-				user.sendRawMessage("&3https://spigotmc.org/resources/83196");
-			}
-		});
 	}
 }

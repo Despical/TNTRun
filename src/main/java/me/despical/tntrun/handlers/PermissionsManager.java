@@ -18,7 +18,6 @@
 
 package me.despical.tntrun.handlers;
 
-import me.despical.tntrun.ConfigPreferences;
 import me.despical.tntrun.Main;
 import me.despical.tntrun.arena.Arena;
 import me.despical.tntrun.user.User;
@@ -33,14 +32,11 @@ import java.util.List;
  */
 public class PermissionsManager {
 
-	private final Main plugin;
 	private final int defaultDoubleJumps, doubleJumpDelay;
 	private final String joinPermission, fullJoin;
 	private final List<String> doubleJumpsPerms;
 
 	public PermissionsManager(Main plugin) {
-		this.plugin = plugin;
-
 		final var config = plugin.getConfig();
 
 		this.defaultDoubleJumps = config.getInt("Double-Jumps.Default", 5);
@@ -52,10 +48,6 @@ public class PermissionsManager {
 
 	public boolean hasPermission(final User user, final Arena arena) {
 		return joinPermission.isEmpty() || user.hasPermission(joinPermission.replace("<arena>", arena.getId()));
-	}
-
-	public boolean hasNotifyPerm(Player player) {
-		return plugin.getOption(ConfigPreferences.Option.UPDATE_NOTIFIER_ENABLED) && player.hasPermission("tntrun.updatenotify");
 	}
 
 	public boolean hasFullGamePerm(Player player) {

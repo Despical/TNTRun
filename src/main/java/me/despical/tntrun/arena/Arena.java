@@ -200,6 +200,10 @@ public class Arena extends BukkitRunnable {
 		return gameLocations.get(GameLocation.LOBBY);
 	}
 
+	public Location getEndLocation() {
+		return gameLocations.get(GameLocation.END);
+	}
+
 	public void setLobbyLocation(Location lobbyLocation) {
 		gameLocations.put(GameLocation.LOBBY, lobbyLocation);
 	}
