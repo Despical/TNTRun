@@ -27,7 +27,8 @@ import me.despical.tntrun.user.data.MysqlManager;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.HashSet;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -40,68 +41,60 @@ import java.util.stream.Collectors;
 public class UserManager {
 
 	@NotNull
-	private final Set<User> users;
+	private final Map<UUID, User> users;
 
 	@NotNull
 	private final IUserDatabase userDatabase;
 
 	public UserManager(Main plugin) {
-		this.users = new HashSet<>();
+		this.users = new HashMap<>();
 		this.userDatabase = plugin.getOption(ConfigPreferences.Option.DATABASE_ENABLED) ? new MysqlManager(plugin) : new FileStatistics(plugin);
 
-		plugin.getServer().getOnlinePlayers().stream().map(this::getUser).forEach(this::loadStatistics);
+		plugin.getServer().getOnlinePlayers().forEach(this::addUser);
 	}
 
 	@NotNull
-	public User addUser(final Player player) {
-		final User user = new User(player);
+	public User addUser(Player player) {
+		User user = new User(player);
+		users.put(player.getUniqueId(), user);
 
-		this.users.add(user);
+		userDatabase.loadStatistics(user);
 		return user;
 	}
 
-	public void removeUser(final Player player) {
-		this.users.remove(this.getUser(player));
+	public void removeUser(Player player) {
+		users.remove(player.getUniqueId());
 	}
 
 	@NotNull
-	public User getUser(final Player player) {
-		final UUID uuid = player.getUniqueId();
-
-		for (User user : this.users) {
-			if (uuid.equals(user.getUniqueId())) {
-				return user;
-			}
-		}
-
-		return this.addUser(player);
+	public User getUser(Player player) {
+		return users.getOrDefault(player.getUniqueId(), this.addUser(player));
 	}
 
 	@NotNull
 	public Set<User> getUsers() {
-		return this.users.stream().filter(user -> {
-			var player = user.getPlayer();
+		return users
+			.values()
+			.stream()
+			.filter(user -> {
+				Player player = user.getPlayer();
 
-			return player != null && player.isOnline();
-		}).collect(Collectors.toSet());
+				return player != null && player.isOnline();
+			}).collect(Collectors.toSet());
 	}
 
 	@NotNull
 	public IUserDatabase getUserDatabase() {
-		return this.userDatabase;
+		return userDatabase;
 	}
 
-	public void saveStatistic(final User user, StatsStorage.StatisticType statisticType) {
+	public void saveStatistic(User user, StatsStorage.StatisticType statisticType) {
 		if (!statisticType.isPersistent()) return;
 
 		this.userDatabase.saveStatistics(user);
 	}
 
-	public void saveStatistics(final User user) {
+	public void saveStatistics(User user) {
 		this.userDatabase.saveStatistics(user);
-	}
-
-	public void loadStatistics(final User user) {
-		this.userDatabase.loadStatistics(user);
 	}
 }
