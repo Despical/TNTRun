@@ -238,18 +238,4 @@ public class User {
 	public static void cooldownHandlerTask() {
 		plugin.getServer().getScheduler().runTaskTimerAsynchronously(plugin, () -> cooldownCounter++, 20, 20);
 	}
-
-//	@Override
-//	public boolean equals(Object obj) {
-//		if (obj instanceof User user) {
-//			return user.uuid.equals(this.uuid);
-//		}
-//
-//		return false;
-//	}
-//
-//	@Override
-//	public int hashCode() {
-//		return Objects.hashCode(this.uuid);
-//	}
 }
