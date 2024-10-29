@@ -16,13 +16,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package me.despical.tntrun.commands;
+package me.despical.tntrun.command;
 
 import me.despical.commandframework.CommandArguments;
 import me.despical.commandframework.annotations.Command;
 import me.despical.commons.string.StringFormatUtils;
 import me.despical.commons.string.StringUtils;
-import me.despical.tntrun.Main;
 import me.despical.tntrun.api.StatsStorage;
 import me.despical.tntrun.arena.ArenaState;
 import me.despical.tntrun.user.User;
@@ -39,10 +38,6 @@ import java.util.UUID;
  * Created at 4.02.2023
  */
 public class PlayerCommands extends AbstractCommand {
-
-	public PlayerCommands(Main plugin) {
-		super(plugin);
-	}
 
 	@Command(
 		name = "tntrun.join",
@@ -168,10 +163,10 @@ public class PlayerCommands extends AbstractCommand {
 			} catch (NullPointerException ex) {
 				var current = (UUID) stats.keySet().toArray()[stats.keySet().toArray().length - 1];
 
-				if (plugin.getUserManager().getUserDatabase() instanceof MySQLStatistics mysqlManager) {
-					try (final var connection = plugin.getMysqlDatabase().getConnection()) {
+				if (plugin.getUserManager().getUserDatabase() instanceof MySQLStatistics mySQLManager) {
+					try (final var connection = mySQLManager.getDatabase().getConnection()) {
 						var statement = connection.createStatement();
-						var set = statement.executeQuery("SELECT name FROM %s WHERE UUID='%s'".formatted(mysqlManager.getTableName(), current.toString()));
+						var set = statement.executeQuery("SELECT name FROM %s WHERE UUID='%s'".formatted(mySQLManager.getTableName(), current.toString()));
 
 						if (set.next()) {
 							sender.sendMessage(formatMessage(statistic, set.getString(1), i + 1, stats.get(current)));

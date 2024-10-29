@@ -16,10 +16,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package me.despical.tntrun.commands;
+package me.despical.tntrun.command;
 
 import me.despical.commandframework.CommandArguments;
-import me.despical.commandframework.Message;
 import me.despical.commandframework.annotations.Command;
 import me.despical.commandframework.annotations.Completer;
 import me.despical.commons.configuration.ConfigUtils;
@@ -27,7 +26,6 @@ import me.despical.commons.miscellaneous.MiscUtils;
 import me.despical.commons.serializer.LocationSerializer;
 import me.despical.commons.string.StringMatcher;
 import me.despical.commons.util.Strings;
-import me.despical.tntrun.Main;
 import me.despical.tntrun.arena.Arena;
 import me.despical.tntrun.arena.ArenaState;
 import me.despical.tntrun.handlers.setup.ArenaEditorGUI;
@@ -44,9 +42,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.BiFunction;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * @author Despical
@@ -54,22 +50,6 @@ import java.util.stream.Stream;
  * Created at 2.02.2023
  */
 public class AdminCommands extends AbstractCommand {
-
-	public AdminCommands(Main plugin) {
-		super(plugin);
-
-		var commandFramework = plugin.getCommandFramework();
-		commandFramework.addCustomParameter("User", args -> plugin.getUserManager().getUser(args.getSender()));
-
-		Message.setColorFormatter(Strings::format);
-
-		BiFunction<Command, CommandArguments, Boolean> sendUsage = (command, arguments) -> {
-			arguments.sendMessage(chatManager.message("admin-commands.correct-usage").replace("%usage%", command.usage()));
-			return true;
-		};
-
-		Stream.of(Message.SHORT_ARG_SIZE, Message.LONG_ARG_SIZE).forEach(message -> message.setMessage(sendUsage));
-	}
 
 	@Command(
 		name = "tntrun",
