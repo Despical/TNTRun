@@ -22,6 +22,7 @@ import me.despical.commons.configuration.ConfigUtils;
 import me.despical.commons.database.MysqlDatabase;
 import me.despical.tntrun.api.StatsStorage;
 import me.despical.tntrun.user.User;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.Connection;
@@ -44,23 +45,22 @@ public non-sealed class MySQLStatistics extends AbstractDatabase {
 		this.database = new MysqlDatabase(plugin, "mysql");
 
 		plugin.getServer().getScheduler().runTaskAsynchronously(plugin, () -> {
-
 			try (final var connection = database.getConnection()) {
 				final var statement = connection.createStatement();
 
 				statement.executeUpdate("""
-						CREATE TABLE IF NOT EXISTS `%s` (
-						  `UUID` char(36) NOT NULL PRIMARY KEY,
-						  `name` varchar(32) NOT NULL,
-						  `wins` int(11) NOT NULL DEFAULT 0,
-						  `loses` int(11) NOT NULL DEFAULT 0,
-						  `longestsurvive` int(11) NOT NULL DEFAULT 0,
-						  `gamesplayed` int(11) NOT NULL DEFAULT 0,
-						  `coinsearned` int(11) NOT NULL DEFAULT 0,
-						  `spectatornightvision` int(11) NOT NULL DEFAULT 0,
-						  `spectatorshowothers` int(11) NOT NULL DEFAULT 1,
-						  `spectatorspeed` int(11) NOT NULL DEFAULT 1
-						);""".formatted(tableName));
+					CREATE TABLE IF NOT EXISTS `%s` (
+					  `UUID` char(36) NOT NULL PRIMARY KEY,
+					  `name` varchar(32) NOT NULL,
+					  `wins` int(11) NOT NULL DEFAULT 0,
+					  `loses` int(11) NOT NULL DEFAULT 0,
+					  `longestsurvive` int(11) NOT NULL DEFAULT 0,
+					  `gamesplayed` int(11) NOT NULL DEFAULT 0,
+					  `coinsearned` int(11) NOT NULL DEFAULT 0,
+					  `spectatornightvision` int(11) NOT NULL DEFAULT 0,
+					  `spectatorshowothers` int(11) NOT NULL DEFAULT 1,
+					  `spectatorspeed` int(11) NOT NULL DEFAULT 1
+					);""".formatted(tableName));
 			} catch (SQLException exception) {
 				exception.printStackTrace();
 			}
@@ -68,34 +68,29 @@ public non-sealed class MySQLStatistics extends AbstractDatabase {
 	}
 
 	@Override
-	public void saveStatistic(@NotNull User user, StatsStorage.StatisticType statisticType) {
+	public void saveStatistic(User user, StatsStorage.StatisticType statisticType) {
 		plugin.getServer().getScheduler().runTaskAsynchronously(plugin, () -> database.executeUpdate("UPDATE %s SET %s=%d WHERE UUID='%s';".formatted(tableName, statisticType.getName(), user.getStat(statisticType), user.getUniqueId().toString())));
 	}
 
 	@Override
-	public void saveStatistics(@NotNull User user) {
-		StringBuilder builder = new StringBuilder(" SET ");
-
-		for (var stat : StatsStorage.StatisticType.values()) {
-			if (!stat.isPersistent()) continue;
-
-			int value = user.getStat(stat);
-			String name = stat.getName();
-
-			if (builder.toString().equalsIgnoreCase(" SET ")) {
-				builder.append(name).append("=").append(value);
-			}
-
-			builder.append(", ").append(name).append("=").append(value);
-		}
-
-		String update = builder.toString();
+	public void saveStatistics(User user) {
+		String update = this.getUpdateStatement(user);
 
 		plugin.getServer().getScheduler().runTaskAsynchronously(plugin, () -> database.executeUpdate("UPDATE %s%s WHERE UUID='%s';".formatted(tableName, update, user.getUniqueId().toString())));
 	}
 
 	@Override
-	public void loadStatistics(@NotNull User user) {
+	public void saveAllStatistics() {
+		for (Player player : plugin.getServer().getOnlinePlayers()) {
+			User user = plugin.getUserManager().getUser(player);
+			String update = this.getUpdateStatement(user);
+
+			database.executeUpdate("UPDATE %s%s WHERE UUID='%s';".formatted(tableName, update, user.getUniqueId().toString()));
+		}
+	}
+
+	@Override
+	public void loadStatistics(User user) {
 		String uuid = user.getUniqueId().toString();
 
 		plugin.getServer().getScheduler().runTaskAsynchronously(plugin, () -> {
@@ -124,12 +119,39 @@ public non-sealed class MySQLStatistics extends AbstractDatabase {
 		});
 	}
 
+	@Override
+	public void shutdown() {
+		saveAllStatistics();
+
+		database.shutdownConnPool();
+	}
+
 	@NotNull
 	public MysqlDatabase getDatabase() {
 		return database;
 	}
 
+	@NotNull
 	public String getTableName() {
 		return tableName;
+	}
+
+	private String getUpdateStatement(User user) {
+		StringBuilder builder = new StringBuilder(" SET ");
+
+		for (var stat : StatsStorage.StatisticType.values()) {
+			if (!stat.isPersistent()) continue;
+
+			int value = user.getStat(stat);
+			String name = stat.getName();
+
+			if (builder.toString().equalsIgnoreCase(" SET ")) {
+				builder.append(name).append("=").append(value);
+			}
+
+			builder.append(", ").append(name).append("=").append(value);
+		}
+
+		return builder.toString();
 	}
 }

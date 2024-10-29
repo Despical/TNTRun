@@ -23,13 +23,17 @@ import me.despical.commons.sorter.SortUtils;
 import me.despical.tntrun.Main;
 import me.despical.tntrun.user.User;
 import me.despical.tntrun.user.data.MySQLStatistics;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
+import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.HashMap;
+import java.sql.Statement;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Stream;
@@ -49,25 +53,25 @@ public final class StatsStorage {
 	@NotNull
 	@Contract("null -> fail")
 	public static Map<UUID, Integer> getStats(StatisticType stat) {
-		if (plugin.getUserManager().getUserDatabase() instanceof MySQLStatistics mysqlManager) {
-			try (final var connection = plugin.getMysqlDatabase().getConnection()) {
-				final var statement = connection.createStatement();
-				final var set = statement.executeQuery("SELECT UUID, %s FROM %s ORDER BY %s".formatted(stat.getName(), mysqlManager.getTableName(), stat.getName()));
-				final var column = new HashMap<UUID, Integer>();
+		if (plugin.getUserManager().getUserDatabase() instanceof MySQLStatistics mySQLManager) {
+			try (Connection connection = mySQLManager.getDatabase().getConnection()) {
+				Statement statement = connection.createStatement();
+				ResultSet resultSet = statement.executeQuery("SELECT UUID, %s FROM %s ORDER BY %s".formatted(stat.getName(), mySQLManager.getTableName(), stat.getName()));
+				Map<UUID, Integer> column = new LinkedHashMap<>();
 
-				while (set.next()) {
-					column.put(UUID.fromString(set.getString("UUID")), set.getInt(stat.getName()));
+				while (resultSet.next()) {
+					column.put(UUID.fromString(resultSet.getString("UUID")), resultSet.getInt(stat.getName()));
 				}
 
 				return column;
-			} catch (SQLException e) {
-				plugin.getLogger().warning("SQLException occurred during getting statistics from database!");
-				return new HashMap<>();
+			} catch (SQLException exception) {
+				exception.printStackTrace();
+				return new LinkedHashMap<>();
 			}
 		}
 
-		final var config = ConfigUtils.getConfig(plugin, "stats");
-		final var stats = new HashMap<UUID, Integer>();
+		FileConfiguration config = ConfigUtils.getConfig(plugin, "stats");
+		Map<UUID, Integer> stats = new LinkedHashMap<>();
 
 		for (var string : config.getKeys(false)) {
 			stats.put(UUID.fromString(string), config.getInt(string + "." + stat.getName()));

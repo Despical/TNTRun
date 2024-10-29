@@ -30,7 +30,6 @@ import me.despical.tntrun.events.spectator.SpectatorSettingsGUI;
 import me.despical.tntrun.user.User;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.inventory.ItemFlag;
 
 import java.util.function.Consumer;
 
@@ -52,11 +51,11 @@ public class SettingComponents {
 		var arena = spectatorGui.getArena();
 		var player = spectatorGui.getUser().getPlayer();
 
-		pane.addItem(GuiItem.of(new ItemBuilder(XMaterial.LEATHER_BOOTS).name(chatManager.message("spectator-gui.no-speed")).flag(ItemFlag.HIDE_ATTRIBUTES).hideToolTip().build(), e -> setSpeed(user, -1, "0")),2,1);
-		pane.addItem(GuiItem.of(new ItemBuilder(XMaterial.CHAINMAIL_BOOTS).name(prefix + "I").flag(ItemFlag.HIDE_ATTRIBUTES).hideToolTip().build(), e -> setSpeed(user, 1, "I")),3,1);
-		pane.addItem(GuiItem.of(new ItemBuilder(XMaterial.IRON_BOOTS).name(prefix + "II").flag(ItemFlag.HIDE_ATTRIBUTES).hideToolTip().build(), e -> setSpeed(user, 2, "II")),4,1);
-		pane.addItem(GuiItem.of(new ItemBuilder(XMaterial.GOLDEN_BOOTS).name(prefix + "III").flag(ItemFlag.HIDE_ATTRIBUTES).hideToolTip().build(), e -> setSpeed(user, 3, "III")),5,1);
-		pane.addItem(GuiItem.of(new ItemBuilder(Material.DIAMOND_BOOTS).name(prefix + "IV").flag(ItemFlag.HIDE_ATTRIBUTES).hideToolTip().build(), e -> setSpeed(user, 4, "IV")),6,1);
+		pane.addItem(GuiItem.of(new ItemBuilder(XMaterial.LEATHER_BOOTS).name(chatManager.message("spectator-gui.no-speed")).hideTooltip().build(), e -> setSpeed(user, -1, "0")),2,1);
+		pane.addItem(GuiItem.of(new ItemBuilder(XMaterial.CHAINMAIL_BOOTS).name(prefix + "I").hideTooltip().build(), e -> setSpeed(user, 1, "I")),3,1);
+		pane.addItem(GuiItem.of(new ItemBuilder(XMaterial.IRON_BOOTS).name(prefix + "II").hideTooltip().build(), e -> setSpeed(user, 2, "II")),4,1);
+		pane.addItem(GuiItem.of(new ItemBuilder(XMaterial.GOLDEN_BOOTS).name(prefix + "III").hideTooltip().build(), e -> setSpeed(user, 3, "III")),5,1);
+		pane.addItem(GuiItem.of(new ItemBuilder(Material.DIAMOND_BOOTS).name(prefix + "IV").hideTooltip().build(), e -> setSpeed(user, 4, "IV")),6,1);
 
 		var hasNightVision = player.hasPotionEffect(XPotion.NIGHT_VISION.getPotionEffectType());
 		var shouldHaveNightVision = user.getStat(StatsStorage.StatisticType.SPECTATOR_NIGHT_VISION) == 1;

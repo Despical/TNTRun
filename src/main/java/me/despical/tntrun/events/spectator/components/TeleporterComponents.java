@@ -45,7 +45,7 @@ public class TeleporterComponents {
 		var arena = teleporterGui.getArena();
 		var chatManager = teleporterGui.getPlugin().getChatManager();
 
-		pane.addItem(GuiItem.of(new ItemBuilder(XMaterial.BARRIER).name(chatManager.message("spectator-gui.close-item")).hideToolTip().build(), e -> teleporterGui.close()), 4, 4);
+		pane.addItem(GuiItem.of(new ItemBuilder(XMaterial.BARRIER).name(chatManager.message("spectator-gui.close-item")).hideTooltip().build(), e -> teleporterGui.close()), 4, 4);
 
 		var players = new ArrayList<>(arena.getPlayersLeft());
 		players.remove(u);

@@ -22,6 +22,7 @@ import me.despical.commons.configuration.ConfigUtils;
 import me.despical.tntrun.api.StatsStorage;
 import me.despical.tntrun.user.User;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -58,11 +59,32 @@ public non-sealed class FlatFileStatistics extends AbstractDatabase {
 	}
 
 	@Override
+	public void saveAllStatistics() {
+		for (Player player : plugin.getServer().getOnlinePlayers()) {
+			User user = plugin.getUserManager().getUser(player);
+			String uuid = user.getUniqueId().toString();
+
+			for (var stat : StatsStorage.StatisticType.values()) {
+				if (stat.isPersistent()) {
+					config.set(uuid + "." + stat.getName(), user.getStat(stat));
+				}
+			}
+		}
+
+		ConfigUtils.saveConfig(plugin, config, "stats");
+	}
+
+	@Override
 	public void loadStatistics(@NotNull User user) {
 		String uuid = user.getUniqueId().toString();
 
 		for (var stat : StatsStorage.StatisticType.values()) {
 			user.setStat(stat, config.getInt(uuid + "." + stat.getName()));
 		}
+	}
+
+	@Override
+	public void shutdown() {
+		this.saveAllStatistics();
 	}
 }

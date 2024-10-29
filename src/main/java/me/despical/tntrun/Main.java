@@ -24,13 +24,12 @@ import me.despical.commons.serializer.InventorySerializer;
 import me.despical.commons.util.UpdateChecker;
 import me.despical.fileitems.ItemManager;
 import me.despical.fileitems.ItemOption;
-import me.despical.tntrun.api.StatsStorage;
 import me.despical.tntrun.arena.Arena;
 import me.despical.tntrun.arena.ArenaRegistry;
 import me.despical.tntrun.arena.ArenaUtils;
 import me.despical.tntrun.arena.managers.ArenaManager;
-import me.despical.tntrun.commands.AdminCommands;
-import me.despical.tntrun.commands.PlayerCommands;
+import me.despical.tntrun.command.AdminCommands;
+import me.despical.tntrun.command.PlayerCommands;
 import me.despical.tntrun.events.EventListener;
 import me.despical.tntrun.handlers.ChatManager;
 import me.despical.tntrun.handlers.PermissionsManager;
@@ -40,7 +39,6 @@ import me.despical.tntrun.handlers.rewards.RewardsFactory;
 import me.despical.tntrun.handlers.sign.SignManager;
 import me.despical.tntrun.user.User;
 import me.despical.tntrun.user.UserManager;
-import me.despical.tntrun.user.data.MySQLStatistics;
 import org.bstats.bukkit.Metrics;
 import org.bstats.charts.SimplePie;
 import org.bukkit.entity.Player;
@@ -80,8 +78,6 @@ public class Main extends JavaPlugin {
 
 	@Override
 	public void onDisable() {
-		saveAllUserStatistics();
-
 		for (Arena arena : arenaRegistry.getArenas()) {
 			arena.getScoreboardManager().stopAllScoreboards();
 			arena.getGameBar().removeAll();
@@ -101,6 +97,8 @@ public class Main extends JavaPlugin {
 
 			arena.cleanUpArena();
 		}
+
+		userManager.getUserDatabase().shutdown();
 	}
 
 	private void initializeClasses() {
@@ -126,8 +124,8 @@ public class Main extends JavaPlugin {
 		EventListener.registerEvents(this);
 		User.cooldownHandlerTask();
 
-		new AdminCommands(this);
-		new PlayerCommands(this);
+		new AdminCommands();
+		new PlayerCommands();
 
 		if (getOption(ConfigPreferences.Option.BUNGEE_ENABLED)) {
 			this.bungeeManager = new BungeeManager(this);
@@ -214,39 +212,5 @@ public class Main extends JavaPlugin {
 
 	public SignManager getSignManager() {
 		return signManager;
-	}
-
-	private void saveAllUserStatistics() {
-		var database = userManager.getUserDatabase();
-
-		for (Player player : getServer().getOnlinePlayers()) {
-			User user = userManager.getUser(player);
-
-			if (database instanceof MySQLStatistics mySQLManager) {
-				StringBuilder builder = new StringBuilder(" SET ");
-
-				for (var stat : StatsStorage.StatisticType.values()) {
-					if (!stat.isPersistent()) continue;
-
-					int value = user.getStat(stat);
-					String name = stat.getName();
-
-					if (builder.toString().equalsIgnoreCase(" SET ")) {
-						builder.append(name).append("=").append(value);
-					}
-
-					builder.append(", ").append(name).append("=").append(value);
-				}
-
-				String update = builder.toString();
-
-				mySQLManager.getDatabase().executeUpdate("UPDATE %s%s WHERE UUID='%s';".formatted(mySQLManager.getTableName(), update, user.getUniqueId().toString()));
-				continue;
-			}
-
-			database.saveStatistics(user);
-		}
-
-		database.shutdown();
 	}
 }

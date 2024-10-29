@@ -22,7 +22,6 @@ import me.despical.tntrun.Main;
 import me.despical.tntrun.api.StatsStorage;
 import me.despical.tntrun.user.User;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * @author Despical
@@ -33,12 +32,13 @@ public abstract sealed class AbstractDatabase permits FlatFileStatistics, MySQLS
 
 	protected static final Main plugin = JavaPlugin.getPlugin(Main.class);
 
-	public abstract void saveStatistic(final @NotNull User user, final StatsStorage.StatisticType statisticType);
+	public abstract void saveStatistic(User user, StatsStorage.StatisticType statisticType);
 
-	public abstract void saveStatistics(final @NotNull User user);
+	public abstract void saveStatistics(User user);
 
-	public abstract void loadStatistics(final @NotNull User user);
+	public abstract void loadStatistics(User user);
 
-	public void shutdown() {
-	}
+	public abstract void saveAllStatistics();
+
+	public abstract void shutdown();
 }

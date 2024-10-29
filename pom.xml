@@ -150,7 +150,7 @@
                                 </relocation>
                                 <relocation>
                                     <pattern>me.despical.commandframework</pattern>
-                                    <shadedPattern>me.despical.tntrun.commands</shadedPattern>
+                                    <shadedPattern>me.despical.tntrun.command</shadedPattern>
                                 </relocation>
                                 <relocation>
                                     <pattern>org.bstats</pattern>
