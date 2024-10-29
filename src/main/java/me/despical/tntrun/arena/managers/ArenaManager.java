@@ -139,7 +139,6 @@ public record ArenaManager(Main plugin) {
 		user.removePotionEffectsExcept();
 		user.resetTemporaryStats();
 		user.addGameItem("leave-item");
-		user.setSpectator(false);
 
 		if (player.isOp()) user.addGameItem("force-start-item");
 

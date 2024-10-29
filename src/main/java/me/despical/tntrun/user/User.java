@@ -153,14 +153,13 @@ public class User {
 	}
 
 	public void resetTemporaryStats() {
-		for (final var statistic : StatsStorage.StatisticType.values()) {
-			if (statistic.isPersistent()) continue;
+		for (var stat : StatsStorage.StatisticType.values()) {
+			if (stat.isPersistent()) continue;
 
-			setStat(statistic, 0);
+			setStat(stat, 0);
 		}
 
-		setStat(StatsStorage.StatisticType.LOCAL_DOUBLE_JUMPS, plugin.getPermissionManager().getDoubleJumps(this.getPlayer()));
-
+		this.setStat(StatsStorage.StatisticType.LOCAL_DOUBLE_JUMPS, plugin.getPermissionManager().getDoubleJumps(this.getPlayer()));
 		this.spectator = false;
 	}
 
@@ -239,4 +238,18 @@ public class User {
 	public static void cooldownHandlerTask() {
 		plugin.getServer().getScheduler().runTaskTimerAsynchronously(plugin, () -> cooldownCounter++, 20, 20);
 	}
+
+//	@Override
+//	public boolean equals(Object obj) {
+//		if (obj instanceof User user) {
+//			return user.uuid.equals(this.uuid);
+//		}
+//
+//		return false;
+//	}
+//
+//	@Override
+//	public int hashCode() {
+//		return Objects.hashCode(this.uuid);
+//	}
 }

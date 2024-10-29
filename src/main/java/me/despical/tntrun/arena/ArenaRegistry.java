@@ -22,6 +22,8 @@ import me.despical.commons.configuration.ConfigUtils;
 import me.despical.commons.serializer.LocationSerializer;
 import me.despical.tntrun.Main;
 import me.despical.tntrun.user.User;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -74,14 +76,12 @@ public class ArenaRegistry {
 	}
 
 	@Nullable
-	public Arena getArena(final User user) {
-		if (user == null) return null;
-
+	public Arena getArena(User user) {
 		return this.arenas.stream().filter(arena -> arena.isInArena(user)).findFirst().orElse(null);
 	}
 
 	public boolean isArena(final String arenaId) {
-		return arenaId != null && getArena(arenaId) != null;
+		return getArena(arenaId) != null;
 	}
 
 	public boolean isInArena(final User user) {
@@ -91,21 +91,21 @@ public class ArenaRegistry {
 	private void registerArenas() {
 		this.arenas.clear();
 
-		final var config = ConfigUtils.getConfig(plugin, "arena");
-		final var section = config.getConfigurationSection("instance");
+		FileConfiguration config = ConfigUtils.getConfig(plugin, "arena");
+		ConfigurationSection section = config.getConfigurationSection("instance");
 
 		if (section == null) {
 			plugin.getLogger().warning("Couldn't find 'instance' section in arena.yml, delete the file to regenerate it!");
 			return;
 		}
 
-		for (final var id : section.getKeys(false)) {
+		for (String id : section.getKeys(false)) {
 			if (id.equals("default")) continue;
 
-			final var path = "instance.%s.".formatted(id);
-			final var arena = new Arena(id);
+			String path = "instance.%s.".formatted(id);
+			Arena arena = new Arena(id);
 
-			this.registerArena(arena);
+			arenas.add(arena);
 
 			arena.setReady(config.getBoolean(path + "ready"));
 			arena.setMinimumPlayers(config.getInt(path + "minimumPlayers", 2));

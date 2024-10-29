@@ -32,10 +32,7 @@ import me.despical.tntrun.arena.managers.ScoreboardManager;
 import me.despical.tntrun.arena.options.ArenaOption;
 import me.despical.tntrun.handlers.ChatManager;
 import me.despical.tntrun.user.User;
-import org.bukkit.GameMode;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.entity.Player;
@@ -66,7 +63,8 @@ public class Arena extends BukkitRunnable {
 	private final Map<GameLocation, Location> gameLocations;
 
 	private final Set<BlockState> destroyedBlocks;
-	private final List<User> players, spectators, deaths, winners;
+	private final Set<User> players;
+	private final List<User> spectators, deaths, winners;
 
 	@NotNull
 	private final GameBarManager gameBarManager;
@@ -82,7 +80,7 @@ public class Arena extends BukkitRunnable {
 		this.id = id;
 		this.mapName = id;
 		this.destroyedBlocks = new HashSet<>();
-		this.players = new ArrayList<>();
+		this.players = new HashSet<>();
 		this.spectators = new ArrayList<>();
 		this.deaths = new ArrayList<>();
 		this.winners = new ArrayList<>();
@@ -96,7 +94,7 @@ public class Arena extends BukkitRunnable {
 		}
 	}
 
-	public boolean isInArena(final User user) {
+	public boolean isInArena(User user) {
 		return user != null && this.players.contains(user);
 	}
 
@@ -106,7 +104,7 @@ public class Arena extends BukkitRunnable {
 		return false;
 	}
 
-	private void teleportToGameLocation(final User user, final GameLocation gameLocation) {
+	private void teleportToGameLocation(User user, GameLocation gameLocation) {
 		if (!validateLocation(gameLocation)) return;
 
 		final var player = user.getPlayer();
@@ -121,11 +119,11 @@ public class Arena extends BukkitRunnable {
 		player.teleport(gameLocations.get(gameLocation));
 	}
 
-	public void teleportToLobby(final User user) {
+	public void teleportToLobby(User user) {
 		this.teleportToGameLocation(user, GameLocation.LOBBY);
 	}
 
-	public void teleportToEndLocation(final User user) {
+	public void teleportToEndLocation(User user) {
 		if (plugin.getOption(ConfigPreferences.Option.BUNGEE_ENABLED)) {
 			plugin.getBungeeManager().connectToHub(user);
 			return;
@@ -592,7 +590,6 @@ public class Arena extends BukkitRunnable {
 					for (final var user : this.players) {
 						teleportToLobby(user);
 
-						user.resetTemporaryStats();
 						user.addGameItems("double-jump");
 						user.getPlayer().addPotionEffect(XPotion.NIGHT_VISION.buildInvisible(Integer.MAX_VALUE, 1));
 
