@@ -44,6 +44,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.text.MessageFormat;
 import java.util.*;
+import java.util.function.Predicate;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 
@@ -215,19 +216,19 @@ public class Arena extends BukkitRunnable {
 		return scoreboardManager;
 	}
 
-	public List<User> getPlayers() {
-		return this.players.stream().filter(user -> {
+	public Set<User> getPlayers() {
+		return players.stream().filter(user -> {
 			Player player = user.getPlayer();
 
 			return player != null && player.isOnline();
-		}).collect(Collectors.toList());
+		}).collect(Collectors.toSet());
 	}
 
-	public void addUser(final User user) {
+	public void addUser(User user) {
 		this.players.add(user);
 	}
 
-	public void removeUser(final User user) {
+	public void removeUser(User user) {
 		this.players.remove(user);
 	}
 
@@ -235,11 +236,11 @@ public class Arena extends BukkitRunnable {
 		return this.forceStart;
 	}
 
-	public void setForceStart(final boolean forceStart) {
+	public void setForceStart(boolean forceStart) {
 		this.forceStart = forceStart;
 	}
 
-	public void addDeathPlayer(final User user) {
+	public void addDeathPlayer(User user) {
 		deaths.add(user);
 
 		if (this.getPlayersLeft().size() < 4) {
@@ -250,7 +251,7 @@ public class Arena extends BukkitRunnable {
 		this.addSpectator(user);
 	}
 
-	public boolean isDeathPlayer(final User user) {
+	public boolean isDeathPlayer(User user) {
 		return this.deaths.contains(user);
 	}
 
@@ -258,7 +259,7 @@ public class Arena extends BukkitRunnable {
 		return winners;
 	}
 
-	public void addSpectator(final User user) {
+	public void addSpectator(User user) {
 		this.spectators.add(user);
 
 		final var nightVision = user.getStat(StatsStorage.StatisticType.SPECTATOR_NIGHT_VISION);
@@ -274,11 +275,11 @@ public class Arena extends BukkitRunnable {
 		player.addPotionEffect(XPotion.SPEED.buildInvisible(Integer.MAX_VALUE, level));
 	}
 
-	public void removeSpectator(final User user) {
+	public void removeSpectator(User user) {
 		this.spectators.remove(user);
 	}
 
-	public boolean isSpectator(final User user) {
+	public boolean isSpectator(User user) {
 		return spectators.contains(user);
 	}
 
@@ -306,7 +307,7 @@ public class Arena extends BukkitRunnable {
 
 			@Override
 			public void run() {
-				for (final var user : getPlayersLeft()) {
+				for (var user : getPlayersLeft()) {
 					if (stopped) cancel();
 					if (arenaState != ArenaState.IN_GAME) return;
 					if (getTimer() <= startBlockRemoving) return;
@@ -371,7 +372,7 @@ public class Arena extends BukkitRunnable {
 	}
 
 	public Set<User> getPlayersLeft() {
-		return this.getPlayers().stream().filter(user -> !user.isSpectator()).collect(Collectors.toSet());
+		return this.getPlayers().stream().filter(Predicate.not(User::isSpectator)).collect(Collectors.toSet());
 	}
 
 	public void playSound(XSound sound) {
