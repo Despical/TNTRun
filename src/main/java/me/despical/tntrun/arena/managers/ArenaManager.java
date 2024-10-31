@@ -41,10 +41,12 @@ import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.GameMode;
+import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 /**
  * @author Despical
@@ -166,7 +168,7 @@ public record ArenaManager(Main plugin) {
 	public void leaveAttempt(final User user, final Arena arena) {
 		plugin.getServer().getPluginManager().callEvent(new GameLeaveEvent(user, arena));
 
-		final var localScore = user.getStat(StatsStorage.StatisticType.LOCAL_SURVIVE);
+		int localScore = user.getStat(StatsStorage.StatisticType.LOCAL_SURVIVE);
 
 		if (localScore > user.getStat(StatsStorage.StatisticType.LONGEST_SURVIVE) && !plugin.getOption(ConfigPreferences.Option.LONGEST_SURVIVE_ON_WINS)) {
 			user.setStat(StatsStorage.StatisticType.LONGEST_SURVIVE, localScore);
@@ -181,7 +183,7 @@ public record ArenaManager(Main plugin) {
 		arena.showUserOutsideTheGame(user);
 		arena.updateSigns();
 
-		final var player = user.getPlayer();
+		Player player = user.getPlayer();
 		player.getInventory().clear();
 		player.getInventory().setArmorContents(null);
 		player.setFoodLevel(20);
@@ -199,14 +201,24 @@ public record ArenaManager(Main plugin) {
 		user.setSpectator(false);
 		user.removePotionEffectsExcept();
 
-		if (!plugin.getOption(ConfigPreferences.Option.BUNGEE_ENABLED) && plugin.getOption(ConfigPreferences.Option.INVENTORY_MANAGER_ENABLED)) {
+		boolean bungeeEnabled = plugin.getOption(ConfigPreferences.Option.BUNGEE_ENABLED);
+
+		if (!bungeeEnabled&& plugin.getOption(ConfigPreferences.Option.INVENTORY_MANAGER_ENABLED)) {
 			InventorySerializer.loadInventory(plugin, player);
 		}
 
 		plugin.getUserManager().saveStatistics(user);
 
+		if (bungeeEnabled) {
+			plugin.getBungeeManager().connectToHub(user);
+		}
+
 		if (arena.getArenaState() == ArenaState.IN_GAME) {
-			if (arena.getPlayersLeft().size() == 1) {
+			var playersLeft = List.copyOf(arena.getPlayersLeft());
+
+			if (playersLeft.size() == 1) {
+				arena.addWinner(playersLeft.get(0));
+
 				stopGame(false, arena);
 			}
 		}

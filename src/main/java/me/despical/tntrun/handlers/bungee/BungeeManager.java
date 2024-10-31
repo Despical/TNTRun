@@ -42,7 +42,7 @@ import java.util.Map;
 public class BungeeManager extends EventListener {
 
 	private final String motd, hubName;
-	private final boolean motdEnabled, shutdownWhenGameEnds, connectToHub;
+	private final boolean motdEnabled, connectToHub;
 	private final Map<ArenaState, String> gameStates;
 
 	public BungeeManager(Main plugin) {
@@ -54,7 +54,6 @@ public class BungeeManager extends EventListener {
 		this.motd = plugin.getChatManager().rawMessage(config.getString("MOTD.Message"));
 		this.hubName = config.getString("Hub");
 		this.motdEnabled = config.getBoolean("MOTD.Enabled");
-		this.shutdownWhenGameEnds = config.getBoolean("Shutdown-When-Game-Ends");
 		this.connectToHub = config.getBoolean("Connect-To-Hub");
 
 		for (ArenaState state : ArenaState.values()) {
@@ -64,18 +63,15 @@ public class BungeeManager extends EventListener {
 		plugin.getServer().getMessenger().registerOutgoingPluginChannel(plugin, "BungeeCord");
 	}
 
-	public void connectToHub(User user) {
-		if (!plugin.isEnabled() || !connectToHub) return;
+	public boolean connectToHub(User user) {
+		if (!plugin.isEnabled() || !connectToHub) return false;
 
 		ByteArrayDataOutput out = ByteStreams.newDataOutput();
 		out.writeUTF("Connect");
 		out.writeUTF(hubName);
 
 		user.getPlayer().sendPluginMessage(plugin, "BungeeCord", out.toByteArray());
-	}
-
-	public boolean isShutdownWhenGameEnds() {
-		return shutdownWhenGameEnds;
+		return true;
 	}
 
 	@EventHandler

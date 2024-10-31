@@ -32,7 +32,10 @@ import me.despical.tntrun.arena.managers.ScoreboardManager;
 import me.despical.tntrun.arena.options.ArenaOption;
 import me.despical.tntrun.handlers.ChatManager;
 import me.despical.tntrun.user.User;
-import org.bukkit.*;
+import org.bukkit.GameMode;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.entity.Player;
@@ -229,7 +232,15 @@ public class Arena extends BukkitRunnable {
 	}
 
 	public void removeUser(User user) {
-		this.players.remove(user);
+		if (players.size() < 4) {
+			winners.add(user);
+		}
+
+		players.remove(user);
+	}
+
+	public void addWinner(User user) {
+		winners.add(user);
 	}
 
 	public boolean isForceStart() {
@@ -317,7 +328,8 @@ public class Arena extends BukkitRunnable {
 
 						destroyedBlocks.add(block.getState());
 
-						if (plugin.isEnabled()) plugin.getServer().getScheduler().runTaskLater(plugin, () -> block.setType(Material.AIR), blockRemoveDelay);
+						if (plugin.isEnabled())
+							plugin.getServer().getScheduler().runTaskLater(plugin, () -> block.setType(Material.AIR), blockRemoveDelay);
 					}
 				}
 			}
@@ -667,10 +679,6 @@ public class Arena extends BukkitRunnable {
 						teleportToEndLocation(user);
 					}
 
-					if (plugin.getOption(ConfigPreferences.Option.BUNGEE_ENABLED) && plugin.getBungeeManager().isShutdownWhenGameEnds()) {
-						plugin.getServer().shutdown();
-					}
-
 					setArenaState(ArenaState.RESTARTING);
 				}
 
@@ -682,7 +690,17 @@ public class Arena extends BukkitRunnable {
 
 				setArenaState(ArenaState.WAITING_FOR_PLAYERS);
 
-				if (plugin.getOption(ConfigPreferences.Option.BUNGEE_ENABLED)) {
+				if (!plugin.getOption(ConfigPreferences.Option.BUNGEE_ENABLED)) {
+					return;
+				}
+
+				for (Player player : plugin.getServer().getOnlinePlayers()) {
+					User user = plugin.getUserManager().getUser(player);
+
+					if (plugin.getBungeeManager().connectToHub(user)) {
+						return;
+					}
+
 					var arenaManager = plugin.getArenaManager();
 					var userManager = plugin.getUserManager();
 
@@ -690,9 +708,7 @@ public class Arena extends BukkitRunnable {
 
 					var bungeeArena = plugin.getArenaRegistry().getBungeeArena();
 
-					for (Player player : plugin.getServer().getOnlinePlayers()) {
-						arenaManager.joinAttempt(userManager.getUser(player), bungeeArena);
-					}
+					arenaManager.joinAttempt(userManager.getUser(player), bungeeArena);
 				}
 			}
 		}
