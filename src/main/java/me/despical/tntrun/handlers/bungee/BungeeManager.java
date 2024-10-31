@@ -22,11 +22,11 @@ import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 import me.despical.commons.configuration.ConfigUtils;
 import me.despical.tntrun.Main;
+import me.despical.tntrun.arena.Arena;
 import me.despical.tntrun.arena.ArenaState;
 import me.despical.tntrun.events.EventListener;
 import me.despical.tntrun.user.User;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.server.ServerListPingEvent;
@@ -57,15 +57,15 @@ public class BungeeManager extends EventListener {
 		this.shutdownWhenGameEnds = config.getBoolean("Shutdown-When-Game-Ends");
 		this.connectToHub = config.getBoolean("Connect-To-Hub");
 
-		for (final var state : ArenaState.values()) {
+		for (ArenaState state : ArenaState.values()) {
 			gameStates.put(state, plugin.getChatManager().rawMessage(config.getString("MOTD.Game-States." + state.getFormattedName())));
 		}
 
 		plugin.getServer().getMessenger().registerOutgoingPluginChannel(plugin, "BungeeCord");
 	}
 
-	public void connectToHub(final User user) {
-		if (!connectToHub) return;
+	public void connectToHub(User user) {
+		if (!plugin.isEnabled() || !connectToHub) return;
 
 		ByteArrayDataOutput out = ByteStreams.newDataOutput();
 		out.writeUTF("Connect");
@@ -78,23 +78,23 @@ public class BungeeManager extends EventListener {
 		return shutdownWhenGameEnds;
 	}
 
-	@EventHandler(priority = EventPriority.HIGH)
-	public void onServerListPing(final ServerListPingEvent event) {
+	@EventHandler
+	public void onServerListPing(ServerListPingEvent event) {
 		if (!motdEnabled) return;
 
-		final var arenaRegistry = plugin.getArenaRegistry();
+		var arenaRegistry = plugin.getArenaRegistry();
 
 		if (arenaRegistry.getArenas().isEmpty()) return;
 
-		final var bungeeArena = arenaRegistry.getBungeeArena();
+		Arena bungeeArena = arenaRegistry.getBungeeArena();
 
 		event.setMaxPlayers(bungeeArena.getMaximumPlayers());
 		event.setMotd(motd.replace("%state%", gameStates.get(bungeeArena.getArenaState())));
 	}
 
-	@EventHandler(priority = EventPriority.HIGH)
+	@EventHandler
 	public void onJoin(PlayerJoinEvent event) {
-		final var arenaRegistry = plugin.getArenaRegistry();
+		var arenaRegistry = plugin.getArenaRegistry();
 
 		if (arenaRegistry.getArenas().isEmpty()) return;
 
@@ -102,15 +102,15 @@ public class BungeeManager extends EventListener {
 		plugin.getServer().getScheduler().runTaskLater(plugin, () -> plugin.getArenaManager().joinAttempt(plugin.getUserManager().getUser(event.getPlayer()), arenaRegistry.getBungeeArena()), 1L);
 	}
 
-	@EventHandler(priority = EventPriority.HIGH)
+	@EventHandler
 	public void onQuit(PlayerQuitEvent event) {
-		final var arenaRegistry = plugin.getArenaRegistry();
+		var arenaRegistry = plugin.getArenaRegistry();
 
 		if (arenaRegistry.getArenas().isEmpty()) return;
 
 		event.setQuitMessage("");
 
-		final var user = plugin.getUserManager().getUser(event.getPlayer());
+		User user = plugin.getUserManager().getUser(event.getPlayer());
 
 		if (user.isInArena()) {
 			plugin.getArenaManager().leaveAttempt(user, arenaRegistry.getBungeeArena());

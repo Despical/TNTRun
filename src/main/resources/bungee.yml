@@ -9,7 +9,7 @@
 Hub: lobby
 
 # Should game server be closed after the game?
-Shutdown-When-Game-Ends: true
+Shutdown-When-Game-Ends: false
 
 # Should the player connect to hub?
 Connect-To-Hub: true

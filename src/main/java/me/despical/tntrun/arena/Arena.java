@@ -419,6 +419,8 @@ public class Arena extends BukkitRunnable {
 
 		stopped = false;
 		forceStart = false;
+
+		setTimer(getOption(ArenaOption.LOBBY_WAITING_TIME));
 	}
 
 	// TODO - Move visibility changer methods to another class, eg. VisibilityManager.
@@ -681,14 +683,15 @@ public class Arena extends BukkitRunnable {
 				setArenaState(ArenaState.WAITING_FOR_PLAYERS);
 
 				if (plugin.getOption(ConfigPreferences.Option.BUNGEE_ENABLED)) {
-					final var arenaRegistry = plugin.getArenaRegistry();
-					final var arenaManager = plugin.getArenaManager();
-					final var userManager = plugin.getUserManager();
+					var arenaManager = plugin.getArenaManager();
+					var userManager = plugin.getUserManager();
 
-					arenaRegistry.shuffleBungeeArena();
+					plugin.getArenaRegistry().shuffleBungeeArena();
 
-					for (final var player : plugin.getServer().getOnlinePlayers()) {
-						arenaManager.joinAttempt(userManager.getUser(player), arenaRegistry.getBungeeArena());
+					var bungeeArena = plugin.getArenaRegistry().getBungeeArena();
+
+					for (Player player : plugin.getServer().getOnlinePlayers()) {
+						arenaManager.joinAttempt(userManager.getUser(player), bungeeArena);
 					}
 				}
 			}
