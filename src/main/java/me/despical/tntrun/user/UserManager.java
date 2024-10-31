@@ -68,13 +68,7 @@ public class UserManager {
 
 	@NotNull
 	public User getUser(Player player) {
-		User user = users.get(player.getUniqueId());
-
-		if (user != null) {
-			return user;
-		}
-
-		return this.addUser(player);
+		return users.computeIfAbsent(player.getUniqueId(), uuid -> this.addUser(player));
 	}
 
 	@NotNull
