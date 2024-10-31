@@ -29,10 +29,8 @@ import me.despical.tntrun.events.spectator.SpectatorTeleporterGUI;
 import me.despical.tntrun.user.User;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.Action;
-import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerToggleFlightEvent;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -268,17 +266,6 @@ public class GameItemEvents extends EventListener {
 					}
 				}
 			}.runTaskTimer(plugin, 0, 2);
-		}
-	}
-
-	@EventHandler
-	public void onItemMove(InventoryClickEvent event) {
-		if (!(event.getWhoClicked() instanceof Player player)) {
-			return;
-		}
-
-		if (plugin.getUserManager().getUser(player).isInArena()) {
-			event.setResult(Event.Result.DENY);
 		}
 	}
 

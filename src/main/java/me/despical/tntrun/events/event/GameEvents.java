@@ -19,7 +19,6 @@
 package me.despical.tntrun.events.event;
 
 import me.clip.placeholderapi.PlaceholderAPI;
-import me.despical.commons.compat.XMaterial;
 import me.despical.tntrun.ConfigPreferences;
 import me.despical.tntrun.Main;
 import me.despical.tntrun.api.events.player.PlayerEliminatedEvent;
@@ -36,6 +35,7 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.*;
 
 import java.util.Optional;
@@ -115,26 +115,11 @@ public class GameEvents extends EventListener {
 	}
 
 	@EventHandler
-	public void onItemMove(InventoryClickEvent event) {
-		if (!(event.getWhoClicked() instanceof Player player)) {
-			return;
-		}
-
-		if (this.isInArena(player)) {
-			event.setResult(Event.Result.DENY);
-		}
-	}
-
-	@EventHandler
-	public void onCraft(PlayerInteractEvent event) {
-		final var player = event.getPlayer();
-
-		if (!this.isInArena(player)) {
-			return;
-		}
-
-		if (player.getTargetBlock(null, 7).getType() == XMaterial.CRAFTING_TABLE.parseMaterial()) {
-			event.setCancelled(true);
+	public void onItemMove(InventoryClickEvent e) {
+		if (e.getWhoClicked() instanceof Player player && this.isInArena(player)) {
+			if (e.getView().getType() == InventoryType.CRAFTING || e.getView().getType() == InventoryType.PLAYER) {
+				e.setResult(Event.Result.DENY);
+			}
 		}
 	}
 
