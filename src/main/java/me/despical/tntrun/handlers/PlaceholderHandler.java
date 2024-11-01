@@ -78,6 +78,8 @@ public class PlaceholderHandler extends PlaceholderExpansion {
 		User user = plugin.getUserManager().getUser(player);
 
 		return switch (id) {
+			case "player" -> player.getName();
+			case "uuid" -> player.getUniqueId().toString();
 			case "wins" -> Integer.toString(user.getStat(StatisticType.WINS));
 			case "loses" -> Integer.toString(user.getStat(StatisticType.LOSES));
 			case "games_played" -> Integer.toString(user.getStat(StatisticType.GAMES_PLAYED));
