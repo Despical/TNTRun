@@ -258,24 +258,52 @@ public record ArenaManager(Main plugin) {
 
 		if (quickStop) return;
 
-		final var summaryMessages = chatManager.getStringList("messages.summary-message");
+		List<String> summaryMessages = chatManager.getStringList("messages.summary-message");
 
-		for (final var user : arena.getPlayers()) {
+		for (User user : arena.getPlayers()) {
 			user.performReward(Reward.RewardType.END_GAME);
 
-			for (final var msg : summaryMessages) {
-				final var message = formatSummaryPlaceholders(msg, arena, user);
+			for (String msg : summaryMessages) {
+				try {
+					var message = formatSummaryMessage(msg, arena, user);
 
-				if (Arrays.stream(message).anyMatch(component -> component.toLegacyText().contains("%skip_line%"))) {
-					continue;
+					if (Arrays.stream(message).anyMatch(component -> component.toLegacyText().contains("%skip_line%"))) {
+						continue;
+					}
+
+					Utils.sendCenteredMessage(user.getPlayer(), message);
+				} catch (NoSuchMethodError bungeeAPINotFound) {
+					String message = legacyFormatSummaryMessage(msg, arena, user);
+
+					if (message.contains("%skip_line%")) continue;
+
+					MiscUtils.sendCenteredMessage(user.getPlayer(), message);
 				}
-
-				Utils.sendCenteredMessage(user.getPlayer(), message);
-			}
+ 			}
 		}
 	}
 
-	private BaseComponent[] formatSummaryPlaceholders(String msg, Arena arena, User user) {
+	private String legacyFormatSummaryMessage(String msg, Arena arena, User user) {
+		List<User> winners = new ArrayList<>(arena.getWinners());
+		Collections.reverse(winners);
+
+		for (int i = 0; i < 4; i++) {
+			if (i >= winners.size()) {
+				msg = msg.replace("%player_" + (i + 1) + '%', "%skip_line%");
+				continue;
+			}
+
+			msg = msg.replace("%player_" + (i + 1) + '%', winners.get(i).getName());
+		}
+
+		msg = msg.replace("%winner%", arena.getWinner().getName());
+		msg = msg.replace("%earned_coins%", Integer.toString(user.getStat(StatsStorage.StatisticType.LOCAL_COINS)));
+		msg = msg.replace("%survive_time%", Integer.toString(user.getStat(StatsStorage.StatisticType.LOCAL_SURVIVE)));
+		msg = msg.replace("%formatted_survive_time%", StringFormatUtils.formatIntoMMSS(user.getStat(StatsStorage.StatisticType.LOCAL_SURVIVE)));
+		return msg;
+	}
+
+	private BaseComponent[] formatSummaryMessage(String msg, Arena arena, User user) {
 		var formatted = msg;
 
 		final var winners = new ArrayList<>(arena.getWinners());
