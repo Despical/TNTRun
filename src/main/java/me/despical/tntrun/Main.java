@@ -37,6 +37,7 @@ import me.despical.tntrun.handlers.PlaceholderHandler;
 import me.despical.tntrun.handlers.bungee.BungeeManager;
 import me.despical.tntrun.handlers.rewards.RewardsFactory;
 import me.despical.tntrun.handlers.sign.SignManager;
+import me.despical.tntrun.leaderboard.LeaderboardManager;
 import me.despical.tntrun.user.User;
 import me.despical.tntrun.user.UserManager;
 import org.bstats.bukkit.Metrics;
@@ -46,6 +47,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 /**
@@ -66,6 +68,7 @@ public class Main extends JavaPlugin {
 	private PermissionsManager permissionManager;
 	private CommandFramework commandFramework;
 	private SignManager signManager;
+	private LeaderboardManager leaderboardManager;
 
 	@Override
 	public void onEnable() {
@@ -132,6 +135,8 @@ public class Main extends JavaPlugin {
 		}
 
 		if (getServer().getPluginManager().isPluginEnabled("PlaceholderAPI")) {
+			this.leaderboardManager = new LeaderboardManager(this);
+
 			new PlaceholderHandler(this);
 		}
 
@@ -139,9 +144,23 @@ public class Main extends JavaPlugin {
 			getServer().getScheduler().scheduleSyncRepeatingTask(this, () -> userManager.getUsers().forEach(ArenaUtils::updateNameTagsVisibility), 60, 140);
 		}
 
-		final var metrics = new Metrics(this, 8147);
+		Metrics metrics = new Metrics(this, 8147);
 		metrics.addCustomChart(new SimplePie("database_enabled", () -> getOption(ConfigPreferences.Option.DATABASE_ENABLED) ? "Enabled" : "Disabled"));
 		metrics.addCustomChart(new SimplePie("update_notifier", () -> getOption(ConfigPreferences.Option.UPDATE_NOTIFIER_ENABLED) ? "Enabled" : "Disabled"));
+
+		this.handleAutoDataSaving();
+	}
+
+	private void handleAutoDataSaving() {
+		long period = getConfig().getLong("Statistic-Saving-Period", 300) * 20;
+
+		if (period > 0) {
+			getServer().getScheduler().runTaskTimerAsynchronously(this, () -> {
+				userManager.getUserDatabase().saveAllStatistics();
+
+				Optional.ofNullable(leaderboardManager).ifPresent(LeaderboardManager::updateLeaderboards);
+			}, period, period);
+		}
 	}
 
 	private void checkUpdate() {
@@ -158,7 +177,9 @@ public class Main extends JavaPlugin {
 	}
 
 	private void setupConfigurationFiles() {
-		Stream.of("config", "arena", "rewards", "stats", "items", "mysql", "messages", "bungee").filter(name -> !new File(getDataFolder(), name + ".yml").exists()).forEach(name -> saveResource(name + ".yml", false));
+		saveDefaultConfig();
+
+		Stream.of("arena", "rewards", "stats", "items", "mysql", "messages", "bungee").filter(name -> !new File(getDataFolder(), name + ".yml").exists()).forEach(name -> saveResource(name + ".yml", false));
 	}
 
 	public boolean getOption(ConfigPreferences.Option option) {
@@ -212,5 +233,9 @@ public class Main extends JavaPlugin {
 
 	public SignManager getSignManager() {
 		return signManager;
+	}
+
+	public LeaderboardManager getLeaderboardManager() {
+		return leaderboardManager;
 	}
 }

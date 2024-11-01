@@ -18,8 +18,8 @@
 
 package me.despical.tntrun.api.events.player;
 
-import me.despical.tntrun.api.StatsStorage;
 import me.despical.tntrun.api.events.TNTRunEvent;
+import me.despical.tntrun.api.statistic.StatisticType;
 import me.despical.tntrun.arena.Arena;
 import me.despical.tntrun.user.User;
 import org.bukkit.event.HandlerList;
@@ -38,10 +38,10 @@ public class StatisticChangeEvent extends TNTRunEvent {
 	private static final HandlerList handlerList = new HandlerList();
 
 	private final User user;
-	private final StatsStorage.StatisticType statisticType;
+	private final StatisticType statisticType;
 	private final int value;
 
-	public StatisticChangeEvent(Arena arena, User user, StatsStorage.StatisticType statisticType, int value) {
+	public StatisticChangeEvent(Arena arena, User user, StatisticType statisticType, int value) {
 		super(arena);
 		this.user = user;
 		this.statisticType = statisticType;
@@ -58,7 +58,7 @@ public class StatisticChangeEvent extends TNTRunEvent {
 		return this.user;
 	}
 
-	public StatsStorage.StatisticType getStatisticType() {
+	public StatisticType getStatisticType() {
 		return this.statisticType;
 	}
 

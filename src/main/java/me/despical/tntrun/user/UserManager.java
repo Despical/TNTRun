@@ -20,9 +20,9 @@ package me.despical.tntrun.user;
 
 import me.despical.tntrun.ConfigPreferences;
 import me.despical.tntrun.Main;
-import me.despical.tntrun.api.StatsStorage;
-import me.despical.tntrun.user.data.FlatFileStatistics;
+import me.despical.tntrun.api.statistic.StatisticType;
 import me.despical.tntrun.user.data.AbstractDatabase;
+import me.despical.tntrun.user.data.FlatFileStatistics;
 import me.despical.tntrun.user.data.MySQLStatistics;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -94,7 +94,7 @@ public class UserManager {
 		return userDatabase;
 	}
 
-	public void saveStatistic(User user, StatsStorage.StatisticType statisticType) {
+	public void saveStatistic(User user, StatisticType statisticType) {
 		if (!statisticType.isPersistent()) return;
 
 		this.userDatabase.saveStatistics(user);

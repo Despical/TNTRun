@@ -20,7 +20,7 @@ package me.despical.tntrun.arena;
 
 import me.despical.tntrun.ConfigPreferences;
 import me.despical.tntrun.Main;
-import me.despical.tntrun.api.StatsStorage;
+import me.despical.tntrun.api.statistic.StatisticType;
 import me.despical.tntrun.handlers.ChatManager;
 import me.despical.tntrun.user.User;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -81,7 +81,7 @@ public class ArenaUtils {
 
 		msg = msg.replace("%action%", action.action);
 
-		user.addStat(StatsStorage.StatisticType.LOCAL_COINS, action.points);
+		user.addStat(StatisticType.LOCAL_COINS, action.points);
 		user.sendRawMessage(msg);
 	}
 

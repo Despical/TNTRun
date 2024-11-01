@@ -25,7 +25,7 @@ import me.despical.commons.miscellaneous.PlayerUtils;
 import me.despical.inventoryframework.GuiItem;
 import me.despical.inventoryframework.pane.StaticPane;
 import me.despical.tntrun.Main;
-import me.despical.tntrun.api.StatsStorage;
+import me.despical.tntrun.api.statistic.StatisticType;
 import me.despical.tntrun.events.spectator.SpectatorSettingsGUI;
 import me.despical.tntrun.user.User;
 import org.bukkit.Material;
@@ -58,7 +58,7 @@ public class SettingComponents {
 		pane.addItem(GuiItem.of(new ItemBuilder(Material.DIAMOND_BOOTS).name(prefix + "IV").hideTooltip().build(), e -> setSpeed(user, 4, "IV")),6,1);
 
 		var hasNightVision = player.hasPotionEffect(XPotion.NIGHT_VISION.getPotionEffectType());
-		var shouldHaveNightVision = user.getStat(StatsStorage.StatisticType.SPECTATOR_NIGHT_VISION) == 1;
+		var shouldHaveNightVision = user.getStat(StatisticType.SPECTATOR_NIGHT_VISION) == 1;
 
 		pane.addItem(this.buildItem("night-vision-item", shouldHaveNightVision ? XMaterial.ENDER_EYE : XMaterial.ENDER_PEARL, hasNightVision, event -> {
 			if (hasNightVision) {
@@ -67,15 +67,15 @@ public class SettingComponents {
 				player.addPotionEffect(XPotion.NIGHT_VISION.buildInvisible(Integer.MAX_VALUE, 3));
 			}
 
-			user.setStat(StatsStorage.StatisticType.SPECTATOR_NIGHT_VISION, !hasNightVision ? 0 : 1);
+			user.setStat(StatisticType.SPECTATOR_NIGHT_VISION, !hasNightVision ? 0 : 1);
 			user.sendMessage("messages.spectators." + (hasNightVision ? "removed-night-vision" : "have-night-vision"));
 
-			plugin.getUserManager().saveStatistic(user, StatsStorage.StatisticType.SPECTATOR_NIGHT_VISION);
+			plugin.getUserManager().saveStatistic(user, StatisticType.SPECTATOR_NIGHT_VISION);
 
 			new SpectatorSettingsGUI(plugin, user, arena).showGui();
 		}), 2, 2);
 
-		var seeOthers = user.getStat(StatsStorage.StatisticType.SPECTATOR_SHOW_OTHERS) == 1;
+		var seeOthers = user.getStat(StatisticType.SPECTATOR_SHOW_OTHERS) == 1;
 
 		pane.addItem(this.buildItem("hide-spectators-item", seeOthers ? XMaterial.REDSTONE : XMaterial.GLOWSTONE_DUST, seeOthers, event -> {
 			for (final var u : arena.getPlayers()) {
@@ -88,10 +88,10 @@ public class SettingComponents {
 				}
 			}
 
-			user.setStat(StatsStorage.StatisticType.SPECTATOR_SHOW_OTHERS, seeOthers ? 0 : 1);
+			user.setStat(StatisticType.SPECTATOR_SHOW_OTHERS, seeOthers ? 0 : 1);
 			user.sendMessage("messages.spectators." + (seeOthers ? "hide-spectators" : "show-spectators"));
 
-			plugin.getUserManager().saveStatistic(user, StatsStorage.StatisticType.SPECTATOR_SHOW_OTHERS);
+			plugin.getUserManager().saveStatistic(user, StatisticType.SPECTATOR_SHOW_OTHERS);
 
 			new SpectatorSettingsGUI(plugin, user, arena).showGui();
 		}), 3, 2);
@@ -109,7 +109,7 @@ public class SettingComponents {
 			player.addPotionEffect(XPotion.SPEED.buildInvisible(Integer.MAX_VALUE, level));
 		}
 
-		user.setStat(StatsStorage.StatisticType.SPECTATOR_SPEED, level);
+		user.setStat(StatisticType.SPECTATOR_SPEED, level);
 		user.sendRawMessage(plugin.getChatManager().message("messages.spectators." + (level == -1 ? "no-longer-speed" : "have-speed")).replace("%speed%", prefix));
 	}
 

@@ -25,10 +25,10 @@ import me.despical.commons.string.StringFormatUtils;
 import me.despical.commons.util.Strings;
 import me.despical.tntrun.ConfigPreferences;
 import me.despical.tntrun.Main;
-import me.despical.tntrun.api.StatsStorage;
+import me.despical.tntrun.api.events.game.GameEndEvent;
 import me.despical.tntrun.api.events.game.GameJoinAttemptEvent;
 import me.despical.tntrun.api.events.game.GameLeaveEvent;
-import me.despical.tntrun.api.events.game.GameEndEvent;
+import me.despical.tntrun.api.statistic.StatisticType;
 import me.despical.tntrun.arena.Arena;
 import me.despical.tntrun.arena.ArenaState;
 import me.despical.tntrun.arena.ArenaUtils;
@@ -168,10 +168,10 @@ public record ArenaManager(Main plugin) {
 	public void leaveAttempt(final User user, final Arena arena) {
 		plugin.getServer().getPluginManager().callEvent(new GameLeaveEvent(user, arena));
 
-		int localScore = user.getStat(StatsStorage.StatisticType.LOCAL_SURVIVE);
+		int localScore = user.getStat(StatisticType.LOCAL_SURVIVE);
 
-		if (localScore > user.getStat(StatsStorage.StatisticType.LONGEST_SURVIVE) && !plugin.getOption(ConfigPreferences.Option.LONGEST_SURVIVE_ON_WINS)) {
-			user.setStat(StatsStorage.StatisticType.LONGEST_SURVIVE, localScore);
+		if (localScore > user.getStat(StatisticType.LONGEST_SURVIVE) && !plugin.getOption(ConfigPreferences.Option.LONGEST_SURVIVE_ON_WINS)) {
+			user.setStat(StatisticType.LONGEST_SURVIVE, localScore);
 		}
 
 		arena.broadcastFormattedMessage("messages.arena.quit-arena", user, true);
@@ -236,21 +236,21 @@ public record ArenaManager(Main plugin) {
 		final var updateOnWins = plugin.getOption(ConfigPreferences.Option.LONGEST_SURVIVE_ON_WINS);
 
 		for (final var user : arena.getPlayers()) {
-			final var localScore = user.getStat(StatsStorage.StatisticType.LOCAL_SURVIVE);
+			final var localScore = user.getStat(StatisticType.LOCAL_SURVIVE);
 
 			boolean isWinner = user.equals(winner);
 
-			if (localScore > user.getStat(StatsStorage.StatisticType.LONGEST_SURVIVE)) {
+			if (localScore > user.getStat(StatisticType.LONGEST_SURVIVE)) {
 				if (!updateOnWins || isWinner) {
-					user.setStat(StatsStorage.StatisticType.LONGEST_SURVIVE, localScore);
+					user.setStat(StatisticType.LONGEST_SURVIVE, localScore);
 				}
 			}
 
-			user.addStat(StatsStorage.StatisticType.COINS, user.getStat(StatsStorage.StatisticType.LOCAL_COINS));
-			user.addStat(StatsStorage.StatisticType.GAMES_PLAYED, 1);
+			user.addStat(StatisticType.COINS, user.getStat(StatisticType.LOCAL_COINS));
+			user.addStat(StatisticType.GAMES_PLAYED, 1);
 			user.addGameItems("leave-item", "play-again");
 			user.removePotionEffectsExcept(XPotion.BLINDNESS);
-			user.addStat(isWinner ? StatsStorage.StatisticType.WINS : StatsStorage.StatisticType.LOSES, 1);
+			user.addStat(isWinner ? StatisticType.WINS : StatisticType.LOSES, 1);
 			user.performReward(isWinner ? Reward.RewardType.WIN : Reward.RewardType.LOSE);
 
 			plugin.getUserManager().saveStatistics(user);
@@ -297,9 +297,9 @@ public record ArenaManager(Main plugin) {
 		}
 
 		msg = msg.replace("%winner%", arena.getWinner().getName());
-		msg = msg.replace("%earned_coins%", Integer.toString(user.getStat(StatsStorage.StatisticType.LOCAL_COINS)));
-		msg = msg.replace("%survive_time%", Integer.toString(user.getStat(StatsStorage.StatisticType.LOCAL_SURVIVE)));
-		msg = msg.replace("%formatted_survive_time%", StringFormatUtils.formatIntoMMSS(user.getStat(StatsStorage.StatisticType.LOCAL_SURVIVE)));
+		msg = msg.replace("%earned_coins%", Integer.toString(user.getStat(StatisticType.LOCAL_COINS)));
+		msg = msg.replace("%survive_time%", Integer.toString(user.getStat(StatisticType.LOCAL_SURVIVE)));
+		msg = msg.replace("%formatted_survive_time%", StringFormatUtils.formatIntoMMSS(user.getStat(StatisticType.LOCAL_SURVIVE)));
 		return msg;
 	}
 
@@ -310,9 +310,9 @@ public record ArenaManager(Main plugin) {
 		Collections.reverse(winners);
 
 		formatted = formatted.replace("%winner%", arena.getWinner().getName());
-		formatted = formatted.replace("%earned_coins%", Integer.toString(user.getStat(StatsStorage.StatisticType.LOCAL_COINS)));
-		formatted = formatted.replace("%survive_time%", Integer.toString(user.getStat(StatsStorage.StatisticType.LOCAL_SURVIVE)));
-		formatted = formatted.replace("%formatted_survive_time%", StringFormatUtils.formatIntoMMSS(user.getStat(StatsStorage.StatisticType.LOCAL_SURVIVE)));
+		formatted = formatted.replace("%earned_coins%", Integer.toString(user.getStat(StatisticType.LOCAL_COINS)));
+		formatted = formatted.replace("%survive_time%", Integer.toString(user.getStat(StatisticType.LOCAL_SURVIVE)));
+		formatted = formatted.replace("%formatted_survive_time%", StringFormatUtils.formatIntoMMSS(user.getStat(StatisticType.LOCAL_SURVIVE)));
 		formatted = formatted.replace("%no_center%", "");
 
 		var builder = new ComponentBuilder();
@@ -326,7 +326,7 @@ public record ArenaManager(Main plugin) {
 			var winner = winners.get(i);
 
 			if (msg.contains("%player_" + (i + 1))) {
-				int jumps = winner.getStat(StatsStorage.StatisticType.LOCAL_DOUBLE_JUMPS), max = plugin.getPermissionManager().getDoubleJumps(winner.getPlayer());
+				int jumps = winner.getStat(StatisticType.LOCAL_DOUBLE_JUMPS), max = plugin.getPermissionManager().getDoubleJumps(winner.getPlayer());
 
 				var hover = plugin.getChatManager().message("messages.summary-message-hover")
 					.replace("%double_jumps%", arena.getScoreboardManager().getDoubleJumpColor(jumps, max) + jumps)

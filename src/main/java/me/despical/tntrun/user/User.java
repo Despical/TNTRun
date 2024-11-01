@@ -23,8 +23,8 @@ import me.despical.commons.compat.XPotion;
 import me.despical.commons.miscellaneous.AttributeUtils;
 import me.despical.tntrun.ConfigPreferences;
 import me.despical.tntrun.Main;
-import me.despical.tntrun.api.StatsStorage;
 import me.despical.tntrun.api.events.player.StatisticChangeEvent;
+import me.despical.tntrun.api.statistic.StatisticType;
 import me.despical.tntrun.arena.Arena;
 import me.despical.tntrun.handlers.rewards.Reward;
 import me.despical.tntrun.utils.Utils;
@@ -36,7 +36,10 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.text.MessageFormat;
-import java.util.*;
+import java.util.EnumMap;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -53,7 +56,7 @@ public class User {
 	private final UUID uuid;
 	private final String playerName;
 	private final Map<String, Double> cooldowns;
-	private final Map<StatsStorage.StatisticType, Integer> stats;
+	private final Map<StatisticType, Integer> stats;
 
 	private boolean spectator;
 	private Scoreboard cachedScoreboard;
@@ -62,7 +65,7 @@ public class User {
 		this.uuid = player.getUniqueId();
 		this.playerName = player.getName();
 		this.cooldowns = new HashMap<>();
-		this.stats = new EnumMap<>(StatsStorage.StatisticType.class);
+		this.stats = new EnumMap<>(StatisticType.class);
 	}
 
 	public void sendMessage(final String path) {
@@ -122,11 +125,11 @@ public class User {
 		this.spectator = spectator;
 	}
 
-	public int getStat(StatsStorage.StatisticType statisticType) {
+	public int getStat(StatisticType statisticType) {
 		return stats.computeIfAbsent(statisticType, stat -> 0);
 	}
 
-	public void setStat(StatsStorage.StatisticType stat, int value) {
+	public void setStat(StatisticType stat, int value) {
 		stats.put(stat, value);
 
 		if (plugin.isEnabled()) {
@@ -134,7 +137,7 @@ public class User {
 		}
 	}
 
-	public void addStat(StatsStorage.StatisticType stat, int value) {
+	public void addStat(StatisticType stat, int value) {
 		setStat(stat, getStat(stat) + value);
 	}
 
@@ -153,13 +156,13 @@ public class User {
 	}
 
 	public void resetTemporaryStats() {
-		for (var stat : StatsStorage.StatisticType.values()) {
+		for (var stat : StatisticType.values()) {
 			if (stat.isPersistent()) continue;
 
 			setStat(stat, 0);
 		}
 
-		this.setStat(StatsStorage.StatisticType.LOCAL_DOUBLE_JUMPS, plugin.getPermissionManager().getDoubleJumps(this.getPlayer()));
+		this.setStat(StatisticType.LOCAL_DOUBLE_JUMPS, plugin.getPermissionManager().getDoubleJumps(this.getPlayer()));
 		this.spectator = false;
 	}
 
@@ -170,11 +173,11 @@ public class User {
 	public void applyDoubleJumpDelay() {
 		final int cooldown = plugin.getPermissionManager().getDoubleJumpDelay();
 
-		addStat(StatsStorage.StatisticType.LOCAL_DOUBLE_JUMPS, -1);
+		addStat(StatisticType.LOCAL_DOUBLE_JUMPS, -1);
 		setCooldown("double_jump", cooldown);
 		performReward(Reward.RewardType.DOUBLE_JUMP);
 
-		if (plugin.getOption(ConfigPreferences.Option.JUMP_BAR) && getStat(StatsStorage.StatisticType.LOCAL_DOUBLE_JUMPS) > 0)
+		if (plugin.getOption(ConfigPreferences.Option.JUMP_BAR) && getStat(StatisticType.LOCAL_DOUBLE_JUMPS) > 0)
 			Utils.applyActionBarCooldown(this, cooldown);
 	}
 

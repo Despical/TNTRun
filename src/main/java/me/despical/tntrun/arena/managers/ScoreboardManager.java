@@ -32,14 +32,12 @@ import me.despical.tntrun.handlers.ChatManager;
 import me.despical.tntrun.user.User;
 import org.bukkit.entity.Player;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static me.despical.tntrun.api.StatsStorage.StatisticType.LOCAL_COINS;
-import static me.despical.tntrun.api.StatsStorage.StatisticType.LOCAL_DOUBLE_JUMPS;
+import static me.despical.tntrun.api.statistic.StatisticType.LOCAL_COINS;
+import static me.despical.tntrun.api.statistic.StatisticType.LOCAL_DOUBLE_JUMPS;
 
 /**
  * @author Despical

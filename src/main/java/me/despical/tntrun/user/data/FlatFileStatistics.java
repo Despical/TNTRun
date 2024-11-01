@@ -19,7 +19,7 @@
 package me.despical.tntrun.user.data;
 
 import me.despical.commons.configuration.ConfigUtils;
-import me.despical.tntrun.api.StatsStorage;
+import me.despical.tntrun.api.statistic.StatisticType;
 import me.despical.tntrun.user.User;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
@@ -39,7 +39,7 @@ public non-sealed class FlatFileStatistics extends AbstractDatabase {
 	}
 
 	@Override
-	public void saveStatistic(@NotNull User user, StatsStorage.StatisticType statisticType) {
+	public void saveStatistic(@NotNull User user, StatisticType statisticType) {
 		config.set(user.getUniqueId().toString() + "." + statisticType.getName(), user.getStat(statisticType));
 
 		ConfigUtils.saveConfig(plugin, config, "stats");
@@ -49,7 +49,7 @@ public non-sealed class FlatFileStatistics extends AbstractDatabase {
 	public void saveStatistics(@NotNull User user) {
 		String uuid = user.getUniqueId().toString();
 
-		for (var stat : StatsStorage.StatisticType.values()) {
+		for (var stat : StatisticType.values()) {
 			if (stat.isPersistent()) {
 				config.set(uuid + "." + stat.getName(), user.getStat(stat));
 			}
@@ -64,7 +64,7 @@ public non-sealed class FlatFileStatistics extends AbstractDatabase {
 			User user = plugin.getUserManager().getUser(player);
 			String uuid = user.getUniqueId().toString();
 
-			for (var stat : StatsStorage.StatisticType.values()) {
+			for (var stat : StatisticType.values()) {
 				if (stat.isPersistent()) {
 					config.set(uuid + "." + stat.getName(), user.getStat(stat));
 				}
@@ -78,7 +78,7 @@ public non-sealed class FlatFileStatistics extends AbstractDatabase {
 	public void loadStatistics(@NotNull User user) {
 		String uuid = user.getUniqueId().toString();
 
-		for (var stat : StatsStorage.StatisticType.values()) {
+		for (var stat : StatisticType.values()) {
 			user.setStat(stat, config.getInt(uuid + "." + stat.getName()));
 		}
 	}

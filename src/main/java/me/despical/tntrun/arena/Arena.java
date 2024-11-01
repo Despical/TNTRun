@@ -24,9 +24,9 @@ import me.despical.commons.miscellaneous.PlayerUtils;
 import me.despical.commons.serializer.InventorySerializer;
 import me.despical.tntrun.ConfigPreferences;
 import me.despical.tntrun.Main;
-import me.despical.tntrun.api.StatsStorage;
 import me.despical.tntrun.api.events.game.GameStartEvent;
 import me.despical.tntrun.api.events.game.GameStateChangeEvent;
+import me.despical.tntrun.api.statistic.StatisticType;
 import me.despical.tntrun.arena.managers.GameBarManager;
 import me.despical.tntrun.arena.managers.ScoreboardManager;
 import me.despical.tntrun.arena.options.ArenaOption;
@@ -273,14 +273,14 @@ public class Arena extends BukkitRunnable {
 	public void addSpectator(User user) {
 		this.spectators.add(user);
 
-		final var nightVision = user.getStat(StatsStorage.StatisticType.SPECTATOR_NIGHT_VISION);
+		final var nightVision = user.getStat(StatisticType.SPECTATOR_NIGHT_VISION);
 		final var player = user.getPlayer();
 
 		if (nightVision == 1) {
 			player.addPotionEffect(XPotion.NIGHT_VISION.buildInvisible(Integer.MAX_VALUE, 1));
 		}
 
-		final var level = user.getStat(StatsStorage.StatisticType.SPECTATOR_SPEED) + 1;
+		final var level = user.getStat(StatisticType.SPECTATOR_SPEED) + 1;
 
 		player.setFlySpeed(.1F + level * .05F);
 		player.addPotionEffect(XPotion.SPEED.buildInvisible(Integer.MAX_VALUE, level));
@@ -627,11 +627,11 @@ public class Arena extends BukkitRunnable {
 
 					if (user.getCooldown("double_jump") > 0) {
 						player.setAllowFlight(false);
-					} else if (user.getStat(StatsStorage.StatisticType.LOCAL_DOUBLE_JUMPS) > 0) {
+					} else if (user.getStat(StatisticType.LOCAL_DOUBLE_JUMPS) > 0) {
 						player.setAllowFlight(true);
 					}
 
-					user.addStat(StatsStorage.StatisticType.LOCAL_SURVIVE, 1);
+					user.addStat(StatisticType.LOCAL_SURVIVE, 1);
 
 					if (timer > 0 && timer % 30 == 0) {
 						ArenaUtils.addScore(user, ArenaUtils.ScoreAction.SURVIVE_TIME);

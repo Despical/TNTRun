@@ -20,7 +20,7 @@ package me.despical.tntrun.events.event;
 
 import me.despical.tntrun.ConfigPreferences;
 import me.despical.tntrun.Main;
-import me.despical.tntrun.api.StatsStorage;
+import me.despical.tntrun.api.statistic.StatisticType;
 import me.despical.tntrun.arena.Arena;
 import me.despical.tntrun.arena.ArenaState;
 import me.despical.tntrun.events.EventListener;
@@ -71,7 +71,7 @@ public class GameItemEvents extends EventListener {
 			return;
 		}
 
-		if (user.getStat(StatsStorage.StatisticType.LOCAL_DOUBLE_JUMPS) > 0) {
+		if (user.getStat(StatisticType.LOCAL_DOUBLE_JUMPS) > 0) {
 			event.setCancelled(true);
 
 			user.applyDoubleJumpDelay();
@@ -111,7 +111,7 @@ public class GameItemEvents extends EventListener {
 		if (doubleJumpItem.equals(event.getItem())) {
 			event.setCancelled(true);
 
-			if (user.getStat(StatsStorage.StatisticType.LOCAL_DOUBLE_JUMPS) > 0) {
+			if (user.getStat(StatisticType.LOCAL_DOUBLE_JUMPS) > 0) {
 				event.setCancelled(true);
 
 				user.applyDoubleJumpDelay();

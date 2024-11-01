@@ -21,11 +21,14 @@ package me.despical.tntrun.handlers;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import me.despical.commons.number.NumberUtils;
 import me.despical.commons.string.StringFormatUtils;
-import me.despical.commons.util.Collections;
 import me.despical.tntrun.Main;
-import me.despical.tntrun.api.StatsStorage;
+import me.despical.tntrun.api.statistic.StatisticType;
+import me.despical.tntrun.user.User;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Map;
+import java.util.UUID;
 
 /**
  * @author Despical
@@ -68,21 +71,21 @@ public class PlaceholderHandler extends PlaceholderExpansion {
 	public String onPlaceholderRequest(Player player, @NotNull String id) {
 		if (player == null) return null;
 
-		if (id.startsWith("leaderboard_")) {
-			return this.getLeaderboardEntry(id);
+		if (id.startsWith("top:")) {
+			return this.handleLeaderboardPlaceholders(id);
 		}
 
-		final var user = plugin.getUserManager().getUser(player);
+		User user = plugin.getUserManager().getUser(player);
 
-		return switch (id.toLowerCase()) {
-			case "wins" -> Integer.toString(user.getStat(StatsStorage.StatisticType.WINS));
-			case "loses" -> Integer.toString(user.getStat(StatsStorage.StatisticType.LOSES));
-			case "games_played" -> Integer.toString(user.getStat(StatsStorage.StatisticType.GAMES_PLAYED));
-			case "longest_survive" -> Integer.toString(user.getStat(StatsStorage.StatisticType.LONGEST_SURVIVE));
-			case "local_coins" -> Integer.toString(user.getStat(StatsStorage.StatisticType.LOCAL_COINS));
-			case "local_survive" -> Integer.toString(user.getStat(StatsStorage.StatisticType.LOCAL_SURVIVE));
-			case "local_double_jumps" -> Integer.toString(user.getStat(StatsStorage.StatisticType.LOCAL_DOUBLE_JUMPS));
-			case "coins" -> Integer.toString(user.getStat(StatsStorage.StatisticType.COINS));
+		return switch (id) {
+			case "wins" -> Integer.toString(user.getStat(StatisticType.WINS));
+			case "loses" -> Integer.toString(user.getStat(StatisticType.LOSES));
+			case "games_played" -> Integer.toString(user.getStat(StatisticType.GAMES_PLAYED));
+			case "longest_survive" -> Integer.toString(user.getStat(StatisticType.LONGEST_SURVIVE));
+			case "local_coins" -> Integer.toString(user.getStat(StatisticType.LOCAL_COINS));
+			case "local_survive" -> Integer.toString(user.getStat(StatisticType.LOCAL_SURVIVE));
+			case "local_double_jumps" -> Integer.toString(user.getStat(StatisticType.LOCAL_DOUBLE_JUMPS));
+			case "coins" -> Integer.toString(user.getStat(StatisticType.COINS));
 			default -> handleArenaPlaceholderRequest(id);
 		};
 	}
@@ -95,7 +98,7 @@ public class PlaceholderHandler extends PlaceholderExpansion {
 
 		if (arena == null) return null;
 
-		return switch (data[1].toLowerCase()) {
+		return switch (data[1]) {
 			case "players" -> Integer.toString(arena.getPlayers().size());
 			case "players_left" -> Integer.toString(arena.getPlayersLeft().size());
 			case "max_players" -> Integer.toString(arena.getMaximumPlayers());
@@ -109,29 +112,33 @@ public class PlaceholderHandler extends PlaceholderExpansion {
 		};
 	}
 
-	private String getLeaderboardEntry(String id) {
-		final var split = id.substring(id.lastIndexOf('_') + 1).split(":");
-		final var stat = StatsStorage.StatisticType.match(split[0]);
+	private String handleLeaderboardPlaceholders(String id) {
+		String[] split = id.split(":");
 
-		if (stat == null || !stat.shouldBeViewed()) {
-			return "There is no statistic name called " + id;
+		if (split.length != 4) {
+			return null;
 		}
 
-		final var stats = Collections.listFromMap(StatsStorage.getStats(stat));
-		final int position = stats.size() - NumberUtils.getInt(split[1]);
+		String statName = split[1];
+		StatisticType statisticType = StatisticType.match(statName);
 
-		if (stats.size() == position) {
-			return "Out of Bounds";
+		if (statisticType == null) {
+			return "No statistic like that: " + statName;
 		}
 
-		final boolean isValue = split.length == 3 && "value".equals(split[2]);
+		int position = NumberUtils.getInt(split[2], 1);
+		Map.Entry<UUID, Integer> entry = plugin.getLeaderboardManager().getEntry(statisticType, position);
 
-		if (position < 0) {
-			return plugin.getChatManager().message("placeholders.empty-" + (isValue ? "value" : "position"));
+		boolean isName = "name".equals(split[3]);
+
+		if (entry == null) {
+			return plugin.getChatManager().message("placeholders.empty-" + (isName ? "position" : "value"));
 		}
 
-		final var entry = stats.get(position);
+		if (isName) {
+			return plugin.getServer().getOfflinePlayer(entry.getKey()).getName();
+		}
 
-		return isValue ? Integer.toString(entry.getValue()) : plugin.getServer().getOfflinePlayer(entry.getKey()).getName();
+		return Integer.toString(entry.getValue());
 	}
 }

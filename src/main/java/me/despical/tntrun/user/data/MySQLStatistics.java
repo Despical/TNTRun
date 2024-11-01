@@ -20,7 +20,7 @@ package me.despical.tntrun.user.data;
 
 import me.despical.commons.configuration.ConfigUtils;
 import me.despical.commons.database.MysqlDatabase;
-import me.despical.tntrun.api.StatsStorage;
+import me.despical.tntrun.api.statistic.StatisticType;
 import me.despical.tntrun.user.User;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -68,7 +68,7 @@ public non-sealed class MySQLStatistics extends AbstractDatabase {
 	}
 
 	@Override
-	public void saveStatistic(User user, StatsStorage.StatisticType statisticType) {
+	public void saveStatistic(User user, StatisticType statisticType) {
 		plugin.getServer().getScheduler().runTaskAsynchronously(plugin, () -> database.executeUpdate("UPDATE %s SET %s=%d WHERE UUID='%s';".formatted(tableName, statisticType.getName(), user.getStat(statisticType), user.getUniqueId().toString())));
 	}
 
@@ -99,7 +99,7 @@ public non-sealed class MySQLStatistics extends AbstractDatabase {
 				ResultSet result = statement.executeQuery("SELECT * from %s WHERE UUID='%s';".formatted(tableName, uuid));
 
 				if (result.next()) {
-					for (var stat : StatsStorage.StatisticType.values()) {
+					for (var stat : StatisticType.values()) {
 						if (!stat.isPersistent()) continue;
 
 						user.setStat(stat, result.getInt(stat.getName()));
@@ -107,7 +107,7 @@ public non-sealed class MySQLStatistics extends AbstractDatabase {
 				} else {
 					statement.executeUpdate("INSERT INTO %s (UUID,name) VALUES ('%s','%s');".formatted(tableName, uuid, user.getName()));
 
-					for (var stat : StatsStorage.StatisticType.values()) {
+					for (var stat : StatisticType.values()) {
 						if (!stat.isPersistent()) continue;
 
 						user.setStat(stat, 0);
@@ -139,7 +139,7 @@ public non-sealed class MySQLStatistics extends AbstractDatabase {
 	private String getUpdateStatement(User user) {
 		StringBuilder builder = new StringBuilder(" SET ");
 
-		for (var stat : StatsStorage.StatisticType.values()) {
+		for (var stat : StatisticType.values()) {
 			if (!stat.isPersistent()) continue;
 
 			int value = user.getStat(stat);

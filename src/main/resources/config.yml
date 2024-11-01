@@ -60,6 +60,9 @@ Join-Full-Game-Permission: "tntrun.fullgames"
 # to use a new double jump?
 Jump-Bar: true
 
+# The statistics saving rate, in seconds. (0 = save the stats on server shutdown/reload)
+Statistic-Saving-Period: 300
+
 # Should we block commands that are not associated with MM?
 Block-Commands: true
 

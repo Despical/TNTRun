@@ -16,12 +16,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package me.despical.tntrun.api;
+package me.despical.tntrun.api.statistic;
 
 import me.despical.commons.configuration.ConfigUtils;
 import me.despical.commons.sorter.SortUtils;
 import me.despical.tntrun.Main;
-import me.despical.tntrun.user.User;
 import me.despical.tntrun.user.data.MySQLStatistics;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
@@ -36,7 +35,6 @@ import java.sql.Statement;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.UUID;
-import java.util.stream.Stream;
 
 /**
  * @author Despical
@@ -80,53 +78,7 @@ public final class StatsStorage {
 		return SortUtils.sortByValue(stats);
 	}
 
-	public static int getUserStats(final Player player, final StatisticType statisticType) {
+	public static int getUserStats(Player player, StatisticType statisticType) {
 		return plugin.getUserManager().getUser(player).getStat(statisticType);
-	}
-
-	/**
-	 * Available statistics to get.
-	 */
-	public enum StatisticType {
-
-		WINS("wins", true),
-		LOSES("loses", true),
-		COINS("coinsearned", true),
-		GAMES_PLAYED("gamesplayed", true),
-		LONGEST_SURVIVE("longestsurvive", true),
-		SPECTATOR_NIGHT_VISION("spectatornightvision", true),
-		SPECTATOR_SHOW_OTHERS("spectatorshowothers", true),
-		SPECTATOR_SPEED("spectatorspeed", true),
-		LOCAL_COINS("local_coins", false),
-		LOCAL_DOUBLE_JUMPS("local_double_jumps", false),
-		LOCAL_SURVIVE("local_survive", false);
-
-		private final String name;
-		private final boolean persistent;
-
-		StatisticType(String name, boolean persistent) {
-			this.name = name;
-			this.persistent = persistent;
-		}
-
-		public String getName() {
-			return name;
-		}
-
-		public boolean isPersistent() {
-			return persistent;
-		}
-
-		public boolean shouldBeViewed() {
-			return persistent && !name().startsWith("SPECTATOR");
-		}
-
-		public String from(User user) {
-			return Integer.toString(user.getStat(this));
-		}
-
-		public static StatisticType match(String name) {
-			return Stream.of(values()).filter(statisticType -> statisticType.name.equals(name)).findFirst().orElse(null);
-		}
 	}
 }

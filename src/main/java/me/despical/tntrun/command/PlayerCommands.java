@@ -22,7 +22,8 @@ import me.despical.commandframework.CommandArguments;
 import me.despical.commandframework.annotations.Command;
 import me.despical.commons.string.StringFormatUtils;
 import me.despical.commons.string.StringUtils;
-import me.despical.tntrun.api.StatsStorage;
+import me.despical.tntrun.api.statistic.StatisticType;
+import me.despical.tntrun.api.statistic.StatsStorage;
 import me.despical.tntrun.arena.ArenaState;
 import me.despical.tntrun.user.User;
 import me.despical.tntrun.user.data.MySQLStatistics;
@@ -122,11 +123,11 @@ public class PlayerCommands extends AbstractCommand {
 	private String formatStats(String message, boolean self, User user) {
 		message = message.replace("%header%", chatManager.message("player-commands.stats-command.header" + (self ? "" : "-other")));
 		message = message.replace("%player%", user.getName());
-		message = message.replace("%coins%", StatsStorage.StatisticType.COINS.from(user));
-		message = message.replace("%longest_survive%", StringFormatUtils.formatIntoMMSS(user.getStat(StatsStorage.StatisticType.LONGEST_SURVIVE)));
-		message = message.replace("%games_played%", StatsStorage.StatisticType.GAMES_PLAYED.from(user));
-		message = message.replace("%wins%", StatsStorage.StatisticType.WINS.from(user));
-		message = message.replace("%loses%", StatsStorage.StatisticType.LOSES.from(user));
+		message = message.replace("%coins%", StatisticType.COINS.from(user));
+		message = message.replace("%longest_survive%", StringFormatUtils.formatIntoMMSS(user.getStat(StatisticType.LONGEST_SURVIVE)));
+		message = message.replace("%games_played%", StatisticType.GAMES_PLAYED.from(user));
+		message = message.replace("%wins%", StatisticType.WINS.from(user));
+		message = message.replace("%loses%", StatisticType.LOSES.from(user));
 		return chatManager.rawMessage(message);
 	}
 
@@ -141,13 +142,13 @@ public class PlayerCommands extends AbstractCommand {
 		}
 
 		try {
-			printLeaderboard(arguments.getSender(), StatsStorage.StatisticType.valueOf(arguments.getArgument(0).toUpperCase(java.util.Locale.ENGLISH)));
+			printLeaderboard(arguments.getSender(), StatisticType.valueOf(arguments.getArgument(0).toUpperCase(java.util.Locale.ENGLISH)));
 		} catch (IllegalArgumentException exception) {
 			arguments.sendMessage(chatManager.message("player-commands.statistics.invalid-name"));
 		}
 	}
 
-	private void printLeaderboard(CommandSender sender, StatsStorage.StatisticType statisticType) {
+	private void printLeaderboard(CommandSender sender, StatisticType statisticType) {
 		sender.sendMessage(chatManager.message("player-commands.statistics.header"));
 
 		final var stats = StatsStorage.getStats(statisticType);
