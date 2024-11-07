@@ -16,6 +16,7 @@ player-commands:
   only-command-is-leave: "&cYou can only use /tntrun leave command while playing TNT Run!"
   no-player-found: "&cNo player found with that name!"
   no-free-arenas: "&cThere aren't any available arena to join!"
+  no-random-join-for-bungee: "&cYou can not random join in Bungee server."
   statistics:
     type-name: "&cPlease type statistic name to view!"
     invalid-name: "&cNo statistic found with that name!"

@@ -24,6 +24,7 @@ import me.despical.tntrun.events.EventListener;
 import me.despical.tntrun.user.User;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -46,7 +47,7 @@ public class JoinQuitEvents extends EventListener {
 		this.teleportToEnd = new HashMap<>();
 	}
 
-	@EventHandler
+	@EventHandler(priority = EventPriority.LOWEST)
 	public void onJoinEvent(PlayerJoinEvent event) {
 		Player eventPlayer = event.getPlayer();
 
@@ -72,12 +73,12 @@ public class JoinQuitEvents extends EventListener {
 		}
 	}
 
-	@EventHandler
+	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onQuit(PlayerQuitEvent event) {
 		this.handleQuit(event.getPlayer());
 	}
 
-	@EventHandler
+	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onKick(PlayerKickEvent event) {
 		this.handleQuit(event.getPlayer());
 	}

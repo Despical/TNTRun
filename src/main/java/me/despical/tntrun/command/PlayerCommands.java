@@ -22,16 +22,23 @@ import me.despical.commandframework.CommandArguments;
 import me.despical.commandframework.annotations.Command;
 import me.despical.commons.string.StringFormatUtils;
 import me.despical.commons.string.StringUtils;
+import me.despical.tntrun.ConfigPreferences;
 import me.despical.tntrun.api.statistic.StatisticType;
 import me.despical.tntrun.api.statistic.StatsStorage;
+import me.despical.tntrun.arena.Arena;
 import me.despical.tntrun.arena.ArenaState;
 import me.despical.tntrun.user.User;
 import me.despical.tntrun.user.data.MySQLStatistics;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.Comparator;
 import java.util.UUID;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * @author Despical
@@ -45,15 +52,13 @@ public class PlayerCommands extends AbstractCommand {
 		usage = "/tntrun join <arena>",
 		senderType = Command.SenderType.PLAYER
 	)
-	public void joinCommand(CommandArguments arguments) {
-		final var user = plugin.getUserManager().getUser(arguments.getSender());
-
+	public void joinCommand(User user, CommandArguments arguments) {
 		if (arguments.isArgumentsEmpty()) {
 			user.sendMessage("admin-commands.provide-an-arena-name");
 			return;
 		}
 
-		final var arena = plugin.getArenaRegistry().getArena(arguments.getArgument(0));
+		Arena arena = plugin.getArenaRegistry().getArena(arguments.getArgument(0));
 
 		if (arena == null) {
 			user.sendMessage("admin-commands.no-arena-found-with-that-name");
@@ -68,12 +73,22 @@ public class PlayerCommands extends AbstractCommand {
 		usage = "/tntrun randomjoin",
 		senderType = Command.SenderType.PLAYER
 	)
-	public void randomJoinCommand(CommandArguments arguments) {
-		final var user = plugin.getUserManager().getUser(arguments.getSender());
-		final var arenas = plugin.getArenaRegistry().getArenas().stream().filter(arena -> arena.isArenaState(ArenaState.WAITING_FOR_PLAYERS, ArenaState.STARTING) && arena.getPlayers().size() < arena.getMaximumPlayers()).toList();
+	public void randomJoinCommand(User user) {
+		if (plugin.getOption(ConfigPreferences.Option.BUNGEE_ENABLED)) {
+			user.sendMessage("player-commands.no-random-join-for-bungee");
+			return;
+		}
+
+		var arenas = plugin.getArenaRegistry().getArenas()
+			.stream()
+			.filter(arena -> arena.isArenaState(ArenaState.WAITING_FOR_PLAYERS, ArenaState.STARTING))
+			.filter(arena -> arena.getPlayers().size() < arena.getMaximumPlayers())
+			.sorted(Comparator.comparingInt(arena -> arena.getPlayers().size()))
+			.toList();
 
 		if (!arenas.isEmpty()) {
-			var arena = arenas.get(0);
+			int index = arenas.stream().allMatch(arena -> arena.getPlayers().isEmpty()) ? ThreadLocalRandom.current().nextInt(arenas.size()) : 0;
+			Arena arena = arenas.get(index);
 
 			plugin.getArenaManager().joinAttempt(user, arena);
 			return;
@@ -87,9 +102,8 @@ public class PlayerCommands extends AbstractCommand {
 		usage = "/tntrun leave",
 		senderType = Command.SenderType.PLAYER
 	)
-	public void leaveCommand(CommandArguments arguments) {
-		final var user = plugin.getUserManager().getUser(arguments.getSender());
-		final var arena = user.getArena();
+	public void leaveCommand(User user) {
+		Arena arena = user.getArena();
 
 		if (arena == null) {
 			user.sendMessage("messages.arena.not-playing");
@@ -105,7 +119,7 @@ public class PlayerCommands extends AbstractCommand {
 		senderType = Command.SenderType.PLAYER
 	)
 	public void statsCommand(User user, CommandArguments arguments) {
-		final Player sender = arguments.getSender();
+		Player sender = arguments.getSender();
 
 		if (arguments.isArgumentsEmpty()) {
 			chatManager.getStringList("player-commands.stats-command.messages").stream().map(message -> formatStats(message, true, user)).forEach(user::sendRawMessage);
@@ -113,8 +127,8 @@ public class PlayerCommands extends AbstractCommand {
 		}
 
 		arguments.getPlayer(0).ifPresentOrElse(player -> {
-			final var targetUser = plugin.getUserManager().getUser(player);
-			final var self = sender.equals(player);
+			var targetUser = plugin.getUserManager().getUser(player);
+			var self = sender.equals(player);
 
 			chatManager.getStringList("player-commands.stats-command.messages").stream().map(message -> formatStats(message, self, targetUser)).forEach(user::sendRawMessage);
 		}, () -> arguments.sendMessage(chatManager.message("player-commands.no-player-found")));
@@ -151,29 +165,31 @@ public class PlayerCommands extends AbstractCommand {
 	private void printLeaderboard(CommandSender sender, StatisticType statisticType) {
 		sender.sendMessage(chatManager.message("player-commands.statistics.header"));
 
-		final var stats = StatsStorage.getStats(statisticType);
-		final var statistic = StringUtils.capitalize(statisticType.name().toLowerCase(java.util.Locale.ENGLISH).replace("_", " "));
+		var stats = StatsStorage.getStats(statisticType);
+		String statistic = StringUtils.capitalize(statisticType.name().toLowerCase(java.util.Locale.ENGLISH).replace("_", " "));
 
-		for (var i = 0; i < 10; i++) {
+		for (int i = 0; i < 10; i++) {
 			try {
-				var current = (UUID) stats.keySet().toArray()[stats.keySet().toArray().length - 1];
+				UUID current = (UUID) stats.keySet().toArray()[stats.keySet().toArray().length - 1];
 				sender.sendMessage(formatMessage(statistic, plugin.getServer().getOfflinePlayer(current).getName(), i + 1, stats.get(current)));
 				stats.remove(current);
 			} catch (IndexOutOfBoundsException ex) {
 				sender.sendMessage(formatMessage(statistic, "Empty", i + 1, 0));
 			} catch (NullPointerException ex) {
-				var current = (UUID) stats.keySet().toArray()[stats.keySet().toArray().length - 1];
+				UUID current = (UUID) stats.keySet().toArray()[stats.keySet().toArray().length - 1];
 
 				if (plugin.getUserManager().getUserDatabase() instanceof MySQLStatistics mySQLManager) {
-					try (final var connection = mySQLManager.getDatabase().getConnection()) {
-						var statement = connection.createStatement();
-						var set = statement.executeQuery("SELECT name FROM %s WHERE UUID='%s'".formatted(mySQLManager.getTableName(), current.toString()));
+					try (Connection connection = mySQLManager.getDatabase().getConnection()) {
+						Statement statement = connection.createStatement();
+						ResultSet set = statement.executeQuery("SELECT name FROM %s WHERE UUID='%s'".formatted(mySQLManager.getTableName(), current.toString()));
 
 						if (set.next()) {
 							sender.sendMessage(formatMessage(statistic, set.getString(1), i + 1, stats.get(current)));
 							continue;
 						}
-					} catch (SQLException ignored) {}
+					} catch (SQLException exception) {
+						exception.printStackTrace();
+					}
 				}
 
 				sender.sendMessage(formatMessage(statistic, "Unknown Player", i + 1, stats.get(current)));

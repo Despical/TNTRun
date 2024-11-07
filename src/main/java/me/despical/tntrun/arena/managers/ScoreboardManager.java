@@ -54,7 +54,7 @@ public class ScoreboardManager {
 	private final String[] doubleJumpColors;
 	private final Set<Scoreboard> scoreboards;
 
-	public ScoreboardManager(final Arena arena, final Main plugin) {
+	public ScoreboardManager(Arena arena, Main plugin) {
 		this.arena = arena;
 		this.plugin = plugin;
 		this.chatManager = plugin.getChatManager();
@@ -63,19 +63,21 @@ public class ScoreboardManager {
 	}
 
 	public void createScoreboard(final User user) {
-		if (!plugin.getOption(ConfigPreferences.Option.SCOREBOARD_ENABLED)) return;
+		if (!plugin.getOption(ConfigPreferences.Option.SCOREBOARD_ENABLED)) {
+			return;
+		}
 
 		user.cacheScoreboard();
 
-		var scoreboard = ScoreboardLib.createScoreboard(user.getPlayer()).setHandler(new ScoreboardHandler() {
+		Scoreboard scoreboard = ScoreboardLib.createScoreboard(user.getPlayer()).setHandler(new ScoreboardHandler() {
 
 			@Override
-			public String getTitle(final Player player) {
+			public String getTitle(Player player) {
 				return chatManager.message("Scoreboard.Title");
 			}
 
 			@Override
-			public List<Entry> getEntries(final Player player) {
+			public List<Entry> getEntries(Player player) {
 				return formatScoreboard(user);
 			}
 		});
@@ -84,10 +86,10 @@ public class ScoreboardManager {
 		scoreboards.add(scoreboard);
 	}
 
-	public void removeScoreboard(final User user) {
-		final var player = user.getPlayer();
+	public void removeScoreboard(User user) {
+		Player player = user.getPlayer();
 
-		for (final var board : scoreboards) {
+		for (Scoreboard board : scoreboards) {
 			if (board.getHolder().equals(player)) {
 				scoreboards.remove(board);
 				board.deactivate();
@@ -104,10 +106,10 @@ public class ScoreboardManager {
 	}
 
 	private List<Entry> formatScoreboard(User user) {
-		final var builder = new EntryBuilder();
-		final var path = "Scoreboard." + (arena.isArenaState(ArenaState.IN_GAME, ArenaState.ENDING) ? "Playing" : arena.getArenaState().getFormattedName());
+		EntryBuilder builder = new EntryBuilder();
+		String path = "Scoreboard." + (arena.isArenaState(ArenaState.IN_GAME, ArenaState.ENDING) ? "Playing" : arena.getArenaState().getFormattedName());
 
-		for (final var line : chatManager.getStringList(path)) {
+		for (String line : chatManager.getStringList(path)) {
 			builder.next(formatScoreboardLine(line, user));
 		}
 
@@ -115,24 +117,13 @@ public class ScoreboardManager {
 	}
 
 	private String formatScoreboardLine(String line, User user) {
-		var formattedLine = line;
-
-		formattedLine = formattedLine.replace("%date%", date);
-		formattedLine = formattedLine.replace("%map%", arena.getMapName());
-		formattedLine = formattedLine.replace("%players%", Integer.toString(arena.getPlayers().size()));
-		formattedLine = formattedLine.replace("%players_left%", Integer.toString(arena.getPlayersLeft().size()));
-		formattedLine = formattedLine.replace("%min_players%", Integer.toString(arena.getMinimumPlayers()));
-		formattedLine = formattedLine.replace("%max_players%", Integer.toString(arena.getMaximumPlayers()));
-		formattedLine = formattedLine.replace("%time%", Integer.toString(arena.getTimer()));
-		formattedLine = formattedLine.replace("%formatted_time%", StringFormatUtils.formatIntoMMSS(arena.getTimer()));
-		formattedLine = formattedLine.replace("%coins_earned%", Integer.toString(user.getStat(LOCAL_COINS)));
-
 		int jumps = user.getStat(LOCAL_DOUBLE_JUMPS), max = plugin.getPermissionManager().getDoubleJumps(user.getPlayer());
 
-		formattedLine = formattedLine.replace("%double_jumps%", getDoubleJumpColor(jumps, max) + jumps);
-		formattedLine = formattedLine.replace("%max_double_jumps%", Integer.toString(max));
-
-		return chatManager.rawMessage(formattedLine);
+		line = line.replace("%max_double_jumps%", Integer.toString(max));
+		line = line.replace("%double_jumps%", getDoubleJumpColor(jumps, max) + jumps);
+		line = line.replace("%date%", date);
+		line = line.replace("%coins_earned%", Integer.toString(user.getStat(LOCAL_COINS)));
+		return chatManager.message(line, arena);
 	}
 
 	public String getDoubleJumpColor(int amount, int max) {

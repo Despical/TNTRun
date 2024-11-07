@@ -119,6 +119,7 @@ public class Main extends JavaPlugin {
 			manager.editItemBuilder(builder -> builder.unbreakable(true).hideTooltip(true));
 			manager.registerItems("items", "items");
 		});
+
 		this.permissionManager = new PermissionsManager(this);
 		this.rewardsFactory = new RewardsFactory(this);
 		this.signManager = new SignManager(this);

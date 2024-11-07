@@ -5,42 +5,85 @@
 #                                                             #
 #            https://www.buymeacoffee.com/despical            #
 #                                                             #
-#            Donations are really appreciated! <3             #
-#                                                             #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 Time-Settings:
-  # Every 45 seconds a broadcast message will be sent to players
-  # about how many players should arena need to start.
+  # Every 45 seconds, a broadcast message will be sent to players
+  # notifying them about how many more players are needed for the arena to start.
   Lobby-Waiting-Time: 45
-  # How many seconds should we wait for other players when we reach
-  # minimum player amount in the arena.
+  # The waiting time, in seconds, after reaching the minimum player requirement in the arena.
   Lobby-Starting-Time: 16
-  # How many seconds are we going to wait in ending state?
-  # After this amount of time passed we'll send players to lobby.
+  # The duration of the end phase in seconds.
+  # After this time, players will be sent back to the lobby.
   Ending-Time: 6
-  # How many seconds after the blocks will be removed after the game starts.
+  # Time, in seconds, before block removal begins after the game starts.
   Start-Block-Removing: 5
-  # How many ticks after the blocks will be removed when players moved on it.
+  # Delay, in ticks, before blocks are removed after players step on them.
   Block-Remove-Delay: 12
 
 Double-Jumps:
-  # Default amount of double jumps for each of in-game players that doesn't have double jump permission.
+  # Default number of double jumps given to each player in the game who lacks double jump permissions.
   Default: 5
-  # The duration between using double jumps as seconds.
+  # Interval between double jumps, in seconds.
   Delay: 4
-  # https://github.com/Despical/TNTRun/wiki/Commands-and-permissions#double-jump-permissions
+  # Permission levels for different double jump counts.
+  # More details: https://github.com/Despical/TNTRun/wiki/Commands-and-permissions#double-jump-permissions
   Permissions:
     - tntrun.doublejumps.3
     - tntrun.doublejumps.2
     - tntrun.doublejumps.1
 
-# How many blocks should we scan on different scenarios?
+# Enable scoreboards for in-game players?
+Scoreboard-Enabled: true
+
+# Should we create a progress bar to show how many seconds are left until a new double jump can be used?
+Jump-Bar: true
+
+# Enable chat message formatting?
+# For custom formats, see messages.yml.
+Chat-Format-Enabled: true
+
+# Defines the block scan depth in different scenarios.
 Scanning-Depth:
   On-Ground: 2
   In-Air: 6
 
-# The block list that we are going to remove these when player is on these blocks in-game.
+# Enable BungeeCord server support?
+Bungee-Enabled: false
+
+# Enable the Inventory Manager for games? (Useful feature for multi-arena setups)
+# This saves players' inventory contents and restores them after they leave the arena.
+# Saved items include: max health, health, food level, experience, full inventory, armor, etc.
+Inventory-Manager:
+  Enabled: true
+  # Available elements: health, max-health, health-scale
+  Do-Not-Restore:
+    - "max-health"
+    - "health-scale"
+
+# Should we disable fall damage for players?
+Disable-Fall-Damage: true
+
+# Block commands that are not associated with TNTRun?
+Block-Commands: true
+
+# Enable MySQL database support?
+# For configuration details, see mysql.yml.
+Database-Enabled: false
+
+# Should arena chat be exclusive to arena players or visible to all?
+Disable-Separate-Chat: false
+
+# Allow players to leave the arena instantly using a leave item?
+Instant-Leave: false
+
+# Only update players' longest survival record when they win?
+Longest-Survive-On-Wins: false
+
+# Enable notifications for plugin updates?
+Update-Notifier-Enabled: true
+
+# List of blocks that are allowed to be removed during gameplay.
 Whitelisted-Blocks:
   - TNT
   - SAND
@@ -50,71 +93,27 @@ Whitelisted-Blocks:
   - RED_SANDSTONE
   - RED_SAND
 
-# Leave this section empty so everyone can join.
-# Op-ed players will override all the permissions.
+# Leave this empty to allow all players to join.
+# Operators (OPs) will bypass all permissions.
 Join-Permission: ""
 
+# Permission to join a full game.
 Join-Full-Game-Permission: "tntrun.fullgames"
 
-# Should we create a progress bar to show how many seconds left
-# to use a new double jump?
-Jump-Bar: true
-
-# The statistics saving rate, in seconds. (0 = save the stats on server shutdown/reload)
+# The frequency for saving statistics, in seconds. (0 = only save stats on server shutdown/reload)
 Statistic-Saving-Period: 300
 
-# Should we block commands that are not associated with MM?
-Block-Commands: true
-
-# Put 'exact:command here' to check for the exact command name.
-# By default, we'll check if the executed command starts with any command in the list.
-Whitelisted-Commands: []
-
-# Should we create cool scoreboards for in-game players?
-Scoreboard-Enabled: true
-
-# See messages.yml for game bar messages.
-# Should we create a game bar for in-game players?
-Game-Bar-Enabled: true
-
-# Should we enable our Bungee-cord server support?
-Bungee-Enabled: false
-
-# Enable Inventory Manager for your games? (Very useful feature for MULTI ARENA)
-# This saves inventory of players and restores it after player leaves arena.
-# Saved elements: max health, health, food, experience, full inventory, armor contents, and more.
-Inventory-Manager:
-  Enabled: true
-  # Usable elements: health, max-health, health-scale
-  Do-Not-Restore:
-    - "max-health"
-    - "health-scale"
-
-# Should we disable fall damage?
-Disable-Fall-Damage: true
-
-# Should we enable our MySQL support?
-# See mysql.yml for detailed information.
-Database-Enabled: false
-
-# Should we hide players' name tags in-game?
+# Hide players' name tags in-game?
 Name-Tags-Hidden: false
 
-# Should we allow players to hit others? (Damaging can not be enabled.)
+# Allow players to hit each other? (Damage cannot be enabled.)
 PVP-Disabled: true
 
-# Should we format the chat messages?
-# See messages.yml to change format.
-Chat-Format-Enabled: true
+# Commands that are allowed during gameplay.
+# Use 'exact:command here' to specify an exact command to check for.
+# By default, any command that starts with an item in this list will be checked.
+Whitelisted-Commands: []
 
-# Should the messages stay between arena players or general?
-Disable-Separate-Chat: false
-
-# Should players instantly leave the arena using leave item?
-Instant-Leave: false
-
-# Should we only update players' longest survive statistic when they win?
-Longest-Survive-On-Wins: false
-
-# Should we check for any available updates?
-Update-Notifier-Enabled: true
+# Enable a game bar for in-game players?
+# See messages.yml for game bar messages.
+Game-Bar-Enabled: true

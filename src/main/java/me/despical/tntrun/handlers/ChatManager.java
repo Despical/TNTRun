@@ -44,11 +44,11 @@ public class ChatManager {
 		this.reload();
 	}
 
-	public String message(final String path) {
+	public String message(String path) {
 		return rawMessage(this.config.getString(path));
 	}
 
-	public String message(final String path, final User user) {
+	public String message(String path, User user) {
 		String message = this.message(path);
 
 		message = message.replace("%player%", user.getName());
@@ -60,7 +60,7 @@ public class ChatManager {
 		return message;
 	}
 
-	public String message(final String path, final Arena arena, final User user) {
+	public String message(String path, Arena arena, User user) {
 		String message = this.message(path, arena);
 
 		message = message.replace("%player%", user.getName());
@@ -72,9 +72,10 @@ public class ChatManager {
 		return message;
 	}
 
-	public String message(final String path, final Arena arena) {
+	public String message(String path, Arena arena) {
 		String message = this.message(path);
 
+		message = message.replace("%map%", arena.getMapName());
 		message = message.replace("%time%", Integer.toString(arena.getTimer()));
 		message = message.replace("%formatted_time%", StringFormatUtils.formatIntoMMSS(arena.getTimer()));
 		message = message.replace("%players%", Integer.toString(arena.getPlayers().size()));
@@ -84,11 +85,11 @@ public class ChatManager {
 		return message;
 	}
 
-	public String rawMessage(final String message) {
+	public String rawMessage(String message) {
 		return Strings.format(message);
 	}
 
-	public List<String> getStringList(final String path) {
+	public List<String> getStringList(String path) {
 		return this.config.getStringList(path);
 	}
 
