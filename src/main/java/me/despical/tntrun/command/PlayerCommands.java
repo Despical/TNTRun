@@ -87,7 +87,7 @@ public class PlayerCommands extends AbstractCommand {
 			.toList();
 
 		if (!arenas.isEmpty()) {
-			int index = arenas.stream().allMatch(arena -> arena.getPlayers().isEmpty()) ? ThreadLocalRandom.current().nextInt(arenas.size()) : 0;
+			int index = arenas.stream().allMatch(arena -> arena.getPlayers().isEmpty()) ? ThreadLocalRandom.current().nextInt(arenas.size()) : arenas.size() - 1;
 			Arena arena = arenas.get(index);
 
 			plugin.getArenaManager().joinAttempt(user, arena);
