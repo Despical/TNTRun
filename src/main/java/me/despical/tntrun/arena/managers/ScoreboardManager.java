@@ -62,7 +62,7 @@ public class ScoreboardManager {
 		this.scoreboards = new HashSet<>();
 	}
 
-	public void createScoreboard(final User user) {
+	public void createScoreboard(User user) {
 		if (!plugin.getOption(ConfigPreferences.Option.SCOREBOARD_ENABLED)) {
 			return;
 		}
@@ -123,7 +123,7 @@ public class ScoreboardManager {
 		line = line.replace("%double_jumps%", getDoubleJumpColor(jumps, max) + jumps);
 		line = line.replace("%date%", date);
 		line = line.replace("%coins_earned%", Integer.toString(user.getStat(LOCAL_COINS)));
-		return chatManager.message(line, arena);
+		return chatManager.formatMessage(arena, line);
 	}
 
 	public String getDoubleJumpColor(int amount, int max) {

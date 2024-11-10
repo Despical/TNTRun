@@ -75,6 +75,10 @@ public class ChatManager {
 	public String message(String path, Arena arena) {
 		String message = this.message(path);
 
+		return formatMessage(arena, message);
+	}
+
+	public String formatMessage(Arena arena, String message) {
 		message = message.replace("%map%", arena.getMapName());
 		message = message.replace("%time%", Integer.toString(arena.getTimer()));
 		message = message.replace("%formatted_time%", StringFormatUtils.formatIntoMMSS(arena.getTimer()));

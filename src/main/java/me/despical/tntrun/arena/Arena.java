@@ -45,7 +45,6 @@ import org.bukkit.util.NumberConversions;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.text.MessageFormat;
 import java.util.*;
 import java.util.function.Predicate;
 import java.util.logging.Level;
@@ -407,7 +406,7 @@ public class Arena extends BukkitRunnable {
 	}
 
 	public void broadcastMessage(final String path, Object... params) {
-		this.getPlayers().forEach(user -> user.sendRawMessage(MessageFormat.format(chatManager.message(path, this, user), params)));
+		this.getPlayers().forEach(user -> user.sendRawMessage(chatManager.message(path, this, user), params));
 	}
 
 	@Nullable
