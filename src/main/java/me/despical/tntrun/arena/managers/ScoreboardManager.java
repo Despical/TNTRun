@@ -46,93 +46,93 @@ import static me.despical.tntrun.api.statistic.StatisticType.LOCAL_DOUBLE_JUMPS;
  */
 public class ScoreboardManager {
 
-	private static final String date = StringFormatUtils.formatToday();
+    private static final String date = StringFormatUtils.formatToday();
 
-	private final Arena arena;
-	private final Main plugin;
-	private final ChatManager chatManager;
-	private final String[] doubleJumpColors;
-	private final Set<Scoreboard> scoreboards;
+    private final Arena arena;
+    private final Main plugin;
+    private final ChatManager chatManager;
+    private final String[] doubleJumpColors;
+    private final Set<Scoreboard> scoreboards;
 
-	public ScoreboardManager(Arena arena, Main plugin) {
-		this.arena = arena;
-		this.plugin = plugin;
-		this.chatManager = plugin.getChatManager();
-		this.doubleJumpColors = chatManager.message("Scoreboard.Double-Jumps").split(":");
-		this.scoreboards = new HashSet<>();
-	}
+    public ScoreboardManager(Arena arena, Main plugin) {
+        this.arena = arena;
+        this.plugin = plugin;
+        this.chatManager = plugin.getChatManager();
+        this.doubleJumpColors = chatManager.message("Scoreboard.Double-Jumps").split(":");
+        this.scoreboards = new HashSet<>();
+    }
 
-	public void createScoreboard(User user) {
-		if (!plugin.getOption(ConfigPreferences.Option.SCOREBOARD_ENABLED)) {
-			return;
-		}
+    public void createScoreboard(User user) {
+        if (!plugin.getOption(ConfigPreferences.Option.SCOREBOARD_ENABLED)) {
+            return;
+        }
 
-		user.cacheScoreboard();
+        user.cacheScoreboard();
 
-		Scoreboard scoreboard = ScoreboardLib.createScoreboard(user.getPlayer()).setHandler(new ScoreboardHandler() {
+        Scoreboard scoreboard = ScoreboardLib.createScoreboard(user.getPlayer()).setHandler(new ScoreboardHandler() {
 
-			@Override
-			public String getTitle(Player player) {
-				return chatManager.message("Scoreboard.Title");
-			}
+            @Override
+            public String getTitle(Player player) {
+                return chatManager.message("Scoreboard.Title");
+            }
 
-			@Override
-			public List<Entry> getEntries(Player player) {
-				return formatScoreboard(user);
-			}
-		});
+            @Override
+            public List<Entry> getEntries(Player player) {
+                return formatScoreboard(user);
+            }
+        });
 
-		scoreboard.activate();
-		scoreboards.add(scoreboard);
-	}
+        scoreboard.activate();
+        scoreboards.add(scoreboard);
+    }
 
-	public void removeScoreboard(User user) {
-		Player player = user.getPlayer();
+    public void removeScoreboard(User user) {
+        Player player = user.getPlayer();
 
-		for (Scoreboard board : scoreboards) {
-			if (board.getHolder().equals(player)) {
-				scoreboards.remove(board);
-				board.deactivate();
+        for (Scoreboard board : scoreboards) {
+            if (board.getHolder().equals(player)) {
+                scoreboards.remove(board);
+                board.deactivate();
 
-				user.removeScoreboard();
-				return;
-			}
-		}
-	}
+                user.removeScoreboard();
+                return;
+            }
+        }
+    }
 
-	public void stopAllScoreboards() {
-		scoreboards.forEach(Scoreboard::deactivate);
-		scoreboards.clear();
-	}
+    public void stopAllScoreboards() {
+        scoreboards.forEach(Scoreboard::deactivate);
+        scoreboards.clear();
+    }
 
-	private List<Entry> formatScoreboard(User user) {
-		EntryBuilder builder = new EntryBuilder();
-		String path = "Scoreboard." + (arena.isArenaState(ArenaState.IN_GAME, ArenaState.ENDING) ? "Playing" : arena.getArenaState().getFormattedName());
+    private List<Entry> formatScoreboard(User user) {
+        EntryBuilder builder = new EntryBuilder();
+        String path = "Scoreboard." + (arena.isArenaState(ArenaState.IN_GAME, ArenaState.ENDING) ? "Playing" : arena.getArenaState().getFormattedName());
 
-		for (String line : chatManager.getStringList(path)) {
-			builder.next(formatScoreboardLine(line, user));
-		}
+        for (String line : chatManager.getStringList(path)) {
+            builder.next(formatScoreboardLine(line, user));
+        }
 
-		return builder.build();
-	}
+        return builder.build();
+    }
 
-	private String formatScoreboardLine(String line, User user) {
-		int jumps = user.getStat(LOCAL_DOUBLE_JUMPS), max = plugin.getPermissionManager().getDoubleJumps(user.getPlayer());
+    private String formatScoreboardLine(String line, User user) {
+        int jumps = user.getStat(LOCAL_DOUBLE_JUMPS), max = plugin.getPermissionManager().getDoubleJumps(user.getPlayer());
 
-		line = line.replace("%max_double_jumps%", Integer.toString(max));
-		line = line.replace("%double_jumps%", getDoubleJumpColor(jumps, max) + jumps);
-		line = line.replace("%date%", date);
-		line = line.replace("%coins_earned%", Integer.toString(user.getStat(LOCAL_COINS)));
-		return chatManager.formatMessage(arena, line);
-	}
+        line = line.replace("%max_double_jumps%", Integer.toString(max));
+        line = line.replace("%double_jumps%", getDoubleJumpColor(jumps, max) + jumps);
+        line = line.replace("%date%", date);
+        line = line.replace("%coins_earned%", Integer.toString(user.getStat(LOCAL_COINS)));
+        return chatManager.formatMessage(arena, line);
+    }
 
-	public String getDoubleJumpColor(int amount, int max) {
-		final int percentage = (amount * 100) / max;
+    public String getDoubleJumpColor(int amount, int max) {
+        final int percentage = (amount * 100) / max;
 
-		if (percentage == 0)
-			return doubleJumpColors[2];
-		if (percentage >= 60)
-			return doubleJumpColors[0];
-		return doubleJumpColors[1];
-	}
+        if (percentage == 0)
+            return doubleJumpColors[2];
+        if (percentage >= 60)
+            return doubleJumpColors[0];
+        return doubleJumpColors[1];
+    }
 }

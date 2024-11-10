@@ -28,51 +28,51 @@ import org.bukkit.plugin.java.JavaPlugin;
  */
 public enum ArenaOption {
 
-	TIMER(45),
+    TIMER(45),
 
-	MINIMUM_PLAYERS(2),
+    MINIMUM_PLAYERS(2),
 
-	MAXIMUM_PLAYERS(12),
+    MAXIMUM_PLAYERS(12),
 
-	MIN_DEPTH("Scanning-Depth.On-Ground", 2),
+    MIN_DEPTH("Scanning-Depth.On-Ground", 2),
 
-	MAX_DEPTH("Scanning-Depth.In-Air", 6),
+    MAX_DEPTH("Scanning-Depth.In-Air", 6),
 
-	START_BLOCK_REMOVING("Time-Settings.Start-Block-Removing", 5),
+    START_BLOCK_REMOVING("Time-Settings.Start-Block-Removing", 5),
 
-	BLOCK_REMOVE_DELAY("Time-Settings.Block-Remove-Delay", 12),
+    BLOCK_REMOVE_DELAY("Time-Settings.Block-Remove-Delay", 12),
 
-	LOBBY_WAITING_TIME("Time-Settings.Lobby-Waiting-Time", 45),
+    LOBBY_WAITING_TIME("Time-Settings.Lobby-Waiting-Time", 45),
 
-	LOBBY_STARTING_TIME("Time-Settings.Lobby-Starting-Time", 16),
+    LOBBY_STARTING_TIME("Time-Settings.Lobby-Starting-Time", 16),
 
-	LOBBY_ENDING_TIME("Time-Settings.Ending-Time", 6);
+    LOBBY_ENDING_TIME("Time-Settings.Ending-Time", 6);
 
-	int integerValue;
-	boolean booleanValue;
+    int integerValue;
+    boolean booleanValue;
 
-	ArenaOption(int defaultValue) {
-		this.integerValue = defaultValue;
-	}
+    ArenaOption(int defaultValue) {
+        this.integerValue = defaultValue;
+    }
 
-	ArenaOption(String path, boolean defaultValue) {
-		final var plugin = JavaPlugin.getPlugin(Main.class);
+    ArenaOption(String path, boolean defaultValue) {
+        final var plugin = JavaPlugin.getPlugin(Main.class);
 
-		this.booleanValue = plugin.getConfig().getBoolean(path, defaultValue);
-	}
+        this.booleanValue = plugin.getConfig().getBoolean(path, defaultValue);
+    }
 
-	ArenaOption(String path, int defaultValue) {
-		final var plugin = JavaPlugin.getPlugin(Main.class);
-		final var value = plugin.getConfig().getInt(path, defaultValue);
+    ArenaOption(String path, int defaultValue) {
+        final var plugin = JavaPlugin.getPlugin(Main.class);
+        final var value = plugin.getConfig().getInt(path, defaultValue);
 
-		this.integerValue = value < 0 ? defaultValue : value;
-	}
+        this.integerValue = value < 0 ? defaultValue : value;
+    }
 
-	public boolean getBooleanValue() {
-		return booleanValue;
-	}
+    public boolean getBooleanValue() {
+        return booleanValue;
+    }
 
-	public int getIntegerValue() {
-		return integerValue;
-	}
+    public int getIntegerValue() {
+        return integerValue;
+    }
 }

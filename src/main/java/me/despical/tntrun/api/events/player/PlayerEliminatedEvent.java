@@ -33,26 +33,26 @@ import org.jetbrains.annotations.NotNull;
  */
 public class PlayerEliminatedEvent extends TNTRunEvent {
 
-	private static final HandlerList handlerList = new HandlerList();
+    private static final HandlerList handlerList = new HandlerList();
 
-	private final User user;
+    private final User user;
 
-	public PlayerEliminatedEvent(Arena arena, User user) {
-		super(arena);
-		this.user = user;
-	}
+    public PlayerEliminatedEvent(Arena arena, User user) {
+        super(arena);
+        this.user = user;
+    }
 
-	public User getEliminatedPlayer() {
-		return user;
-	}
+    public static HandlerList getHandlerList() {
+        return handlerList;
+    }
 
-	@NotNull
-	@Override
-	public HandlerList getHandlers() {
-		return handlerList;
-	}
+    public User getEliminatedPlayer() {
+        return user;
+    }
 
-	public static HandlerList getHandlerList() {
-		return handlerList;
-	}
+    @NotNull
+    @Override
+    public HandlerList getHandlers() {
+        return handlerList;
+    }
 }

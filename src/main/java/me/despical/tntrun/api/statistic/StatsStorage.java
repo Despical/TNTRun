@@ -71,7 +71,7 @@ public final class StatsStorage {
 		FileConfiguration config = ConfigUtils.getConfig(plugin, "stats");
 		Map<UUID, Integer> stats = new LinkedHashMap<>();
 
-		for (var string : config.getKeys(false)) {
+		for (String string : config.getKeys(false)) {
 			stats.put(UUID.fromString(string), config.getInt(string + "." + stat.getName()));
 		}
 

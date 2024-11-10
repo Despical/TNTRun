@@ -38,14 +38,14 @@ public abstract class EventListener implements Listener {
 	protected final ChatManager chatManager;
 	protected final UserManager userManager;
 
-	public EventListener(final Main plugin) {
+	public EventListener(Main plugin) {
 		this.plugin = plugin;
 		this.chatManager = plugin.getChatManager();
 		this.userManager = plugin.getUserManager();
 		this.plugin.getServer().getPluginManager().registerEvents(this, plugin);
 	}
 
-	public static void registerEvents(final Main plugin) {
+	public static void registerEvents(Main plugin) {
 		new JoinQuitEvents(plugin);
 		new GameItemEvents(plugin);
 		new GameEvents(plugin);

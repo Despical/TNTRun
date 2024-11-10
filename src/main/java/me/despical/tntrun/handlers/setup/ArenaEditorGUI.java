@@ -36,92 +36,92 @@ import org.jetbrains.annotations.Nullable;
  */
 public class ArenaEditorGUI {
 
-	@NotNull
-	private final User user;
+    @NotNull
+    private final User user;
 
-	@NotNull
-	private final Main plugin;
+    @NotNull
+    private final Main plugin;
 
-	@NotNull
-	private final Gui gui;
+    @NotNull
+    private final Gui gui;
 
-	@NotNull
-	private final Arena arena;
+    @NotNull
+    private final Arena arena;
 
-	@NotNull
-	private final PaginatedPane paginatedPane;
+    @NotNull
+    private final PaginatedPane paginatedPane;
 
-	public ArenaEditorGUI(final @NotNull Main plugin, final @NotNull User user, final @NotNull Arena arena) {
-		this.plugin = plugin;
-		this.user = user;
-		this.arena = arena;
-		this.gui = new Gui(plugin, 4, "        TNT Run Arena Editor");
-		this.paginatedPane = new PaginatedPane(9, 4);
-		this.gui.setOnGlobalClick(event -> event.setCancelled(true));
-		this.gui.addPane(paginatedPane);
+    public ArenaEditorGUI(@NotNull Main plugin, @NotNull User user, @NotNull Arena arena) {
+        this.plugin = plugin;
+        this.user = user;
+        this.arena = arena;
+        this.gui = new Gui(plugin, 4, "        TNT Run Arena Editor");
+        this.paginatedPane = new PaginatedPane(9, 4);
+        this.gui.setOnGlobalClick(event -> event.setCancelled(true));
+        this.gui.addPane(paginatedPane);
 
-		this.injectGuiComponents();
-	}
+        this.injectGuiComponents();
+    }
 
-	private void injectGuiComponents() {
-		final var mainMenuComponents = new MainMenuComponents(this);
-		mainMenuComponents.registerComponents(paginatedPane);
+    private void injectGuiComponents() {
+        var mainMenuComponents = new MainMenuComponents(this);
+        mainMenuComponents.registerComponents(paginatedPane);
 
-		final var lobbyLocationComponents = new LobbyLocationComponents(this);
-		lobbyLocationComponents.registerComponents(paginatedPane);
+        var lobbyLocationComponents = new LobbyLocationComponents(this);
+        lobbyLocationComponents.registerComponents(paginatedPane);
 
-		final var playerAmountComponents = new PlayerAmountComponents(this);
-		playerAmountComponents.registerComponents(paginatedPane);
-	}
+        var playerAmountComponents = new PlayerAmountComponents(this);
+        playerAmountComponents.registerComponents(paginatedPane);
+    }
 
-	public void showGui() {
-		this.gui.show(this.user.getPlayer());
-	}
+    public void showGui() {
+        this.gui.show(this.user.getPlayer());
+    }
 
-	public void showGuiFromPage(final Page page) {
-		this.setPage(page.title, page.rows, page.page);
+    public void showGuiFromPage(Page page) {
+        this.setPage(page.title, page.rows, page.page);
 
-		this.gui.show(this.user.getPlayer());
-	}
+        this.gui.show(this.user.getPlayer());
+    }
 
-	public void setPage(@Nullable String title, int rows, int page) {
-		this.gui.setTitle(title != null ? title : this.gui.getTitle());
-		this.gui.setRows(rows);
-		this.paginatedPane.setPage(page);
-		this.gui.update();
-	}
+    public void setPage(@Nullable String title, int rows, int page) {
+        this.gui.setTitle(title != null ? title : this.gui.getTitle());
+        this.gui.setRows(rows);
+        this.paginatedPane.setPage(page);
+        this.gui.update();
+    }
 
-	public void restorePage() {
-		paginatedPane.setPage(0);
-		gui.setRows(4);
-		gui.setTitle("        TNT Run Arena Editor");
-		gui.update();
-	}
+    public void restorePage() {
+        paginatedPane.setPage(0);
+        gui.setRows(4);
+        gui.setTitle("        TNT Run Arena Editor");
+        gui.update();
+    }
 
-	public void reshowGuiFromCurrentPage() {
-		new ArenaEditorGUI(plugin, user, arena).showGuiFromPage(new Page(arena, gui.getTitle(), gui.getRows(), paginatedPane.getPage()));
-	}
+    public void reshowGuiFromCurrentPage() {
+        new ArenaEditorGUI(plugin, user, arena).showGuiFromPage(new Page(arena, gui.getTitle(), gui.getRows(), paginatedPane.getPage()));
+    }
 
-	@NotNull
-	public Main getPlugin() {
-		return plugin;
-	}
+    @NotNull
+    public Main getPlugin() {
+        return plugin;
+    }
 
-	@NotNull
-	public User getUser() {
-		return user;
-	}
+    @NotNull
+    public User getUser() {
+        return user;
+    }
 
-	@NotNull
-	public Arena getArena() {
-		return arena;
-	}
+    @NotNull
+    public Arena getArena() {
+        return arena;
+    }
 
-	@NotNull
-	public Gui getGui() {
-		return gui;
-	}
+    @NotNull
+    public Gui getGui() {
+        return gui;
+    }
 
-	public record Page(Arena arena, String title, int rows, int page) {
-	}
+    public record Page(Arena arena, String title, int rows, int page) {
+    }
 }

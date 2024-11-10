@@ -33,58 +33,58 @@ import java.util.concurrent.ThreadLocalRandom;
  */
 public class RewardsFactory {
 
-	private final Main plugin;
-	private final Set<Reward> rewards;
+    private final Main plugin;
+    private final Set<Reward> rewards;
 
-	public RewardsFactory(final Main plugin) {
-		this.plugin = plugin;
-		this.rewards = new HashSet<>();
-		this.registerRewards();
-	}
+    public RewardsFactory(Main plugin) {
+        this.plugin = plugin;
+        this.rewards = new HashSet<>();
+        this.registerRewards();
+    }
 
-	public void performReward(final User user, final Reward.RewardType type) {
-		final var rewardList = rewards.stream().filter(rew -> rew.getType() == type).toList();
+    public void performReward(User user, Reward.RewardType type) {
+        var rewardList = rewards.stream().filter(rew -> rew.getType() == type).toList();
 
-		if (rewardList.isEmpty()) return;
+        if (rewardList.isEmpty()) return;
 
-		for (final var mainRewards : rewardList) {
-			for (final var reward : mainRewards.getRewards()){
-				if (ThreadLocalRandom.current().nextInt(0, 100) > reward.getChance()) continue;
+        for (var mainRewards : rewardList) {
+            for (var reward : mainRewards.getRewards()) {
+                if (ThreadLocalRandom.current().nextInt(0, 100) > reward.getChance()) continue;
 
-				final var player = user.getPlayer();
-				final var command = formatCommandPlaceholders(reward, user);
+                var player = user.getPlayer();
+                var command = formatCommandPlaceholders(reward, user);
 
-				switch (reward.getExecutor()) {
-					case 1 -> plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(), command);
-					case 2 -> player.performCommand(command);
-				}
-			}
-		}
-	}
+                switch (reward.getExecutor()) {
+                    case 1 -> plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(), command);
+                    case 2 -> player.performCommand(command);
+                }
+            }
+        }
+    }
 
-	private String formatCommandPlaceholders(final Reward.SubReward reward, final User user) {
-		var arena = user.getArena();
-		var formatted = reward.getExecutableCode();
+    private String formatCommandPlaceholders(Reward.SubReward reward, User user) {
+        var arena = user.getArena();
+        var formatted = reward.getExecutableCode();
 
-		formatted = formatted.replace("%arena%", arena.getId());
-		formatted = formatted.replace("%map_name%", arena.getMapName());
-		formatted = formatted.replace("%player%", user.getName());
-		formatted = formatted.replace("%players%", Integer.toString(arena.getPlayers().size()));
-		return formatted;
-	}
+        formatted = formatted.replace("%arena%", arena.getId());
+        formatted = formatted.replace("%map_name%", arena.getMapName());
+        formatted = formatted.replace("%player%", user.getName());
+        formatted = formatted.replace("%players%", Integer.toString(arena.getPlayers().size()));
+        return formatted;
+    }
 
-	private void registerRewards() {
-		var config = ConfigUtils.getConfig(plugin, "rewards");
+    private void registerRewards() {
+        var config = ConfigUtils.getConfig(plugin, "rewards");
 
-		if (!config.getBoolean("Rewards-Enabled")) return;
+        if (!config.getBoolean("Rewards-Enabled")) return;
 
-		for (final var rewardType : Reward.RewardType.values()) {
-			rewards.add(new Reward(plugin, rewardType, config.getStringList(rewardType.path)));
-		}
-	}
+        for (var rewardType : Reward.RewardType.values()) {
+            rewards.add(new Reward(plugin, rewardType, config.getStringList(rewardType.path)));
+        }
+    }
 
-	public void reload() {
-		this.rewards.clear();
-		this.registerRewards();
-	}
+    public void reload() {
+        this.rewards.clear();
+        this.registerRewards();
+    }
 }

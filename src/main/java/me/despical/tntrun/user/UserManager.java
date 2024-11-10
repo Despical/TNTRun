@@ -40,67 +40,67 @@ import java.util.stream.Collectors;
  */
 public class UserManager {
 
-	@NotNull
-	private final Map<UUID, User> users;
+    @NotNull
+    private final Map<UUID, User> users;
 
-	@NotNull
-	private final AbstractDatabase userDatabase;
+    @NotNull
+    private final AbstractDatabase userDatabase;
 
-	public UserManager(Main plugin) {
-		this.users = new HashMap<>();
-		this.userDatabase = plugin.getOption(ConfigPreferences.Option.DATABASE_ENABLED) ? new MySQLStatistics() : new FlatFileStatistics();
+    public UserManager(Main plugin) {
+        this.users = new HashMap<>();
+        this.userDatabase = plugin.getOption(ConfigPreferences.Option.DATABASE_ENABLED) ? new MySQLStatistics() : new FlatFileStatistics();
 
-		plugin.getServer().getOnlinePlayers().forEach(this::addUser);
-	}
+        plugin.getServer().getOnlinePlayers().forEach(this::addUser);
+    }
 
-	@NotNull
-	public User addUser(Player player) {
-		User user = new User(player);
-		users.put(player.getUniqueId(), user);
+    @NotNull
+    public User addUser(Player player) {
+        User user = new User(player);
+        users.put(player.getUniqueId(), user);
 
-		userDatabase.loadStatistics(user);
-		return user;
-	}
+        userDatabase.loadStatistics(user);
+        return user;
+    }
 
-	public void removeUser(Player player) {
-		users.remove(player.getUniqueId());
-	}
+    public void removeUser(Player player) {
+        users.remove(player.getUniqueId());
+    }
 
-	@NotNull
-	public User getUser(Player player) {
-		User user = users.get(player.getUniqueId());
+    @NotNull
+    public User getUser(Player player) {
+        User user = users.get(player.getUniqueId());
 
-		if (user != null) {
-			return user;
-		}
+        if (user != null) {
+            return user;
+        }
 
-		return this.addUser(player);
-	}
+        return this.addUser(player);
+    }
 
-	@NotNull
-	public Set<User> getUsers() {
-		return users
-			.values()
-			.stream()
-			.filter(user -> {
-				Player player = user.getPlayer();
+    @NotNull
+    public Set<User> getUsers() {
+        return users
+            .values()
+            .stream()
+            .filter(user -> {
+                Player player = user.getPlayer();
 
-				return player != null && player.isOnline();
-			}).collect(Collectors.toSet());
-	}
+                return player != null && player.isOnline();
+            }).collect(Collectors.toSet());
+    }
 
-	@NotNull
-	public AbstractDatabase getUserDatabase() {
-		return userDatabase;
-	}
+    @NotNull
+    public AbstractDatabase getUserDatabase() {
+        return userDatabase;
+    }
 
-	public void saveStatistic(User user, StatisticType statisticType) {
-		if (!statisticType.isPersistent()) return;
+    public void saveStatistic(User user, StatisticType statisticType) {
+        if (!statisticType.isPersistent()) return;
 
-		this.userDatabase.saveStatistics(user);
-	}
+        this.userDatabase.saveStatistics(user);
+    }
 
-	public void saveStatistics(User user) {
-		this.userDatabase.saveStatistics(user);
-	}
+    public void saveStatistics(User user) {
+        this.userDatabase.saveStatistics(user);
+    }
 }

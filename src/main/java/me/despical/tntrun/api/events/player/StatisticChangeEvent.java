@@ -35,48 +35,48 @@ import org.jetbrains.annotations.Nullable;
  */
 public class StatisticChangeEvent extends TNTRunEvent {
 
-	private static final HandlerList handlerList = new HandlerList();
+    private static final HandlerList handlerList = new HandlerList();
 
-	private final User user;
-	private final StatisticType statisticType;
-	private final int value;
+    private final User user;
+    private final StatisticType statisticType;
+    private final int value;
 
-	public StatisticChangeEvent(Arena arena, User user, StatisticType statisticType, int value) {
-		super(arena);
-		this.user = user;
-		this.statisticType = statisticType;
-		this.value = value;
-	}
+    public StatisticChangeEvent(Arena arena, User user, StatisticType statisticType, int value) {
+        super(arena);
+        this.user = user;
+        this.statisticType = statisticType;
+        this.value = value;
+    }
 
-	@Nullable
-	@Override
-	public Arena getArena() {
-		return super.getArena();
-	}
+    public static HandlerList getHandlerList() {
+        return handlerList;
+    }
 
-	public User getUser() {
-		return this.user;
-	}
+    @Nullable
+    @Override
+    public Arena getArena() {
+        return super.getArena();
+    }
 
-	public StatisticType getStatisticType() {
-		return this.statisticType;
-	}
+    public User getUser() {
+        return this.user;
+    }
 
-	public int getValue() {
-		return this.value;
-	}
+    public StatisticType getStatisticType() {
+        return this.statisticType;
+    }
 
-	public int getNewValue() {
-		return this.user.getStat(this.statisticType);
-	}
+    public int getValue() {
+        return this.value;
+    }
 
-	@NotNull
-	@Override
-	public HandlerList getHandlers() {
-		return handlerList;
-	}
+    public int getNewValue() {
+        return this.user.getStat(this.statisticType);
+    }
 
-	public static HandlerList getHandlerList() {
-		return handlerList;
-	}
+    @NotNull
+    @Override
+    public HandlerList getHandlers() {
+        return handlerList;
+    }
 }

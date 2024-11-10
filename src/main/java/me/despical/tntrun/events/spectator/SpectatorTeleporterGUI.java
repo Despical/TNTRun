@@ -34,54 +34,54 @@ import org.jetbrains.annotations.NotNull;
  */
 public class SpectatorTeleporterGUI {
 
-	@NotNull
-	private final Main plugin;
+    @NotNull
+    private final Main plugin;
 
-	@NotNull
-	private final User user;
+    @NotNull
+    private final User user;
 
-	@NotNull
-	private final Arena arena;
+    @NotNull
+    private final Arena arena;
 
-	@NotNull
-	private final Gui gui;
+    @NotNull
+    private final Gui gui;
 
-	public SpectatorTeleporterGUI(final @NotNull Main plugin, final @NotNull User user, final @NotNull Arena arena) {
-		this.plugin = plugin;
-		this.user = user;
-		this.arena = arena;
+    public SpectatorTeleporterGUI(@NotNull Main plugin, @NotNull User user, @NotNull Arena arena) {
+        this.plugin = plugin;
+        this.user = user;
+        this.arena = arena;
 
-		final var pane = new StaticPane(9, 5);
-		this.gui = new GuiBuilder(plugin, 5, plugin.getChatManager().message("spectator-gui.teleporter.title")).globalClick(event -> event.setCancelled(true)).pane(pane).build();
+        var pane = new StaticPane(9, 5);
+        this.gui = new GuiBuilder(plugin, 5, plugin.getChatManager().message("spectator-gui.teleporter.title")).globalClick(event -> event.setCancelled(true)).pane(pane).build();
 
-		this.registerComponents(pane);
-	}
+        this.registerComponents(pane);
+    }
 
-	private void registerComponents(final StaticPane pane) {
-		final var teleporterComponents = new TeleporterComponents();
-		teleporterComponents.registerComponents(this, pane);
-	}
+    private void registerComponents(StaticPane pane) {
+        var teleporterComponents = new TeleporterComponents();
+        teleporterComponents.registerComponents(this, pane);
+    }
 
-	public void close() {
-		plugin.getServer().getScheduler().runTaskLater(plugin, () -> this.user.getPlayer().closeInventory(), 1L);
-	}
+    public void close() {
+        plugin.getServer().getScheduler().runTaskLater(plugin, () -> this.user.getPlayer().closeInventory(), 1L);
+    }
 
-	public void showGui() {
-		this.gui.show(this.user.getPlayer());
-	}
+    public void showGui() {
+        this.gui.show(this.user.getPlayer());
+    }
 
-	@NotNull
-	public Main getPlugin() {
-		return plugin;
-	}
+    @NotNull
+    public Main getPlugin() {
+        return plugin;
+    }
 
-	@NotNull
-	public Arena getArena() {
-		return arena;
-	}
+    @NotNull
+    public Arena getArena() {
+        return arena;
+    }
 
-	@NotNull
-	public User getUser() {
-		return user;
-	}
+    @NotNull
+    public User getUser() {
+        return user;
+    }
 }

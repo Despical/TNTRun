@@ -25,20 +25,20 @@ package me.despical.tntrun.arena;
  */
 public enum ArenaState {
 
-	WAITING_FOR_PLAYERS("Waiting"),
-	STARTING("Starting"),
-	IN_GAME("Playing"),
-	ENDING("Ending"),
-	RESTARTING("Restarting"),
-	INACTIVE("Inactive");
+    WAITING_FOR_PLAYERS("Waiting"),
+    STARTING("Starting"),
+    IN_GAME("Playing"),
+    ENDING("Ending"),
+    RESTARTING("Restarting"),
+    INACTIVE("Inactive");
 
-	final String formattedName;
+    final String formattedName;
 
-	ArenaState(String formattedName) {
-		this.formattedName = formattedName;
-	}
+    ArenaState(String formattedName) {
+        this.formattedName = formattedName;
+    }
 
-	public String getFormattedName() {
-		return formattedName;
-	}
+    public String getFormattedName() {
+        return formattedName;
+    }
 }

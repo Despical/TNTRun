@@ -33,27 +33,27 @@ import org.jetbrains.annotations.NotNull;
  */
 public class GameLeaveEvent extends TNTRunEvent {
 
-	private static final HandlerList handlerList = new HandlerList();
+    private static final HandlerList handlerList = new HandlerList();
 
-	private final User user;
+    private final User user;
 
-	public GameLeaveEvent(User user, Arena arena) {
-		super(arena);
-		this.user = user;
-	}
+    public GameLeaveEvent(User user, Arena arena) {
+        super(arena);
+        this.user = user;
+    }
 
-	@NotNull
-	public User getUser() {
-		return this.user;
-	}
+    public static HandlerList getHandlerList() {
+        return handlerList;
+    }
 
-	@NotNull
-	@Override
-	public HandlerList getHandlers() {
-		return handlerList;
-	}
+    @NotNull
+    public User getUser() {
+        return this.user;
+    }
 
-	public static HandlerList getHandlerList() {
-		return handlerList;
-	}
+    @NotNull
+    @Override
+    public HandlerList getHandlers() {
+        return handlerList;
+    }
 }

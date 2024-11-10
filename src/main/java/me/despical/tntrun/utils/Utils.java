@@ -46,7 +46,7 @@ public class Utils {
 
 			@Override
 			public void run() {
-				final var arena = user.getArena();
+				var arena = user.getArena();
 
 				if (arena == null || arena.isDeathPlayer(user) || !arena.isArenaState(ArenaState.IN_GAME)) {
 					cancel();
@@ -122,9 +122,9 @@ public class Utils {
 		}
 
 		message = new ComponentBuilder()
-			.append(returnMessage.toString().replace("%no_center%", ""))
-			.append(components)
-			.create();
+				.append(returnMessage.toString().replace("%no_center%", ""))
+				.append(components)
+				.create();
 
 		sender.spigot().sendMessage(message);
 	}

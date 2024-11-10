@@ -33,68 +33,68 @@ import org.bukkit.scoreboard.Team;
  */
 public class ArenaUtils {
 
-	private static final Main plugin = JavaPlugin.getPlugin(Main.class);
-	private static final ChatManager chatManager = plugin.getChatManager();
+    private static final Main plugin = JavaPlugin.getPlugin(Main.class);
+    private static final ChatManager chatManager = plugin.getChatManager();
 
-	public static void updateNameTagsVisibility(User u) {
-		if (!plugin.getOption(ConfigPreferences.Option.NAME_TAGS_HIDDEN)) return;
+    public static void updateNameTagsVisibility(User u) {
+        if (!plugin.getOption(ConfigPreferences.Option.NAME_TAGS_HIDDEN)) return;
 
-		for (final var user : plugin.getUserManager().getUsers()) {
-			final var arena = user.getArena();
+        for (final var user : plugin.getUserManager().getUsers()) {
+            final var arena = user.getArena();
 
-			if (arena == null) continue;
+            if (arena == null) continue;
 
-			var player = user.getPlayer();
-			var scoreboard = player.getScoreboard();
+            var player = user.getPlayer();
+            var scoreboard = player.getScoreboard();
 
-			if (scoreboard == plugin.getServer().getScoreboardManager().getMainScoreboard()) {
-				scoreboard = plugin.getServer().getScoreboardManager().getNewScoreboard();
-			}
+            if (scoreboard == plugin.getServer().getScoreboardManager().getMainScoreboard()) {
+                scoreboard = plugin.getServer().getScoreboardManager().getNewScoreboard();
+            }
 
-			var team = scoreboard.getTeam("TRHide");
+            var team = scoreboard.getTeam("TRHide");
 
-			if (team == null) {
-				team = scoreboard.registerNewTeam("TRHide");
-			}
+            if (team == null) {
+                team = scoreboard.registerNewTeam("TRHide");
+            }
 
-			team.setCanSeeFriendlyInvisibles(false);
-			team.setOption(Team.Option.NAME_TAG_VISIBILITY, Team.OptionStatus.NEVER);
+            team.setCanSeeFriendlyInvisibles(false);
+            team.setOption(Team.Option.NAME_TAG_VISIBILITY, Team.OptionStatus.NEVER);
 
-			if (arena.isArenaState(ArenaState.WAITING_FOR_PLAYERS, ArenaState.STARTING) || arena.getArenaState() == ArenaState.IN_GAME) {
-				team.addEntry(u.getName());
-			} else {
-				team.removeEntry(u.getName());
-			}
+            if (arena.isArenaState(ArenaState.WAITING_FOR_PLAYERS, ArenaState.STARTING) || arena.getArenaState() == ArenaState.IN_GAME) {
+                team.addEntry(u.getName());
+            } else {
+                team.removeEntry(u.getName());
+            }
 
-			player.setScoreboard(scoreboard);
-		}
-	}
+            player.setScoreboard(scoreboard);
+        }
+    }
 
-	public static void addScore(User user, ScoreAction action) {
-		String msg = chatManager.message("messages.score-actions.bonus-score");
+    public static void addScore(User user, ScoreAction action) {
+        String msg = chatManager.message("messages.score-actions.bonus-score");
 
-		msg = msg.replace("%score%", (action.points > 0 ? "+" : "") + action.points);
+        msg = msg.replace("%score%", (action.points > 0 ? "+" : "") + action.points);
 
-		var actionBarMessage = msg;
+        var actionBarMessage = msg;
 
-		user.sendActionBar(actionBarMessage.replace("%action%", "").trim());
+        user.sendActionBar(actionBarMessage.replace("%action%", "").trim());
 
-		msg = msg.replace("%action%", action.action);
+        msg = msg.replace("%action%", action.action);
 
-		user.addStat(StatisticType.LOCAL_COINS, action.points);
-		user.sendRawMessage(msg);
-	}
+        user.addStat(StatisticType.LOCAL_COINS, action.points);
+        user.sendRawMessage(msg);
+    }
 
-	public enum ScoreAction {
+    public enum ScoreAction {
 
-		SURVIVE_TIME(30, "survive");
+        SURVIVE_TIME(30, "survive");
 
-		final int points;
-		final String action;
+        final int points;
+        final String action;
 
-		ScoreAction(int points, String path) {
-			this.points = points;
-			this.action = chatManager.message("messages.score-actions.%s".formatted(path));
-		}
-	}
+        ScoreAction(int points, String path) {
+            this.points = points;
+            this.action = chatManager.message("messages.score-actions.%s".formatted(path));
+        }
+    }
 }

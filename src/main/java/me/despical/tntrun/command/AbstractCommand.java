@@ -31,24 +31,24 @@ import java.util.stream.Stream;
 
 public abstract class AbstractCommand {
 
-	protected static final Main plugin = JavaPlugin.getPlugin(Main.class);
-	protected static final ChatManager chatManager = plugin.getChatManager();
+    protected static final Main plugin = JavaPlugin.getPlugin(Main.class);
+    protected static final ChatManager chatManager = plugin.getChatManager();
 
-	static {
-		var commandFramework = plugin.getCommandFramework();
-		commandFramework.addCustomParameter("User", args -> plugin.getUserManager().getUser(args.getSender()));
+    static {
+        var commandFramework = plugin.getCommandFramework();
+        commandFramework.addCustomParameter("User", args -> plugin.getUserManager().getUser(args.getSender()));
 
-		Message.setColorFormatter(Strings::format);
+        Message.setColorFormatter(Strings::format);
 
-		BiFunction<Command, CommandArguments, Boolean> sendUsage = (command, arguments) -> {
-			arguments.sendMessage(chatManager.message("admin-commands.correct-usage").replace("%usage%", command.usage()));
-			return true;
-		};
+        BiFunction<Command, CommandArguments, Boolean> sendUsage = (command, arguments) -> {
+            arguments.sendMessage(chatManager.message("admin-commands.correct-usage").replace("%usage%", command.usage()));
+            return true;
+        };
 
-		Stream.of(Message.SHORT_ARG_SIZE, Message.LONG_ARG_SIZE).forEach(message -> message.setMessage(sendUsage));
-	}
+        Stream.of(Message.SHORT_ARG_SIZE, Message.LONG_ARG_SIZE).forEach(message -> message.setMessage(sendUsage));
+    }
 
-	public AbstractCommand() {
-		plugin.getCommandFramework().registerCommands(this);
-	}
+    public AbstractCommand() {
+        plugin.getCommandFramework().registerCommands(this);
+    }
 }

@@ -32,26 +32,26 @@ import org.jetbrains.annotations.NotNull;
  */
 public class GameEndEvent extends TNTRunEvent {
 
-	private static final HandlerList handlerList = new HandlerList();
+    private static final HandlerList handlerList = new HandlerList();
 
-	private final boolean quickStop;
+    private final boolean quickStop;
 
-	public GameEndEvent(Arena arena, boolean quickStop) {
-		super(arena);
-		this.quickStop = quickStop;
-	}
+    public GameEndEvent(Arena arena, boolean quickStop) {
+        super(arena);
+        this.quickStop = quickStop;
+    }
 
-	public boolean isQuickStop() {
-		return this.quickStop;
-	}
+    public static HandlerList getHandlerList() {
+        return handlerList;
+    }
 
-	@NotNull
-	@Override
-	public HandlerList getHandlers() {
-		return handlerList;
-	}
+    public boolean isQuickStop() {
+        return this.quickStop;
+    }
 
-	public static HandlerList getHandlerList() {
-		return handlerList;
-	}
+    @NotNull
+    @Override
+    public HandlerList getHandlers() {
+        return handlerList;
+    }
 }

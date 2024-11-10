@@ -29,43 +29,43 @@ import java.util.stream.Stream;
  */
 public enum StatisticType {
 
-	WINS("wins", true),
-	LOSES("loses", true),
-	COINS("coinsearned", true),
-	GAMES_PLAYED("gamesplayed", true),
-	LONGEST_SURVIVE("longestsurvive", true),
-	SPECTATOR_NIGHT_VISION("spectatornightvision", true),
-	SPECTATOR_SHOW_OTHERS("spectatorshowothers", true),
-	SPECTATOR_SPEED("spectatorspeed", true),
-	LOCAL_COINS("local_coins", false),
-	LOCAL_DOUBLE_JUMPS("local_double_jumps", false),
-	LOCAL_SURVIVE("local_survive", false);
+    WINS("wins", true),
+    LOSES("loses", true),
+    COINS("coinsearned", true),
+    GAMES_PLAYED("gamesplayed", true),
+    LONGEST_SURVIVE("longestsurvive", true),
+    SPECTATOR_NIGHT_VISION("spectatornightvision", true),
+    SPECTATOR_SHOW_OTHERS("spectatorshowothers", true),
+    SPECTATOR_SPEED("spectatorspeed", true),
+    LOCAL_COINS("local_coins", false),
+    LOCAL_DOUBLE_JUMPS("local_double_jumps", false),
+    LOCAL_SURVIVE("local_survive", false);
 
-	private final String name;
-	private final boolean persistent;
+    private final String name;
+    private final boolean persistent;
 
-	StatisticType(String name, boolean persistent) {
-		this.name = name;
-		this.persistent = persistent;
-	}
+    StatisticType(String name, boolean persistent) {
+        this.name = name;
+        this.persistent = persistent;
+    }
 
-	public String getName() {
-		return name;
-	}
+    public static StatisticType match(String name) {
+        return Stream.of(values()).filter(statisticType -> statisticType.name.equals(name)).findFirst().orElse(null);
+    }
 
-	public boolean isPersistent() {
-		return persistent;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public boolean shouldBeViewed() {
-		return persistent && !name().startsWith("SPECTATOR");
-	}
+    public boolean isPersistent() {
+        return persistent;
+    }
 
-	public String from(User user) {
-		return Integer.toString(user.getStat(this));
-	}
+    public boolean shouldBeViewed() {
+        return persistent && !name().startsWith("SPECTATOR");
+    }
 
-	public static StatisticType match(String name) {
-		return Stream.of(values()).filter(statisticType -> statisticType.name.equals(name)).findFirst().orElse(null);
-	}
+    public String from(User user) {
+        return Integer.toString(user.getStat(this));
+    }
 }

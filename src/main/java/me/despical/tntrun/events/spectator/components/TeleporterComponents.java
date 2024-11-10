@@ -37,37 +37,37 @@ import java.util.List;
  */
 public class TeleporterComponents {
 
-	private static final List<Integer> headPlaces = List.of(10, 11, 12, 13, 14, 15, 16, 19, 20, 21, 22, 23, 24, 25, 28, 29, 30, 31, 32, 33, 34);
+    private static final List<Integer> headPlaces = List.of(10, 11, 12, 13, 14, 15, 16, 19, 20, 21, 22, 23, 24, 25, 28, 29, 30, 31, 32, 33, 34);
 
-	public void registerComponents(SpectatorTeleporterGUI teleporterGui, StaticPane pane) {
-		var u = teleporterGui.getUser();
-		var p = u.getPlayer();
-		var arena = teleporterGui.getArena();
-		var chatManager = teleporterGui.getPlugin().getChatManager();
+    public void registerComponents(SpectatorTeleporterGUI teleporterGui, StaticPane pane) {
+        var u = teleporterGui.getUser();
+        var p = u.getPlayer();
+        var arena = teleporterGui.getArena();
+        var chatManager = teleporterGui.getPlugin().getChatManager();
 
-		pane.addItem(GuiItem.of(new ItemBuilder(XMaterial.BARRIER).name(chatManager.message("spectator-gui.close-item")).hideTooltip().build(), e -> teleporterGui.close()), 4, 4);
+        pane.addItem(GuiItem.of(new ItemBuilder(XMaterial.BARRIER).name(chatManager.message("spectator-gui.close-item")).hideTooltip().build(), e -> teleporterGui.close()), 4, 4);
 
-		var players = new ArrayList<>(arena.getPlayersLeft());
-		players.remove(u);
+        var players = new ArrayList<>(arena.getPlayersLeft());
+        players.remove(u);
 
-		for (int i = 0; i < players.size(); i++) {
-			if (i == 21) break;
+        for (int i = 0; i < players.size(); i++) {
+            if (i == 21) break;
 
-			var user = players.get(i);
-			var player = user.getPlayer();
-			var skullItem = ItemUtils.PLAYER_HEAD_ITEM.clone();
-			var skullMeta = (SkullMeta) skullItem.getItemMeta();
+            var user = players.get(i);
+            var player = user.getPlayer();
+            var skullItem = ItemUtils.PLAYER_HEAD_ITEM.clone();
+            var skullMeta = (SkullMeta) skullItem.getItemMeta();
 
-			ItemUtils.setPlayerHead(player, skullMeta);
-			skullItem.setItemMeta(skullMeta);
+            ItemUtils.setPlayerHead(player, skullMeta);
+            skullItem.setItemMeta(skullMeta);
 
-			var guiItem = new ItemBuilder(skullItem)
-				.name(chatManager.message("spectator-gui.teleporter.skull-name").replace("%player%", player.getName()))
-				.lore(chatManager.getStringList("spectator-gui.teleporter.lore")).build();
-			var xy = GeometryUtil.slotToXY(headPlaces.get(i));
-			int x = xy[0], y = xy[1];
+            var guiItem = new ItemBuilder(skullItem)
+                .name(chatManager.message("spectator-gui.teleporter.skull-name").replace("%player%", player.getName()))
+                .lore(chatManager.getStringList("spectator-gui.teleporter.lore")).build();
+            var xy = GeometryUtil.slotToXY(headPlaces.get(i));
+            int x = xy[0], y = xy[1];
 
-			pane.addItem(GuiItem.of(guiItem, e -> p.teleport(player)), x, y);
-		}
-	}
+            pane.addItem(GuiItem.of(guiItem, e -> p.teleport(player)), x, y);
+        }
+    }
 }

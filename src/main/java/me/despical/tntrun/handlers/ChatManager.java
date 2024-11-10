@@ -36,71 +36,71 @@ import java.util.List;
  */
 public class ChatManager {
 
-	private FileConfiguration config;
-	private final Main plugin;
+    private final Main plugin;
+    private FileConfiguration config;
 
-	public ChatManager(Main plugin) {
-		this.plugin = plugin;
-		this.reload();
-	}
+    public ChatManager(Main plugin) {
+        this.plugin = plugin;
+        this.reload();
+    }
 
-	public String message(String path) {
-		return rawMessage(this.config.getString(path));
-	}
+    public String message(String path) {
+        return rawMessage(this.config.getString(path));
+    }
 
-	public String message(String path, User user) {
-		String message = this.message(path);
+    public String message(String path, User user) {
+        String message = this.message(path);
 
-		message = message.replace("%player%", user.getName());
+        message = message.replace("%player%", user.getName());
 
-		if (plugin.getServer().getPluginManager().isPluginEnabled("PlaceholderAPI")) {
-			message = PlaceholderAPI.setPlaceholders(user.getPlayer(), message);
-		}
+        if (plugin.getServer().getPluginManager().isPluginEnabled("PlaceholderAPI")) {
+            message = PlaceholderAPI.setPlaceholders(user.getPlayer(), message);
+        }
 
-		return message;
-	}
+        return message;
+    }
 
-	public String message(String path, Arena arena, User user) {
-		String message = this.message(path, arena);
+    public String message(String path, Arena arena, User user) {
+        String message = this.message(path, arena);
 
-		message = message.replace("%player%", user.getName());
+        message = message.replace("%player%", user.getName());
 
-		if (plugin.getServer().getPluginManager().isPluginEnabled("PlaceholderAPI")) {
-			message = PlaceholderAPI.setPlaceholders(user.getPlayer(), message);
-		}
+        if (plugin.getServer().getPluginManager().isPluginEnabled("PlaceholderAPI")) {
+            message = PlaceholderAPI.setPlaceholders(user.getPlayer(), message);
+        }
 
-		return message;
-	}
+        return message;
+    }
 
-	public String message(String path, Arena arena) {
-		String message = this.message(path);
+    public String message(String path, Arena arena) {
+        String message = this.message(path);
 
-		return formatMessage(arena, message);
-	}
+        return formatMessage(arena, message);
+    }
 
-	public String formatMessage(Arena arena, String message) {
-		message = message.replace("%map%", arena.getMapName());
-		message = message.replace("%time%", Integer.toString(arena.getTimer()));
-		message = message.replace("%formatted_time%", StringFormatUtils.formatIntoMMSS(arena.getTimer()));
-		message = message.replace("%players%", Integer.toString(arena.getPlayers().size()));
-		message = message.replace("%players_left%", Integer.toString(arena.getPlayersLeft().size()));
-		message = message.replace("%min_players%", Integer.toString(arena.getMinimumPlayers()));
-		message = message.replace("%max_players%", Integer.toString(arena.getMaximumPlayers()));
-		return message;
-	}
+    public String formatMessage(Arena arena, String message) {
+        message = message.replace("%map%", arena.getMapName());
+        message = message.replace("%time%", Integer.toString(arena.getTimer()));
+        message = message.replace("%formatted_time%", StringFormatUtils.formatIntoMMSS(arena.getTimer()));
+        message = message.replace("%players%", Integer.toString(arena.getPlayers().size()));
+        message = message.replace("%players_left%", Integer.toString(arena.getPlayersLeft().size()));
+        message = message.replace("%min_players%", Integer.toString(arena.getMinimumPlayers()));
+        message = message.replace("%max_players%", Integer.toString(arena.getMaximumPlayers()));
+        return message;
+    }
 
-	public String rawMessage(String message) {
-		return Strings.format(message);
-	}
+    public String rawMessage(String message) {
+        return Strings.format(message);
+    }
 
-	public List<String> getStringList(String path) {
-		return this.config.getStringList(path);
-	}
+    public List<String> getStringList(String path) {
+        return this.config.getStringList(path);
+    }
 
-	public void reload() {
-		this.config = ConfigUtils.getConfig(plugin, "messages");
+    public void reload() {
+        this.config = ConfigUtils.getConfig(plugin, "messages");
 
-		StringFormatUtils.setTimeFormat(this.message("Scoreboard.Timer-Format"));
-		StringFormatUtils.setDateFormat(this.message("Scoreboard.Date-Format"));
-	}
+        StringFormatUtils.setTimeFormat(this.message("Scoreboard.Timer-Format"));
+        StringFormatUtils.setDateFormat(this.message("Scoreboard.Date-Format"));
+    }
 }

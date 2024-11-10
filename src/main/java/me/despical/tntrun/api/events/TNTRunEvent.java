@@ -28,13 +28,13 @@ import org.bukkit.event.Event;
  */
 public abstract class TNTRunEvent extends Event {
 
-	protected final Arena arena;
+    protected final Arena arena;
 
-	public TNTRunEvent(Arena arena) {
-		this.arena = arena;
-	}
+    public TNTRunEvent(Arena arena) {
+        this.arena = arena;
+    }
 
-	public Arena getArena() {
-		return this.arena;
-	}
+    public Arena getArena() {
+        return this.arena;
+    }
 }

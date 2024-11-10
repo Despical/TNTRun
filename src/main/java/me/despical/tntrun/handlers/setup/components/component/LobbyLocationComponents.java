@@ -42,25 +42,25 @@ public class LobbyLocationComponents extends AbstractComponent {
 
 	@Override
 	public void registerComponents(PaginatedPane paginatedPane) {
-		final var pane = new StaticPane(9, 3);
-		final var config = ConfigUtils.getConfig(plugin, "arena");
-		final var backgroundDone = isOptionDoneBoolean("lobbyLocation", config) && isOptionDoneBoolean("endLocation", config);
+		var pane = new StaticPane(9, 3);
+		var config = ConfigUtils.getConfig(plugin, "arena");
+		var backgroundDone = isOptionDoneBoolean("lobbyLocation", config) && isOptionDoneBoolean("endLocation", config);
 
-		final var backgroundItem = backgroundDone ?
-			new ItemBuilder(XMaterial.LIME_STAINED_GLASS_PANE).name("&aGame locations set properly!") :
-			new ItemBuilder(XMaterial.BLACK_STAINED_GLASS_PANE).name("&cSet game locations properly!");
+		var backgroundItem = backgroundDone ?
+				new ItemBuilder(XMaterial.LIME_STAINED_GLASS_PANE).name("&aGame locations set properly!") :
+				new ItemBuilder(XMaterial.BLACK_STAINED_GLASS_PANE).name("&cSet game locations properly!");
 
-		final var endLocationItem = new ItemBuilder(XMaterial.ORANGE_CONCRETE)
-			.name("&e&l      Set Ending Location")
-			.lore("&7Click to set the ending location on")
-			.lore("&7the place where you are standing.")
-			.lore("", isOptionDoneBool("endLocation", config));
+		var endLocationItem = new ItemBuilder(XMaterial.ORANGE_CONCRETE)
+				.name("&e&l      Set Ending Location")
+				.lore("&7Click to set the ending location on")
+				.lore("&7the place where you are standing.")
+				.lore("", isOptionDoneBool("endLocation", config));
 
-		final var lobbyLocationItem = new ItemBuilder(XMaterial.CYAN_CONCRETE)
-			.name("&e&l      Set Lobby Location")
-			.lore("&7Click to set lobby location on the")
-			.lore("&7place where you are standing.")
-			.lore("", isOptionDoneBool("lobbyLocation", config));
+		var lobbyLocationItem = new ItemBuilder(XMaterial.CYAN_CONCRETE)
+				.name("&e&l      Set Lobby Location")
+				.lore("&7Click to set lobby location on the")
+				.lore("&7place where you are standing.")
+				.lore("", isOptionDoneBool("lobbyLocation", config));
 
 		pane.fillWith(backgroundItem.build(), event -> event.setCancelled(true));
 		pane.addItem(GuiItem.of(mainMenuItem, event -> this.gui.restorePage()), 8, 2);
@@ -68,7 +68,7 @@ public class LobbyLocationComponents extends AbstractComponent {
 		pane.addItem(GuiItem.of(lobbyLocationItem.build(), event -> {
 			user.closeOpenedInventory();
 
-			final var location = user.getLocation();
+			var location = user.getLocation();
 
 			config.set(path + "lobbyLocation", LocationSerializer.toString(location));
 			ConfigUtils.saveConfig(plugin, config, "arena");
@@ -81,7 +81,7 @@ public class LobbyLocationComponents extends AbstractComponent {
 		pane.addItem(GuiItem.of(endLocationItem.build(), event -> {
 			user.closeOpenedInventory();
 
-			final var location = user.getLocation();
+			var location = user.getLocation();
 
 			config.set(path + "endLocation", LocationSerializer.toString(location));
 			ConfigUtils.saveConfig(plugin, config, "arena");

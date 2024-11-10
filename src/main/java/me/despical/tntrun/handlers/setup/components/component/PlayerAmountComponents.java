@@ -41,26 +41,26 @@ public class PlayerAmountComponents extends AbstractComponent {
 
 	@Override
 	public void registerComponents(PaginatedPane paginatedPane) {
-		final var pane = new StaticPane(9, 3);
-		final var config = ConfigUtils.getConfig(plugin, "arena");
-		final var backgroundItem = new ItemBuilder(XMaterial.LIME_STAINED_GLASS_PANE).name("&aSet min/max player amounts!");
+		var pane = new StaticPane(9, 3);
+		var config = ConfigUtils.getConfig(plugin, "arena");
+		var backgroundItem = new ItemBuilder(XMaterial.LIME_STAINED_GLASS_PANE).name("&aSet min/max player amounts!");
 
-		final var minPlayersItem = new ItemBuilder(XMaterial.GLOWSTONE_DUST)
-			.name("&e&l       Set Minimum Players")
-			.lore("&8• &7LEFT  click to increase")
-			.lore("&8• &7RIGHT click to decrease", "")
-			.lore("&8• &7How many players are needed for")
-			.lore("&7game to start the lobby countdown.")
-			.lore("", isOptionDone("minimumPlayers", config))
-			.amount(minValueHigherThan("minimumPlayers", 2, config));
+		var minPlayersItem = new ItemBuilder(XMaterial.GLOWSTONE_DUST)
+				.name("&e&l       Set Minimum Players")
+				.lore("&8• &7LEFT  click to increase")
+				.lore("&8• &7RIGHT click to decrease", "")
+				.lore("&8• &7How many players are needed for")
+				.lore("&7game to start the lobby countdown.")
+				.lore("", isOptionDone("minimumPlayers", config))
+				.amount(minValueHigherThan("minimumPlayers", 2, config));
 
-		final var maxPlayersItem = new ItemBuilder(XMaterial.GLOWSTONE_DUST)
-			.name("&e&l      Set Maximum Players")
-			.lore("&8• &7LEFT  click to increase")
-			.lore("&8• &7RIGHT click to decrease", "")
-			.lore("&8• &7Maximum player amount that arena", "&7can hold.")
-			.lore("", isOptionDone("maximumPlayers", config))
-			.amount(minValueHigherThan("maximumPlayers", arena.getMinimumPlayers(), config));
+		var maxPlayersItem = new ItemBuilder(XMaterial.GLOWSTONE_DUST)
+				.name("&e&l      Set Maximum Players")
+				.lore("&8• &7LEFT  click to increase")
+				.lore("&8• &7RIGHT click to decrease", "")
+				.lore("&8• &7Maximum player amount that arena", "&7can hold.")
+				.lore("", isOptionDone("maximumPlayers", config))
+				.amount(minValueHigherThan("maximumPlayers", arena.getMinimumPlayers(), config));
 
 		pane.fillWith(backgroundItem.build(), event -> event.setCancelled(true));
 		pane.addItem(GuiItem.of(mainMenuItem, event -> this.gui.restorePage()), 8, 2);

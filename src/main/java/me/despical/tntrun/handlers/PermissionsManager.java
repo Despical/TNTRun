@@ -32,39 +32,39 @@ import java.util.List;
  */
 public class PermissionsManager {
 
-	private final int defaultDoubleJumps, doubleJumpDelay;
-	private final String joinPermission, fullJoin;
-	private final List<String> doubleJumpsPerms;
+    private final int defaultDoubleJumps, doubleJumpDelay;
+    private final String joinPermission, fullJoin;
+    private final List<String> doubleJumpsPerms;
 
-	public PermissionsManager(Main plugin) {
-		final var config = plugin.getConfig();
+    public PermissionsManager(Main plugin) {
+        final var config = plugin.getConfig();
 
-		this.defaultDoubleJumps = config.getInt("Double-Jumps.Default", 5);
-		this.doubleJumpDelay = config.getInt("Double-Jumps.Delay", 4);
-		this.joinPermission = config.getString("Join-Permission", "");
-		this.fullJoin = config.getString("Join-Full-Game-Permission", "");
-		this.doubleJumpsPerms = config.getStringList("Double-Jumps.Permissions");
-	}
+        this.defaultDoubleJumps = config.getInt("Double-Jumps.Default", 5);
+        this.doubleJumpDelay = config.getInt("Double-Jumps.Delay", 4);
+        this.joinPermission = config.getString("Join-Permission", "");
+        this.fullJoin = config.getString("Join-Full-Game-Permission", "");
+        this.doubleJumpsPerms = config.getStringList("Double-Jumps.Permissions");
+    }
 
-	public boolean hasPermission(final User user, final Arena arena) {
-		return joinPermission.isEmpty() || user.hasPermission(joinPermission.replace("<arena>", arena.getId()));
-	}
+    public boolean hasPermission(final User user, final Arena arena) {
+        return joinPermission.isEmpty() || user.hasPermission(joinPermission.replace("<arena>", arena.getId()));
+    }
 
-	public boolean hasFullGamePerm(Player player) {
-		return fullJoin.isEmpty() || player.hasPermission(fullJoin);
-	}
+    public boolean hasFullGamePerm(Player player) {
+        return fullJoin.isEmpty() || player.hasPermission(fullJoin);
+    }
 
-	public int getDoubleJumpDelay() {
-		return doubleJumpDelay;
-	}
+    public int getDoubleJumpDelay() {
+        return doubleJumpDelay;
+    }
 
-	public int getDoubleJumps(Player player) {
-		for (String perm : doubleJumpsPerms) {
-			if (perm.startsWith("tntrun") && player.hasPermission(perm)) {
-				return Integer.parseInt(perm.substring(perm.lastIndexOf('.') + 1));
-			}
-		}
+    public int getDoubleJumps(Player player) {
+        for (String perm : doubleJumpsPerms) {
+            if (perm.startsWith("tntrun") && player.hasPermission(perm)) {
+                return Integer.parseInt(perm.substring(perm.lastIndexOf('.') + 1));
+            }
+        }
 
-		return defaultDoubleJumps;
-	}
+        return defaultDoubleJumps;
+    }
 }

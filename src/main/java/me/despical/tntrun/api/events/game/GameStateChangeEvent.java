@@ -37,30 +37,30 @@ import org.jetbrains.annotations.NotNull;
  */
 public class GameStateChangeEvent extends TNTRunEvent {
 
-	private static final HandlerList handlerList = new HandlerList();
+    private static final HandlerList handlerList = new HandlerList();
 
-	private final ArenaState arenaState;
+    private final ArenaState arenaState;
 
-	public GameStateChangeEvent(Arena arena, ArenaState arenaState) {
-		super(arena);
-		this.arenaState = arenaState;
-	}
+    public GameStateChangeEvent(Arena arena, ArenaState arenaState) {
+        super(arena);
+        this.arenaState = arenaState;
+    }
 
-	public ArenaState getOldState() {
-		return this.arenaState;
-	}
+    public static HandlerList getHandlerList() {
+        return handlerList;
+    }
 
-	public ArenaState getNewState() {
-		return this.arena.getArenaState();
-	}
+    public ArenaState getOldState() {
+        return this.arenaState;
+    }
 
-	@NotNull
-	@Override
-	public HandlerList getHandlers() {
-		return handlerList;
-	}
+    public ArenaState getNewState() {
+        return this.arena.getArenaState();
+    }
 
-	public static HandlerList getHandlerList() {
-		return handlerList;
-	}
+    @NotNull
+    @Override
+    public HandlerList getHandlers() {
+        return handlerList;
+    }
 }

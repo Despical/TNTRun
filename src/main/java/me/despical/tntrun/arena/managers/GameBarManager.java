@@ -33,62 +33,62 @@ import org.bukkit.boss.BossBar;
  */
 public final class GameBarManager {
 
-	private final BossBar gameBar;
-	private final Arena arena;
-	private final Main plugin;
+    private final BossBar gameBar;
+    private final Arena arena;
+    private final Main plugin;
 
-	public GameBarManager(final Arena arena, final Main plugin) {
-		this.arena = arena;
-		this.plugin = plugin;
-		this.gameBar = plugin.getOption(ConfigPreferences.Option.GAME_BAR_ENABLED) ? plugin.getServer().createBossBar("", BarColor.BLUE, BarStyle.SOLID) : null;
-	}
+    public GameBarManager(Arena arena, Main plugin) {
+        this.arena = arena;
+        this.plugin = plugin;
+        this.gameBar = plugin.getOption(ConfigPreferences.Option.GAME_BAR_ENABLED) ? plugin.getServer().createBossBar("", BarColor.BLUE, BarStyle.SOLID) : null;
+    }
 
-	public void doBarAction(final User user, int action) {
-		if (this.gameBar == null) return;
+    public void doBarAction(User user, int action) {
+        if (this.gameBar == null) return;
 
-		final var player = user.getPlayer();
+        var player = user.getPlayer();
 
-		if (action == 1) {
-			this.gameBar.addPlayer(player);
-		} else {
-			this.gameBar.removePlayer(player);
-		}
-	}
+        if (action == 1) {
+            this.gameBar.addPlayer(player);
+        } else {
+            this.gameBar.removePlayer(player);
+        }
+    }
 
-	public void removeAll() {
-		if (this.gameBar != null) this.gameBar.removeAll();
-	}
+    public void removeAll() {
+        if (this.gameBar != null) this.gameBar.removeAll();
+    }
 
-	public void handleGameBar() {
-		if (this.gameBar == null) return;
+    public void handleGameBar() {
+        if (this.gameBar == null) return;
 
-		switch (arena.getArenaState()) {
-			case WAITING_FOR_PLAYERS -> updateState("waiting-for-players");
-			case STARTING -> updateState("starting");
-			case IN_GAME -> updateState("in-game");
-			case ENDING -> updateState("ending");
-		}
+        switch (arena.getArenaState()) {
+            case WAITING_FOR_PLAYERS -> updateState("waiting-for-players");
+            case STARTING -> updateState("starting");
+            case IN_GAME -> updateState("in-game");
+            case ENDING -> updateState("ending");
+        }
 
-		gameBar.setVisible(!this.gameBar.getTitle().isEmpty());
-	}
+        gameBar.setVisible(!this.gameBar.getTitle().isEmpty());
+    }
 
-	private void updateState(String path) {
-		path = "game-bar.%s.".formatted(path);
+    private void updateState(String path) {
+        path = "game-bar.%s.".formatted(path);
 
-		this.gameBar.setTitle(plugin.getChatManager().message(path + "message"));
-		this.gameBar.setColor(this.getBarColor(path + "color"));
-		this.gameBar.setStyle(this.getBarStyle(path + "style"));
-	}
+        this.gameBar.setTitle(plugin.getChatManager().message(path + "message"));
+        this.gameBar.setColor(this.getBarColor(path + "color"));
+        this.gameBar.setStyle(this.getBarStyle(path + "style"));
+    }
 
-	private BarColor getBarColor(String path) {
-		final String colorName = plugin.getChatManager().message(path);
+    private BarColor getBarColor(String path) {
+        String colorName = plugin.getChatManager().message(path);
 
-		return colorName.isEmpty() ? this.gameBar.getColor() : BarColor.valueOf(colorName);
-	}
+        return colorName.isEmpty() ? this.gameBar.getColor() : BarColor.valueOf(colorName);
+    }
 
-	private BarStyle getBarStyle(String path) {
-		final String colorName = plugin.getChatManager().message(path);
+    private BarStyle getBarStyle(String path) {
+        String colorName = plugin.getChatManager().message(path);
 
-		return colorName.isEmpty() ? this.gameBar.getStyle() : BarStyle.valueOf(colorName);
-	}
+        return colorName.isEmpty() ? this.gameBar.getStyle() : BarStyle.valueOf(colorName);
+    }
 }

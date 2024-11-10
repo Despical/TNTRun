@@ -30,15 +30,15 @@ import org.bukkit.plugin.java.JavaPlugin;
  */
 public abstract sealed class AbstractDatabase permits FlatFileStatistics, MySQLStatistics {
 
-	protected static final Main plugin = JavaPlugin.getPlugin(Main.class);
+    protected static final Main plugin = JavaPlugin.getPlugin(Main.class);
 
-	public abstract void saveStatistic(User user, StatisticType statisticType);
+    public abstract void saveStatistic(User user, StatisticType statisticType);
 
-	public abstract void saveStatistics(User user);
+    public abstract void saveStatistics(User user);
 
-	public abstract void loadStatistics(User user);
+    public abstract void loadStatistics(User user);
 
-	public abstract void saveAllStatistics();
+    public abstract void saveAllStatistics();
 
-	public abstract void shutdown();
+    public abstract void shutdown();
 }

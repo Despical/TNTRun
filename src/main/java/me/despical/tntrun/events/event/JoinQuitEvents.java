@@ -40,59 +40,59 @@ import java.util.UUID;
  */
 public class JoinQuitEvents extends EventListener {
 
-	private final Map<UUID, Arena> teleportToEnd;
+    private final Map<UUID, Arena> teleportToEnd;
 
-	public JoinQuitEvents(Main plugin) {
-		super(plugin);
-		this.teleportToEnd = new HashMap<>();
-	}
+    public JoinQuitEvents(Main plugin) {
+        super(plugin);
+        this.teleportToEnd = new HashMap<>();
+    }
 
-	@EventHandler(priority = EventPriority.LOWEST)
-	public void onJoinEvent(PlayerJoinEvent event) {
-		Player eventPlayer = event.getPlayer();
+    @EventHandler(priority = EventPriority.LOWEST)
+    public void onJoinEvent(PlayerJoinEvent event) {
+        Player eventPlayer = event.getPlayer();
 
-		plugin.getUserManager().addUser(eventPlayer);
+        plugin.getUserManager().addUser(eventPlayer);
 
-		Arena arena = teleportToEnd.get(eventPlayer.getUniqueId());
+        Arena arena = teleportToEnd.get(eventPlayer.getUniqueId());
 
-		if (arena != null) {
-			plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
-				eventPlayer.teleport(arena.getEndLocation());
+        if (arena != null) {
+            plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
+                eventPlayer.teleport(arena.getEndLocation());
 
-				teleportToEnd.remove(eventPlayer.getUniqueId());
-			}, 1L);
-		}
+                teleportToEnd.remove(eventPlayer.getUniqueId());
+            }, 1L);
+        }
 
-		for (User user : plugin.getUserManager().getUsers()) {
-			if (!user.isInArena()) continue;
+        for (User user : plugin.getUserManager().getUsers()) {
+            if (!user.isInArena()) continue;
 
-			Player player = user.getPlayer();
+            Player player = user.getPlayer();
 
-			eventPlayer.hidePlayer(plugin, player);
-			player.hidePlayer(plugin, eventPlayer);
-		}
-	}
+            eventPlayer.hidePlayer(plugin, player);
+            player.hidePlayer(plugin, eventPlayer);
+        }
+    }
 
-	@EventHandler(priority = EventPriority.HIGHEST)
-	public void onQuit(PlayerQuitEvent event) {
-		this.handleQuit(event.getPlayer());
-	}
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void onQuit(PlayerQuitEvent event) {
+        this.handleQuit(event.getPlayer());
+    }
 
-	@EventHandler(priority = EventPriority.HIGHEST)
-	public void onKick(PlayerKickEvent event) {
-		this.handleQuit(event.getPlayer());
-	}
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void onKick(PlayerKickEvent event) {
+        this.handleQuit(event.getPlayer());
+    }
 
-	private void handleQuit(Player player) {
-		User user = plugin.getUserManager().getUser(player);
-		Arena arena = user.getArena();
+    private void handleQuit(Player player) {
+        User user = plugin.getUserManager().getUser(player);
+        Arena arena = user.getArena();
 
-		if (arena != null) {
-			plugin.getArenaManager().leaveAttempt(user, arena);
+        if (arena != null) {
+            plugin.getArenaManager().leaveAttempt(user, arena);
 
-			teleportToEnd.put(player.getUniqueId(), arena);
-		}
+            teleportToEnd.put(player.getUniqueId(), arena);
+        }
 
-		plugin.getUserManager().removeUser(player);
-	}
+        plugin.getUserManager().removeUser(player);
+    }
 }

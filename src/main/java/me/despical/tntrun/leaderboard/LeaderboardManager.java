@@ -40,55 +40,55 @@ import java.util.UUID;
  */
 public class LeaderboardManager {
 
-	private final Main plugin;
-	private final Map<StatisticType, Leaderboard> leaderboards;
+    private final Main plugin;
+    private final Map<StatisticType, Leaderboard> leaderboards;
 
-	public LeaderboardManager(Main plugin) {
-		this.plugin = plugin;
-		this.leaderboards = new EnumMap<>(StatisticType.class);
-		this.updateLeaderboards();
-	}
+    public LeaderboardManager(Main plugin) {
+        this.plugin = plugin;
+        this.leaderboards = new EnumMap<>(StatisticType.class);
+        this.updateLeaderboards();
+    }
 
-	public Map.Entry<UUID, Integer> getEntry(StatisticType type, int placement) {
-		return leaderboards.get(type).getEntry(placement);
-	}
+    public Map.Entry<UUID, Integer> getEntry(StatisticType type, int placement) {
+        return leaderboards.get(type).getEntry(placement);
+    }
 
-	public void updateLeaderboards() {
-		for (StatisticType type : StatisticType.values()) {
-			this.leaderboards.put(type, this.getLeaderboard(type));
-		}
+    public void updateLeaderboards() {
+        for (StatisticType type : StatisticType.values()) {
+            this.leaderboards.put(type, this.getLeaderboard(type));
+        }
 
-		this.leaderboards.values().forEach(Leaderboard::sort);
-	}
+        this.leaderboards.values().forEach(Leaderboard::sort);
+    }
 
-	private Leaderboard getLeaderboard(StatisticType stat) {
-		Leaderboard leaderboard = new Leaderboard();
-		AbstractDatabase database = plugin.getUserManager().getUserDatabase();
+    private Leaderboard getLeaderboard(StatisticType stat) {
+        Leaderboard leaderboard = new Leaderboard();
+        AbstractDatabase database = plugin.getUserManager().getUserDatabase();
 
-		if (database instanceof MySQLStatistics) {
-			MySQLStatistics mySQLManager = (MySQLStatistics) database;
+        if (database instanceof MySQLStatistics) {
+            MySQLStatistics mySQLManager = (MySQLStatistics) database;
 
-			try (Connection connection = mySQLManager.getDatabase().getConnection()) {
-				Statement statement = connection.createStatement();
-				ResultSet set = statement.executeQuery(String.format("SELECT UUID, %s FROM %s ORDER BY %s", stat.getName(), mySQLManager.getTableName(), stat.getName()));
+            try (Connection connection = mySQLManager.getDatabase().getConnection()) {
+                Statement statement = connection.createStatement();
+                ResultSet set = statement.executeQuery(String.format("SELECT UUID, %s FROM %s ORDER BY %s", stat.getName(), mySQLManager.getTableName(), stat.getName()));
 
-				while (set.next()) {
-					leaderboard.addEntry(UUID.fromString(set.getString("UUID")), set.getInt(stat.getName()));
-				}
+                while (set.next()) {
+                    leaderboard.addEntry(UUID.fromString(set.getString("UUID")), set.getInt(stat.getName()));
+                }
 
-				return leaderboard;
-			} catch (SQLException exception) {
-				exception.printStackTrace();
-				return null;
-			}
-		}
+                return leaderboard;
+            } catch (SQLException exception) {
+                exception.printStackTrace();
+                return null;
+            }
+        }
 
-		FileConfiguration config = ConfigUtils.getConfig(plugin, "stats");
+        FileConfiguration config = ConfigUtils.getConfig(plugin, "stats");
 
-		for (String uuid : config.getKeys(false)) {
-			leaderboard.addEntry(UUID.fromString(uuid), config.getInt(uuid + "." + stat.getName()));
-		}
+        for (String uuid : config.getKeys(false)) {
+            leaderboard.addEntry(UUID.fromString(uuid), config.getInt(uuid + "." + stat.getName()));
+        }
 
-		return leaderboard;
-	}
+        return leaderboard;
+    }
 }

@@ -36,36 +36,35 @@ import org.jetbrains.annotations.NotNull;
  */
 public class GameJoinAttemptEvent extends TNTRunEvent implements Cancellable {
 
-	private static final HandlerList handlerList = new HandlerList();
+    private static final HandlerList handlerList = new HandlerList();
+    private final User user;
+    private boolean isCancelled;
 
-	private boolean isCancelled;
-	private final User user;
+    public GameJoinAttemptEvent(User user, Arena arena) {
+        super(arena);
+        this.user = user;
+    }
 
-	public GameJoinAttemptEvent(User user, Arena arena) {
-		super(arena);
-		this.user = user;
-	}
+    public static HandlerList getHandlerList() {
+        return handlerList;
+    }
 
-	@NotNull
-	public User getUser() {
-		return this.user;
-	}
+    @NotNull
+    public User getUser() {
+        return this.user;
+    }
 
-	public boolean isCancelled() {
-		return this.isCancelled;
-	}
+    public boolean isCancelled() {
+        return this.isCancelled;
+    }
 
-	public void setCancelled(boolean isCancelled) {
-		this.isCancelled = isCancelled;
-	}
+    public void setCancelled(boolean isCancelled) {
+        this.isCancelled = isCancelled;
+    }
 
-	@NotNull
-	@Override
-	public HandlerList getHandlers() {
-		return handlerList;
-	}
-
-	public static HandlerList getHandlerList() {
-		return handlerList;
-	}
+    @NotNull
+    @Override
+    public HandlerList getHandlers() {
+        return handlerList;
+    }
 }

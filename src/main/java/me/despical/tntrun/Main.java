@@ -165,11 +165,11 @@ public class Main extends JavaPlugin {
 	}
 
 	private void checkUpdate() {
-		if (!getOption(ConfigPreferences.Option.UPDATE_NOTIFIER_ENABLED)) return;
+		if (!this.getOption(ConfigPreferences.Option.UPDATE_NOTIFIER_ENABLED)) {
+			return;
+		}
 
-		UpdateChecker.init(this, 83196).requestUpdateCheck().whenComplete((result, exception) -> {
-			if (!result.requiresUpdate()) return;
-
+		UpdateChecker.init(this, 83196).onNewUpdate(result -> {
 			var logger = getLogger();
 			logger.info("Found a new version available: v" + result.getNewestVersion());
 			logger.info("Download it on SpigotMC:");

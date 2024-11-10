@@ -32,19 +32,19 @@ import org.jetbrains.annotations.NotNull;
  */
 public class GameStartEvent extends TNTRunEvent {
 
-	private static final HandlerList handlerList = new HandlerList();
+    private static final HandlerList handlerList = new HandlerList();
 
-	public GameStartEvent(Arena arena) {
-		super(arena);
-	}
+    public GameStartEvent(Arena arena) {
+        super(arena);
+    }
 
-	@NotNull
-	@Override
-	public HandlerList getHandlers() {
-		return handlerList;
-	}
+    public static HandlerList getHandlerList() {
+        return handlerList;
+    }
 
-	public static HandlerList getHandlerList() {
-		return handlerList;
-	}
+    @NotNull
+    @Override
+    public HandlerList getHandlers() {
+        return handlerList;
+    }
 }

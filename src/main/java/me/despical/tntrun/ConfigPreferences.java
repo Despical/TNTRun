@@ -35,64 +35,64 @@ import java.util.function.Function;
  */
 public class ConfigPreferences {
 
-	private final Map<Option, Boolean> options;
+    private Map<Option, Boolean> options;
 
-	public ConfigPreferences(Main plugin) {
-		this.options = new HashMap<>();
+    public ConfigPreferences(Main plugin) {
+        this.options = new HashMap<>();
 
-		for (final var option : Option.values()) {
-			options.put(option, plugin.getConfig().getBoolean(option.path, option.def));
-		}
-	}
+        for (var option : Option.values()) {
+            options.put(option, plugin.getConfig().getBoolean(option.path, option.def));
+        }
+    }
 
-	public boolean getOption(Option option) {
-		return options.get(option);
-	}
+    public boolean getOption(Option option) {
+        return options.get(option);
+    }
 
-	public enum Option {
+    public enum Option {
 
-		BLOCK_COMMANDS(true),
-		BUNGEE_ENABLED(false),
-		CHAT_FORMAT_ENABLED,
-		DATABASE_ENABLED(false),
-		DISABLE_FALL_DAMAGE,
-		DISABLE_SEPARATE_CHAT(false),
-		GAME_BAR_ENABLED,
-		INSTANT_LEAVE(false),
-		INVENTORY_MANAGER_ENABLED("Inventory-Manager.Enabled"),
-		JUMP_BAR,
-		LONGEST_SURVIVE_ON_WINS(false),
-		NAME_TAGS_HIDDEN(false),
-		UPDATE_NOTIFIER_ENABLED,
-		SCOREBOARD_ENABLED,
-		PVP_DISABLED("PVP-Disabled"),
-		HEAL_PLAYER((config) -> {
-			final var list = config.getStringList("Inventory-Manager.Do-Not-Restore");
-			list.forEach(InventorySerializer::addNonSerializableElements);
+        BLOCK_COMMANDS(true),
+        BUNGEE_ENABLED(false),
+        CHAT_FORMAT_ENABLED,
+        DATABASE_ENABLED(false),
+        DISABLE_FALL_DAMAGE,
+        DISABLE_SEPARATE_CHAT(false),
+        GAME_BAR_ENABLED,
+        INSTANT_LEAVE(false),
+        INVENTORY_MANAGER_ENABLED("Inventory-Manager.Enabled"),
+        JUMP_BAR,
+        LONGEST_SURVIVE_ON_WINS(false),
+        NAME_TAGS_HIDDEN(false),
+        UPDATE_NOTIFIER_ENABLED,
+        SCOREBOARD_ENABLED,
+        PVP_DISABLED("PVP-Disabled"),
+        HEAL_PLAYER((config) -> {
+            var list = config.getStringList("Inventory-Manager.Do-Not-Restore");
+            list.forEach(InventorySerializer::addNonSerializableElements);
 
-			return !list.contains("health");
-		});
+            return !list.contains("health");
+        });
 
-		private final String path;
-		private final boolean def;
+        private final String path;
+        private final boolean def;
 
-		Option() {
-			this(true);
-		}
+        Option() {
+            this(true);
+        }
 
-		Option(boolean def) {
-			this.def = def;
-			this.path = StringUtils.capitalize(name().replace('_', '-').toLowerCase(Locale.ENGLISH), '-', '.');
-		}
+        Option(boolean def) {
+            this.def = def;
+            this.path = StringUtils.capitalize(name().replace('_', '-').toLowerCase(Locale.ENGLISH), '-', '.');
+        }
 
-		Option(String path) {
-			this.def = true;
-			this.path = path;
-		}
+        Option(String path) {
+            this.def = true;
+            this.path = path;
+        }
 
-		Option(Function<FileConfiguration, Boolean> supplier) {
-			this.path = "";
-			this.def = supplier.apply(JavaPlugin.getPlugin(Main.class).getConfig());
-		}
-	}
+        Option(Function<FileConfiguration, Boolean> supplier) {
+            this.path = "";
+            this.def = supplier.apply(JavaPlugin.getPlugin(Main.class).getConfig());
+        }
+    }
 }

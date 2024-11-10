@@ -53,13 +53,13 @@ public class MainMenuComponents extends AbstractComponent {
 
 	@Override
 	public void registerComponents(PaginatedPane paginatedPane) {
-		final var pane = new StaticPane(9, 4);
-		final var config = ConfigUtils.getConfig(plugin, "arena");
-		final var readyItem = new ItemBuilder(XMaterial.LIME_STAINED_GLASS_PANE).name("&aArena is registered properly!");
-		final var notReadyItem = new ItemBuilder(XMaterial.BLACK_STAINED_GLASS_PANE).name("&cArena configuration is not validated yet!");
-		final var lobbyLocationsItem = new ItemBuilder(XMaterial.WHITE_CONCRETE).name("    &e&lSet Lobby/End Locations").lore("&7Click to set start and end locations.").lore("", "&7Lobby Location: " + isOptionDoneBool("lobbyLocation", config), "&7End Location:    " + isOptionDoneBool("endLocation", config));
-		final var playerAmountsItem = new ItemBuilder(XMaterial.GLOWSTONE_DUST).name("   &e&lSet Min/Max Players").lore(" &7Click to set player amounts.").lore("", "&a&l✔ &7Minimum  Players Amount: &8" + arena.getMinimumPlayers()).lore("&a&l✔ &7Maximum Players Amount: &8" + arena.getMaximumPlayers()).glow();
-		final var mapNameItem = new ItemBuilder(XMaterial.NAME_TAG).name("    &e&lSet Map Name").lore("&7Click to set map name.").lore("", "&7Currently: " + arena.getMapName()).glow();
+		var pane = new StaticPane(9, 4);
+		var config = ConfigUtils.getConfig(plugin, "arena");
+		var readyItem = new ItemBuilder(XMaterial.LIME_STAINED_GLASS_PANE).name("&aArena is registered properly!");
+		var notReadyItem = new ItemBuilder(XMaterial.BLACK_STAINED_GLASS_PANE).name("&cArena configuration is not validated yet!");
+		var lobbyLocationsItem = new ItemBuilder(XMaterial.WHITE_CONCRETE).name("    &e&lSet Lobby/End Locations").lore("&7Click to set start and end locations.").lore("", "&7Lobby Location: " + isOptionDoneBool("lobbyLocation", config), "&7End Location:    " + isOptionDoneBool("endLocation", config));
+		var playerAmountsItem = new ItemBuilder(XMaterial.GLOWSTONE_DUST).name("   &e&lSet Min/Max Players").lore(" &7Click to set player amounts.").lore("", "&a&l✔ &7Minimum  Players Amount: &8" + arena.getMinimumPlayers()).lore("&a&l✔ &7Maximum Players Amount: &8" + arena.getMaximumPlayers()).glow();
+		var mapNameItem = new ItemBuilder(XMaterial.NAME_TAG).name("    &e&lSet Map Name").lore("&7Click to set map name.").lore("", "&7Currently: " + arena.getMapName()).glow();
 
 		if (isOptionDoneBoolean("lobbyLocation", config) && isOptionDoneBoolean("endLocation", config)) {
 			lobbyLocationsItem.glow();
@@ -102,9 +102,9 @@ public class MainMenuComponents extends AbstractComponent {
 			gameSignItem.lore("&7Target a sign and click this.");
 		} else {
 			gameSignItem
-				.lore("&cThis option disabled in Bungee-cord mode.", "")
-				.lore("&8Bungee mode is meant to be one arena per server.")
-				.lore("&8If you wish to have multi arena, disable bungee in config!");
+					.lore("&cThis option disabled in Bungee-cord mode.", "")
+					.lore("&8Bungee mode is meant to be one arena per server.")
+					.lore("&8If you wish to have multi arena, disable bungee in config!");
 		}
 
 		pane.addItem(GuiItem.of(gameSignItem.build(), e -> {
@@ -119,14 +119,14 @@ public class MainMenuComponents extends AbstractComponent {
 				return;
 			}
 
-			final var signManager = plugin.getSignManager();
+			var signManager = plugin.getSignManager();
 
 			if (signManager.isGameSign(block)) {
 				user.sendRawMessage("&cThis sign is already a game sign!");
 				return;
 			}
 
-			final var locations = config.getStringList(path + "signs");
+			var locations = config.getStringList(path + "signs");
 			locations.add(LocationSerializer.toString(block.getLocation()));
 
 			config.set(path + "signs", locations);
@@ -142,18 +142,18 @@ public class MainMenuComponents extends AbstractComponent {
 
 		if (arena.isReady()) {
 			registerItem = new ItemBuilder(XMaterial.BARRIER)
-				.name("&a&l           Arena Registered")
-				.lore("&7Good job, you went through whole setup!")
-				.lore("&7      You can play on this arena now!")
-				.glow()
-				.build();
+					.name("&a&l           Arena Registered")
+					.lore("&7Good job, you went through whole setup!")
+					.lore("&7      You can play on this arena now!")
+					.glow()
+					.build();
 		} else {
 			registerItem = new ItemBuilder(XMaterial.FIREWORK_ROCKET)
-				.name("       &e&lFinish Arena Setup")
-				.lore("&7  Click this when you are done.")
-				.lore("&7You'll still be able to edit arena.")
-				.flag(ItemFlag.HIDE_POTION_EFFECTS)
-				.build();
+					.name("       &e&lFinish Arena Setup")
+					.lore("&7  Click this when you are done.")
+					.lore("&7You'll still be able to edit arena.")
+					.flag(ItemFlag.HIDE_POTION_EFFECTS)
+					.build();
 		}
 
 		pane.addItem(GuiItem.of(registerItem, e -> {
@@ -164,9 +164,9 @@ public class MainMenuComponents extends AbstractComponent {
 				return;
 			}
 
-			final String[] locations = {"lobbyLocation", "endLocation"};
+			String[] locations = {"lobbyLocation", "endLocation"};
 
-			for (final var location : locations) {
+			for (var location : locations) {
 				if (!config.isSet(path + location) || LocationSerializer.isDefaultLocation(config.getString(path + location))) {
 					user.sendRawMessage("&c&l✘ Arena validation failed! Please configure following spawn properly: {0} (cannot be world spawn location)", location);
 					return;

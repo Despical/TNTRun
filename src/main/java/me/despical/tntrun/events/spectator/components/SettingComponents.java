@@ -40,86 +40,86 @@ import java.util.function.Consumer;
  */
 public class SettingComponents {
 
-	private Main plugin;
+    private Main plugin;
 
-	public void registerComponents(SpectatorSettingsGUI spectatorGui, StaticPane pane) {
-		this.plugin = spectatorGui.getPlugin();
+    public void registerComponents(SpectatorSettingsGUI spectatorGui, StaticPane pane) {
+        this.plugin = spectatorGui.getPlugin();
 
-		var chatManager = plugin.getChatManager();
-		var prefix = chatManager.message("spectator-gui.speed-prefix");
-		var user = spectatorGui.getUser();
-		var arena = spectatorGui.getArena();
-		var player = spectatorGui.getUser().getPlayer();
+        var chatManager = plugin.getChatManager();
+        var prefix = chatManager.message("spectator-gui.speed-prefix");
+        var user = spectatorGui.getUser();
+        var arena = spectatorGui.getArena();
+        var player = spectatorGui.getUser().getPlayer();
 
-		pane.addItem(GuiItem.of(new ItemBuilder(XMaterial.LEATHER_BOOTS).name(chatManager.message("spectator-gui.no-speed")).hideTooltip().build(), e -> setSpeed(user, -1, "0")),2,1);
-		pane.addItem(GuiItem.of(new ItemBuilder(XMaterial.CHAINMAIL_BOOTS).name(prefix + "I").hideTooltip().build(), e -> setSpeed(user, 1, "I")),3,1);
-		pane.addItem(GuiItem.of(new ItemBuilder(XMaterial.IRON_BOOTS).name(prefix + "II").hideTooltip().build(), e -> setSpeed(user, 2, "II")),4,1);
-		pane.addItem(GuiItem.of(new ItemBuilder(XMaterial.GOLDEN_BOOTS).name(prefix + "III").hideTooltip().build(), e -> setSpeed(user, 3, "III")),5,1);
-		pane.addItem(GuiItem.of(new ItemBuilder(Material.DIAMOND_BOOTS).name(prefix + "IV").hideTooltip().build(), e -> setSpeed(user, 4, "IV")),6,1);
+        pane.addItem(GuiItem.of(new ItemBuilder(XMaterial.LEATHER_BOOTS).name(chatManager.message("spectator-gui.no-speed")).hideTooltip().build(), e -> setSpeed(user, -1, "0")), 2, 1);
+        pane.addItem(GuiItem.of(new ItemBuilder(XMaterial.CHAINMAIL_BOOTS).name(prefix + "I").hideTooltip().build(), e -> setSpeed(user, 1, "I")), 3, 1);
+        pane.addItem(GuiItem.of(new ItemBuilder(XMaterial.IRON_BOOTS).name(prefix + "II").hideTooltip().build(), e -> setSpeed(user, 2, "II")), 4, 1);
+        pane.addItem(GuiItem.of(new ItemBuilder(XMaterial.GOLDEN_BOOTS).name(prefix + "III").hideTooltip().build(), e -> setSpeed(user, 3, "III")), 5, 1);
+        pane.addItem(GuiItem.of(new ItemBuilder(Material.DIAMOND_BOOTS).name(prefix + "IV").hideTooltip().build(), e -> setSpeed(user, 4, "IV")), 6, 1);
 
-		var hasNightVision = player.hasPotionEffect(XPotion.NIGHT_VISION.getPotionEffectType());
-		var shouldHaveNightVision = user.getStat(StatisticType.SPECTATOR_NIGHT_VISION) == 1;
+        var hasNightVision = player.hasPotionEffect(XPotion.NIGHT_VISION.getPotionEffectType());
+        var shouldHaveNightVision = user.getStat(StatisticType.SPECTATOR_NIGHT_VISION) == 1;
 
-		pane.addItem(this.buildItem("night-vision-item", shouldHaveNightVision ? XMaterial.ENDER_EYE : XMaterial.ENDER_PEARL, hasNightVision, event -> {
-			if (hasNightVision) {
-				player.removePotionEffect(XPotion.NIGHT_VISION.getPotionEffectType());
-			} else {
-				player.addPotionEffect(XPotion.NIGHT_VISION.buildInvisible(Integer.MAX_VALUE, 3));
-			}
+        pane.addItem(this.buildItem("night-vision-item", shouldHaveNightVision ? XMaterial.ENDER_EYE : XMaterial.ENDER_PEARL, hasNightVision, event -> {
+            if (hasNightVision) {
+                player.removePotionEffect(XPotion.NIGHT_VISION.getPotionEffectType());
+            } else {
+                player.addPotionEffect(XPotion.NIGHT_VISION.buildInvisible(Integer.MAX_VALUE, 3));
+            }
 
-			user.setStat(StatisticType.SPECTATOR_NIGHT_VISION, !hasNightVision ? 0 : 1);
-			user.sendMessage("messages.spectators." + (hasNightVision ? "removed-night-vision" : "have-night-vision"));
+            user.setStat(StatisticType.SPECTATOR_NIGHT_VISION, !hasNightVision ? 0 : 1);
+            user.sendMessage("messages.spectators." + (hasNightVision ? "removed-night-vision" : "have-night-vision"));
 
-			plugin.getUserManager().saveStatistic(user, StatisticType.SPECTATOR_NIGHT_VISION);
+            plugin.getUserManager().saveStatistic(user, StatisticType.SPECTATOR_NIGHT_VISION);
 
-			new SpectatorSettingsGUI(plugin, user, arena).showGui();
-		}), 2, 2);
+            new SpectatorSettingsGUI(plugin, user, arena).showGui();
+        }), 2, 2);
 
-		var seeOthers = user.getStat(StatisticType.SPECTATOR_SHOW_OTHERS) == 1;
+        var seeOthers = user.getStat(StatisticType.SPECTATOR_SHOW_OTHERS) == 1;
 
-		pane.addItem(this.buildItem("hide-spectators-item", seeOthers ? XMaterial.REDSTONE : XMaterial.GLOWSTONE_DUST, seeOthers, event -> {
-			for (final var u : arena.getPlayers()) {
-				if (!u.isSpectator()) continue;
+        pane.addItem(this.buildItem("hide-spectators-item", seeOthers ? XMaterial.REDSTONE : XMaterial.GLOWSTONE_DUST, seeOthers, event -> {
+            for (var u : arena.getPlayers()) {
+                if (!u.isSpectator()) continue;
 
-				if (seeOthers) {
-					PlayerUtils.hidePlayer(player , u.getPlayer(), plugin);
-				} else {
-					PlayerUtils.showPlayer(player , u.getPlayer(), plugin);
-				}
-			}
+                if (seeOthers) {
+                    PlayerUtils.hidePlayer(player, u.getPlayer(), plugin);
+                } else {
+                    PlayerUtils.showPlayer(player, u.getPlayer(), plugin);
+                }
+            }
 
-			user.setStat(StatisticType.SPECTATOR_SHOW_OTHERS, seeOthers ? 0 : 1);
-			user.sendMessage("messages.spectators." + (seeOthers ? "hide-spectators" : "show-spectators"));
+            user.setStat(StatisticType.SPECTATOR_SHOW_OTHERS, seeOthers ? 0 : 1);
+            user.sendMessage("messages.spectators." + (seeOthers ? "hide-spectators" : "show-spectators"));
 
-			plugin.getUserManager().saveStatistic(user, StatisticType.SPECTATOR_SHOW_OTHERS);
+            plugin.getUserManager().saveStatistic(user, StatisticType.SPECTATOR_SHOW_OTHERS);
 
-			new SpectatorSettingsGUI(plugin, user, arena).showGui();
-		}), 3, 2);
-	}
+            new SpectatorSettingsGUI(plugin, user, arena).showGui();
+        }), 3, 2);
+    }
 
-	private void setSpeed(final User user, final int level, final String prefix) {
-		final var speed = .1F + (level + 1) * .05F;
-		final var player = user.getPlayer();
+    private void setSpeed(User user, int level, String prefix) {
+        var speed = .1F + (level + 1) * .05F;
+        var player = user.getPlayer();
 
-		player.closeInventory();
-		player.setFlySpeed(speed);
-		player.removePotionEffect(XPotion.SPEED.getPotionEffectType());
+        player.closeInventory();
+        player.setFlySpeed(speed);
+        player.removePotionEffect(XPotion.SPEED.getPotionEffectType());
 
-		if (level != -1) {
-			player.addPotionEffect(XPotion.SPEED.buildInvisible(Integer.MAX_VALUE, level));
-		}
+        if (level != -1) {
+            player.addPotionEffect(XPotion.SPEED.buildInvisible(Integer.MAX_VALUE, level));
+        }
 
-		user.setStat(StatisticType.SPECTATOR_SPEED, level);
-		user.sendRawMessage(plugin.getChatManager().message("messages.spectators." + (level == -1 ? "no-longer-speed" : "have-speed")).replace("%speed%", prefix));
-	}
+        user.setStat(StatisticType.SPECTATOR_SPEED, level);
+        user.sendRawMessage(plugin.getChatManager().message("messages.spectators." + (level == -1 ? "no-longer-speed" : "have-speed")).replace("%speed%", prefix));
+    }
 
-	private GuiItem buildItem(final String itemName, final XMaterial enabledItem, final boolean condition, final Consumer<InventoryClickEvent> event) {
-		final var chatManager = plugin.getChatManager();
-		final var path = "spectator-gui.%s.".formatted(itemName);
+    private GuiItem buildItem(String itemName, XMaterial enabledItem, boolean condition, Consumer<InventoryClickEvent> event) {
+        var chatManager = plugin.getChatManager();
+        var path = "spectator-gui.%s.".formatted(itemName);
 
-		return new GuiItem(new ItemBuilder(enabledItem)
-			.name(chatManager.message(path + (condition ? "disable" : "enable")))
-			.lore(chatManager.getStringList(path + (condition ? "disabled-lore" : "enabled-lore")))
-			.build(), event);
-	}
+        return new GuiItem(new ItemBuilder(enabledItem)
+            .name(chatManager.message(path + (condition ? "disable" : "enable")))
+            .lore(chatManager.getStringList(path + (condition ? "disabled-lore" : "enabled-lore")))
+            .build(), event);
+    }
 }

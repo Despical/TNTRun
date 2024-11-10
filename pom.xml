@@ -5,7 +5,7 @@
 
     <groupId>me.despical</groupId>
     <artifactId>tnt-run</artifactId>
-    <version>2.7.5</version>
+    <version>2.7.6</version>
 
     <name>TNT Run</name>
     <packaging>jar</packaging>
@@ -60,7 +60,7 @@
         <dependency>
             <groupId>com.github.Despical</groupId>
             <artifactId>Commons</artifactId>
-            <version>1.8.81</version>
+            <version>1.8.83</version>
         </dependency>
         <dependency>
             <groupId>com.github.Despical</groupId>

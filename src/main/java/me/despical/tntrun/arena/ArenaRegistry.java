@@ -40,95 +40,95 @@ import java.util.logging.Level;
  */
 public class ArenaRegistry {
 
-	@NotNull
-	private final Main plugin;
+    @NotNull
+    private final Main plugin;
 
-	@NotNull
-	private final Set<Arena> arenas;
+    @NotNull
+    private final Set<Arena> arenas;
 
-	private int bungeeArena = -1;
+    private int bungeeArena = -1;
 
-	public ArenaRegistry(final @NotNull Main plugin) {
-		this.plugin = plugin;
-		this.arenas = new HashSet<>();
+    public ArenaRegistry(final @NotNull Main plugin) {
+        this.plugin = plugin;
+        this.arenas = new HashSet<>();
 
-		this.registerArenas();
-	}
+        this.registerArenas();
+    }
 
-	public void registerArena(final Arena arena) {
-		this.arenas.add(arena);
-	}
+    public void registerArena(final Arena arena) {
+        this.arenas.add(arena);
+    }
 
-	public void unregisterArena(final Arena arena) {
-		this.arenas.remove(arena);
-	}
+    public void unregisterArena(final Arena arena) {
+        this.arenas.remove(arena);
+    }
 
-	@NotNull
-	public Set<Arena> getArenas() {
-		return Set.copyOf(arenas);
-	}
+    @NotNull
+    public Set<Arena> getArenas() {
+        return Set.copyOf(arenas);
+    }
 
-	@Nullable
-	public Arena getArena(final String id) {
-		if (id == null) return null;
+    @Nullable
+    public Arena getArena(final String id) {
+        if (id == null) return null;
 
-		return this.arenas.stream().filter(arena -> arena.getId().equals(id)).findFirst().orElse(null);
-	}
+        return this.arenas.stream().filter(arena -> arena.getId().equals(id)).findFirst().orElse(null);
+    }
 
-	@Nullable
-	public Arena getArena(User user) {
-		return this.arenas.stream().filter(arena -> arena.isInArena(user)).findFirst().orElse(null);
-	}
+    @Nullable
+    public Arena getArena(User user) {
+        return this.arenas.stream().filter(arena -> arena.isInArena(user)).findFirst().orElse(null);
+    }
 
-	public boolean isArena(final String arenaId) {
-		return getArena(arenaId) != null;
-	}
+    public boolean isArena(final String arenaId) {
+        return getArena(arenaId) != null;
+    }
 
-	public boolean isInArena(final User user) {
-		return this.getArena(user) != null;
-	}
+    public boolean isInArena(final User user) {
+        return this.getArena(user) != null;
+    }
 
-	private void registerArenas() {
-		this.arenas.clear();
+    private void registerArenas() {
+        this.arenas.clear();
 
-		FileConfiguration config = ConfigUtils.getConfig(plugin, "arena");
-		ConfigurationSection section = config.getConfigurationSection("instance");
+        FileConfiguration config = ConfigUtils.getConfig(plugin, "arena");
+        ConfigurationSection section = config.getConfigurationSection("instance");
 
-		if (section == null) {
-			plugin.getLogger().warning("Couldn't find 'instance' section in arena.yml, delete the file to regenerate it!");
-			return;
-		}
+        if (section == null) {
+            plugin.getLogger().warning("Couldn't find 'instance' section in arena.yml, delete the file to regenerate it!");
+            return;
+        }
 
-		for (String id : section.getKeys(false)) {
-			if (id.equals("default")) continue;
+        for (String id : section.getKeys(false)) {
+            if (id.equals("default")) continue;
 
-			String path = "instance.%s.".formatted(id);
-			Arena arena = new Arena(id);
+            String path = "instance.%s.".formatted(id);
+            Arena arena = new Arena(id);
 
-			arenas.add(arena);
+            arenas.add(arena);
 
-			arena.setReady(config.getBoolean(path + "ready"));
-			arena.setMinimumPlayers(config.getInt(path + "minimumPlayers", 2));
-			arena.setMaximumPlayers(config.getInt(path + "maximumPlayers", 10));
-			arena.setMapName(config.getString(path + "mapName", "undefined"));
-			arena.setLobbyLocation(LocationSerializer.fromString(config.getString(path + "lobbyLocation")));
-			arena.setEndLocation(LocationSerializer.fromString(config.getString(path + "endLocation")));
+            arena.setReady(config.getBoolean(path + "ready"));
+            arena.setMinimumPlayers(config.getInt(path + "minimumPlayers", 2));
+            arena.setMaximumPlayers(config.getInt(path + "maximumPlayers", 10));
+            arena.setMapName(config.getString(path + "mapName", "undefined"));
+            arena.setLobbyLocation(LocationSerializer.fromString(config.getString(path + "lobbyLocation")));
+            arena.setEndLocation(LocationSerializer.fromString(config.getString(path + "endLocation")));
 
-			if (!arena.isReady()) {
-				plugin.getLogger().log(Level.WARNING, "Setup of arena ''{0}'' is not finished yet!", id);
-				return;
-			}
+            if (!arena.isReady()) {
+                plugin.getLogger().log(Level.WARNING, "Setup of arena ''{0}'' is not finished yet!", id);
+                return;
+            }
 
-			arena.start();
-		}
-	}
+            arena.start();
+        }
+    }
 
-	// Bungee methods
-	public void shuffleBungeeArena() {
-		bungeeArena = ThreadLocalRandom.current().nextInt(arenas.size());
-	}
+    // Bungee methods
+    public void shuffleBungeeArena() {
+        bungeeArena = ThreadLocalRandom.current().nextInt(arenas.size());
+    }
 
-	public Arena getBungeeArena() {
-		return List.copyOf(arenas).get(bungeeArena == -1 ? bungeeArena = ThreadLocalRandom.current().nextInt(arenas.size()) : bungeeArena);
-	}
+    public Arena getBungeeArena() {
+        return List.copyOf(arenas).get(bungeeArena == -1 ? bungeeArena = ThreadLocalRandom.current().nextInt(arenas.size()) : bungeeArena);
+    }
 }

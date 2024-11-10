@@ -51,7 +51,7 @@ public class SignManager extends EventListener {
 		this.arenaSigns = new HashSet<>();
 		this.gameStateToString = new EnumMap<>(ArenaState.class);
 
-		for (final var state : ArenaState.values()) {
+		for (var state : ArenaState.values()) {
 			gameStateToString.put(state, plugin.getChatManager().message("signs.game-states." + state.getFormattedName().toLowerCase(java.util.Locale.ENGLISH)));
 		}
 
@@ -60,27 +60,27 @@ public class SignManager extends EventListener {
 
 	@EventHandler
 	public void onSignChange(SignChangeEvent event) {
-		final var user = plugin.getUserManager().getUser(event.getPlayer());
+		var user = plugin.getUserManager().getUser(event.getPlayer());
 
 		if (!user.hasPermission("tntrun.admin.sign.create") || !"[tntrun]".equalsIgnoreCase(event.getLine(0))) {
 			return;
 		}
 
-		final var line = event.getLine(1);
+		var line = event.getLine(1);
 
 		if ("".equalsIgnoreCase(line)) {
 			user.sendMessage("admin-commands.provide-an-arena-name");
 			return;
 		}
 
-		final var arena = plugin.getArenaRegistry().getArena(line);
+		var arena = plugin.getArenaRegistry().getArena(line);
 
 		if (arena == null) {
 			user.sendMessage("admin-commands.no-arena-found-with-that-name");
 			return;
 		}
 
-		final var block = event.getBlock();
+		var block = event.getBlock();
 
 		arenaSigns.add(new ArenaSign((Sign) block.getState(), arena));
 
@@ -90,9 +90,9 @@ public class SignManager extends EventListener {
 
 		user.sendRawMessage("&aArena sign has been created successfully!");
 
-		final var config = ConfigUtils.getConfig(plugin, "arena");
-		final var path = "instance.%s.signs".formatted(arena);
-		final var locs = config.getStringList(path);
+		var config = ConfigUtils.getConfig(plugin, "arena");
+		var path = "instance.%s.signs".formatted(arena);
+		var locs = config.getStringList(path);
 		locs.add(LocationSerializer.toString(event.getBlock().getLocation()));
 
 		config.set(path, locs);
@@ -101,12 +101,12 @@ public class SignManager extends EventListener {
 
 	@EventHandler
 	public void onSignDestroy(BlockBreakEvent event) {
-		final var block = event.getBlock();
-		final var arenaSign = getArenaSignByBlock(block);
+		var block = event.getBlock();
+		var arenaSign = getArenaSignByBlock(block);
 
 		if (arenaSign == null) return;
 
-		final var user = plugin.getUserManager().getUser(event.getPlayer());
+		var user = plugin.getUserManager().getUser(event.getPlayer());
 
 		if (!user.hasPermission("tntrun.admin.sign.break")) {
 			event.setCancelled(true);
@@ -117,12 +117,12 @@ public class SignManager extends EventListener {
 
 		arenaSigns.remove(arenaSign);
 
-		final var location = LocationSerializer.toString(block.getLocation());
-		final var path = "instance.%s.signs".formatted(arenaSign.arena());
-		final var config = ConfigUtils.getConfig(plugin, "arena");
-		final var signs = config.getStringList(path);
+		var location = LocationSerializer.toString(block.getLocation());
+		var path = "instance.%s.signs".formatted(arenaSign.arena());
+		var config = ConfigUtils.getConfig(plugin, "arena");
+		var signs = config.getStringList(path);
 
-		for (final var loc : signs) {
+		for (var loc : signs) {
 			if (loc.equals(location)) {
 				signs.remove(location);
 
@@ -139,16 +139,16 @@ public class SignManager extends EventListener {
 
 	@EventHandler
 	public void onJoinAttempt(PlayerInteractEvent event) {
-		final var arenaSign = getArenaSignByBlock(event.getClickedBlock());
+		var arenaSign = getArenaSignByBlock(event.getClickedBlock());
 
 		if (event.getAction() == Action.RIGHT_CLICK_BLOCK && arenaSign != null) {
 			event.setCancelled(true);
 
-			final var arena = arenaSign.arena();
+			var arena = arenaSign.arena();
 
 			if (arena == null) return;
 
-			final var user = plugin.getUserManager().getUser(event.getPlayer());
+			var user = plugin.getUserManager().getUser(event.getPlayer());
 
 			if (user.isInArena()) {
 				user.sendMessage("messages.arena.already-playing");
@@ -165,13 +165,13 @@ public class SignManager extends EventListener {
 		var config = ConfigUtils.getConfig(plugin, "arena");
 		boolean updateConfig = false, reloadConfig = false;
 
-		for (final var path : config.getConfigurationSection("instance").getKeys(false)) {
-			final var locations = config.getStringList("instance." + path + ".signs");
-			final var iterator = locations.iterator();
+		for (var path : config.getConfigurationSection("instance").getKeys(false)) {
+			var locations = config.getStringList("instance." + path + ".signs");
+			var iterator = locations.iterator();
 
 			while (iterator.hasNext()) {
-				final var location = iterator.next();
-				final var loc = LocationSerializer.fromString(location);
+				var location = iterator.next();
+				var loc = LocationSerializer.fromString(location);
 
 				if (loc.getBlock().getState() instanceof Sign sign) {
 					arenaSigns.add(new ArenaSign(sign, plugin.getArenaRegistry().getArena(path)));
@@ -194,12 +194,12 @@ public class SignManager extends EventListener {
 		updateSigns();
 	}
 
-	public void updateSign(final Arena arena) {
+	public void updateSign(Arena arena) {
 		this.arenaSigns.stream().filter(arenaSign -> arenaSign.arena().equals(arena)).forEach(this::updateSign);
 	}
 
-	private void updateSign(final ArenaSign arenaSign) {
-		final var sign = arenaSign.sign();
+	private void updateSign(ArenaSign arenaSign) {
+		var sign = arenaSign.sign();
 
 		for (int i = 0; i < signLines.size(); i++) {
 			sign.setLine(i, formatSign(signLines.get(i), arenaSign.arena()));
@@ -209,8 +209,8 @@ public class SignManager extends EventListener {
 	}
 
 	public void updateSigns() {
-		for (final var arenaSign : arenaSigns) {
-			final var sign = arenaSign.sign();
+		for (var arenaSign : arenaSigns) {
+			var sign = arenaSign.sign();
 
 			for (int i = 0; i < signLines.size(); i++) {
 				sign.setLine(i, formatSign(signLines.get(i), arenaSign.arena()));

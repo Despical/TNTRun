@@ -54,14 +54,14 @@ public class GameItemEvents extends EventListener {
 
 	@EventHandler
 	public void onDoubleJump(PlayerToggleFlightEvent event) {
-		final var player = event.getPlayer();
+		var player = event.getPlayer();
 
 		if (!event.isFlying() && player.getGameMode() != GameMode.ADVENTURE) {
 			return;
 		}
 
-		final var user = plugin.getUserManager().getUser(player);
-		final var arena = user.getArena();
+		var user = plugin.getUserManager().getUser(player);
+		var arena = user.getArena();
 
 		if (arena == null || user.isSpectator() || arena.isDeathPlayer(user)) {
 			return;
@@ -130,7 +130,7 @@ public class GameItemEvents extends EventListener {
 		if (arena == null) return;
 		if (event.getItem() == null) return;
 
-		var teleporterItem = plugin.getItemManager().getItem( "teleporter-item");
+		var teleporterItem = plugin.getItemManager().getItem("teleporter-item");
 
 		if (teleporterItem == null) return;
 		if (!teleporterItem.equals(event.getItem())) return;
@@ -185,13 +185,13 @@ public class GameItemEvents extends EventListener {
 
 	@EventHandler
 	public void onForceStartItem(PlayerInteractEvent event) {
-		final var user = plugin.getUserManager().getUser(event.getPlayer());
-		final var arena = user.getArena();
+		var user = plugin.getUserManager().getUser(event.getPlayer());
+		var arena = user.getArena();
 
 		if (arena == null) return;
 		if (event.getItem() == null) return;
 
-		final var forceStartItem = plugin.getItemManager().getItem("force-start-item");
+		var forceStartItem = plugin.getItemManager().getItem("force-start-item");
 
 		if (forceStartItem == null) return;
 		if (!forceStartItem.equals(event.getItem())) return;
@@ -216,13 +216,13 @@ public class GameItemEvents extends EventListener {
 
 	@EventHandler
 	public void onLeaveItem(PlayerInteractEvent event) {
-		final var user = plugin.getUserManager().getUser(event.getPlayer());
-		final var arena = user.getArena();
+		var user = plugin.getUserManager().getUser(event.getPlayer());
+		var arena = user.getArena();
 
 		if (arena == null) return;
 		if (event.getItem() == null) return;
 
-		final var leaveItem = plugin.getItemManager().getItem("leave-item");
+		var leaveItem = plugin.getItemManager().getItem("leave-item");
 
 		if (leaveItem == null) return;
 		if (!leaveItem.equals(event.getItem())) return;

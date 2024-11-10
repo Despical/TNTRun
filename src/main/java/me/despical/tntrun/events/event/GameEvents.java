@@ -50,226 +50,226 @@ import java.util.Optional;
  */
 public class GameEvents extends EventListener {
 
-	public GameEvents(Main plugin) {
-		super(plugin);
-	}
+    public GameEvents(Main plugin) {
+        super(plugin);
+    }
 
-	@EventHandler
-	public void onFoodLevelChange(FoodLevelChangeEvent event) {
-		if (!(event.getEntity() instanceof Player player)) return;
-		
-		final var user = this.userManager.getUser(player);
+    @EventHandler
+    public void onFoodLevelChange(FoodLevelChangeEvent event) {
+        if (!(event.getEntity() instanceof Player player)) return;
 
-		if (user.isInArena()) {
-			event.setCancelled(true);
-		}
-	}
+        var user = this.userManager.getUser(player);
 
-	@EventHandler
-	public void onDropItem(PlayerDropItemEvent event) {
-		if (this.isInArena(event.getPlayer())) {
-			event.setCancelled(true);
-		}
-	}
+        if (user.isInArena()) {
+            event.setCancelled(true);
+        }
+    }
 
-	@EventHandler
-	public void onEntityDamage(EntityDamageEvent e) {
-		if (!(e.getEntity() instanceof Player victim)) return;
+    @EventHandler
+    public void onDropItem(PlayerDropItemEvent event) {
+        if (this.isInArena(event.getPlayer())) {
+            event.setCancelled(true);
+        }
+    }
 
-		final var user = this.userManager.getUser(victim);
-		final var arena = user.getArena();
+    @EventHandler
+    public void onEntityDamage(EntityDamageEvent e) {
+        if (!(e.getEntity() instanceof Player victim)) return;
 
-		if (arena == null) {
-			return;
-		}
+        var user = this.userManager.getUser(victim);
+        var arena = user.getArena();
 
-		switch (e.getCause()) {
-			case DROWNING, FALL -> e.setCancelled(true);
-			case VOID -> {
-				e.setCancelled(true);
+        if (arena == null) {
+            return;
+        }
 
-				victim.teleport(arena.getLobbyLocation());
+        switch (e.getCause()) {
+            case DROWNING, FALL -> e.setCancelled(true);
+            case VOID -> {
+                e.setCancelled(true);
 
-				if (!arena.isArenaState(ArenaState.IN_GAME)) {
-					return;
-				}
+                victim.teleport(arena.getLobbyLocation());
 
-				if (!user.isSpectator()) {
-					user.setSpectator(true);
-					user.playDeathEffect();
-					user.addGameItems("leave-item", "settings-item", "teleporter-item");
+                if (!arena.isArenaState(ArenaState.IN_GAME)) {
+                    return;
+                }
 
-					arena.addDeathPlayer(user);
+                if (!user.isSpectator()) {
+                    user.setSpectator(true);
+                    user.playDeathEffect();
+                    user.addGameItems("leave-item", "settings-item", "teleporter-item");
 
-					plugin.getServer().getPluginManager().callEvent(new PlayerEliminatedEvent(arena, user));
+                    arena.addDeathPlayer(user);
 
-					if (arena.getPlayersLeft().size() == 1) {
-						arena.getWinners().add(arena.getWinner());
-						arena.broadcastFormattedMessage("messages.in-game.last-one-fell-into-void", user);
+                    plugin.getServer().getPluginManager().callEvent(new PlayerEliminatedEvent(arena, user));
 
-						plugin.getArenaManager().stopGame(false, arena);
-						return;
-					}
+                    if (arena.getPlayersLeft().size() == 1) {
+                        arena.getWinners().add(arena.getWinner());
+                        arena.broadcastFormattedMessage("messages.in-game.last-one-fell-into-void", user);
 
-					arena.broadcastFormattedMessage("messages.in-game.fell-into-void", user);
-				}
-			}
-		}
-	}
+                        plugin.getArenaManager().stopGame(false, arena);
+                        return;
+                    }
 
-	@EventHandler
-	public void onItemMove(InventoryClickEvent e) {
-		if (e.getWhoClicked() instanceof Player player && this.isInArena(player)) {
-			if (e.getView().getType() == InventoryType.CRAFTING || e.getView().getType() == InventoryType.PLAYER) {
-				e.setResult(Event.Result.DENY);
-			}
-		}
-	}
+                    arena.broadcastFormattedMessage("messages.in-game.fell-into-void", user);
+                }
+            }
+        }
+    }
 
-	@EventHandler
-	public void onItemSwap(PlayerSwapHandItemsEvent event) {
-		if (this.isInArena(event.getPlayer())) {
-			event.setCancelled(true);
-		}
-	}
+    @EventHandler
+    public void onItemMove(InventoryClickEvent e) {
+        if (e.getWhoClicked() instanceof Player player && this.isInArena(player)) {
+            if (e.getView().getType() == InventoryType.CRAFTING || e.getView().getType() == InventoryType.PLAYER) {
+                e.setResult(Event.Result.DENY);
+            }
+        }
+    }
 
-	@EventHandler
-	public void onDrop(PlayerDropItemEvent event) {
-		if (this.isInArena(event.getPlayer())) {
-			event.setCancelled(true);
-		}
-	}
+    @EventHandler
+    public void onItemSwap(PlayerSwapHandItemsEvent event) {
+        if (this.isInArena(event.getPlayer())) {
+            event.setCancelled(true);
+        }
+    }
 
-	@EventHandler
-	public void onBlockBreak(BlockBreakEvent event) {
-		if (this.isInArena(event.getPlayer())) {
-			event.setCancelled(true);
-		}
-	}
+    @EventHandler
+    public void onDrop(PlayerDropItemEvent event) {
+        if (this.isInArena(event.getPlayer())) {
+            event.setCancelled(true);
+        }
+    }
 
-	@EventHandler
-	public void onBlockPlace(BlockPlaceEvent event) {
-		if (this.isInArena(event.getPlayer())) {
-			event.setCancelled(true);
-		}
-	}
+    @EventHandler
+    public void onBlockBreak(BlockBreakEvent event) {
+        if (this.isInArena(event.getPlayer())) {
+            event.setCancelled(true);
+        }
+    }
 
-	@EventHandler
-	public void onLobbyDamage(EntityDamageEvent event) {
-		if (!(event.getEntity() instanceof Player player)) return;
+    @EventHandler
+    public void onBlockPlace(BlockPlaceEvent event) {
+        if (this.isInArena(event.getPlayer())) {
+            event.setCancelled(true);
+        }
+    }
 
-		Optional.ofNullable(this.userManager.getUser(player).getArena()).ifPresent(arena -> {
-			if (arena.isArenaState(ArenaState.IN_GAME)) {
-				return;
-			}
+    @EventHandler
+    public void onLobbyDamage(EntityDamageEvent event) {
+        if (!(event.getEntity() instanceof Player player)) return;
 
-			event.setCancelled(true);
-			player.setFireTicks(0);
-		});
-	}
+        Optional.ofNullable(this.userManager.getUser(player).getArena()).ifPresent(arena -> {
+            if (arena.isArenaState(ArenaState.IN_GAME)) {
+                return;
+            }
 
-	@EventHandler
-	public void onGeneralDamage(EntityDamageByEntityEvent event) {
-		if (!(event.getEntity() instanceof Player victim)) return;
-		if (!(event.getDamager() instanceof Player)) return;
+            event.setCancelled(true);
+            player.setFireTicks(0);
+        });
+    }
 
-		User user = userManager.getUser(victim);
+    @EventHandler
+    public void onGeneralDamage(EntityDamageByEntityEvent event) {
+        if (!(event.getEntity() instanceof Player victim)) return;
+        if (!(event.getDamager() instanceof Player)) return;
 
-		Optional.ofNullable(user.getArena()).ifPresent(arena -> {
-			if (!arena.isArenaState(ArenaState.IN_GAME)) {
-				return;
-			}
+        User user = userManager.getUser(victim);
 
-			if (plugin.getOption(ConfigPreferences.Option.PVP_DISABLED)) {
-				event.setCancelled(true);
-			} else {
-				if (!user.isSpectator()) {
-					event.setDamage(0);
-				}
-			}
+        Optional.ofNullable(user.getArena()).ifPresent(arena -> {
+            if (!arena.isArenaState(ArenaState.IN_GAME)) {
+                return;
+            }
 
-			victim.setFireTicks(0);
-		});
-	}
+            if (plugin.getOption(ConfigPreferences.Option.PVP_DISABLED)) {
+                event.setCancelled(true);
+            } else {
+                if (!user.isSpectator()) {
+                    event.setDamage(0);
+                }
+            }
 
-	@EventHandler
-	public void onCommandExecute(PlayerCommandPreprocessEvent event) {
-		final var user = userManager.getUser(event.getPlayer());
+            victim.setFireTicks(0);
+        });
+    }
 
-		if (!user.isInArena()) return;
-		if (!plugin.getOption(ConfigPreferences.Option.BLOCK_COMMANDS)) return;
+    @EventHandler
+    public void onCommandExecute(PlayerCommandPreprocessEvent event) {
+        var user = userManager.getUser(event.getPlayer());
 
-		String message = event.getMessage();
+        if (!user.isInArena()) return;
+        if (!plugin.getOption(ConfigPreferences.Option.BLOCK_COMMANDS)) return;
 
-		if (plugin.getConfig().getStringList("Whitelisted-Commands").stream().anyMatch(command -> {
-			boolean exact = command.startsWith("exact:");
+        String message = event.getMessage();
 
-			if (exact) {
-				return command.substring(6).equals(message);
-			}
+        if (plugin.getConfig().getStringList("Whitelisted-Commands").stream().anyMatch(command -> {
+            boolean exact = command.startsWith("exact:");
 
-			return message.startsWith(command);
-		})) {
-			return;
-		}
+            if (exact) {
+                return command.substring(6).equals(message);
+            }
 
-		if (user.hasPermission("tntrun.command.override")) return;
-		if (message.equalsIgnoreCase("/tntrun leave")) return;
+            return message.startsWith(command);
+        })) {
+            return;
+        }
 
-		event.setCancelled(true);
-		user.sendMessage("player-commands.only-command-is-leave");
-	}
+        if (user.hasPermission("tntrun.command.override")) return;
+        if (message.equalsIgnoreCase("/tntrun leave")) return;
+
+        event.setCancelled(true);
+        user.sendMessage("player-commands.only-command-is-leave");
+    }
 
 
-	@EventHandler
-	public void onChatEvent(AsyncPlayerChatEvent event) {
-		final var user = this.userManager.getUser(event.getPlayer());
-		final var arena = user.getArena();
+    @EventHandler
+    public void onChatEvent(AsyncPlayerChatEvent event) {
+        var user = this.userManager.getUser(event.getPlayer());
+        var arena = user.getArena();
 
-		if (arena == null) {
-			if (!plugin.getOption(ConfigPreferences.Option.DISABLE_SEPARATE_CHAT)) {
-				plugin.getArenaRegistry().getArenas().forEach(loopArena -> loopArena.getPlayers().forEach(u -> event.getRecipients().remove(u.getPlayer())));
-			}
+        if (arena == null) {
+            if (!plugin.getOption(ConfigPreferences.Option.DISABLE_SEPARATE_CHAT)) {
+                plugin.getArenaRegistry().getArenas().forEach(loopArena -> loopArena.getPlayers().forEach(u -> event.getRecipients().remove(u.getPlayer())));
+            }
 
-			return;
-		}
+            return;
+        }
 
-		if (plugin.getOption(ConfigPreferences.Option.CHAT_FORMAT_ENABLED)) {
-			var message = formatChatPlaceholders(chatManager.message("messages.in-game.game-chat-format"), user, event.getMessage());
+        if (plugin.getOption(ConfigPreferences.Option.CHAT_FORMAT_ENABLED)) {
+            var message = formatChatPlaceholders(chatManager.message("messages.in-game.game-chat-format"), user, event.getMessage());
 
-			if (!plugin.getOption(ConfigPreferences.Option.DISABLE_SEPARATE_CHAT)) {
-				event.setCancelled(true);
+            if (!plugin.getOption(ConfigPreferences.Option.DISABLE_SEPARATE_CHAT)) {
+                event.setCancelled(true);
 
-				var dead = arena.isDeathPlayer(user) || arena.isSpectator(user);
+                var dead = arena.isDeathPlayer(user) || arena.isSpectator(user);
 
-				for (final var u : arena.getPlayers()) {
-					if (dead && arena.getPlayersLeft().contains(u)) continue;
+                for (var u : arena.getPlayers()) {
+                    if (dead && arena.getPlayersLeft().contains(u)) continue;
 
-					if (dead) {
-						String prefix = formatChatPlaceholders(chatManager.message("messages.in-game.game-death-format"), user, event.getMessage());
-						u.sendRawMessage(prefix + message);
-					} else {
-						u.sendRawMessage(message);
-					}
-				}
+                    if (dead) {
+                        String prefix = formatChatPlaceholders(chatManager.message("messages.in-game.game-death-format"), user, event.getMessage());
+                        u.sendRawMessage(prefix + message);
+                    } else {
+                        u.sendRawMessage(message);
+                    }
+                }
 
-				plugin.getServer().getConsoleSender().sendMessage(message);
-			} else {
-				event.setMessage(message);
-			}
-		}
-	}
+                plugin.getServer().getConsoleSender().sendMessage(message);
+            } else {
+                event.setMessage(message);
+            }
+        }
+    }
 
-	private String formatChatPlaceholders(final String message, final User user, final String saidMessage) {
-		var formatted = message;
+    private String formatChatPlaceholders(String message, User user, String saidMessage) {
+        var formatted = message;
 
-		formatted = formatted.replace("%player%", user.getName());
-		formatted = formatted.replace("%message%", ChatColor.stripColor(saidMessage));
+        formatted = formatted.replace("%player%", user.getName());
+        formatted = formatted.replace("%message%", ChatColor.stripColor(saidMessage));
 
-		if (plugin.getServer().getPluginManager().isPluginEnabled("PlaceholderAPI")) {
-			formatted = PlaceholderAPI.setPlaceholders(user.getPlayer(), formatted);
-		}
+        if (plugin.getServer().getPluginManager().isPluginEnabled("PlaceholderAPI")) {
+            formatted = PlaceholderAPI.setPlaceholders(user.getPlayer(), formatted);
+        }
 
-		return chatManager.rawMessage(formatted);
-	}
+        return chatManager.rawMessage(formatted);
+    }
 }

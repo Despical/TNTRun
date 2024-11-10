@@ -31,58 +31,58 @@ import org.jetbrains.annotations.NotNull;
  */
 public non-sealed class FlatFileStatistics extends AbstractDatabase {
 
-	private final FileConfiguration config;
+    private final FileConfiguration config;
 
-	public FlatFileStatistics() {
-		this.config = ConfigUtils.getConfig(plugin, "stats");
-	}
+    public FlatFileStatistics() {
+        this.config = ConfigUtils.getConfig(plugin, "stats");
+    }
 
-	@Override
-	public void saveStatistic(@NotNull User user, StatisticType statisticType) {
-		config.set(user.getUniqueId().toString() + "." + statisticType.getName(), user.getStat(statisticType));
+    @Override
+    public void saveStatistic(@NotNull User user, StatisticType statisticType) {
+        config.set(user.getUniqueId().toString() + "." + statisticType.getName(), user.getStat(statisticType));
 
-		ConfigUtils.saveConfig(plugin, config, "stats");
-	}
+        ConfigUtils.saveConfig(plugin, config, "stats");
+    }
 
-	@Override
-	public void saveStatistics(@NotNull User user) {
-		String uuid = user.getUniqueId().toString();
+    @Override
+    public void saveStatistics(@NotNull User user) {
+        String uuid = user.getUniqueId().toString();
 
-		for (var stat : StatisticType.values()) {
-			if (stat.isPersistent()) {
-				config.set(uuid + "." + stat.getName(), user.getStat(stat));
-			}
-		}
+        for (var stat : StatisticType.values()) {
+            if (stat.isPersistent()) {
+                config.set(uuid + "." + stat.getName(), user.getStat(stat));
+            }
+        }
 
-		ConfigUtils.saveConfig(plugin, config, "stats");
-	}
+        ConfigUtils.saveConfig(plugin, config, "stats");
+    }
 
-	@Override
-	public void saveAllStatistics() {
-		for (User user : plugin.getUserManager().getUsers()) {
-			String uuid = user.getUniqueId().toString();
+    @Override
+    public void saveAllStatistics() {
+        for (User user : plugin.getUserManager().getUsers()) {
+            String uuid = user.getUniqueId().toString();
 
-			for (StatisticType stat : StatisticType.values()) {
-				if (stat.isPersistent()) {
-					config.set(uuid + "." + stat.getName(), user.getStat(stat));
-				}
-			}
-		}
+            for (StatisticType stat : StatisticType.values()) {
+                if (stat.isPersistent()) {
+                    config.set(uuid + "." + stat.getName(), user.getStat(stat));
+                }
+            }
+        }
 
-		ConfigUtils.saveConfig(plugin, config, "stats");
-	}
+        ConfigUtils.saveConfig(plugin, config, "stats");
+    }
 
-	@Override
-	public void loadStatistics(@NotNull User user) {
-		String uuid = user.getUniqueId().toString();
+    @Override
+    public void loadStatistics(@NotNull User user) {
+        String uuid = user.getUniqueId().toString();
 
-		for (StatisticType stat : StatisticType.values()) {
-			user.setStat(stat, config.getInt(uuid + "." + stat.getName()));
-		}
-	}
+        for (StatisticType stat : StatisticType.values()) {
+            user.setStat(stat, config.getInt(uuid + "." + stat.getName()));
+        }
+    }
 
-	@Override
-	public void shutdown() {
-		this.saveAllStatistics();
-	}
+    @Override
+    public void shutdown() {
+        this.saveAllStatistics();
+    }
 }
