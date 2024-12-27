@@ -156,7 +156,7 @@ public class PlayerCommands extends AbstractCommand {
         }
 
         try {
-            printLeaderboard(arguments.getSender(), StatisticType.valueOf(arguments.getArgument(0).toUpperCase(java.util.Locale.ENGLISH)));
+            printLeaderboard(arguments.getSender(), StatisticType.valueOf(arguments.getArgument(0).toUpperCase()));
         } catch (IllegalArgumentException exception) {
             arguments.sendMessage(chatManager.message("player-commands.statistics.invalid-name"));
         }
@@ -166,7 +166,7 @@ public class PlayerCommands extends AbstractCommand {
         sender.sendMessage(chatManager.message("player-commands.statistics.header"));
 
         var stats = StatsStorage.getStats(statisticType);
-        String statistic = StringUtils.capitalize(statisticType.name().toLowerCase(java.util.Locale.ENGLISH).replace("_", " "));
+        String statistic = StringUtils.capitalize(statisticType.name().toLowerCase().replace("_", " "));
 
         for (int i = 0; i < 10; i++) {
             try {

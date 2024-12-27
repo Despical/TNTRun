@@ -47,6 +47,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
+import java.util.Locale;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -105,6 +106,8 @@ public class Main extends JavaPlugin {
 	}
 
 	private void initializeClasses() {
+        Locale.setDefault(Locale.ENGLISH);
+
 		this.setupConfigurationFiles();
 
 		this.configPreferences = new ConfigPreferences(this);

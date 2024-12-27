@@ -82,7 +82,7 @@ public class ConfigPreferences {
 
         Option(boolean def) {
             this.def = def;
-            this.path = StringUtils.capitalize(name().replace('_', '-').toLowerCase(Locale.ENGLISH), '-', '.');
+            this.path = StringUtils.capitalize(name().replace('_', '-').toLowerCase(), '-', '.');
         }
 
         Option(String path) {

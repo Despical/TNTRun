@@ -24,10 +24,12 @@ import me.despical.commons.string.StringFormatUtils;
 import me.despical.commons.util.Strings;
 import me.despical.tntrun.Main;
 import me.despical.tntrun.arena.Arena;
+import me.despical.tntrun.arena.ArenaState;
 import me.despical.tntrun.user.User;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import java.util.List;
+import java.util.stream.Stream;
 
 /**
  * @author Despical
@@ -84,6 +86,7 @@ public class ChatManager {
         message = message.replace("%formatted_time%", StringFormatUtils.formatIntoMMSS(arena.getTimer()));
         message = message.replace("%players%", Integer.toString(arena.getPlayers().size()));
         message = message.replace("%players_left%", Integer.toString(arena.getPlayersLeft().size()));
+        message = message.replace("%state%", arena.getArenaState().getFormattedName());
         message = message.replace("%min_players%", Integer.toString(arena.getMinimumPlayers()));
         message = message.replace("%max_players%", Integer.toString(arena.getMaximumPlayers()));
         return message;
@@ -102,5 +105,7 @@ public class ChatManager {
 
         StringFormatUtils.setTimeFormat(this.message("Scoreboard.Timer-Format"));
         StringFormatUtils.setDateFormat(this.message("Scoreboard.Date-Format"));
+
+        Stream.of(ArenaState.values()).forEach(arenaState -> arenaState.setFormattedName(this.message(arenaState.getPath())));
     }
 }
