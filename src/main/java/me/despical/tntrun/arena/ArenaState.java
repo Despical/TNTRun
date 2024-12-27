@@ -32,13 +32,26 @@ public enum ArenaState {
     RESTARTING("Restarting"),
     INACTIVE("Inactive");
 
-    final String formattedName;
+    private final String defaultName;
+    private String formattedName;
 
-    ArenaState(String formattedName) {
-        this.formattedName = formattedName;
+    ArenaState(String path) {
+        this.defaultName = path;
+    }
+
+    public String getPath() {
+        return "arena-states." + defaultName.toLowerCase();
+    }
+
+    public String getDefaultName() {
+        return defaultName;
     }
 
     public String getFormattedName() {
         return formattedName;
+    }
+
+    public void setFormattedName(String formattedName) {
+        this.formattedName = formattedName;
     }
 }

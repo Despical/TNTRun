@@ -52,7 +52,7 @@ public class SignManager extends EventListener {
 		this.gameStateToString = new EnumMap<>(ArenaState.class);
 
 		for (var state : ArenaState.values()) {
-			gameStateToString.put(state, plugin.getChatManager().message("signs.game-states." + state.getFormattedName().toLowerCase(java.util.Locale.ENGLISH)));
+			gameStateToString.put(state, plugin.getChatManager().message("signs.game-states." + state.getDefaultName().toLowerCase()));
 		}
 
 		this.loadSigns();

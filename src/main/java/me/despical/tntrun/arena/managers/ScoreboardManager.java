@@ -107,7 +107,7 @@ public class ScoreboardManager {
 
     private List<Entry> formatScoreboard(User user) {
         EntryBuilder builder = new EntryBuilder();
-        String path = "Scoreboard." + (arena.isArenaState(ArenaState.IN_GAME, ArenaState.ENDING) ? "Playing" : arena.getArenaState().getFormattedName());
+        String path = "Scoreboard." + (arena.isArenaState(ArenaState.IN_GAME, ArenaState.ENDING) ? "Playing" : arena.getArenaState().getDefaultName());
 
         for (String line : chatManager.getStringList(path)) {
             builder.next(formatScoreboardLine(line, user));

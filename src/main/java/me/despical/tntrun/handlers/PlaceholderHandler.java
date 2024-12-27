@@ -105,7 +105,7 @@ public class PlaceholderHandler extends PlaceholderExpansion {
             case "players_left" -> Integer.toString(arena.getPlayersLeft().size());
             case "max_players" -> Integer.toString(arena.getMaximumPlayers());
             case "min_players" -> Integer.toString(arena.getMinimumPlayers());
-            case "state" -> arena.getArenaState().name();
+            case "state" -> arena.getArenaState().getDefaultName();
             case "state_pretty" -> arena.getArenaState().getFormattedName();
             case "map_name" -> arena.getMapName();
             case "timer" -> Integer.toString(arena.getTimer());

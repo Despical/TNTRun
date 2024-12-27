@@ -215,3 +215,11 @@ signs:
 placeholders:
   empty-position: "No Player"
   empty-value: "NaN"
+
+arena-states:
+  waiting: "Waiting"
+  starting: "Starting"
+  playing: "Playing"
+  ending: "Ending"
+  restarting: "Restarting"
+  inactive: "Inactive"
