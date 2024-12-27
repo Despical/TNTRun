@@ -160,9 +160,7 @@ public class User {
     }
 
     public void resetTemporaryStats() {
-        for (var stat : StatisticType.values()) {
-            if (stat.isPersistent()) continue;
-
+        for (StatisticType stat : StatisticType.PERSISTENT_STATS) {
             setStat(stat, 0);
         }
 
@@ -171,7 +169,9 @@ public class User {
     }
 
     public void heal() {
-        if (plugin.getOption(ConfigPreferences.Option.HEAL_PLAYER)) AttributeUtils.healPlayer(getPlayer());
+        if (plugin.getOption(ConfigPreferences.Option.HEAL_PLAYER)) {
+            AttributeUtils.healPlayer(getPlayer());
+        }
     }
 
     public void applyDoubleJumpDelay() {

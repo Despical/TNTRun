@@ -29,24 +29,31 @@ import java.util.stream.Stream;
  */
 public enum StatisticType {
 
-    WINS("wins", true),
-    LOSES("loses", true),
-    COINS("coinsearned", true),
-    GAMES_PLAYED("gamesplayed", true),
-    LONGEST_SURVIVE("longestsurvive", true),
-    SPECTATOR_NIGHT_VISION("spectatornightvision", true),
-    SPECTATOR_SHOW_OTHERS("spectatorshowothers", true),
-    SPECTATOR_SPEED("spectatorspeed", true),
-    LOCAL_COINS("local_coins", false),
-    LOCAL_DOUBLE_JUMPS("local_double_jumps", false),
-    LOCAL_SURVIVE("local_survive", false);
+    WINS("wins"),
+    LOSES("loses"),
+    COINS("coinsearned"),
+    GAMES_PLAYED("gamesplayed"),
+    LONGEST_SURVIVE("longestsurvive"),
+    SPECTATOR_NIGHT_VISION("spectatornightvision"),
+    SPECTATOR_SHOW_OTHERS("spectatorshowothers"),
+    SPECTATOR_SPEED("spectatorspeed"),
+    LOCAL_COINS,
+    LOCAL_DOUBLE_JUMPS,
+    LOCAL_SURVIVE;
+
+    public static final StatisticType[] PERSISTENT_STATS = Stream.of(values()).filter(StatisticType::isPersistent).toArray(StatisticType[]::new);
 
     private final String name;
     private final boolean persistent;
 
-    StatisticType(String name, boolean persistent) {
+    StatisticType() {
+        this.name = null;
+        this.persistent = false;
+    }
+
+    StatisticType(String name) {
         this.name = name;
-        this.persistent = persistent;
+        this.persistent = true;
     }
 
     public static StatisticType match(String name) {

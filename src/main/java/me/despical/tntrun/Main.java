@@ -115,6 +115,7 @@ public class Main extends JavaPlugin {
 		this.arenaManager = new ArenaManager(this);
 		this.itemManager = new ItemManager(this, manager -> {
 			ItemOption.enableOptions(ItemOption.GLOW);
+
 			manager.addCustomKeys("slot");
 			manager.editItemBuilder(builder -> builder.unbreakable(true).hideTooltip(true));
 			manager.registerItems("items", "items");

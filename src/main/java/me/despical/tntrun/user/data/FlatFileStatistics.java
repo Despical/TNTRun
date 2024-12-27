@@ -48,10 +48,8 @@ public non-sealed class FlatFileStatistics extends AbstractDatabase {
     public void saveStatistics(@NotNull User user) {
         String uuid = user.getUniqueId().toString();
 
-        for (var stat : StatisticType.values()) {
-            if (stat.isPersistent()) {
-                config.set(uuid + "." + stat.getName(), user.getStat(stat));
-            }
+        for (StatisticType stat : StatisticType.PERSISTENT_STATS) {
+            config.set(uuid + "." + stat.getName(), user.getStat(stat));
         }
 
         ConfigUtils.saveConfig(plugin, config, "stats");
@@ -62,10 +60,8 @@ public non-sealed class FlatFileStatistics extends AbstractDatabase {
         for (User user : plugin.getUserManager().getUsers()) {
             String uuid = user.getUniqueId().toString();
 
-            for (StatisticType stat : StatisticType.values()) {
-                if (stat.isPersistent()) {
-                    config.set(uuid + "." + stat.getName(), user.getStat(stat));
-                }
+            for (StatisticType stat : StatisticType.PERSISTENT_STATS) {
+                config.set(uuid + "." + stat.getName(), user.getStat(stat));
             }
         }
 

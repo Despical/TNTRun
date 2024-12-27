@@ -97,17 +97,13 @@ public non-sealed class MySQLStatistics extends AbstractDatabase {
                 ResultSet result = statement.executeQuery("SELECT * from %s WHERE UUID='%s';".formatted(tableName, uuid));
 
                 if (result.next()) {
-                    for (StatisticType stat : StatisticType.values()) {
-                        if (!stat.isPersistent()) continue;
-
+                    for (StatisticType stat : StatisticType.PERSISTENT_STATS) {
                         user.setStat(stat, result.getInt(stat.getName()));
                     }
                 } else {
                     statement.executeUpdate("INSERT INTO %s (UUID,name) VALUES ('%s','%s');".formatted(tableName, uuid, user.getName()));
 
-                    for (StatisticType stat : StatisticType.values()) {
-                        if (!stat.isPersistent()) continue;
-
+                    for (StatisticType stat : StatisticType.PERSISTENT_STATS) {
                         user.setStat(stat, 0);
                     }
                 }
@@ -137,9 +133,7 @@ public non-sealed class MySQLStatistics extends AbstractDatabase {
     private String getUpdateStatement(User user) {
         StringBuilder builder = new StringBuilder(" SET ");
 
-        for (var stat : StatisticType.values()) {
-            if (!stat.isPersistent()) continue;
-
+        for (StatisticType stat : StatisticType.PERSISTENT_STATS) {
             int value = user.getStat(stat);
             String name = stat.getName();
 
