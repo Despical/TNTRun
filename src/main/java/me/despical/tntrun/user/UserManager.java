@@ -49,8 +49,6 @@ public class UserManager {
     public UserManager(Main plugin) {
         this.users = new HashMap<>();
         this.userDatabase = plugin.getOption(ConfigPreferences.Option.DATABASE_ENABLED) ? new MySQLStatistics() : new FlatFileStatistics();
-
-        plugin.getServer().getOnlinePlayers().forEach(this::addUser);
     }
 
     @NotNull
