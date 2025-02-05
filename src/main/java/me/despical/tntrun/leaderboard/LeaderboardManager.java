@@ -46,7 +46,6 @@ public class LeaderboardManager {
     public LeaderboardManager(Main plugin) {
         this.plugin = plugin;
         this.leaderboards = new EnumMap<>(StatisticType.class);
-        this.updateLeaderboards();
     }
 
     public Map.Entry<UUID, Integer> getEntry(StatisticType type, int placement) {
