@@ -18,8 +18,8 @@
 
 package me.despical.tntrun.user;
 
-import me.despical.commons.compat.ActionBar;
-import me.despical.commons.compat.XPotion;
+import me.despical.commons.XPotion;
+import me.despical.commons.messages.ActionBar;
 import me.despical.commons.miscellaneous.AttributeUtils;
 import me.despical.tntrun.ConfigPreferences;
 import me.despical.tntrun.Main;
@@ -31,7 +31,6 @@ import me.despical.tntrun.utils.Utils;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scoreboard.Scoreboard;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -59,7 +58,6 @@ public class User {
     private final Map<StatisticType, Integer> stats;
 
     private boolean spectator;
-    private Scoreboard cachedScoreboard;
 
     public User(Player player) {
         this.uuid = player.getUniqueId();
@@ -185,7 +183,7 @@ public class User {
             Utils.applyActionBarCooldown(this, cooldown);
     }
 
-    public void removePotionEffectsExcept(final XPotion... potions) {
+    public void removePotionEffectsExcept(XPotion... potions) {
         final var setOfEffects = Stream.of(potions).map(XPotion::getPotionEffectType).collect(Collectors.toSet());
         final var player = this.getPlayer();
 
@@ -227,18 +225,7 @@ public class User {
 
         player.setAllowFlight(true);
         player.setFlying(true);
-        player.addPotionEffect(XPotion.INVISIBILITY.buildInvisible(Integer.MAX_VALUE, 2));
-        player.addPotionEffect(XPotion.BLINDNESS.buildInvisible(4 * 20, 2));
-    }
-
-    public void cacheScoreboard() {
-        this.cachedScoreboard = this.getPlayer().getScoreboard();
-    }
-
-    public void removeScoreboard() {
-        if (this.cachedScoreboard == null) return;
-
-        this.getPlayer().setScoreboard(this.cachedScoreboard);
-        this.cachedScoreboard = null;
+        player.addPotionEffect(XPotion.INVISIBILITY.buildPotionEffect(Integer.MAX_VALUE, 2));
+        player.addPotionEffect(XPotion.BLINDNESS.buildPotionEffect(4 * 20, 2));
     }
 }

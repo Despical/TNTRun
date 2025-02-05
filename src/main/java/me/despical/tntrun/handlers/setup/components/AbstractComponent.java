@@ -18,7 +18,7 @@
 
 package me.despical.tntrun.handlers.setup.components;
 
-import me.despical.commons.compat.XMaterial;
+import me.despical.commons.XMaterial;
 import me.despical.commons.item.ItemBuilder;
 import me.despical.commons.serializer.LocationSerializer;
 import me.despical.inventoryframework.pane.PaginatedPane;

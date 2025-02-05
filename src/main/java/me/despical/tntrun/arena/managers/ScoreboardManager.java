@@ -18,11 +18,11 @@
 
 package me.despical.tntrun.arena.managers;
 
+import me.despical.commons.scoreboard.Scoreboard;
+import me.despical.commons.scoreboard.ScoreboardHandler;
 import me.despical.commons.scoreboard.ScoreboardLib;
+import me.despical.commons.scoreboard.common.Entry;
 import me.despical.commons.scoreboard.common.EntryBuilder;
-import me.despical.commons.scoreboard.type.Entry;
-import me.despical.commons.scoreboard.type.Scoreboard;
-import me.despical.commons.scoreboard.type.ScoreboardHandler;
 import me.despical.commons.string.StringFormatUtils;
 import me.despical.tntrun.ConfigPreferences;
 import me.despical.tntrun.Main;

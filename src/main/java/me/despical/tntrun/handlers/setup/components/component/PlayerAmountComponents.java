@@ -18,7 +18,7 @@
 
 package me.despical.tntrun.handlers.setup.components.component;
 
-import me.despical.commons.compat.XMaterial;
+import me.despical.commons.XMaterial;
 import me.despical.commons.configuration.ConfigUtils;
 import me.despical.commons.item.ItemBuilder;
 import me.despical.inventoryframework.GuiItem;

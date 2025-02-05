@@ -18,7 +18,7 @@
 
 package me.despical.tntrun.arena.managers;
 
-import me.despical.commons.compat.XPotion;
+import me.despical.commons.XPotion;
 import me.despical.commons.miscellaneous.MiscUtils;
 import me.despical.commons.serializer.InventorySerializer;
 import me.despical.commons.string.StringFormatUtils;

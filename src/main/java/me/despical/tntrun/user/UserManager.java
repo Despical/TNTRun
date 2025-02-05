@@ -77,8 +77,7 @@ public class UserManager {
 
     @NotNull
     public Set<User> getUsers() {
-        return users
-            .values()
+        return users.values()
             .stream()
             .filter(user -> {
                 Player player = user.getPlayer();

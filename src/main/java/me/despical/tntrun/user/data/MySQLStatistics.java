@@ -19,7 +19,7 @@
 package me.despical.tntrun.user.data;
 
 import me.despical.commons.configuration.ConfigUtils;
-import me.despical.commons.database.MysqlDatabase;
+import me.despical.commons.database.MySQLDatabase;
 import me.despical.tntrun.api.statistic.StatisticType;
 import me.despical.tntrun.user.User;
 import org.jetbrains.annotations.NotNull;
@@ -37,15 +37,15 @@ import java.sql.Statement;
 public non-sealed class MySQLStatistics extends AbstractDatabase {
 
     private final String tableName;
-    private final MysqlDatabase database;
+    private final MySQLDatabase database;
 
     public MySQLStatistics() {
         this.tableName = ConfigUtils.getConfig(plugin, "mysql").getString("table", "tntrun_stats");
-        this.database = new MysqlDatabase(plugin, "mysql");
+        this.database = new MySQLDatabase(plugin, "mysql");
 
         plugin.getServer().getScheduler().runTaskAsynchronously(plugin, () -> {
-            try (final var connection = database.getConnection()) {
-                final var statement = connection.createStatement();
+            try (Connection connection = database.getConnection()) {
+                Statement statement = connection.createStatement();
 
                 statement.executeUpdate("""
                     CREATE TABLE IF NOT EXISTS `%s` (
@@ -121,7 +121,7 @@ public non-sealed class MySQLStatistics extends AbstractDatabase {
     }
 
     @NotNull
-    public MysqlDatabase getDatabase() {
+    public MySQLDatabase getDatabase() {
         return database;
     }
 

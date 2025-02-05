@@ -18,7 +18,7 @@
 
 package me.despical.tntrun.events.spectator.components;
 
-import me.despical.commons.compat.XMaterial;
+import me.despical.commons.XMaterial;
 import me.despical.commons.item.ItemBuilder;
 import me.despical.commons.item.ItemUtils;
 import me.despical.inventoryframework.GuiItem;

@@ -18,8 +18,8 @@
 
 package me.despical.tntrun.arena;
 
-import me.despical.commons.compat.XPotion;
-import me.despical.commons.compat.XSound;
+import me.despical.commons.XPotion;
+import me.despical.commons.XSound;
 import me.despical.commons.miscellaneous.PlayerUtils;
 import me.despical.commons.serializer.InventorySerializer;
 import me.despical.tntrun.ConfigPreferences;
@@ -276,13 +276,13 @@ public class Arena extends BukkitRunnable {
         final var player = user.getPlayer();
 
         if (nightVision == 1) {
-            player.addPotionEffect(XPotion.NIGHT_VISION.buildInvisible(Integer.MAX_VALUE, 1));
+            player.addPotionEffect(XPotion.NIGHT_VISION.buildPotionEffect(Integer.MAX_VALUE, 1));
         }
 
         final var level = user.getStat(StatisticType.SPECTATOR_SPEED) + 1;
 
         player.setFlySpeed(.1F + level * .05F);
-        player.addPotionEffect(XPotion.SPEED.buildInvisible(Integer.MAX_VALUE, level));
+        player.addPotionEffect(XPotion.SPEED.buildPotionEffect(Integer.MAX_VALUE, level));
     }
 
     public void removeSpectator(User user) {
@@ -605,7 +605,7 @@ public class Arena extends BukkitRunnable {
                         teleportToLobby(user);
 
                         user.addGameItems("double-jump");
-                        user.getPlayer().addPotionEffect(XPotion.NIGHT_VISION.buildInvisible(Integer.MAX_VALUE, 1));
+                        user.getPlayer().addPotionEffect(XPotion.NIGHT_VISION.buildPotionEffect(Integer.MAX_VALUE, 1));
 
                         ArenaUtils.updateNameTagsVisibility(user);
                     }

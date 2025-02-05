@@ -18,8 +18,8 @@
 
 package me.despical.tntrun.events.spectator.components;
 
-import me.despical.commons.compat.XMaterial;
-import me.despical.commons.compat.XPotion;
+import me.despical.commons.XMaterial;
+import me.despical.commons.XPotion;
 import me.despical.commons.item.ItemBuilder;
 import me.despical.commons.miscellaneous.PlayerUtils;
 import me.despical.inventoryframework.GuiItem;
@@ -64,7 +64,7 @@ public class SettingComponents {
             if (hasNightVision) {
                 player.removePotionEffect(XPotion.NIGHT_VISION.getPotionEffectType());
             } else {
-                player.addPotionEffect(XPotion.NIGHT_VISION.buildInvisible(Integer.MAX_VALUE, 3));
+                player.addPotionEffect(XPotion.NIGHT_VISION.buildPotionEffect(Integer.MAX_VALUE, 3));
             }
 
             user.setStat(StatisticType.SPECTATOR_NIGHT_VISION, !hasNightVision ? 0 : 1);
@@ -106,7 +106,7 @@ public class SettingComponents {
         player.removePotionEffect(XPotion.SPEED.getPotionEffectType());
 
         if (level != -1) {
-            player.addPotionEffect(XPotion.SPEED.buildInvisible(Integer.MAX_VALUE, level));
+            player.addPotionEffect(XPotion.SPEED.buildPotionEffect(Integer.MAX_VALUE, level));
         }
 
         user.setStat(StatisticType.SPECTATOR_SPEED, level);
