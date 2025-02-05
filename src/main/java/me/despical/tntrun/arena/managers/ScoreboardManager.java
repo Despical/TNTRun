@@ -67,8 +67,6 @@ public class ScoreboardManager {
             return;
         }
 
-        user.cacheScoreboard();
-
         Scoreboard scoreboard = ScoreboardLib.createScoreboard(user.getPlayer()).setHandler(new ScoreboardHandler() {
 
             @Override
@@ -93,8 +91,6 @@ public class ScoreboardManager {
             if (board.getHolder().equals(player)) {
                 scoreboards.remove(board);
                 board.deactivate();
-
-                user.removeScoreboard();
                 return;
             }
         }
