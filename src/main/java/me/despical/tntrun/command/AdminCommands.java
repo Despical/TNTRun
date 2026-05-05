@@ -18,14 +18,14 @@
 
 package me.despical.tntrun.command;
 
-import me.despical.commandframework.CommandArguments;
-import me.despical.commandframework.annotations.Command;
-import me.despical.commandframework.annotations.Completer;
-import me.despical.commons.configuration.ConfigUtils;
-import me.despical.commons.miscellaneous.MiscUtils;
-import me.despical.commons.serializer.LocationSerializer;
-import me.despical.commons.string.StringMatcher;
-import me.despical.commons.util.Strings;
+import dev.despical.commandframework.CommandArguments;
+import dev.despical.commandframework.annotations.Command;
+import dev.despical.commandframework.annotations.Completer;
+import dev.despical.commons.configuration.ConfigUtils;
+import dev.despical.commons.miscellaneous.MiscUtils;
+import dev.despical.commons.serializer.LocationSerializer;
+import dev.despical.commons.string.StringMatcher;
+import dev.despical.commons.util.Strings;
 import me.despical.tntrun.arena.Arena;
 import me.despical.tntrun.arena.ArenaState;
 import me.despical.tntrun.handlers.setup.ArenaEditorGUI;
@@ -73,7 +73,7 @@ public class AdminCommands extends AbstractCommand {
         List<StringMatcher.Match> matches = StringMatcher.match(arg, commands);
 
         if (!matches.isEmpty()) {
-            Optional<Command> optionalMatch = commandFramework.getSubCommands().stream().filter(cmd -> cmd.name().equals(label + "." + matches.get(0).getMatch())).findFirst();
+            Optional<Command> optionalMatch = commandFramework.getSubCommands().stream().filter(cmd -> cmd.name().equals(label + "." + matches.get(0).match())).findFirst();
 
             if (optionalMatch.isPresent()) {
                 String matchedName = getMatchingParts(optionalMatch.get().name(), label + "." + String.join(".", arguments.getArguments()));

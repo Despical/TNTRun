@@ -19,9 +19,9 @@
 package me.despical.tntrun.handlers;
 
 import me.clip.placeholderapi.PlaceholderAPI;
-import me.despical.commons.configuration.ConfigUtils;
-import me.despical.commons.string.StringFormatUtils;
-import me.despical.commons.util.Strings;
+import dev.despical.commons.configuration.ConfigUtils;
+import dev.despical.commons.string.StringFormatUtils;
+import dev.despical.commons.util.Strings;
 import me.despical.tntrun.Main;
 import me.despical.tntrun.arena.Arena;
 import me.despical.tntrun.arena.ArenaState;

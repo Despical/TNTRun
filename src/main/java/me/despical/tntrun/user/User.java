@@ -18,9 +18,9 @@
 
 package me.despical.tntrun.user;
 
-import me.despical.commons.XPotion;
-import me.despical.commons.messages.ActionBar;
-import me.despical.commons.miscellaneous.AttributeUtils;
+import dev.despical.commons.XPotion;
+import dev.despical.commons.messages.ActionBar;
+import dev.despical.commons.miscellaneous.AttributeUtils;
 import me.despical.tntrun.ConfigPreferences;
 import me.despical.tntrun.Main;
 import me.despical.tntrun.api.events.player.StatisticChangeEvent;

@@ -18,7 +18,7 @@
 
 package me.despical.tntrun.handlers.rewards;
 
-import me.despical.commons.configuration.ConfigUtils;
+import dev.despical.commons.configuration.ConfigUtils;
 import me.despical.tntrun.Main;
 import me.despical.tntrun.user.User;
 
