@@ -1,0 +1,67 @@
+plugins {
+    id 'java'
+    id 'com.gradleup.shadow' version '9.4.2'
+}
+
+group = 'dev.despical'
+version = '2.7.9'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(25)
+    }
+}
+
+repositories {
+    mavenCentral()
+    maven { url = 'https://repo.papermc.io/repository/maven-public' }
+    maven { url = 'https://repo.extendedclip.com/content/repositories/placeholderapi/' }
+    maven { url = 'https://jitpack.io' }
+}
+
+dependencies {
+    compileOnly 'io.papermc.paper:paper-api:1.21.11-R0.1-SNAPSHOT'
+    compileOnly 'me.clip:placeholderapi:2.12.2'
+    compileOnly 'org.projectlombok:lombok:1.18.46'
+
+    implementation('dev.despical:commons:2.1.2') {
+        exclude group: 'org.slf4j'
+    }
+
+    implementation 'dev.despical:command-framework:1.6.2'
+    implementation 'dev.despical:inventory-framework:2.4.7'
+    implementation 'dev.despical:file-items:1.2.5'
+    implementation 'org.bstats:bstats-bukkit:3.2.1'
+
+    annotationProcessor 'org.projectlombok:lombok:1.18.46'
+}
+
+tasks.processResources {
+    def props = [version: version]
+    inputs.properties props
+
+    filteringCharset = 'UTF-8'
+
+    filesMatching('plugin.yml') {
+        expand props
+    }
+}
+
+tasks.jar {
+    enabled = false
+}
+
+tasks.shadowJar {
+    minimize()
+
+    relocate 'dev.despical.commons', 'dev.despical.tntrun.lib.commons'
+    relocate 'dev.despical.commandframework', 'dev.despical.tntrun.lib.commandframework'
+    relocate 'dev.despical.inventoryframework', 'dev.despical.tntrun.lib.inventoryframework'
+    relocate 'dev.despical.fileitems', 'dev.despical.tntrun.lib.fileitems'
+    relocate 'org.bstats', 'dev.despical.advancedparkour.lib.bstats'
+
+    exclude 'META-INF/**'
+    exclude 'fonts/**'
+
+    archiveFileName = "tnt-run-${version}.jar"
+}
