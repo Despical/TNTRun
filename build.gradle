@@ -58,7 +58,7 @@ tasks.shadowJar {
     relocate 'dev.despical.commandframework', 'dev.despical.tntrun.lib.commandframework'
     relocate 'dev.despical.inventoryframework', 'dev.despical.tntrun.lib.inventoryframework'
     relocate 'dev.despical.fileitems', 'dev.despical.tntrun.lib.fileitems'
-    relocate 'org.bstats', 'dev.despical.advancedparkour.lib.bstats'
+    relocate 'org.bstats', 'dev.despical.tntrun.lib.bstats'
 
     exclude 'META-INF/**'
     exclude 'fonts/**'

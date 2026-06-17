@@ -20,45 +20,31 @@ package dev.despical.tntrun.command;
 
 import dev.despical.commandframework.CommandArguments;
 import dev.despical.commandframework.annotations.Command;
-import dev.despical.commandframework.annotations.Completer;
-import dev.despical.commons.configuration.ConfigUtils;
-import dev.despical.commons.miscellaneous.MiscUtils;
-import dev.despical.commons.serializer.LocationSerializer;
-import dev.despical.commons.string.StringMatcher;
-import dev.despical.commons.util.Strings;
 import dev.despical.tntrun.arena.Arena;
-import dev.despical.tntrun.arena.ArenaState;
-import dev.despical.tntrun.handlers.setup.ArenaEditorGUI;
+import dev.despical.tntrun.option.BooleanOption;
 import dev.despical.tntrun.user.User;
-import net.md_5.bungee.api.ChatColor;
-import net.md_5.bungee.api.chat.ClickEvent;
-import net.md_5.bungee.api.chat.ComponentBuilder;
-import net.md_5.bungee.api.chat.HoverEvent;
-import net.md_5.bungee.api.chat.TextComponent;
+import dev.despical.tntrun.utils.Var;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
-import org.bukkit.util.StringUtil;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
  * @author Despical
  * <p>
- * Created at 2.02.2023
+ * Created at 17.06.2026
  */
-public class AdminCommands extends AbstractCommand {
+public final class AdminCommands extends CommandCategory {
 
     @Command(
         name = "tntrun",
-        usage = "/tntrun",
-        desc = "Main command of the plugin."
+        aliases = "tr",
+        fallbackPrefix = "thetntrun",
+        permission = "tntrun.command.help",
+        usage = "/%label% help",
+        desc = "Main command of the TNT Run."
     )
     public void mainCommand(CommandArguments arguments) {
         if (arguments.isArgumentsEmpty()) {
-            arguments.sendMessage("&3This server is running &bTNT Run {0} &3by &bDespical&3.", plugin.getDescription().getVersion());
+            arguments.sendMessage("&3This server is running &bTNT Run v{0} &3by &bDespical&3.", plugin.getDescription().getVersion());
 
             if (arguments.hasPermission("tntrun.admin")) {
                 arguments.sendMessage("&3Commands: &b/{0} help", arguments.getLabel());
@@ -67,344 +53,141 @@ public class AdminCommands extends AbstractCommand {
             return;
         }
 
-        var commandFramework = plugin.getCommandFramework();
-        String label = arguments.getLabel(), arg = arguments.getArgument(0);
-        List<String> commands = commandFramework.getSubCommands().stream().map(cmd -> cmd.name().replace(label + ".", "")).collect(Collectors.toList());
-        List<StringMatcher.Match> matches = StringMatcher.match(arg, commands);
-
-        if (!matches.isEmpty()) {
-            Optional<Command> optionalMatch = commandFramework.getSubCommands().stream().filter(cmd -> cmd.name().equals(label + "." + matches.get(0).match())).findFirst();
-
-            if (optionalMatch.isPresent()) {
-                String matchedName = getMatchingParts(optionalMatch.get().name(), label + "." + String.join(".", arguments.getArguments()));
-                Optional<Command> matchedCommand = commandFramework.getSubCommands().stream().filter(cmd -> cmd.name().equals(matchedName)).findFirst();
-
-                if (matchedCommand.isPresent()) {
-                    arguments.sendMessage(chatManager.message("admin-commands.correct-usage").replace("%usage%", matchedCommand.get().usage()));
-                    return;
-                }
-
-                arguments.sendMessage(chatManager.message("admin-commands.did-you-mean").replace("%command%", optionalMatch.get().usage()));
-                return;
-            }
-
-            arguments.sendMessage(chatManager.message("admin-commands.did-you-mean").replace("%command%", "/" + label));
-        }
+        chatManager.sendMessage(arguments, "unrecognized-arguments", Var.of("%label%", arguments.getLabel()), Var.of("%arguments%", arguments.concatArguments()));
     }
 
     @Command(
-        name = "tntrun.create",
-        permission = "tntrun.admin.create",
-        desc = "Creates an arena instance with the given ID.",
-        usage = "/tntrun create <arena name>",
-        senderType = Command.SenderType.PLAYER
+        name = "tntrun",
+        aliases = "tr.reload",
+        permission = "tntrun.admin.reload",
+        usage = "/%label% reload",
+        desc = "Reloads configuration files."
     )
-    public void createCommand(User user, CommandArguments arguments) {
-        if (plugin.getArenaRegistry().isInArena(user)) {
-            user.sendMessage("admin-commands.cannot-do-that-ingame");
-            return;
-        }
+    public void reloadCommand(CommandArguments arguments) {
+        chatManager.loadFile();
+        plugin.getOptions().reloadOptions();
+        plugin.getPlayingCommandPolicy().reload();
+        plugin.registerItems();
+        plugin.getEventManager().reload();
+        plugin.getSignManager().reload();
+        gameManager.reload();
 
-        if (arguments.isArgumentsEmpty()) {
-            user.sendMessage("admin-commands.provide-an-arena-name");
-            return;
-        }
-
-        final var id = arguments.getArgument(0);
-
-        if (plugin.getArenaRegistry().isArena(id)) {
-            user.sendMessage("admin-commands.there-is-already-an-arena");
-            return;
-        }
-
-        final var path = "instance.%s.".formatted(id);
-        final var arena = new Arena(id);
-
-        plugin.getArenaRegistry().registerArena(arena);
-
-        final var config = ConfigUtils.getConfig(plugin, "arena");
-        config.set(path + "ready", false);
-        config.set(path + "mapName", id);
-        config.set(path + "minimumPlayers", 2);
-        config.set(path + "maximumPlayers", 12);
-        config.set(path + "endLocation", LocationSerializer.SERIALIZED_LOCATION);
-        config.set(path + "lobbyLocation", LocationSerializer.SERIALIZED_LOCATION);
-        config.set(path + "signs", Collections.EMPTY_LIST);
-
-        ConfigUtils.saveConfig(plugin, config, "arena");
-
-        final var player = user.getPlayer();
-
-        user.sendRawMessage("&3&l--------------------------------------------");
-        MiscUtils.sendCenteredMessage(player, "&bArena " + id + " created!");
-        user.sendRawMessage("");
-        MiscUtils.sendCenteredMessage(player, "&bEdit this arena via &3/tntrun edit " + id + "&b!");
-        user.sendRawMessage("&3&l--------------------------------------------");
-    }
-
-    @Command(
-        name = "tntrun.delete",
-        permission = "tntrun.admin.delete",
-        desc = "Deletes the arena instance with the given ID, if it exists.",
-        usage = "/tntrun delete <arena name>",
-        senderType = Command.SenderType.PLAYER
-    )
-    public void deleteCommand(User user, CommandArguments arguments) {
-        if (plugin.getArenaRegistry().isInArena(user)) {
-            user.sendMessage("admin-commands.cannot-do-that-ingame");
-            return;
-        }
-
-        if (arguments.isArgumentsEmpty()) {
-            user.sendRawMessage("admin-commands.provide-an-arena-name");
-            return;
-        }
-
-        final var arenaId = arguments.getArgument(0);
-
-        if (!plugin.getArenaRegistry().isArena(arenaId)) {
-            user.sendMessage("admin-commands.no-arena-found-with-that-name");
-            return;
-        }
-
-        final var arena = plugin.getArenaRegistry().getArena(arenaId);
-        arena.stop();
-
-        final var config = ConfigUtils.getConfig(plugin, "arena");
-        config.set("instance." + arenaId, null);
-        ConfigUtils.saveConfig(plugin, config, "arena");
-
-        plugin.getSignManager().removeArenaSigns(arena);
-        plugin.getArenaRegistry().unregisterArena(arena);
-
-        user.sendMessage("admin-commands.deleted-arena-successfully", arena);
-    }
-
-    @Command(
-        name = "tntrun.list",
-        permission = "tntrun.admin.list",
-        desc = "Shows the list of existing arena IDs.",
-        usage = "/tntrun list",
-        senderType = Command.SenderType.PLAYER
-    )
-    public void listCommand(User user, CommandArguments arguments) {
-        final var arenas = plugin.getArenaRegistry().getArenas();
-
-        if (arenas.isEmpty()) {
-            user.sendMessage("admin-commands.list-command.no-arenas-created");
-            return;
-        }
-
-        final var list = arenas.stream().map(Arena::getId).collect(Collectors.joining(", "));
-        arguments.sendMessage(chatManager.message("admin-commands.list-command.format").replace("%list%", list));
-    }
-
-    @Command(
-        name = "tntrun.forcestart",
-        permission = "tntrun.admin.forcestart",
-        desc = "Forces the arena that the player is in to start, if there are enough players.",
-        usage = "/tntrun forcestart",
-        senderType = Command.SenderType.PLAYER
-    )
-    public void forceStartCommand(User user) {
-        if (!user.isInArena()) {
-            user.sendMessage("admin-commands.must-be-in-arena");
-            return;
-        }
-
-        final var arena = user.getArena();
-
-        if (arena.getPlayers().size() < 2) {
-            arena.broadcastMessage("messages.arena.waiting-for-players");
-            return;
-        }
-
-        if (arena.isForceStart()) {
-            user.sendMessage("messages.in-game.already-force-start");
-            return;
-        }
-
-        if (arena.isArenaState(ArenaState.WAITING_FOR_PLAYERS, ArenaState.STARTING)) {
-            arena.setArenaState(ArenaState.STARTING);
-            arena.setForceStart(true);
-            arena.setTimer(0);
-            arena.getPlayers().forEach(u -> u.sendMessage("messages.in-game.force-start"));
-        }
+        chatManager.sendMessage(arguments, "reloaded-configuration");
     }
 
     @Command(
         name = "tntrun.stop",
+        aliases = "tr.stop",
         permission = "tntrun.admin.stop",
-        desc = "Forces the arena that the player is in to stop.",
-        usage = "/tntrun stop",
-        senderType = Command.SenderType.PLAYER
+        usage = "/%label% stop [arena]",
+        desc = "Stops the current or specified arena game.",
+        max = 1
     )
-    public void stopCommand(User user) {
-        final var arena = user.getArena();
+    public void stopCommand(CommandArguments arguments) {
+        boolean isConsoleSender = arguments.isSenderConsole();
 
-        if (arena == null) {
-            user.sendMessage("admin-commands.must-be-in-arena");
-            return;
-        }
-
-        if (arena.getArenaState() != ArenaState.ENDING) {
-            plugin.getArenaManager().stopGame(true, arena);
-        }
-    }
-
-    @Command(
-        name = "tntrun.edit",
-        permission = "tntrun.admin.edit",
-        desc = "Open arena editor for specified arena",
-        usage = "/tntrun edit <arena name>",
-        senderType = Command.SenderType.PLAYER
-    )
-    public void editCommand(User user, CommandArguments arguments) {
         if (arguments.isArgumentsEmpty()) {
-            user.sendMessage("admin-commands.provide-an-arena-name");
+            if (isConsoleSender) {
+                chatManager.sendMessage(arguments, "stop-command.correct-usage", Var.of("%label%", arguments.getLabel()));
+                return;
+            }
+
+            Player player = arguments.getSender();
+            Arena arena = arenaRegistry.getArena(player);
+
+            if (arena == null) {
+                chatManager.sendMessage(player, "not-playing");
+                return;
+            }
+
+            gameManager.stopGame(arena.getGame(), StopReason.STOP_COMMAND);
             return;
         }
 
-        final var arena = plugin.getArenaRegistry().getArena(arguments.getArgument(0));
+        Arena arena = arenaRegistry.getArena(arguments.getFirst());
 
         if (arena == null) {
-            user.sendMessage("admin-commands.no-arena-found-with-that-name");
+            chatManager.sendMessage(arguments, "no-arena-found-with-that-name");
             return;
         }
 
-        new ArenaEditorGUI(plugin, user, arena).showGui();
+        Game game = arena.getGame();
+
+        if (game == null) {
+            chatManager.sendMessage(arguments, "stop-command.not-playing");
+            return;
+        }
+
+        gameManager.stopGame(game, StopReason.STOP_COMMAND);
+
+        if (!isConsoleSender && game.isPlaying(arguments.<Player>getSender())) {
+            return;
+        }
+
+        chatManager.sendMessage(arguments, "stop-command.stopped");
     }
 
-    @Command(
-        name = "tntrun.reload",
-        permission = "tntrun.admin.reload",
-        desc = "Reloads the configuration files and arenas.",
-        usage = "/tntrun reload",
-        senderType = Command.SenderType.PLAYER
-    )
-    public void reloadCommand(User user) {
-        plugin.getOptions().reloadOptions();
-        chatManager.reload();
-
-        plugin.getSignManager().loadSigns();
-
-        user.sendMessage("admin-commands.system-reloaded");
-    }
-
-    @SuppressWarnings("deprecation")
     @Command(
         name = "tntrun.help",
-        usage = "/tntrun help",
-        desc = "Displays a list of available commands along with their descriptions.",
-        permission = "tntrun.admin.help"
+        aliases = "tr.help",
+        permission = "tntrun.command.help",
+        usage = "/%label% help"
     )
     public void helpCommand(CommandArguments arguments) {
-        final var isPlayer = arguments.isSenderPlayer();
-        final var sender = arguments.getSender();
+        Var var = Var.of("%label%", arguments.getLabel());
+        chatManager.sendMessage(arguments, "help-message", var);
 
-        arguments.sendMessage("");
-        MiscUtils.sendCenteredMessage(sender, "&3&lTNT Run");
-        MiscUtils.sendCenteredMessage(sender, "&3[&boptional argument&3] &b- &3<&brequired argument&3>");
-        arguments.sendMessage("");
+        if (arguments.hasPermission("tntrun.admin.help")) {
+            arguments.sendMessage("");
+            chatManager.sendMessage(arguments, "admin-help-message", var);
+            arguments.sendMessage("");
 
-        for (final var command : plugin.getCommandFramework().getSubCommands()) {
-            final String usage = formatCommandUsage("&3" + command.usage()), desc = command.desc();
-
-            if (desc.isEmpty()) continue;
-
-            if (isPlayer) {
-                ((Player) sender).spigot().sendMessage(
-                    new ComponentBuilder(ChatColor.DARK_GRAY + " • ")
-                        .append(usage)
-                        .event(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, command.usage()))
-                        .event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.fromLegacyText(desc)))
-                        .color(ChatColor.AQUA)
-                        .create());
-            } else {
-                arguments.sendMessage(" &8• &b" + usage + " &3- &b" + desc);
+            if (BooleanOption.DEBUG.value()) {
+                chatManager.sendMessage(arguments, "debug-help-message", var);
             }
-        }
-
-        if (isPlayer) {
-            Player player = arguments.getSender();
-            player.sendMessage("");
-            player.spigot().sendMessage(new ComponentBuilder("TIP:").color(ChatColor.YELLOW).bold(true)
-                .append(" Try to ", ComponentBuilder.FormatRetention.NONE).color(ChatColor.GRAY)
-                .append("hover").color(ChatColor.WHITE).underlined(true)
-                .event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.fromLegacyText(ChatColor.LIGHT_PURPLE + "Hover on the commands to get info about them.")))
-                .append(" or ", ComponentBuilder.FormatRetention.NONE).color(ChatColor.GRAY)
-                .append("click").color(ChatColor.WHITE).underlined(true)
-                .event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.fromLegacyText(ChatColor.LIGHT_PURPLE + "Click on the commands to insert them in the chat.")))
-                .append(" on the commands!", ComponentBuilder.FormatRetention.NONE).color(ChatColor.GRAY)
-                .create());
         }
     }
 
-    @Completer(
-        name = "tntrun"
+    @Command(
+        name = "tntrun.kick",
+        aliases = "tr.kick",
+        permission = "tntrun.admin.kick",
+        usage = "/%label% kick <player>",
+        desc = "Removes a player from game and teleports them to the arena's end location.",
+        min = 1,
+        max = 1,
+        senderType = Command.SenderType.PLAYER
     )
-    public List<String> onTabComplete(CommandArguments arguments) {
-        final List<String> completions = new ArrayList<>(), commands = plugin.getCommandFramework().getSubCommands().stream().map(cmd -> cmd.name().replace(arguments.getLabel() + '.', "")).collect(Collectors.toList());
-        final String args[] = arguments.getArguments(), arg = args[0];
+    public void kickCommand(CommandArguments arguments) {
+        Player targetPlayer = arguments.getPlayer(0)
+            .orElseGet(() -> {
+                chatManager.sendMessage(arguments, "no-player-with-that-name");
+                return null;
+            });
 
-        if (args.length == 1) {
-            return StringUtil.copyPartialMatches(arg, arguments.hasPermission("tntrun.admin") || arguments.getSender().isOp() ? commands : List.of("top", "stats", "join", "leave", "randomjoin"), completions);
+        if (targetPlayer == null) {
+            return;
         }
 
-        if (args.length == 2) {
-            if (List.of("create", "list", "randomjoin", "leave", "reload").contains(arg)) return completions;
+        User targetUser = plugin.getUserManager().getUser(targetPlayer);
+        Arena playerArena = targetUser.getArena();
 
-            if (arg.equalsIgnoreCase("top")) {
-                return StringUtil.copyPartialMatches(
-                    args[1],
-                    List.of("wins", "loses", "coins", "games_played", "longest_survive"),
-                    completions);
-            }
-
-            if (arg.equalsIgnoreCase("stats")) {
-                return StringUtil.copyPartialMatches(
-                    args[1],
-                    plugin.getServer().getOnlinePlayers().stream().map(Player::getName).collect(Collectors.toList()),
-                    completions
-                );
-            }
-
-            if (List.of("edit", "delete", "join").contains(arg)) {
-                return StringUtil.copyPartialMatches(
-                    args[1],
-                    plugin.getArenaRegistry().getArenas().stream().map(Arena::getId).collect(Collectors.toList()),
-                    completions);
-            }
+        if (playerArena == null) {
+            chatManager.sendMessage(arguments, "kick-command.not-playing",
+                Var.of("%player%", targetPlayer.getName()));
+            return;
         }
 
-        return completions;
-    }
+        arenaManager.leaveAttempt(targetUser, Reason.KICK);
 
-    private String getMatchingParts(String matched, String current) {
-        String[] matchedArray = matched.split("\\."), currentArray = current.split("\\.");
-        int max = Math.min(matchedArray.length, currentArray.length);
-        List<String> matchingParts = new ArrayList<>();
+        Location endLocation = playerArena.getOption(ArenaKeys.END_LOCATION);
 
-        for (int i = 0; i < max; i++) {
-            if (matchedArray[i].equals(currentArray[i])) {
-                matchingParts.add(matchedArray[i]);
-            }
+        if (endLocation != null) {
+            targetPlayer.teleport(endLocation);
         }
 
-        return String.join(".", matchingParts);
-    }
-
-    private String formatCommandUsage(String usage) {
-        final var array = usage.toCharArray();
-        final var buffer = new StringBuilder(usage);
-
-        for (int i = 0; i < array.length; i++) {
-            if (array[i] == '[' || array[i] == '<') {
-                buffer.insert(i, "&b");
-                return Strings.format(buffer.toString());
-            }
-        }
-
-        return Strings.format(usage);
+        chatManager.sendMessage(arguments, "kick-command.kicked",
+            Var.of("%player%", targetPlayer.getName()),
+            Var.of("%arena%", playerArena.getId()));
     }
 }
