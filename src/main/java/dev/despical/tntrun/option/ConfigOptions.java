@@ -3,6 +3,7 @@ package dev.despical.tntrun.option;
 import dev.despical.tntrun.Main;
 import org.bukkit.configuration.file.FileConfiguration;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Stream;
@@ -40,7 +41,8 @@ public class ConfigOptions {
     private void loadOptions() {
         FileConfiguration config = plugin.getConfig();
 
-        Stream.of(BooleanOption.values())
-            .forEach(option -> options.put(option, config.get(option.getPath(), option.getDefaultValue())));
+        Stream.of(IntOption.values(), BooleanOption.values())
+            .flatMap(Arrays::stream)
+            .forEach(option -> options.put(option, config.get(option.getPath())));
     }
 }
