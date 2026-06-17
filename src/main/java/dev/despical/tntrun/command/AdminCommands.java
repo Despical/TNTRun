@@ -287,7 +287,6 @@ public class AdminCommands extends AbstractCommand {
         chatManager.reload();
 
         plugin.getSignManager().loadSigns();
-        plugin.getRewardsFactory().reload();
 
         user.sendMessage("admin-commands.system-reloaded");
     }

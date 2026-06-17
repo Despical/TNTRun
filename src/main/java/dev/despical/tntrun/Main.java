@@ -34,7 +34,6 @@ import dev.despical.tntrun.events.EventListener;
 import dev.despical.tntrun.handlers.ChatManager;
 import dev.despical.tntrun.handlers.PermissionsManager;
 import dev.despical.tntrun.handlers.PlaceholderHandler;
-import dev.despical.tntrun.handlers.rewards.RewardsFactory;
 import dev.despical.tntrun.handlers.sign.SignManager;
 import dev.despical.tntrun.leaderboard.LeaderboardManager;
 import dev.despical.tntrun.option.BooleanOption;
@@ -66,7 +65,6 @@ public class Main extends JavaPlugin {
     private ConfigOptions options;
 	private ArenaRegistry arenaRegistry;
 	private ArenaManager arenaManager;
-	private RewardsFactory rewardsFactory;
 	private ChatManager chatManager;
 	private UserManager userManager;
 	private ItemManager itemManager;
@@ -127,7 +125,6 @@ public class Main extends JavaPlugin {
 		});
 
 		this.permissionManager = new PermissionsManager(this);
-		this.rewardsFactory = new RewardsFactory(this);
 		this.signManager = new SignManager(this);
 
 		ScoreboardLib.setPluginInstance(this);
@@ -177,7 +174,7 @@ public class Main extends JavaPlugin {
 	private void setupConfigurationFiles() {
 		saveDefaultConfig();
 
-		Stream.of("arena", "rewards", "stats", "items", "mysql", "messages", "bungee").filter(name -> !new File(getDataFolder(), name + ".yml").exists()).forEach(name -> saveResource(name + ".yml", false));
+		Stream.of("arena", "stats", "items", "mysql", "messages", "bungee").filter(name -> !new File(getDataFolder(), name + ".yml").exists()).forEach(name -> saveResource(name + ".yml", false));
 	}
 
 }

@@ -24,7 +24,6 @@ import dev.despical.tntrun.Main;
 import dev.despical.tntrun.api.events.player.StatisticChangeEvent;
 import dev.despical.tntrun.api.statistic.StatisticType;
 import dev.despical.tntrun.arena.Arena;
-import dev.despical.tntrun.handlers.rewards.Reward;
 import dev.despical.tntrun.utils.Utils;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -78,10 +77,6 @@ public class User {
 
     public void sendRawMessage(final String message, final Object... args) {
         this.getPlayer().sendMessage(plugin.getChatManager().rawMessage(MessageFormat.format(message, args)));
-    }
-
-    public void performReward(final Reward.RewardType rewardType) {
-        plugin.getRewardsFactory().performReward(this, rewardType);
     }
 
     public void closeOpenedInventory() {
@@ -165,7 +160,6 @@ public class User {
 
         addStat(StatisticType.LOCAL_DOUBLE_JUMPS, -1);
         setCooldown("double_jump", cooldown);
-        performReward(Reward.RewardType.DOUBLE_JUMP);
 
         if (BooleanOption.JUMP_BAR.value() && getStat(StatisticType.LOCAL_DOUBLE_JUMPS) > 0)
             Utils.applyActionBarCooldown(this, cooldown);

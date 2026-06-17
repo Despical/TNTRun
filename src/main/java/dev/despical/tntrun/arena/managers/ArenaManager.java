@@ -33,7 +33,6 @@ import dev.despical.tntrun.arena.Arena;
 import dev.despical.tntrun.arena.ArenaState;
 import dev.despical.tntrun.arena.ArenaUtils;
 import dev.despical.tntrun.arena.options.ArenaOption;
-import dev.despical.tntrun.handlers.rewards.Reward;
 import dev.despical.tntrun.user.User;
 import dev.despical.tntrun.utils.Utils;
 import net.md_5.bungee.api.chat.BaseComponent;
@@ -240,7 +239,6 @@ public record ArenaManager(Main plugin) {
             user.addGameItems("leave-item", "play-again");
             user.removePotionEffectsExcept(PotionEffectType.BLINDNESS);
             user.addStat(isWinner ? StatisticType.WINS : StatisticType.LOSES, 1);
-            user.performReward(isWinner ? Reward.RewardType.WIN : Reward.RewardType.LOSE);
 
             plugin.getUserManager().saveStatistics(user);
         }
@@ -250,8 +248,6 @@ public record ArenaManager(Main plugin) {
         List<String> summaryMessages = chatManager.getStringList("messages.summary-message");
 
         for (User user : arena.getPlayers()) {
-            user.performReward(Reward.RewardType.END_GAME);
-
             for (String msg : summaryMessages) {
                 try {
                     var message = formatSummaryMessage(msg, arena, user);
