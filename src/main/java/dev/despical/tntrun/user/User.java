@@ -18,22 +18,20 @@
 
 package dev.despical.tntrun.user;
 
-import com.cryptomorin.xseries.messages.ActionBar;
-import dev.despical.tntrun.option.BooleanOption;
 import dev.despical.tntrun.Main;
-import dev.despical.tntrun.api.events.player.StatisticChangeEvent;
-import dev.despical.tntrun.api.statistic.StatisticType;
 import dev.despical.tntrun.arena.Arena;
-import dev.despical.tntrun.utils.Utils;
-import org.bukkit.Location;
+import dev.despical.tntrun.stats.StatisticType;
+import dev.despical.tntrun.stats.Statistics;
+import dev.despical.tntrun.utils.Var;
+import lombok.Getter;
+import net.kyori.adventure.text.Component;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.potion.PotionEffectType;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
-import java.text.MessageFormat;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+import java.util.function.Consumer;
 
 /**
  * @author Despical
@@ -42,172 +40,208 @@ import java.util.*;
  */
 public class User {
 
-    private static final Main plugin = JavaPlugin.getPlugin(Main.class);
+    private static final Main plugin;
     private static long cooldownCounter;
 
-    private final UUID uuid;
-    private final String playerName;
-    private final Map<String, Double> cooldowns;
-    private final Map<StatisticType, Integer> stats;
-
-    private boolean spectator;
-
-    public User(Player player) {
-        this.uuid = player.getUniqueId();
-        this.playerName = player.getName();
-        this.cooldowns = new HashMap<>();
-        this.stats = new EnumMap<>(StatisticType.class);
-    }
-
-    public static void cooldownHandlerTask() {
+    static {
+        plugin = Main.getInstance();
         plugin.getServer().getScheduler().runTaskTimerAsynchronously(plugin, () -> cooldownCounter++, 20, 20);
     }
 
-    public void sendMessage(final String path) {
-        this.sendRawMessage(plugin.getChatManager().message(path, this));
+    private final UUID uuid;
+
+    @Getter
+    private final String name;
+
+    private final Map<String, Double> cooldowns;
+    private final Map<StatisticType<?>, Object> stats;
+
+    public User(Player player) {
+        this.uuid = player.getUniqueId();
+        this.name = player.getName();
+        this.cooldowns = new HashMap<>();
+        this.stats = new HashMap<>();
     }
 
-    public void sendMessage(final String path, final Object... args) {
-        this.sendRawMessage(plugin.getChatManager().message(path, this), args);
+    public UUID getUUID() {
+        return uuid;
     }
 
-    public void sendRawMessage(final String message) {
-        this.getPlayer().sendMessage(plugin.getChatManager().rawMessage(message));
+    public Player getPlayer() {
+        return Bukkit.getPlayer(uuid);
     }
 
-    public void sendRawMessage(final String message, final Object... args) {
-        this.getPlayer().sendMessage(plugin.getChatManager().rawMessage(MessageFormat.format(message, args)));
+    public void ifPlayerPresent(Consumer<Player> playerConsumer) {
+        Player player = getPlayer();
+        if (player != null) {
+            playerConsumer.accept(player);
+        }
     }
 
-    public void closeOpenedInventory() {
-        plugin.getServer().getScheduler().runTaskLater(plugin, () -> this.getPlayer().closeInventory(), 1L);
+    public void sendMessage(String path, Var... variables) {
+        ifPlayerPresent(player -> plugin.getChatManager().sendMessage(player, path, variables));
     }
 
-    public boolean isInArena() {
-        return plugin.getArenaRegistry().isInArena(this);
+    public void sendRawMessage(String msg, Var... variables) {
+        ifPlayerPresent(player -> {
+            Component message = plugin.getChatManager().parseMessage(msg, variables);
+            player.sendMessage(message);
+        });
     }
 
-    @Nullable
+    public void sendRawActionBarComponent(Component message) {
+        ifPlayerPresent(player -> player.sendActionBar(message));
+    }
+
+    public void sendRawComponent(Component component, Var... vars) {
+        ifPlayerPresent(player -> plugin.getChatManager().sendRawComponent(player, component, vars));
+    }
+
+    public void sendActionBar(String path, Var... variables) {
+        ifPlayerPresent(player -> plugin.getChatManager().sendActionBar(player, path, variables));
+    }
+
+    public void sendRawActionBar(String msg, Var... variables) {
+        ifPlayerPresent(player -> plugin.getChatManager().sendRawActionBar(player, msg, variables));
+    }
+
+    public void sendTitleComponent(Component title, Component subtitle, int fadeIn, int stay, int fadeOut, Var... vars) {
+        ifPlayerPresent(player -> plugin.getChatManager().sendRawTitleComponent(player, title, subtitle, fadeIn, stay, fadeOut, vars));
+    }
+
+    public void sendTitle(String titlePath, String subtitlePath, int stay, Var... vars) {
+        sendTitle(titlePath, subtitlePath, 0, stay, 0, vars);
+    }
+
+    public void sendTitle(String titlePath, String subtitlePath, int fadeIn, int stay, int fadeOut, Var... vars) {
+        ifPlayerPresent(player -> plugin.getChatManager().sendTitle(player, titlePath, subtitlePath, fadeIn, stay, fadeOut, vars));
+    }
+
+    public void sendRawTitle(String title, String subtitle, int stay) {
+        sendRawTitle(title, subtitle, 0, stay, 0);
+    }
+
+    public void sendRawTitle(String rawTitle, String rawSubtitle, int fadeIn, int stay, int fadeOut) {
+        ifPlayerPresent(player -> {
+            plugin.getChatManager().sendRawTitle(player, rawTitle, rawSubtitle, fadeIn, stay, fadeOut);
+        });
+    }
+
     public Arena getArena() {
         return plugin.getArenaRegistry().getArena(this);
     }
 
-    public Player getPlayer() {
-        return plugin.getServer().getPlayer(uuid);
+    public boolean isInArena() {
+        return getArena() != null;
     }
 
-    public String getName() {
-        return playerName;
+    public boolean hasCooldown(String cooldownName) {
+        return getCooldown(cooldownName) > 0D;
     }
 
-    public Location getLocation() {
-        return getPlayer().getLocation();
+    public void setCooldown(String cooldownName, double seconds) {
+        cooldowns.put(cooldownName, seconds + cooldownCounter);
     }
 
-    public UUID getUniqueId() {
-        return this.uuid;
+    public void removeCooldown(String cooldownName) {
+        cooldowns.remove(cooldownName);
     }
 
-    public boolean isSpectator() {
-        return spectator;
+    public double getCooldown(String cooldownName) {
+        return Math.max(0D, cooldowns.getOrDefault(cooldownName, 0D) - cooldownCounter);
     }
 
-    public void setSpectator(boolean spectator) {
-        this.spectator = spectator;
+    @SuppressWarnings("unchecked")
+    public <T> T getStatistic(StatisticType<T> type) {
+        return (T) stats.computeIfAbsent(type, stat -> {
+            if (stat.getDefaultValue() instanceof Map) {
+                return new HashMap<>();
+            }
+
+            return stat.getDefaultValue();
+        });
     }
 
-    public int getStat(StatisticType statisticType) {
-        return stats.computeIfAbsent(statisticType, stat -> 0);
+    public <T> void setStatistic(StatisticType<T> type, T newValue) {
+        setStatisticInternal(type, newValue, true);
     }
 
-    public void setStat(StatisticType stat, int value) {
-        stats.put(stat, value);
+    public <T> void loadStatistic(StatisticType<T> type, T newValue) {
+        setStatisticInternal(type, newValue, false);
+    }
 
-        if (plugin.isEnabled()) {
-            plugin.getServer().getScheduler().runTask(plugin, () -> plugin.getServer().getPluginManager().callEvent(new StatisticChangeEvent(getArena(), this, stat, value)));
+    private <T> void setStatisticInternal(StatisticType<T> type, T newValue, boolean callEvent) {
+        T oldValue = getStatistic(type);
+        if (oldValue != null && oldValue.equals(newValue)) {
+            return;
+        }
+
+        T finalValue = newValue;
+
+        if (callEvent) {
+//            PlayerStatisticChangeEvent<T> event =
+//                plugin.getEventManager().statChange(getPlayer(), type, oldValue, newValue);
+//
+//            if (event.isCancelled()) {
+//                return;
+//            }
+//
+//            finalValue = event.getNewValue();
+        }
+
+        if (oldValue != null && oldValue.equals(finalValue)) {
+            return;
+        }
+
+        stats.put(type, finalValue);
+    }
+
+    public void addStat(StatisticType<Integer> type, int amount) {
+        setStatistic(type, getStatistic(type) + amount);
+    }
+
+    @SafeVarargs
+    public final void addStat(StatisticType<Integer> type, StatisticType<Integer>... types) {
+        addStat(type, 1);
+
+        for (StatisticType<Integer> statisticType : types) {
+            addStat(statisticType, 1);
         }
     }
 
-    public void addStat(StatisticType stat, int value) {
-        setStat(stat, getStat(stat) + value);
-    }
-
-    public boolean hasPermission(final String permission) {
-        return this.getPlayer().hasPermission(permission);
-    }
-
-    public void setCooldown(String s, double seconds) {
-        cooldowns.put(s, seconds + cooldownCounter);
-    }
-
-    public double getCooldown(String s) {
-        Double cooldown = cooldowns.get(s);
-
-        return (cooldown == null || cooldown <= cooldownCounter) ? 0 : cooldown - cooldownCounter;
+    public void setStatisticIfHigher(StatisticType<Integer> type, int amount) {
+        setStatistic(type, Math.max(getStatistic(type), amount));
     }
 
     public void resetTemporaryStats() {
-        for (StatisticType stat : StatisticType.PERSISTENT_STATS) {
-            setStat(stat, 0);
-        }
+        cooldowns.clear();
 
-        this.setStat(StatisticType.LOCAL_DOUBLE_JUMPS, plugin.getPermissionManager().getDoubleJumps(this.getPlayer()));
-        this.spectator = false;
-    }
-
-    public void applyDoubleJumpDelay() {
-        final int cooldown = plugin.getPermissionManager().getDoubleJumpDelay();
-
-        addStat(StatisticType.LOCAL_DOUBLE_JUMPS, -1);
-        setCooldown("double_jump", cooldown);
-
-        if (BooleanOption.JUMP_BAR.value() && getStat(StatisticType.LOCAL_DOUBLE_JUMPS) > 0)
-            Utils.applyActionBarCooldown(this, cooldown);
-    }
-
-    public void removePotionEffectsExcept(PotionEffectType... potions) {
-        Set<PotionEffectType> setOfEffects = Set.of(potions);
-        Player player = this.getPlayer();
-
-        for (final var activePotion : player.getActivePotionEffects()) {
-            if (setOfEffects.contains(activePotion.getType())) continue;
-
-            player.removePotionEffect(activePotion.getType());
+        for (StatisticType<?> stat : Statistics.getTemporaryStats()) {
+            stats.put(stat, stat.getDefaultValue());
         }
     }
 
-    public void addGameItems(final String... ids) {
-        this.addGameItems(true, ids);
+    public long getArenaBestTime(String arenaId) {
+        Map<String, Long> times = getStatistic(Statistics.ARENA_BEST_TIMES);
+        return times.getOrDefault(arenaId, -1L);
     }
 
-    public void sendActionBar(@NotNull String message) {
-        ActionBar.sendActionBar(this.getPlayer(), message);
+    public void setArenaBestTime(String arenaId, long time) {
+        Map<String, Long> times = getStatistic(Statistics.ARENA_BEST_TIMES);
+        times.put(arenaId, time);
+
+        setStatistic(Statistics.ARENA_BEST_TIMES, times);
     }
 
-    public void addGameItems(boolean clearInventory, final String... ids) {
-        var player = this.getPlayer();
+    public void resetArenaStats(String arenaId) {
+        Map<String, Long> arenaTimes = new HashMap<>(getStatistic(Statistics.ARENA_BEST_TIMES));
 
-        if (clearInventory) {
-            player.getInventory().clear();
+        boolean changed = arenaTimes.remove(arenaId) != null;
+
+        if (!changed) {
+            return;
         }
 
-        for (final var id : ids) {
-            this.addGameItem(id);
-        }
-
-        player.updateInventory();
-    }
-
-    public void addGameItem(final String id) {
-        plugin.getItemManager().findItem(id).ifPresent(gameItem -> this.getPlayer().getInventory().setItem(gameItem.<Integer>getCustomKey("slot"), gameItem.getItemStack()));
-    }
-
-    public void playDeathEffect() {
-        final var player = this.getPlayer();
-
-        player.setAllowFlight(true);
-        player.setFlying(true);
-//        player.addPotionEffect(XPotion.INVISIBILITY.buildPotionEffect(Integer.MAX_VALUE, 2));
-//        player.addPotionEffect(XPotion.BLINDNESS.buildPotionEffect(4 * 20, 2));
+        setStatistic(Statistics.ARENA_BEST_TIMES, arenaTimes);
     }
 }

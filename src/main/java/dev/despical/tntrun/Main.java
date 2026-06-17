@@ -28,10 +28,14 @@ import dev.despical.tntrun.arena.Arena;
 import dev.despical.tntrun.arena.ArenaRegistry;
 import dev.despical.tntrun.arena.ArenaUtils;
 import dev.despical.tntrun.arena.managers.ArenaManager;
+import dev.despical.tntrun.chat.ChatManager;
 import dev.despical.tntrun.command.AdminCommands;
 import dev.despical.tntrun.command.PlayerCommands;
+import dev.despical.tntrun.database.Database;
+import dev.despical.tntrun.database.DatabaseType;
+import dev.despical.tntrun.database.FlatFileStorage;
+import dev.despical.tntrun.database.MySQLStorage;
 import dev.despical.tntrun.events.EventListener;
-import dev.despical.tntrun.handlers.ChatManager;
 import dev.despical.tntrun.handlers.PermissionsManager;
 import dev.despical.tntrun.handlers.PlaceholderHandler;
 import dev.despical.tntrun.handlers.sign.SignManager;
@@ -46,7 +50,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.util.Locale;
-import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Stream;
@@ -64,7 +67,8 @@ public class Main extends JavaPlugin {
 
     private ConfigOptions options;
 	private ArenaRegistry arenaRegistry;
-	private ArenaManager arenaManager;
+    private Database database;
+    private ArenaManager arenaManager;
 	private ChatManager chatManager;
 	private UserManager userManager;
 	private ItemManager itemManager;
@@ -103,39 +107,39 @@ public class Main extends JavaPlugin {
 			arena.cleanUpArena();
 		}
 
-		userManager.getUserDatabase().shutdown();
+        database.shutdown();
 	}
 
 	private void initializeClasses() {
         Locale.setDefault(Locale.ENGLISH);
 
-		this.setupConfigurationFiles();
+		setupConfigurationFiles();
 
-		this.options = new ConfigOptions(this);
-		this.chatManager = new ChatManager(this);
-		this.userManager = new UserManager(this);
-		this.commandFramework = new CommandFramework(this);
-		this.arenaRegistry = new ArenaRegistry(this);
-		this.arenaManager = new ArenaManager(this);
-		this.itemManager = new ItemManager(this, manager -> {
+		options = new ConfigOptions(this);
+		chatManager = new ChatManager(this);
+		userManager = new UserManager(this);
+		commandFramework = new CommandFramework(this);
+		arenaRegistry = new ArenaRegistry(this);
+        database = createDatabase();
+		arenaManager = new ArenaManager(this);
+		itemManager = new ItemManager(this, manager -> {
 			ItemOption.enableOptions(ItemOption.GLOW);
 
 			manager.editItemBuilder(builder -> builder.unbreakable(true).hideTooltip(true));
 			manager.registerItems("items", "items");
 		});
 
-		this.permissionManager = new PermissionsManager(this);
-		this.signManager = new SignManager(this);
+		permissionManager = new PermissionsManager(this);
+		signManager = new SignManager(this);
 
 		ScoreboardLib.setPluginInstance(this);
 		EventListener.registerEvents(this);
-		User.cooldownHandlerTask();
 
 		new AdminCommands();
 		new PlayerCommands();
 
 		if (getServer().getPluginManager().isPluginEnabled("PlaceholderAPI")) {
-			this.leaderboardManager = new LeaderboardManager(this);
+			leaderboardManager = new LeaderboardManager(this);
 
 			new PlaceholderHandler(this);
 		}
@@ -144,19 +148,24 @@ public class Main extends JavaPlugin {
 			getServer().getScheduler().scheduleSyncRepeatingTask(this, () -> userManager.getUsers().forEach(ArenaUtils::updateNameTagsVisibility), 60, 140);
 		}
 
-		this.handleAutoDataSaving();
+		handleAutoDataSaving();
 	}
 
-	private void handleAutoDataSaving() {
-		long period = getConfig().getLong("Statistic-Saving-Period", 300) * 20;
+    private Database createDatabase() {
+        String databaseType = getConfig().getString("database");
 
-		if (period > 0) {
-			getServer().getScheduler().runTaskTimerAsynchronously(this, () -> {
-				userManager.getUserDatabase().saveAllStatistics();
+        return switch (DatabaseType.getByName(databaseType)) {
+            case FLAT_FILE -> new FlatFileStorage();
+            case MYSQL -> new MySQLStorage();
+            case null -> {
+                getLogger().warning("Invalid database type. Using flat file storage.");
+                yield new FlatFileStorage();
+            }
+        };
+    }
 
-				Optional.ofNullable(leaderboardManager).ifPresent(LeaderboardManager::updateLeaderboards);
-			}, period, period);
-		}
+    private void handleAutoDataSaving() {
+
 	}
 
     private void checkUpdates() {

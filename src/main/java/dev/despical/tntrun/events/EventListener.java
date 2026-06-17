@@ -22,7 +22,6 @@ import dev.despical.tntrun.Main;
 import dev.despical.tntrun.events.event.GameEvents;
 import dev.despical.tntrun.events.event.GameItemEvents;
 import dev.despical.tntrun.events.event.JoinQuitEvents;
-import dev.despical.tntrun.handlers.ChatManager;
 import dev.despical.tntrun.user.UserManager;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;

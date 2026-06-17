@@ -18,20 +18,14 @@
 
 package dev.despical.tntrun.user;
 
-import dev.despical.tntrun.option.BooleanOption;
 import dev.despical.tntrun.Main;
-import dev.despical.tntrun.api.statistic.StatisticType;
-import dev.despical.tntrun.user.data.AbstractDatabase;
-import dev.despical.tntrun.user.data.FlatFileStatistics;
-import dev.despical.tntrun.user.data.MySQLStatistics;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 /**
  * @author Despical
@@ -40,31 +34,20 @@ import java.util.stream.Collectors;
  */
 public class UserManager {
 
-    @NotNull
+    private final Main plugin;
     private final Map<UUID, User> users;
 
-    @NotNull
-    private final AbstractDatabase userDatabase;
-
     public UserManager(Main plugin) {
+        this.plugin = plugin;
         this.users = new HashMap<>();
-        this.userDatabase = new FlatFileStatistics();
+        this.loadDataOfOnlinePlayers();
     }
 
-    @NotNull
-    public User addUser(Player player) {
-        User user = new User(player);
-        users.put(player.getUniqueId(), user);
-
-        userDatabase.loadStatistics(user);
-        return user;
+    public User getUser(UUID uuid) {
+        Player player = Bukkit.getPlayer(uuid);
+        return player == null ? null : this.getUser(player);
     }
 
-    public void removeUser(Player player) {
-        users.remove(player.getUniqueId());
-    }
-
-    @NotNull
     public User getUser(Player player) {
         User user = users.get(player.getUniqueId());
 
@@ -72,32 +55,26 @@ public class UserManager {
             return user;
         }
 
-        return this.addUser(player);
+        return createNewUser(player);
     }
 
-    @NotNull
+    public void removeUser(User user) {
+        users.remove(user.getUUID());
+    }
+
     public Set<User> getUsers() {
-        return users.values()
-            .stream()
-            .filter(user -> {
-                Player player = user.getPlayer();
-
-                return player != null && player.isOnline();
-            }).collect(Collectors.toSet());
+        return Set.copyOf(users.values());
     }
 
-    @NotNull
-    public AbstractDatabase getUserDatabase() {
-        return userDatabase;
+    public User createNewUser(Player player) {
+        User user = new User(player);
+        users.put(player.getUniqueId(), user);
+
+        plugin.getDatabase().loadData(user);
+        return user;
     }
 
-    public void saveStatistic(User user, StatisticType statisticType) {
-        if (!statisticType.isPersistent()) return;
-
-        this.userDatabase.saveStatistics(user);
-    }
-
-    public void saveStatistics(User user) {
-        this.userDatabase.saveStatistics(user);
+    private void loadDataOfOnlinePlayers() {
+        plugin.getServer().getOnlinePlayers().forEach(this::createNewUser);
     }
 }
