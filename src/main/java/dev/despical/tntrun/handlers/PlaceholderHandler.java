@@ -18,9 +18,9 @@
 
 package dev.despical.tntrun.handlers;
 
+import dev.despical.commons.number.NumberUtils;
+import dev.despical.commons.string.StringFormatUtils;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
-import me.despical.commons.number.NumberUtils;
-import me.despical.commons.string.StringFormatUtils;
 import dev.despical.tntrun.Main;
 import dev.despical.tntrun.api.statistic.StatisticType;
 import dev.despical.tntrun.user.User;

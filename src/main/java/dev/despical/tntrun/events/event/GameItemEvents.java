@@ -18,7 +18,7 @@
 
 package dev.despical.tntrun.events.event;
 
-import dev.despical.tntrun.ConfigPreferences;
+import dev.despical.tntrun.option.BooleanOption;
 import dev.despical.tntrun.Main;
 import dev.despical.tntrun.api.statistic.StatisticType;
 import dev.despical.tntrun.arena.Arena;
@@ -227,7 +227,7 @@ public class GameItemEvents extends EventListener {
 		if (leaveItem == null) return;
 		if (!leaveItem.equals(event.getItem())) return;
 
-		if (plugin.getOption(ConfigPreferences.Option.INSTANT_LEAVE)) {
+		if (BooleanOption.INSTANT_LEAVE.value()) {
 			this.leaveArena(user, arena);
 			return;
 		}
@@ -270,7 +270,7 @@ public class GameItemEvents extends EventListener {
 	}
 
 	private void leaveArena(User user, Arena arena) {
-		if (plugin.getOption(ConfigPreferences.Option.BUNGEE_ENABLED)) {
+		if (BooleanOption.BUNGEE_ENABLED.value()) {
 			plugin.getBungeeManager().connectToHub(user);
 		} else {
 			plugin.getArenaManager().leaveAttempt(user, arena);

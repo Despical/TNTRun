@@ -18,8 +18,8 @@
 
 package dev.despical.tntrun.handlers.setup;
 
-import me.despical.inventoryframework.Gui;
-import me.despical.inventoryframework.pane.PaginatedPane;
+import dev.despical.inventoryframework.Gui;
+import dev.despical.inventoryframework.pane.PaginatedPane;
 import dev.despical.tntrun.Main;
 import dev.despical.tntrun.arena.Arena;
 import dev.despical.tntrun.handlers.setup.components.component.LobbyLocationComponents;

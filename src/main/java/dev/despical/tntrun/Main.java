@@ -18,12 +18,12 @@
 
 package dev.despical.tntrun;
 
-import me.despical.commandframework.CommandFramework;
-import me.despical.commons.scoreboard.ScoreboardLib;
-import me.despical.commons.serializer.InventorySerializer;
-import me.despical.commons.util.UpdateChecker;
-import me.despical.fileitems.ItemManager;
-import me.despical.fileitems.ItemOption;
+import dev.despical.commandframework.CommandFramework;
+import dev.despical.commons.scoreboard.ScoreboardLib;
+import dev.despical.commons.serializer.InventorySerializer;
+import dev.despical.commons.util.UpdateChecker;
+import dev.despical.fileitems.ItemManager;
+import dev.despical.fileitems.ItemOption;
 import dev.despical.tntrun.arena.Arena;
 import dev.despical.tntrun.arena.ArenaRegistry;
 import dev.despical.tntrun.arena.ArenaUtils;
@@ -38,13 +38,15 @@ import dev.despical.tntrun.handlers.bungee.BungeeManager;
 import dev.despical.tntrun.handlers.rewards.RewardsFactory;
 import dev.despical.tntrun.handlers.sign.SignManager;
 import dev.despical.tntrun.leaderboard.LeaderboardManager;
+import dev.despical.tntrun.option.BooleanOption;
+import dev.despical.tntrun.option.ConfigOptions;
 import dev.despical.tntrun.user.User;
 import dev.despical.tntrun.user.UserManager;
+import lombok.Getter;
 import org.bstats.bukkit.Metrics;
 import org.bstats.charts.SimplePie;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.util.Locale;
@@ -56,13 +58,17 @@ import java.util.stream.Stream;
  * <p>
  * Created at 10.07.2020
  */
+@Getter
 public class Main extends JavaPlugin {
 
+	@Getter
+	private static Main instance;
+
+    private ConfigOptions options;
 	private ArenaRegistry arenaRegistry;
 	private ArenaManager arenaManager;
 	private BungeeManager bungeeManager;
 	private RewardsFactory rewardsFactory;
-	private ConfigPreferences configPreferences;
 	private ChatManager chatManager;
 	private UserManager userManager;
 	private ItemManager itemManager;
@@ -73,6 +79,7 @@ public class Main extends JavaPlugin {
 
 	@Override
 	public void onEnable() {
+		instance = this;
 		initializeClasses();
 		checkUpdate();
 
@@ -94,9 +101,7 @@ public class Main extends JavaPlugin {
 				player.getInventory().clear();
 				player.getInventory().setArmorContents(null);
 
-				if (getOption(ConfigPreferences.Option.INVENTORY_MANAGER_ENABLED)) {
-					InventorySerializer.loadInventory(this, player);
-				}
+        		InventorySerializer.loadInventory(this, player);
 			}
 
 			arena.cleanUpArena();
@@ -110,7 +115,7 @@ public class Main extends JavaPlugin {
 
 		this.setupConfigurationFiles();
 
-		this.configPreferences = new ConfigPreferences(this);
+		this.options = new ConfigOptions(this);
 		this.chatManager = new ChatManager(this);
 		this.userManager = new UserManager(this);
 		this.commandFramework = new CommandFramework(this);
@@ -119,7 +124,6 @@ public class Main extends JavaPlugin {
 		this.itemManager = new ItemManager(this, manager -> {
 			ItemOption.enableOptions(ItemOption.GLOW);
 
-			manager.addCustomKeys("slot");
 			manager.editItemBuilder(builder -> builder.unbreakable(true).hideTooltip(true));
 			manager.registerItems("items", "items");
 		});
@@ -135,7 +139,7 @@ public class Main extends JavaPlugin {
 		new AdminCommands();
 		new PlayerCommands();
 
-		if (getOption(ConfigPreferences.Option.BUNGEE_ENABLED)) {
+		if (BooleanOption.BUNGEE_ENABLED.value()) {
 			this.bungeeManager = new BungeeManager(this);
 		}
 
@@ -145,13 +149,13 @@ public class Main extends JavaPlugin {
 			new PlaceholderHandler(this);
 		}
 
-		if (getOption(ConfigPreferences.Option.NAME_TAGS_HIDDEN)) {
+		if (BooleanOption.NAME_TAGS_HIDDEN.value()) {
 			getServer().getScheduler().scheduleSyncRepeatingTask(this, () -> userManager.getUsers().forEach(ArenaUtils::updateNameTagsVisibility), 60, 140);
 		}
 
 		Metrics metrics = new Metrics(this, 8147);
-		metrics.addCustomChart(new SimplePie("database_enabled", () -> getOption(ConfigPreferences.Option.DATABASE_ENABLED) ? "Enabled" : "Disabled"));
-		metrics.addCustomChart(new SimplePie("update_notifier", () -> getOption(ConfigPreferences.Option.UPDATE_NOTIFIER_ENABLED) ? "Enabled" : "Disabled"));
+		metrics.addCustomChart(new SimplePie("database_enabled", () -> BooleanOption.DATABASE_ENABLED.value() ? "Enabled" : "Disabled"));
+		metrics.addCustomChart(new SimplePie("update_notifier", () -> BooleanOption.UPDATE_NOTIFIER_ENABLED.value() ? "Enabled" : "Disabled"));
 
 		this.handleAutoDataSaving();
 	}
@@ -169,7 +173,7 @@ public class Main extends JavaPlugin {
 	}
 
 	private void checkUpdate() {
-		if (!this.getOption(ConfigPreferences.Option.UPDATE_NOTIFIER_ENABLED)) {
+		if (!BooleanOption.UPDATE_NOTIFIER_ENABLED.value()) {
 			return;
 		}
 
@@ -187,60 +191,4 @@ public class Main extends JavaPlugin {
 		Stream.of("arena", "rewards", "stats", "items", "mysql", "messages", "bungee").filter(name -> !new File(getDataFolder(), name + ".yml").exists()).forEach(name -> saveResource(name + ".yml", false));
 	}
 
-	public boolean getOption(ConfigPreferences.Option option) {
-		return configPreferences.getOption(option);
-	}
-
-	@NotNull
-	public RewardsFactory getRewardsFactory() {
-		return rewardsFactory;
-	}
-
-	@NotNull
-	public ChatManager getChatManager() {
-		return chatManager;
-	}
-
-	@NotNull
-	public UserManager getUserManager() {
-		return userManager;
-	}
-
-	@NotNull
-	public ItemManager getItemManager() {
-		return itemManager;
-	}
-
-	@NotNull
-	public PermissionsManager getPermissionManager() {
-		return permissionManager;
-	}
-
-	@NotNull
-	public CommandFramework getCommandFramework() {
-		return commandFramework;
-	}
-
-	@NotNull
-	public ArenaRegistry getArenaRegistry() {
-		return arenaRegistry;
-	}
-
-	@NotNull
-	public ArenaManager getArenaManager() {
-		return arenaManager;
-	}
-
-	@NotNull
-	public BungeeManager getBungeeManager() {
-		return bungeeManager;
-	}
-
-	public SignManager getSignManager() {
-		return signManager;
-	}
-
-	public LeaderboardManager getLeaderboardManager() {
-		return leaderboardManager;
-	}
 }

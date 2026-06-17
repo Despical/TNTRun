@@ -18,12 +18,12 @@
 
 package dev.despical.tntrun.events.spectator.components;
 
-import me.despical.commons.XMaterial;
-import me.despical.commons.XPotion;
-import me.despical.commons.item.ItemBuilder;
-import me.despical.commons.miscellaneous.PlayerUtils;
-import me.despical.inventoryframework.GuiItem;
-import me.despical.inventoryframework.pane.StaticPane;
+import dev.despical.commons.XMaterial;
+import dev.despical.commons.XPotion;
+import dev.despical.commons.item.ItemBuilder;
+import dev.despical.commons.miscellaneous.PlayerUtils;
+import dev.despical.inventoryframework.GuiItem;
+import dev.despical.inventoryframework.pane.StaticPane;
 import dev.despical.tntrun.Main;
 import dev.despical.tntrun.api.statistic.StatisticType;
 import dev.despical.tntrun.events.spectator.SpectatorSettingsGUI;

@@ -18,11 +18,11 @@
 
 package dev.despical.tntrun.arena;
 
-import me.despical.commons.XPotion;
-import me.despical.commons.XSound;
-import me.despical.commons.miscellaneous.PlayerUtils;
-import me.despical.commons.serializer.InventorySerializer;
-import dev.despical.tntrun.ConfigPreferences;
+import dev.despical.commons.XPotion;
+import dev.despical.commons.XSound;
+import dev.despical.commons.miscellaneous.PlayerUtils;
+import dev.despical.commons.serializer.InventorySerializer;
+import dev.despical.tntrun.option.BooleanOption;
 import dev.despical.tntrun.Main;
 import dev.despical.tntrun.api.events.game.GameStartEvent;
 import dev.despical.tntrun.api.events.game.GameStateChangeEvent;
@@ -32,7 +32,6 @@ import dev.despical.tntrun.arena.managers.ScoreboardManager;
 import dev.despical.tntrun.arena.options.ArenaOption;
 import dev.despical.tntrun.handlers.ChatManager;
 import dev.despical.tntrun.user.User;
-import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -127,7 +126,7 @@ public class Arena extends BukkitRunnable {
     }
 
     public void teleportToEndLocation(User user) {
-        if (plugin.getOption(ConfigPreferences.Option.BUNGEE_ENABLED)) {
+        if (BooleanOption.BUNGEE_ENABLED.value()) {
             plugin.getBungeeManager().connectToHub(user);
             return;
         }
@@ -664,16 +663,8 @@ public class Arena extends BukkitRunnable {
                         player.getInventory().clear();
                         player.getInventory().setArmorContents(null);
 
-                        if (plugin.getOption(ConfigPreferences.Option.INVENTORY_MANAGER_ENABLED)) {
-                            InventorySerializer.loadInventory(plugin, player);
-                        } else {
-                            player.setGameMode(GameMode.SURVIVAL);
-                            player.setWalkSpeed(.2F);
-                            player.setFlying(false);
-                            player.setAllowFlight(false);
-                            player.setFireTicks(0);
-                            player.setFoodLevel(20);
-                        }
+
+                        InventorySerializer.loadInventory(plugin, player);
 
                         teleportToEndLocation(user);
                     }
@@ -689,7 +680,7 @@ public class Arena extends BukkitRunnable {
 
                 setArenaState(ArenaState.WAITING_FOR_PLAYERS);
 
-                if (!plugin.getOption(ConfigPreferences.Option.BUNGEE_ENABLED)) {
+                if (!BooleanOption.BUNGEE_ENABLED.value()) {
                     return;
                 }
 

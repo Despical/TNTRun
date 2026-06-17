@@ -18,9 +18,9 @@
 
 package dev.despical.tntrun.events.spectator;
 
-import me.despical.inventoryframework.Gui;
-import me.despical.inventoryframework.GuiBuilder;
-import me.despical.inventoryframework.pane.StaticPane;
+import dev.despical.inventoryframework.Gui;
+import dev.despical.inventoryframework.GuiBuilder;
+import dev.despical.inventoryframework.pane.StaticPane;
 import dev.despical.tntrun.Main;
 import dev.despical.tntrun.arena.Arena;
 import dev.despical.tntrun.events.spectator.components.SettingComponents;

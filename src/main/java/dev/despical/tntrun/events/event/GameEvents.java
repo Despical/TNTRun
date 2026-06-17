@@ -19,7 +19,7 @@
 package dev.despical.tntrun.events.event;
 
 import me.clip.placeholderapi.PlaceholderAPI;
-import dev.despical.tntrun.ConfigPreferences;
+import dev.despical.tntrun.option.BooleanOption;
 import dev.despical.tntrun.Main;
 import dev.despical.tntrun.api.events.player.PlayerEliminatedEvent;
 import dev.despical.tntrun.arena.ArenaState;
@@ -37,7 +37,6 @@ import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
-import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerSwapHandItemsEvent;
 
@@ -180,7 +179,7 @@ public class GameEvents extends EventListener {
                 return;
             }
 
-            if (plugin.getOption(ConfigPreferences.Option.PVP_DISABLED)) {
+            if (BooleanOption.PVP_DISABLED.value()) {
                 event.setCancelled(true);
             } else {
                 if (!user.isSpectator()) {
@@ -193,51 +192,22 @@ public class GameEvents extends EventListener {
     }
 
     @EventHandler
-    public void onCommandExecute(PlayerCommandPreprocessEvent event) {
-        var user = userManager.getUser(event.getPlayer());
-
-        if (!user.isInArena()) return;
-        if (!plugin.getOption(ConfigPreferences.Option.BLOCK_COMMANDS)) return;
-
-        String message = event.getMessage();
-
-        if (plugin.getConfig().getStringList("Whitelisted-Commands").stream().anyMatch(command -> {
-            boolean exact = command.startsWith("exact:");
-
-            if (exact) {
-                return command.substring(6).equals(message);
-            }
-
-            return message.startsWith(command);
-        })) {
-            return;
-        }
-
-        if (user.hasPermission("tntrun.command.override")) return;
-        if (message.equalsIgnoreCase("/tntrun leave")) return;
-
-        event.setCancelled(true);
-        user.sendMessage("player-commands.only-command-is-leave");
-    }
-
-
-    @EventHandler
     public void onChatEvent(AsyncPlayerChatEvent event) {
         var user = this.userManager.getUser(event.getPlayer());
         var arena = user.getArena();
 
         if (arena == null) {
-            if (!plugin.getOption(ConfigPreferences.Option.DISABLE_SEPARATE_CHAT)) {
+            if (!BooleanOption.DISABLE_SEPARATE_CHAT.value()) {
                 plugin.getArenaRegistry().getArenas().forEach(loopArena -> loopArena.getPlayers().forEach(u -> event.getRecipients().remove(u.getPlayer())));
             }
 
             return;
         }
 
-        if (plugin.getOption(ConfigPreferences.Option.CHAT_FORMAT_ENABLED)) {
+        if (BooleanOption.CHAT_FORMAT_ENABLED.value()) {
             var message = formatChatPlaceholders(chatManager.message("messages.in-game.game-chat-format"), user, event.getMessage());
 
-            if (!plugin.getOption(ConfigPreferences.Option.DISABLE_SEPARATE_CHAT)) {
+            if (!BooleanOption.DISABLE_SEPARATE_CHAT.value()) {
                 event.setCancelled(true);
 
                 var dead = arena.isDeathPlayer(user) || arena.isSpectator(user);

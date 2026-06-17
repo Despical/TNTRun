@@ -64,4 +64,9 @@ tasks.shadowJar {
     exclude 'fonts/**'
 
     archiveFileName = "tnt-run-${version}.jar"
+
+    def hostName = InetAddress.getLocalHost().getHostName()
+    if (hostName == "DESKTOP-RD26J35") {
+        destinationDirectory = file("C:/Users/berke/OneDrive/Masaüstü/Paper 26.1.2/plugins")
+    }
 }

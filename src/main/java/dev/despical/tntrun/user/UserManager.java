@@ -18,7 +18,7 @@
 
 package dev.despical.tntrun.user;
 
-import dev.despical.tntrun.ConfigPreferences;
+import dev.despical.tntrun.option.BooleanOption;
 import dev.despical.tntrun.Main;
 import dev.despical.tntrun.api.statistic.StatisticType;
 import dev.despical.tntrun.user.data.AbstractDatabase;
@@ -48,7 +48,7 @@ public class UserManager {
 
     public UserManager(Main plugin) {
         this.users = new HashMap<>();
-        this.userDatabase = plugin.getOption(ConfigPreferences.Option.DATABASE_ENABLED) ? new MySQLStatistics() : new FlatFileStatistics();
+        this.userDatabase = BooleanOption.DATABASE_ENABLED.value() ? new MySQLStatistics() : new FlatFileStatistics();
     }
 
     @NotNull

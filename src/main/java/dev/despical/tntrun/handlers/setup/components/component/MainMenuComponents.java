@@ -18,16 +18,16 @@
 
 package dev.despical.tntrun.handlers.setup.components.component;
 
-import me.despical.commons.XMaterial;
-import me.despical.commons.configuration.ConfigUtils;
-import me.despical.commons.item.ItemBuilder;
-import me.despical.commons.serializer.LocationSerializer;
-import me.despical.commons.util.Strings;
-import me.despical.commons.util.conversation.ConversationBuilder;
-import me.despical.inventoryframework.GuiItem;
-import me.despical.inventoryframework.pane.PaginatedPane;
-import me.despical.inventoryframework.pane.StaticPane;
-import dev.despical.tntrun.ConfigPreferences;
+import dev.despical.commons.XMaterial;
+import dev.despical.commons.configuration.ConfigUtils;
+import dev.despical.commons.item.ItemBuilder;
+import dev.despical.commons.serializer.LocationSerializer;
+import dev.despical.commons.util.Strings;
+import dev.despical.commons.util.conversation.ConversationBuilder;
+import dev.despical.inventoryframework.GuiItem;
+import dev.despical.inventoryframework.pane.PaginatedPane;
+import dev.despical.inventoryframework.pane.StaticPane;
+import dev.despical.tntrun.option.BooleanOption;
 import dev.despical.tntrun.arena.ArenaState;
 import dev.despical.tntrun.handlers.setup.ArenaEditorGUI;
 import dev.despical.tntrun.handlers.setup.components.AbstractComponent;
@@ -98,7 +98,7 @@ public class MainMenuComponents extends AbstractComponent {
 
 		var gameSignItem = new ItemBuilder(XMaterial.OAK_SIGN).name("&e&l      Add Game Sign");
 
-		if (!plugin.getOption(ConfigPreferences.Option.BUNGEE_ENABLED)) {
+		if (!BooleanOption.BUNGEE_ENABLED.value()) {
 			gameSignItem.lore("&7Target a sign and click this.");
 		} else {
 			gameSignItem
@@ -108,7 +108,7 @@ public class MainMenuComponents extends AbstractComponent {
 		}
 
 		pane.addItem(GuiItem.of(gameSignItem.build(), e -> {
-			if (plugin.getOption(ConfigPreferences.Option.BUNGEE_ENABLED)) return;
+			if (BooleanOption.BUNGEE_ENABLED.value()) return;
 
 			user.closeOpenedInventory();
 
@@ -152,7 +152,7 @@ public class MainMenuComponents extends AbstractComponent {
 					.name("       &e&lFinish Arena Setup")
 					.lore("&7  Click this when you are done.")
 					.lore("&7You'll still be able to edit arena.")
-					.flag(ItemFlag.HIDE_POTION_EFFECTS)
+					.flag(ItemFlag.values())
 					.build();
 		}
 

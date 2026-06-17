@@ -18,18 +18,19 @@
 
 package dev.despical.tntrun.arena.managers;
 
-import me.despical.commons.scoreboard.Scoreboard;
-import me.despical.commons.scoreboard.ScoreboardHandler;
-import me.despical.commons.scoreboard.ScoreboardLib;
-import me.despical.commons.scoreboard.common.Entry;
-import me.despical.commons.scoreboard.common.EntryBuilder;
-import me.despical.commons.string.StringFormatUtils;
-import dev.despical.tntrun.ConfigPreferences;
+import dev.despical.commons.scoreboard.Scoreboard;
+import dev.despical.commons.scoreboard.ScoreboardHandler;
+import dev.despical.commons.scoreboard.ScoreboardLib;
+import dev.despical.commons.scoreboard.common.Entry;
+import dev.despical.commons.scoreboard.common.EntryBuilder;
+import dev.despical.commons.string.StringFormatUtils;
+import dev.despical.tntrun.option.BooleanOption;
 import dev.despical.tntrun.Main;
 import dev.despical.tntrun.arena.Arena;
 import dev.despical.tntrun.arena.ArenaState;
 import dev.despical.tntrun.handlers.ChatManager;
 import dev.despical.tntrun.user.User;
+import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 
 import java.util.HashSet;
@@ -63,15 +64,15 @@ public class ScoreboardManager {
     }
 
     public void createScoreboard(User user) {
-        if (!plugin.getOption(ConfigPreferences.Option.SCOREBOARD_ENABLED)) {
+        if (!BooleanOption.SCOREBOARD_ENABLED.value()) {
             return;
         }
 
         Scoreboard scoreboard = ScoreboardLib.createScoreboard(user.getPlayer()).setHandler(new ScoreboardHandler() {
 
             @Override
-            public String getTitle(Player player) {
-                return chatManager.message("Scoreboard.Title");
+            public Component getTitle(Player player) {
+                return Component.text("");
             }
 
             @Override

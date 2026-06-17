@@ -18,12 +18,12 @@
 
 package dev.despical.tntrun.arena.managers;
 
-import me.despical.commons.XPotion;
-import me.despical.commons.miscellaneous.MiscUtils;
-import me.despical.commons.serializer.InventorySerializer;
-import me.despical.commons.string.StringFormatUtils;
-import me.despical.commons.util.Strings;
-import dev.despical.tntrun.ConfigPreferences;
+import dev.despical.commons.XPotion;
+import dev.despical.commons.miscellaneous.MiscUtils;
+import dev.despical.commons.serializer.InventorySerializer;
+import dev.despical.commons.string.StringFormatUtils;
+import dev.despical.commons.util.Strings;
+import dev.despical.tntrun.option.BooleanOption;
 import dev.despical.tntrun.Main;
 import dev.despical.tntrun.api.events.game.GameEndEvent;
 import dev.despical.tntrun.api.events.game.GameJoinAttemptEvent;
@@ -79,7 +79,7 @@ public record ArenaManager(Main plugin) {
             return;
         }
 
-        if (!plugin.getOption(ConfigPreferences.Option.BUNGEE_ENABLED) && !plugin.getPermissionManager().hasPermission(user, arena)) {
+        if (!BooleanOption.BUNGEE_ENABLED.value() && !plugin.getPermissionManager().hasPermission(user, arena)) {
             user.sendMessage("messages.arena.no-permission");
             return;
         }
@@ -114,9 +114,7 @@ public record ArenaManager(Main plugin) {
             }
         }
 
-        if (plugin.getOption(ConfigPreferences.Option.INVENTORY_MANAGER_ENABLED)) {
-            InventorySerializer.saveInventoryToFile(plugin, player);
-        }
+        InventorySerializer.saveInventoryToFile(plugin, player);
 
         ArenaUtils.updateNameTagsVisibility(user);
 
@@ -137,7 +135,6 @@ public record ArenaManager(Main plugin) {
         player.setAllowFlight(false);
         player.setGlowing(false);
 
-        user.heal();
         user.removePotionEffectsExcept();
         user.resetTemporaryStats();
         user.addGameItem("leave-item");
@@ -170,7 +167,7 @@ public record ArenaManager(Main plugin) {
 
         int localScore = user.getStat(StatisticType.LOCAL_SURVIVE);
 
-        if (localScore > user.getStat(StatisticType.LONGEST_SURVIVE) && !plugin.getOption(ConfigPreferences.Option.LONGEST_SURVIVE_ON_WINS)) {
+        if (localScore > user.getStat(StatisticType.LONGEST_SURVIVE) && !BooleanOption.LONGEST_SURVIVE_ON_WINS.value()) {
             user.setStat(StatisticType.LONGEST_SURVIVE, localScore);
         }
 
@@ -197,13 +194,12 @@ public record ArenaManager(Main plugin) {
         player.setGameMode(GameMode.SURVIVAL);
         player.getInventory().setHeldItemSlot(0);
 
-        user.heal();
         user.setSpectator(false);
         user.removePotionEffectsExcept();
 
-        boolean bungeeEnabled = plugin.getOption(ConfigPreferences.Option.BUNGEE_ENABLED);
+        boolean bungeeEnabled = BooleanOption.BUNGEE_ENABLED.value();
 
-        if (!bungeeEnabled && plugin.getOption(ConfigPreferences.Option.INVENTORY_MANAGER_ENABLED)) {
+        if (!bungeeEnabled) {
             InventorySerializer.loadInventory(plugin, player);
         }
 
@@ -233,7 +229,7 @@ public record ArenaManager(Main plugin) {
 
         final var chatManager = plugin.getChatManager();
         final var winner = arena.getWinner();
-        final var updateOnWins = plugin.getOption(ConfigPreferences.Option.LONGEST_SURVIVE_ON_WINS);
+        final var updateOnWins = BooleanOption.LONGEST_SURVIVE_ON_WINS.value();
 
         for (final var user : arena.getPlayers()) {
             final var localScore = user.getStat(StatisticType.LOCAL_SURVIVE);

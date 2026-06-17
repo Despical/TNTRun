@@ -18,11 +18,11 @@
 
 package dev.despical.tntrun.command;
 
-import me.despical.commandframework.CommandArguments;
-import me.despical.commandframework.annotations.Command;
-import me.despical.commons.string.StringFormatUtils;
-import me.despical.commons.string.StringUtils;
-import dev.despical.tntrun.ConfigPreferences;
+import dev.despical.commandframework.CommandArguments;
+import dev.despical.commandframework.annotations.Command;
+import dev.despical.commons.string.StringFormatUtils;
+import dev.despical.commons.string.StringUtils;
+import dev.despical.tntrun.option.BooleanOption;
 import dev.despical.tntrun.api.statistic.StatisticType;
 import dev.despical.tntrun.api.statistic.StatsStorage;
 import dev.despical.tntrun.arena.Arena;
@@ -74,7 +74,7 @@ public class PlayerCommands extends AbstractCommand {
         senderType = Command.SenderType.PLAYER
     )
     public void randomJoinCommand(User user) {
-        if (plugin.getOption(ConfigPreferences.Option.BUNGEE_ENABLED)) {
+        if (BooleanOption.BUNGEE_ENABLED.value()) {
             user.sendMessage("player-commands.no-random-join-for-bungee");
             return;
         }

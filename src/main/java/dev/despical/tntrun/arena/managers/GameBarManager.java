@@ -18,7 +18,7 @@
 
 package dev.despical.tntrun.arena.managers;
 
-import dev.despical.tntrun.ConfigPreferences;
+import dev.despical.tntrun.option.BooleanOption;
 import dev.despical.tntrun.Main;
 import dev.despical.tntrun.arena.Arena;
 import dev.despical.tntrun.user.User;
@@ -40,7 +40,7 @@ public final class GameBarManager {
     public GameBarManager(Arena arena, Main plugin) {
         this.arena = arena;
         this.plugin = plugin;
-        this.gameBar = plugin.getOption(ConfigPreferences.Option.GAME_BAR_ENABLED) ? plugin.getServer().createBossBar("", BarColor.BLUE, BarStyle.SOLID) : null;
+        this.gameBar = BooleanOption.GAME_BAR_ENABLED.value() ? plugin.getServer().createBossBar("", BarColor.BLUE, BarStyle.SOLID) : null;
     }
 
     public void doBarAction(User user, int action) {

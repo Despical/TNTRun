@@ -18,10 +18,8 @@
 
 package dev.despical.tntrun.user;
 
-import me.despical.commons.XPotion;
-import me.despical.commons.messages.ActionBar;
-import me.despical.commons.miscellaneous.AttributeUtils;
-import dev.despical.tntrun.ConfigPreferences;
+import com.cryptomorin.xseries.messages.ActionBar;
+import dev.despical.tntrun.option.BooleanOption;
 import dev.despical.tntrun.Main;
 import dev.despical.tntrun.api.events.player.StatisticChangeEvent;
 import dev.despical.tntrun.api.statistic.StatisticType;
@@ -31,16 +29,12 @@ import dev.despical.tntrun.utils.Utils;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.text.MessageFormat;
-import java.util.EnumMap;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import java.util.*;
 
 /**
  * @author Despical
@@ -166,12 +160,6 @@ public class User {
         this.spectator = false;
     }
 
-    public void heal() {
-        if (plugin.getOption(ConfigPreferences.Option.HEAL_PLAYER)) {
-            AttributeUtils.healPlayer(getPlayer());
-        }
-    }
-
     public void applyDoubleJumpDelay() {
         final int cooldown = plugin.getPermissionManager().getDoubleJumpDelay();
 
@@ -179,13 +167,13 @@ public class User {
         setCooldown("double_jump", cooldown);
         performReward(Reward.RewardType.DOUBLE_JUMP);
 
-        if (plugin.getOption(ConfigPreferences.Option.JUMP_BAR) && getStat(StatisticType.LOCAL_DOUBLE_JUMPS) > 0)
+        if (BooleanOption.JUMP_BAR.value() && getStat(StatisticType.LOCAL_DOUBLE_JUMPS) > 0)
             Utils.applyActionBarCooldown(this, cooldown);
     }
 
-    public void removePotionEffectsExcept(XPotion... potions) {
-        final var setOfEffects = Stream.of(potions).map(XPotion::getPotionEffectType).collect(Collectors.toSet());
-        final var player = this.getPlayer();
+    public void removePotionEffectsExcept(PotionEffectType... potions) {
+        Set<PotionEffectType> setOfEffects = Set.of(potions);
+        Player player = this.getPlayer();
 
         for (final var activePotion : player.getActivePotionEffects()) {
             if (setOfEffects.contains(activePotion.getType())) continue;
@@ -225,7 +213,7 @@ public class User {
 
         player.setAllowFlight(true);
         player.setFlying(true);
-        player.addPotionEffect(XPotion.INVISIBILITY.buildPotionEffect(Integer.MAX_VALUE, 2));
-        player.addPotionEffect(XPotion.BLINDNESS.buildPotionEffect(4 * 20, 2));
+//        player.addPotionEffect(XPotion.INVISIBILITY.buildPotionEffect(Integer.MAX_VALUE, 2));
+//        player.addPotionEffect(XPotion.BLINDNESS.buildPotionEffect(4 * 20, 2));
     }
 }

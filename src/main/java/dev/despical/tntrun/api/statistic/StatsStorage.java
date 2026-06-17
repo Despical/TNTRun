@@ -18,8 +18,8 @@
 
 package dev.despical.tntrun.api.statistic;
 
-import me.despical.commons.configuration.ConfigUtils;
-import me.despical.commons.sorter.SortUtils;
+import dev.despical.commons.configuration.ConfigUtils;
+import dev.despical.commons.sorter.SortUtils;
 import dev.despical.tntrun.Main;
 import dev.despical.tntrun.user.data.MySQLStatistics;
 import org.bukkit.configuration.file.FileConfiguration;

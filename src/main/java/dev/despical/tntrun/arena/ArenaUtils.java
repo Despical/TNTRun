@@ -18,7 +18,7 @@
 
 package dev.despical.tntrun.arena;
 
-import dev.despical.tntrun.ConfigPreferences;
+import dev.despical.tntrun.option.BooleanOption;
 import dev.despical.tntrun.Main;
 import dev.despical.tntrun.api.statistic.StatisticType;
 import dev.despical.tntrun.handlers.ChatManager;
@@ -37,7 +37,7 @@ public class ArenaUtils {
     private static final ChatManager chatManager = plugin.getChatManager();
 
     public static void updateNameTagsVisibility(User u) {
-        if (!plugin.getOption(ConfigPreferences.Option.NAME_TAGS_HIDDEN)) return;
+        if (!BooleanOption.NAME_TAGS_HIDDEN.value()) return;
 
         for (final var user : plugin.getUserManager().getUsers()) {
             final var arena = user.getArena();

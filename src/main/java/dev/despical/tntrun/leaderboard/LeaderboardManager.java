@@ -18,7 +18,7 @@
 
 package dev.despical.tntrun.leaderboard;
 
-import me.despical.commons.configuration.ConfigUtils;
+import dev.despical.commons.configuration.ConfigUtils;
 import dev.despical.tntrun.Main;
 import dev.despical.tntrun.api.statistic.StatisticType;
 import dev.despical.tntrun.user.data.AbstractDatabase;
