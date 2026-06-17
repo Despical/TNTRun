@@ -18,33 +18,35 @@
 
 package dev.despical.tntrun;
 
+import dev.despical.commandframework.CommandArguments;
 import dev.despical.commandframework.CommandFramework;
-import dev.despical.commons.scoreboard.ScoreboardLib;
-import dev.despical.commons.serializer.InventorySerializer;
+import dev.despical.commandframework.Message;
+import dev.despical.commandframework.options.FrameworkOption;
+import dev.despical.commons.util.Strings;
 import dev.despical.commons.util.UpdateChecker;
 import dev.despical.fileitems.ItemManager;
 import dev.despical.fileitems.ItemOption;
 import dev.despical.tntrun.arena.Arena;
 import dev.despical.tntrun.arena.ArenaRegistry;
-import dev.despical.tntrun.arena.ArenaUtils;
 import dev.despical.tntrun.arena.managers.ArenaManager;
 import dev.despical.tntrun.chat.ChatManager;
-import dev.despical.tntrun.command.AdminCommands;
-import dev.despical.tntrun.command.PlayerCommands;
 import dev.despical.tntrun.database.Database;
 import dev.despical.tntrun.database.DatabaseType;
 import dev.despical.tntrun.database.FlatFileStorage;
 import dev.despical.tntrun.database.MySQLStorage;
-import dev.despical.tntrun.events.EventListener;
-import dev.despical.tntrun.handlers.PermissionsManager;
-import dev.despical.tntrun.handlers.PlaceholderHandler;
 import dev.despical.tntrun.handlers.sign.SignManager;
 import dev.despical.tntrun.leaderboard.LeaderboardManager;
 import dev.despical.tntrun.option.BooleanOption;
 import dev.despical.tntrun.option.ConfigOptions;
+import dev.despical.tntrun.stats.offline.StatsCacheManager;
 import dev.despical.tntrun.user.User;
 import dev.despical.tntrun.user.UserManager;
+import dev.despical.tntrun.utils.AutoSaveHandler;
+import dev.despical.tntrun.utils.ShutdownDetector;
 import lombok.Getter;
+import org.bstats.bukkit.Metrics;
+import org.bstats.charts.SimplePie;
+import org.bstats.charts.SingleLineChart;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -66,90 +68,84 @@ public class Main extends JavaPlugin {
 	private static Main instance;
 
     private ConfigOptions options;
-	private ArenaRegistry arenaRegistry;
+    private ItemManager itemManager;
+    private ChatManager chatManager;
+//    private GameManager gameManager;
+//    private EventManager eventManager;
+    private ArenaRegistry arenaRegistry;
     private Database database;
+    private StatsCacheManager statsCacheManager;
+    private UserManager userManager;
     private ArenaManager arenaManager;
-	private ChatManager chatManager;
-	private UserManager userManager;
-	private ItemManager itemManager;
-	private PermissionsManager permissionManager;
-	private CommandFramework commandFramework;
-	private SignManager signManager;
-	private LeaderboardManager leaderboardManager;
+    private SignManager signManager;
+    private LeaderboardManager leaderboardManager;
+    private CommandFramework commandFramework;
+//    private PlayingCommandPolicy playingCommandPolicy;
 
-	@Override
-	public void onEnable() {
-		instance = this;
-		initializeClasses();
-		checkUpdates();
+    @Override
+    public void onEnable() {
+        ShutdownDetector.init();
 
-		getLogger().info("Initialization finished.");
-		getLogger().info("Join our Discord server: https://discord.gg/uXVU8jmtpU");
-	}
+        instance = this;
 
-	@Override
-	public void onDisable() {
-		for (Arena arena : arenaRegistry.getArenas()) {
-			arena.getScoreboardManager().stopAllScoreboards();
-			arena.getGameBar().removeAll();
+        createConfigFiles();
+        initializeClasses();
+    }
 
-			for (User user : arena.getPlayers()) {
-				Player player = user.getPlayer();
+    @Override
+    public void onDisable() {
+//        new ArenaDataSaver(this).saveAllArenas();
 
-				arena.teleportToEndLocation(user);
-
-				player.getInventory().clear();
-				player.getInventory().setArmorContents(null);
-
-        		InventorySerializer.loadInventory(this, player);
-			}
-
-			arena.cleanUpArena();
-		}
-
+//        arenaManager.handleDisable();
         database.shutdown();
-	}
+    }
 
-	private void initializeClasses() {
-        Locale.setDefault(Locale.ENGLISH);
+    private void createConfigFiles() {
+        saveDefaultConfig();
+        saveResourceIfMissing("mysql.yml");
+    }
 
-		setupConfigurationFiles();
+    private void initializeClasses() {
+        this.loadItemManager();
 
-		options = new ConfigOptions(this);
-		chatManager = new ChatManager(this);
-		userManager = new UserManager(this);
-		commandFramework = new CommandFramework(this);
-		arenaRegistry = new ArenaRegistry(this);
+        options = new ConfigOptions(this);
+        chatManager = new ChatManager(this);
+//        gameManager = new GameManager(this);
+//        eventManager = new EventManager(this);
+        arenaRegistry = new ArenaRegistry(this);
         database = createDatabase();
-		arenaManager = new ArenaManager(this);
-		itemManager = new ItemManager(this, manager -> {
-			ItemOption.enableOptions(ItemOption.GLOW);
+        statsCacheManager = new StatsCacheManager(this);
+        userManager = new UserManager(this);
+        arenaManager = new ArenaManager(this);
+        signManager = new SignManager(this);
+        leaderboardManager = new LeaderboardManager(this);
+//        playingCommandPolicy = new PlayingCommandPolicy(this);
 
-			manager.editItemBuilder(builder -> builder.unbreakable(true).hideTooltip(true));
-			manager.registerItems("items", "items");
-		});
+        registerCommands();
+        registerEvents();
+        registerPlaceholderManager();
+        runAutoSave();
+        initializeMetrics();
+        checkUpdates();
 
-		permissionManager = new PermissionsManager(this);
-		signManager = new SignManager(this);
+//        getServer().getOnlinePlayers().forEach(ScoreboardManager::resetPlayerScoreboard);
+    }
 
-		ScoreboardLib.setPluginInstance(this);
-		EventListener.registerEvents(this);
+    private void runAutoSave() {
+        new AutoSaveHandler(this).runTaskTimerAsynchronously(this, 20, 20 * 60 * 5);
+    }
 
-		new AdminCommands();
-		new PlayerCommands();
+    public void loadItemManager() {
+        itemManager = new ItemManager(this, manager -> ItemOption.enableOptions(ItemOption.GLOW, ItemOption.AMOUNT));
 
-		if (getServer().getPluginManager().isPluginEnabled("PlaceholderAPI")) {
-			leaderboardManager = new LeaderboardManager(this);
+        registerItems();
+    }
 
-			new PlaceholderHandler(this);
-		}
-
-		if (BooleanOption.NAME_TAGS_HIDDEN.value()) {
-			getServer().getScheduler().scheduleSyncRepeatingTask(this, () -> userManager.getUsers().forEach(ArenaUtils::updateNameTagsVisibility), 60, 140);
-		}
-
-		handleAutoDataSaving();
-	}
+    public void registerItems() {
+        itemManager.registerItems("game-items", "game-items", "items");
+        itemManager.registerItems("menu/setup-menu", "items");
+        itemManager.registerItems("stats-menu-items", "items", "menu/stats-menu");
+    }
 
     private Database createDatabase() {
         String databaseType = getConfig().getString("database");
@@ -164,9 +160,51 @@ public class Main extends JavaPlugin {
         };
     }
 
-    private void handleAutoDataSaving() {
+    private void registerCommands() {
+        commandFramework = new CommandFramework(this);
 
-	}
+        if (BooleanOption.DEBUG.value()) {
+            commandFramework.options().enableOptions(FrameworkOption.DEBUG);
+        }
+
+        commandFramework.addCustomParameter(Player.class, CommandArguments::getSender);
+        commandFramework.addCustomParameter(User.class, args -> userManager.getUser(args.<Player>getSender()));
+        commandFramework.addCustomParameter(Arena.class, args -> arenaRegistry.getArena(args.getFirst()));
+        commandFramework.registerAllInPackage("dev.despical.advancedparkour.command");
+
+        Message.setColorFormatter(Strings::format);
+
+        var messages = Stream.of(Message.SHORT_ARG_SIZE, Message.LONG_ARG_SIZE);
+        messages.forEach(message -> message.setMessage((cmd, args) -> {
+            args.sendMessage("&cCorrect usage: " + cmd.usage().replace("%label%", args.getLabel()));
+            return true;
+        }));
+    }
+
+    private void registerEvents() {
+//        new GeneralEvents();
+//        new CommandBlockEvents();
+//        new GameEvents();
+//        new GameItemEvents();
+    }
+
+    private void registerPlaceholderManager() {
+        if (!getServer().getPluginManager().isPluginEnabled("PlaceholderAPI")) {
+            return;
+        }
+
+//        PlaceholderManager manager = new PlaceholderManager(this);
+//        manager.register();
+    }
+
+    private void initializeMetrics() {
+        Metrics metrics = new Metrics(this, 30500);
+
+        metrics.addCustomChart(new SimplePie("database_type", this::resolveMetricsDatabaseType));
+        metrics.addCustomChart(new SimplePie("placeholderapi_enabled", () -> isPluginEnabled("PlaceholderAPI") ? "yes" : "no"));
+        metrics.addCustomChart(new SingleLineChart("arenas_total", () -> arenaRegistry.getArenas().size()));
+//        metrics.addCustomChart(new SingleLineChart("arenas_ready", () -> (int) arenaRegistry.getArenas().stream().filter(arena -> arena.getOption(ArenaKeys.READY)).count()));
+    }
 
     private void checkUpdates() {
         if (!BooleanOption.UPDATE_NOTIFIER.value()) {
@@ -180,10 +218,23 @@ public class Main extends JavaPlugin {
         });
     }
 
-	private void setupConfigurationFiles() {
-		saveDefaultConfig();
+    private String resolveMetricsDatabaseType() {
+        String configured = getConfig().getString("database", "flat");
+        DatabaseType type = DatabaseType.getByName(configured);
+        return type != null ? type.name().toLowerCase(Locale.ENGLISH) : configured.toLowerCase(Locale.ENGLISH);
+    }
 
-		Stream.of("arena", "stats", "items", "mysql", "messages", "bungee").filter(name -> !new File(getDataFolder(), name + ".yml").exists()).forEach(name -> saveResource(name + ".yml", false));
-	}
+    private boolean isPluginEnabled(String pluginName) {
+        return getServer().getPluginManager().isPluginEnabled(pluginName);
+    }
 
+    private void saveResourceIfMissing(String resourcePath) {
+        File targetFile = new File(getDataFolder(), resourcePath);
+
+        if (targetFile.exists()) {
+            return;
+        }
+
+        saveResource(resourcePath, false);
+    }
 }
