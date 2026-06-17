@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package dev.despical.tntrun.events.spectator.components;
+package dev.despical.tntrun.event.spectator.components;
 
 import dev.despical.commons.XMaterial;
 import dev.despical.commons.XPotion;
@@ -26,7 +26,7 @@ import dev.despical.inventoryframework.GuiItem;
 import dev.despical.inventoryframework.pane.StaticPane;
 import dev.despical.tntrun.Main;
 import dev.despical.tntrun.api.statistic.StatisticType;
-import dev.despical.tntrun.events.spectator.SpectatorSettingsGUI;
+import dev.despical.tntrun.event.spectator.SpectatorSettingsGUI;
 import dev.despical.tntrun.user.User;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.InventoryClickEvent;

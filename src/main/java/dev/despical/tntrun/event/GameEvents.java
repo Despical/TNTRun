@@ -16,16 +16,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package dev.despical.tntrun.events.event;
+package dev.despical.tntrun.event;
 
-import me.clip.placeholderapi.PlaceholderAPI;
 import dev.despical.tntrun.option.BooleanOption;
 import dev.despical.tntrun.Main;
 import dev.despical.tntrun.api.events.player.PlayerEliminatedEvent;
 import dev.despical.tntrun.arena.ArenaState;
-import dev.despical.tntrun.events.EventListener;
 import dev.despical.tntrun.user.User;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
@@ -36,7 +33,6 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerSwapHandItemsEvent;
 
@@ -47,11 +43,7 @@ import java.util.Optional;
  * <p>
  * Created at 4.02.2023
  */
-public class GameEvents extends EventListener {
-
-    public GameEvents(Main plugin) {
-        super(plugin);
-    }
+public class GameEvents extends ListenerAdapter {
 
     @EventHandler
     public void onFoodLevelChange(FoodLevelChangeEvent event) {
@@ -66,7 +58,7 @@ public class GameEvents extends EventListener {
 
     @EventHandler
     public void onDropItem(PlayerDropItemEvent event) {
-        if (this.isInArena(event.getPlayer())) {
+        if (arenaRegistry.isInArena(event.getPlayer())) {
             event.setCancelled(true);
         }
     }
@@ -118,7 +110,7 @@ public class GameEvents extends EventListener {
 
     @EventHandler
     public void onItemMove(InventoryClickEvent e) {
-        if (e.getWhoClicked() instanceof Player player && this.isInArena(player)) {
+        if (e.getWhoClicked() instanceof Player player && arenaRegistry.isInArena(player)) {
             if (e.getView().getType() == InventoryType.CRAFTING || e.getView().getType() == InventoryType.PLAYER) {
                 e.setResult(Event.Result.DENY);
             }
@@ -127,28 +119,28 @@ public class GameEvents extends EventListener {
 
     @EventHandler
     public void onItemSwap(PlayerSwapHandItemsEvent event) {
-        if (this.isInArena(event.getPlayer())) {
+        if (arenaRegistry.isInArena(event.getPlayer())) {
             event.setCancelled(true);
         }
     }
 
     @EventHandler
     public void onDrop(PlayerDropItemEvent event) {
-        if (this.isInArena(event.getPlayer())) {
+        if (arenaRegistry.isInArena(event.getPlayer())) {
             event.setCancelled(true);
         }
     }
 
     @EventHandler
     public void onBlockBreak(BlockBreakEvent event) {
-        if (this.isInArena(event.getPlayer())) {
+        if (arenaRegistry.isInArena(event.getPlayer())) {
             event.setCancelled(true);
         }
     }
 
     @EventHandler
     public void onBlockPlace(BlockPlaceEvent event) {
-        if (this.isInArena(event.getPlayer())) {
+        if (arenaRegistry.isInArena(event.getPlayer())) {
             event.setCancelled(true);
         }
     }

@@ -18,6 +18,8 @@
 
 package dev.despical.tntrun.command;
 
+import dev.despical.tntrun.Main;
+
 import java.util.HashSet;
 import java.util.Locale;
 import java.util.Set;

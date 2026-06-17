@@ -30,6 +30,7 @@ import dev.despical.tntrun.arena.Arena;
 import dev.despical.tntrun.arena.ArenaRegistry;
 import dev.despical.tntrun.arena.managers.ArenaManager;
 import dev.despical.tntrun.chat.ChatManager;
+import dev.despical.tntrun.command.PlayingCommandPolicy;
 import dev.despical.tntrun.database.Database;
 import dev.despical.tntrun.database.DatabaseType;
 import dev.despical.tntrun.database.FlatFileStorage;
@@ -80,7 +81,7 @@ public class Main extends JavaPlugin {
     private SignManager signManager;
     private LeaderboardManager leaderboardManager;
     private CommandFramework commandFramework;
-//    private PlayingCommandPolicy playingCommandPolicy;
+    private PlayingCommandPolicy playingCommandPolicy;
 
     @Override
     public void onEnable() {
@@ -119,7 +120,7 @@ public class Main extends JavaPlugin {
         arenaManager = new ArenaManager(this);
         signManager = new SignManager(this);
         leaderboardManager = new LeaderboardManager(this);
-//        playingCommandPolicy = new PlayingCommandPolicy(this);
+        playingCommandPolicy = new PlayingCommandPolicy(this);
 
         registerCommands();
         registerEvents();

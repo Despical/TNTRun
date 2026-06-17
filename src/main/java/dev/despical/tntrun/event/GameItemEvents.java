@@ -16,16 +16,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package dev.despical.tntrun.events.event;
+package dev.despical.tntrun.event;
 
 import dev.despical.tntrun.option.BooleanOption;
-import dev.despical.tntrun.Main;
-import dev.despical.tntrun.api.statistic.StatisticType;
 import dev.despical.tntrun.arena.Arena;
 import dev.despical.tntrun.arena.ArenaState;
-import dev.despical.tntrun.events.EventListener;
-import dev.despical.tntrun.events.spectator.SpectatorSettingsGUI;
-import dev.despical.tntrun.events.spectator.SpectatorTeleporterGUI;
+import dev.despical.tntrun.event.spectator.SpectatorSettingsGUI;
+import dev.despical.tntrun.event.spectator.SpectatorTeleporterGUI;
+import dev.despical.tntrun.stats.Statistics;
+import dev.despical.tntrun.stats.Statistics;
 import dev.despical.tntrun.user.User;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
@@ -43,14 +42,9 @@ import java.util.Set;
  * <p>
  * Created at 21.05.2023
  */
-public class GameItemEvents extends EventListener {
+public class GameItemEvents extends ListenerAdapter {
 
-	private final Set<User> leaveConfirmations;
-
-	public GameItemEvents(Main plugin) {
-		super(plugin);
-		this.leaveConfirmations = new HashSet<>();
-	}
+	private final Set<User> leaveConfirmations = new HashSet<>();
 
 	@EventHandler
 	public void onDoubleJump(PlayerToggleFlightEvent event) {
@@ -71,10 +65,10 @@ public class GameItemEvents extends EventListener {
 			return;
 		}
 
-		if (user.getStat(StatisticType.LOCAL_DOUBLE_JUMPS) > 0) {
+		if (user.getStatistic(Statistics.LOCAL_DOUBLE_JUMPS) > 0) {
 			event.setCancelled(true);
 
-			user.applyDoubleJumpDelay();
+//			user.applyDoubleJumpDelay();
 
 			player.setFlying(false);
 			player.setVelocity(player.getLocation().getDirection().multiply(1.5D).setY(0.7D));
@@ -111,10 +105,10 @@ public class GameItemEvents extends EventListener {
 		if (doubleJumpItem.equals(event.getItem())) {
 			event.setCancelled(true);
 
-			if (user.getStat(StatisticType.LOCAL_DOUBLE_JUMPS) > 0) {
+			if (user.getStatistic(Statistics.LOCAL_DOUBLE_JUMPS) > 0) {
 				event.setCancelled(true);
 
-				user.applyDoubleJumpDelay();
+//				user.applyDoubleJumpDelay();
 
 				player.setVelocity(player.getLocation().getDirection().multiply(1.5D).setY(0.7D));
 				player.setFlying(false);

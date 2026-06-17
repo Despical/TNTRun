@@ -23,7 +23,7 @@ import dev.despical.commons.serializer.LocationSerializer;
 import dev.despical.tntrun.Main;
 import dev.despical.tntrun.arena.Arena;
 import dev.despical.tntrun.arena.ArenaState;
-import dev.despical.tntrun.events.EventListener;
+import dev.despical.tntrun.event.EventListener;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.event.EventHandler;

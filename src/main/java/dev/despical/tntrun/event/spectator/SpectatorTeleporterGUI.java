@@ -16,14 +16,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package dev.despical.tntrun.events.spectator;
+package dev.despical.tntrun.event.spectator;
 
 import dev.despical.inventoryframework.Gui;
 import dev.despical.inventoryframework.GuiBuilder;
 import dev.despical.inventoryframework.pane.StaticPane;
 import dev.despical.tntrun.Main;
 import dev.despical.tntrun.arena.Arena;
-import dev.despical.tntrun.events.spectator.components.SettingComponents;
+import dev.despical.tntrun.event.spectator.components.TeleporterComponents;
 import dev.despical.tntrun.user.User;
 import org.jetbrains.annotations.NotNull;
 
@@ -32,7 +32,7 @@ import org.jetbrains.annotations.NotNull;
  * <p>
  * Created at 21.05.2023
  */
-public class SpectatorSettingsGUI {
+public class SpectatorTeleporterGUI {
 
     @NotNull
     private final Main plugin;
@@ -46,20 +46,24 @@ public class SpectatorSettingsGUI {
     @NotNull
     private final Gui gui;
 
-    public SpectatorSettingsGUI(@NotNull Main plugin, @NotNull User user, @NotNull Arena arena) {
+    public SpectatorTeleporterGUI(@NotNull Main plugin, @NotNull User user, @NotNull Arena arena) {
         this.plugin = plugin;
         this.user = user;
         this.arena = arena;
 
-        var pane = new StaticPane(9, 4);
-        this.gui = new GuiBuilder(plugin, 4, plugin.getChatManager().message("spectator-gui.title")).globalClick(event -> event.setCancelled(true)).pane(pane).build();
+        var pane = new StaticPane(9, 5);
+        this.gui = new GuiBuilder(plugin, 5, plugin.getChatManager().message("spectator-gui.teleporter.title")).globalClick(event -> event.setCancelled(true)).pane(pane).build();
 
         this.registerComponents(pane);
     }
 
     private void registerComponents(StaticPane pane) {
-        var mainComponents = new SettingComponents();
-        mainComponents.registerComponents(this, pane);
+        var teleporterComponents = new TeleporterComponents();
+        teleporterComponents.registerComponents(this, pane);
+    }
+
+    public void close() {
+        plugin.getServer().getScheduler().runTaskLater(plugin, () -> this.user.getPlayer().closeInventory(), 1L);
     }
 
     public void showGui() {

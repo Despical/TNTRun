@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package dev.despical.tntrun.events.spectator.components;
+package dev.despical.tntrun.event.spectator.components;
 
 import dev.despical.commons.XMaterial;
 import dev.despical.commons.item.ItemBuilder;
@@ -24,7 +24,7 @@ import dev.despical.commons.item.ItemUtils;
 import dev.despical.inventoryframework.GuiItem;
 import dev.despical.inventoryframework.pane.StaticPane;
 import dev.despical.inventoryframework.util.GeometryUtil;
-import dev.despical.tntrun.events.spectator.SpectatorTeleporterGUI;
+import dev.despical.tntrun.event.spectator.SpectatorTeleporterGUI;
 import org.bukkit.inventory.meta.SkullMeta;
 
 import java.util.ArrayList;

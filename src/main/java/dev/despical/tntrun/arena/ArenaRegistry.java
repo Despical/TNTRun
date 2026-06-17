@@ -19,19 +19,13 @@
 package dev.despical.tntrun.arena;
 
 import dev.despical.commons.configuration.ConfigUtils;
-import dev.despical.commons.serializer.LocationSerializer;
 import dev.despical.tntrun.Main;
 import dev.despical.tntrun.user.User;
-import org.bukkit.configuration.ConfigurationSection;
+import lombok.Getter;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.bukkit.entity.Player;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.concurrent.ThreadLocalRandom;
-import java.util.logging.Level;
+import java.util.*;
 
 /**
  * @author Despical
@@ -40,95 +34,112 @@ import java.util.logging.Level;
  */
 public class ArenaRegistry {
 
-    @NotNull
     private final Main plugin;
+    @Getter
+    private final FileConfiguration config;
+    private final Map<String, Arena> arenas;
 
-    @NotNull
-    private final Set<Arena> arenas;
-
-    private int bungeeArena = -1;
-
-    public ArenaRegistry(final @NotNull Main plugin) {
+    public ArenaRegistry(Main plugin) {
         this.plugin = plugin;
-        this.arenas = new HashSet<>();
-
+        this.config = ConfigUtils.getConfig(plugin, "arenas");
+        this.arenas = new HashMap<>();
         this.registerArenas();
     }
 
-    public void registerArena(final Arena arena) {
-        this.arenas.add(arena);
-    }
-
-    public void unregisterArena(final Arena arena) {
-        this.arenas.remove(arena);
-    }
-
-    @NotNull
-    public Set<Arena> getArenas() {
-        return Set.copyOf(arenas);
-    }
-
-    @Nullable
-    public Arena getArena(final String id) {
-        if (id == null) return null;
-
-        return this.arenas.stream().filter(arena -> arena.getId().equals(id)).findFirst().orElse(null);
-    }
-
-    @Nullable
     public Arena getArena(User user) {
-        return this.arenas.stream().filter(arena -> arena.isInArena(user)).findFirst().orElse(null);
+        return arenas.values()
+            .stream()
+            .filter(Arena::isGameNonnull)
+            .filter(arena -> arena.getGame().isPlaying(user))
+            .findFirst()
+            .orElse(null);
     }
 
-    public boolean isArena(final String arenaId) {
-        return getArena(arenaId) != null;
+    public Arena getArena(Player player) {
+        User user = plugin.getUserManager().getUser(player);
+        return getArena(user);
     }
 
-    public boolean isInArena(final User user) {
-        return this.getArena(user) != null;
+    public boolean isInArena(Player player) {
+        return getArena(player) != null;
     }
 
-    private void registerArenas() {
-        this.arenas.clear();
+    public Arena getArena(String id) {
+        return findArena(id).orElse(null);
+    }
 
-        FileConfiguration config = ConfigUtils.getConfig(plugin, "arena");
-        ConfigurationSection section = config.getConfigurationSection("instance");
+    public Optional<Arena> findArena(String id) {
+        return Optional.ofNullable(arenas.get(id));
+    }
 
-        if (section == null) {
-            plugin.getLogger().warning("Couldn't find 'instance' section in arena.yml, delete the file to regenerate it!");
-            return;
-        }
+    public Optional<Arena> findArena(Player player) {
+        return Optional.ofNullable(getArena(player));
+    }
 
-        for (String id : section.getKeys(false)) {
-            if (id.equals("default")) continue;
+    public boolean isArenaExists(String id) {
+        return arenas.containsKey(id);
+    }
 
-            String path = "instance.%s.".formatted(id);
+    public void registerNewArena(String id) {
+        arenas.put(id, new Arena(id));
+    }
+
+    public void unregisterArena(Arena arena) {
+        arenas.remove(arena.getId());
+        removeCheckpointIndex(arena);
+
+        plugin.getSignManager().removeArenaSigns(arena);
+
+        config.set(arena.getId(), null);
+    }
+
+    public Set<Arena> getArenas() {
+        return Set.copyOf(arenas.values());
+    }
+
+    public Set<String> getArenaNames() {
+        return arenas.keySet();
+    }
+
+    public void registerArenas() {
+        arenas.clear();
+
+        for (String id : config.getKeys(false)) {
             Arena arena = new Arena(id);
+            loadOptionsFor(arena, config);
 
-            arenas.add(arena);
-
-            arena.setReady(config.getBoolean(path + "ready"));
-            arena.setMinimumPlayers(config.getInt(path + "minimumPlayers", 2));
-            arena.setMaximumPlayers(config.getInt(path + "maximumPlayers", 10));
-            arena.setMapName(config.getString(path + "mapName", "undefined"));
-            arena.setLobbyLocation(LocationSerializer.fromString(config.getString(path + "lobbyLocation")));
-            arena.setEndLocation(LocationSerializer.fromString(config.getString(path + "endLocation")));
-
-            if (!arena.isReady()) {
-                plugin.getLogger().log(Level.WARNING, "Setup of arena ''{0}'' is not finished yet!", id);
-                return;
+            if (arena.getOption(ArenaKeys.READY)) {
+                arena.start();
             }
 
-            arena.start();
+            arenas.put(id, arena);
         }
     }
 
-    // Bungee methods
-    public void shuffleBungeeArena() {
-        bungeeArena = ThreadLocalRandom.current().nextInt(arenas.size());
+    private void loadOptionsFor(Arena arena, FileConfiguration config) {
+        for (ArenaOption<?> option : ArenaKeys.getPersistentKeys()) {
+            loadSingleOption(arena, config, option);
+        }
+
+        String path = arena.getId() + ".";
+
+        String recordHolder = config.getString(path + "record-holder", "None");
+        long recordTime = config.getLong(path + "record-time", -1);
+
+        arena.setRecordHolderName(recordHolder);
+        arena.setRecordTime(recordTime);
     }
 
-    public Arena getBungeeArena() {
-        return List.copyOf(arenas).get(bungeeArena == -1 ? bungeeArena = ThreadLocalRandom.current().nextInt(arenas.size()) : bungeeArena);
+    private <T> void loadSingleOption(Arena arena, FileConfiguration config, ArenaOption<T> option) {
+        String path = "%s.%s".formatted(arena.getId(), option.getKey());
+
+        if (config.contains(path)) {
+            Object rawValue = config.get(path);
+            T value = option.deserialize(rawValue);
+
+            arena.setOption(option, value);
+        } else {
+            arena.setOption(option, option.getDefaultValue());
+        }
     }
 }
