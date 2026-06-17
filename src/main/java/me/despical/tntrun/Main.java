@@ -18,12 +18,12 @@
 
 package me.despical.tntrun;
 
-import me.despical.commandframework.CommandFramework;
-import me.despical.commons.scoreboard.ScoreboardLib;
-import me.despical.commons.serializer.InventorySerializer;
-import me.despical.commons.util.UpdateChecker;
-import me.despical.fileitems.ItemManager;
-import me.despical.fileitems.ItemOption;
+import dev.despical.commandframework.CommandFramework;
+import dev.despical.commons.scoreboard.ScoreboardLib;
+import dev.despical.commons.serializer.InventorySerializer;
+import dev.despical.commons.util.UpdateChecker;
+import dev.despical.fileitems.ItemManager;
+import dev.despical.fileitems.ItemOption;
 import me.despical.tntrun.arena.Arena;
 import me.despical.tntrun.arena.ArenaRegistry;
 import me.despical.tntrun.arena.ArenaUtils;
@@ -119,7 +119,6 @@ public class Main extends JavaPlugin {
 		this.itemManager = new ItemManager(this, manager -> {
 			ItemOption.enableOptions(ItemOption.GLOW);
 
-			manager.addCustomKeys("slot");
 			manager.editItemBuilder(builder -> builder.unbreakable(true).hideTooltip(true));
 			manager.registerItems("items", "items");
 		});

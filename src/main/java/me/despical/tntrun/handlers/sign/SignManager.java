@@ -18,8 +18,8 @@
 
 package me.despical.tntrun.handlers.sign;
 
-import me.despical.commons.configuration.ConfigUtils;
-import me.despical.commons.serializer.LocationSerializer;
+import dev.despical.commons.configuration.ConfigUtils;
+import dev.despical.commons.serializer.LocationSerializer;
 import me.despical.tntrun.Main;
 import me.despical.tntrun.arena.Arena;
 import me.despical.tntrun.arena.ArenaState;

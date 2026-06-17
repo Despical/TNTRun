@@ -18,8 +18,8 @@
 
 package me.despical.tntrun.arena;
 
-import me.despical.commons.configuration.ConfigUtils;
-import me.despical.commons.serializer.LocationSerializer;
+import dev.despical.commons.configuration.ConfigUtils;
+import dev.despical.commons.serializer.LocationSerializer;
 import me.despical.tntrun.Main;
 import me.despical.tntrun.user.User;
 import org.bukkit.configuration.ConfigurationSection;

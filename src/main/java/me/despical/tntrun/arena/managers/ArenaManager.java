@@ -18,11 +18,11 @@
 
 package me.despical.tntrun.arena.managers;
 
-import me.despical.commons.XPotion;
-import me.despical.commons.miscellaneous.MiscUtils;
-import me.despical.commons.serializer.InventorySerializer;
-import me.despical.commons.string.StringFormatUtils;
-import me.despical.commons.util.Strings;
+import dev.despical.commons.XPotion;
+import dev.despical.commons.miscellaneous.MiscUtils;
+import dev.despical.commons.serializer.InventorySerializer;
+import dev.despical.commons.string.StringFormatUtils;
+import dev.despical.commons.util.Strings;
 import me.despical.tntrun.ConfigPreferences;
 import me.despical.tntrun.Main;
 import me.despical.tntrun.api.events.game.GameEndEvent;

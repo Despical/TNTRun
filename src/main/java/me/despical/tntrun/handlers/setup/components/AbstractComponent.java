@@ -18,10 +18,10 @@
 
 package me.despical.tntrun.handlers.setup.components;
 
-import me.despical.commons.XMaterial;
-import me.despical.commons.item.ItemBuilder;
-import me.despical.commons.serializer.LocationSerializer;
-import me.despical.inventoryframework.pane.PaginatedPane;
+import dev.despical.commons.XMaterial;
+import dev.despical.commons.item.ItemBuilder;
+import dev.despical.commons.serializer.LocationSerializer;
+import dev.despical.inventoryframework.pane.PaginatedPane;
 import me.despical.tntrun.Main;
 import me.despical.tntrun.arena.Arena;
 import me.despical.tntrun.handlers.setup.ArenaEditorGUI;

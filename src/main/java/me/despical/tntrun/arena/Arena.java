@@ -18,10 +18,10 @@
 
 package me.despical.tntrun.arena;
 
-import me.despical.commons.XPotion;
-import me.despical.commons.XSound;
-import me.despical.commons.miscellaneous.PlayerUtils;
-import me.despical.commons.serializer.InventorySerializer;
+import dev.despical.commons.XPotion;
+import dev.despical.commons.XSound;
+import dev.despical.commons.miscellaneous.PlayerUtils;
+import dev.despical.commons.serializer.InventorySerializer;
 import me.despical.tntrun.ConfigPreferences;
 import me.despical.tntrun.Main;
 import me.despical.tntrun.api.events.game.GameStartEvent;

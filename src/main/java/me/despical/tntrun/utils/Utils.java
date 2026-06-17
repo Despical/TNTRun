@@ -18,7 +18,7 @@
 
 package me.despical.tntrun.utils;
 
-import me.despical.commons.miscellaneous.DefaultFontInfo;
+import dev.despical.commons.miscellaneous.DefaultFontInfo;
 import me.despical.tntrun.Main;
 import me.despical.tntrun.arena.ArenaState;
 import me.despical.tntrun.user.User;

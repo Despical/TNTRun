@@ -5,7 +5,7 @@
 
     <groupId>me.despical</groupId>
     <artifactId>tnt-run</artifactId>
-    <version>2.7.8</version>
+    <version>2.7.9-fix</version>
 
     <name>TNT Run</name>
     <packaging>jar</packaging>
@@ -13,7 +13,7 @@
     <url>https://www.spigotmc.org/resources/83196/</url>
 
     <properties>
-        <java.version>21</java.version>
+        <java.version>25</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
@@ -54,33 +54,33 @@
         <dependency>
             <groupId>io.papermc.paper</groupId>
             <artifactId>paper-api</artifactId>
-            <version>1.20.4-R0.1-SNAPSHOT</version>
+            <version>26.1.2.build.60-stable</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>com.github.Despical</groupId>
-            <artifactId>Commons</artifactId>
-            <version>1.9.5</version>
+            <groupId>dev.despical</groupId>
+            <artifactId>commons</artifactId>
+            <version>2.1.1</version>
         </dependency>
         <dependency>
-            <groupId>com.github.Despical</groupId>
-            <artifactId>CommandFramework</artifactId>
-            <version>1.5.13</version>
+            <groupId>dev.despical</groupId>
+            <artifactId>command-framework</artifactId>
+            <version>1.6.2</version>
         </dependency>
         <dependency>
-            <groupId>com.github.Despical</groupId>
-            <artifactId>InventoryFramework</artifactId>
-            <version>2.3.8</version>
+            <groupId>dev.despical</groupId>
+            <artifactId>inventory-framework</artifactId>
+            <version>2.4.7</version>
         </dependency>
         <dependency>
-            <groupId>com.github.Despical</groupId>
-            <artifactId>FileItems</artifactId>
-            <version>1.1.6</version>
+            <groupId>dev.despical</groupId>
+            <artifactId>file-items</artifactId>
+            <version>1.2.5</version>
         </dependency>
         <dependency>
             <groupId>org.bstats</groupId>
             <artifactId>bstats-bukkit</artifactId>
-            <version>3.1.0</version>
+            <version>3.2.1</version>
         </dependency>
         <dependency>
             <groupId>me.clip</groupId>
@@ -101,7 +101,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.13.0</version>
+                <version>3.15.0</version>
                 <configuration>
                     <source>${java.version}</source>
                     <target>${java.version}</target>
@@ -123,7 +123,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
-                <version>3.4.2</version>
+                <version>3.5.0</version>
                 <configuration>
                     <archive>
                         <addMavenDescriptor>false</addMavenDescriptor>
@@ -133,7 +133,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
-                <version>3.5.3</version>
+                <version>3.6.2</version>
                 <executions>
                     <execution>
                         <phase>package</phase>
@@ -145,16 +145,16 @@
                             <createDependencyReducedPom>false</createDependencyReducedPom>
                             <relocations>
                                 <relocation>
-                                    <pattern>me.despical.commons</pattern>
-                                    <shadedPattern>me.despical.tntrun.commons</shadedPattern>
+                                    <pattern>dev.despical.commons</pattern>
+                                    <shadedPattern>dev.despical.tntrun.commons</shadedPattern>
                                 </relocation>
                                 <relocation>
-                                    <pattern>me.despical.commandframework</pattern>
-                                    <shadedPattern>me.despical.tntrun.command</shadedPattern>
+                                    <pattern>dev.despical.commandframework</pattern>
+                                    <shadedPattern>dev.despical.tntrun.command</shadedPattern>
                                 </relocation>
                                 <relocation>
                                     <pattern>org.bstats</pattern>
-                                    <shadedPattern>me.despical.tntrun.utils</shadedPattern>
+                                    <shadedPattern>dev.despical.tntrun.utils</shadedPattern>
                                 </relocation>
                             </relocations>
                             <filters>

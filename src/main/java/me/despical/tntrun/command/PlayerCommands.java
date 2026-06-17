@@ -18,10 +18,10 @@
 
 package me.despical.tntrun.command;
 
-import me.despical.commandframework.CommandArguments;
-import me.despical.commandframework.annotations.Command;
-import me.despical.commons.string.StringFormatUtils;
-import me.despical.commons.string.StringUtils;
+import dev.despical.commandframework.CommandArguments;
+import dev.despical.commandframework.annotations.Command;
+import dev.despical.commons.string.StringFormatUtils;
+import dev.despical.commons.string.StringUtils;
 import me.despical.tntrun.ConfigPreferences;
 import me.despical.tntrun.api.statistic.StatisticType;
 import me.despical.tntrun.api.statistic.StatsStorage;

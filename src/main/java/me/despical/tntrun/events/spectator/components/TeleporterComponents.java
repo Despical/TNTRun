@@ -18,12 +18,12 @@
 
 package me.despical.tntrun.events.spectator.components;
 
-import me.despical.commons.XMaterial;
-import me.despical.commons.item.ItemBuilder;
-import me.despical.commons.item.ItemUtils;
-import me.despical.inventoryframework.GuiItem;
-import me.despical.inventoryframework.pane.StaticPane;
-import me.despical.inventoryframework.util.GeometryUtil;
+import dev.despical.commons.XMaterial;
+import dev.despical.commons.item.ItemBuilder;
+import dev.despical.commons.item.ItemUtils;
+import dev.despical.inventoryframework.GuiItem;
+import dev.despical.inventoryframework.pane.StaticPane;
+import dev.despical.inventoryframework.util.GeometryUtil;
 import me.despical.tntrun.events.spectator.SpectatorTeleporterGUI;
 import org.bukkit.inventory.meta.SkullMeta;
 

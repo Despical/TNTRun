@@ -18,8 +18,8 @@
 
 package me.despical.tntrun.user.data;
 
-import me.despical.commons.configuration.ConfigUtils;
-import me.despical.commons.database.MySQLDatabase;
+import dev.despical.commons.configuration.ConfigUtils;
+import dev.despical.commons.database.MySQLDatabase;
 import me.despical.tntrun.api.statistic.StatisticType;
 import me.despical.tntrun.user.User;
 import org.jetbrains.annotations.NotNull;

@@ -18,12 +18,12 @@
 
 package me.despical.tntrun.arena.managers;
 
-import me.despical.commons.scoreboard.Scoreboard;
-import me.despical.commons.scoreboard.ScoreboardHandler;
-import me.despical.commons.scoreboard.ScoreboardLib;
-import me.despical.commons.scoreboard.common.Entry;
-import me.despical.commons.scoreboard.common.EntryBuilder;
-import me.despical.commons.string.StringFormatUtils;
+import dev.despical.commons.scoreboard.Scoreboard;
+import dev.despical.commons.scoreboard.ScoreboardHandler;
+import dev.despical.commons.scoreboard.ScoreboardLib;
+import dev.despical.commons.scoreboard.common.Entry;
+import dev.despical.commons.scoreboard.common.EntryBuilder;
+import dev.despical.commons.string.StringFormatUtils;
 import me.despical.tntrun.ConfigPreferences;
 import me.despical.tntrun.Main;
 import me.despical.tntrun.arena.Arena;
@@ -31,6 +31,7 @@ import me.despical.tntrun.arena.ArenaState;
 import me.despical.tntrun.handlers.ChatManager;
 import me.despical.tntrun.user.User;
 import org.bukkit.entity.Player;
+import net.kyori.adventure.text.Component;
 
 import java.util.HashSet;
 import java.util.List;
@@ -70,8 +71,8 @@ public class ScoreboardManager {
         Scoreboard scoreboard = ScoreboardLib.createScoreboard(user.getPlayer()).setHandler(new ScoreboardHandler() {
 
             @Override
-            public String getTitle(Player player) {
-                return chatManager.message("Scoreboard.Title");
+            public Component getTitle(Player player) {
+                return Component.text(plugin.getChatManager().message("Scoreboard.Title"));
             }
 
             @Override

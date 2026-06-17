@@ -18,10 +18,10 @@
 
 package me.despical.tntrun.command;
 
-import me.despical.commandframework.CommandArguments;
-import me.despical.commandframework.Message;
-import me.despical.commandframework.annotations.Command;
-import me.despical.commons.util.Strings;
+import dev.despical.commandframework.CommandArguments;
+import dev.despical.commandframework.Message;
+import dev.despical.commandframework.annotations.Command;
+import dev.despical.commons.util.Strings;
 import me.despical.tntrun.Main;
 import me.despical.tntrun.handlers.ChatManager;
 import org.bukkit.plugin.java.JavaPlugin;

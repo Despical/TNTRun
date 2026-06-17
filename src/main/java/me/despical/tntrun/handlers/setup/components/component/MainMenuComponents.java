@@ -18,15 +18,15 @@
 
 package me.despical.tntrun.handlers.setup.components.component;
 
-import me.despical.commons.XMaterial;
-import me.despical.commons.configuration.ConfigUtils;
-import me.despical.commons.item.ItemBuilder;
-import me.despical.commons.serializer.LocationSerializer;
-import me.despical.commons.util.Strings;
-import me.despical.commons.util.conversation.ConversationBuilder;
-import me.despical.inventoryframework.GuiItem;
-import me.despical.inventoryframework.pane.PaginatedPane;
-import me.despical.inventoryframework.pane.StaticPane;
+import dev.despical.commons.XMaterial;
+import dev.despical.commons.configuration.ConfigUtils;
+import dev.despical.commons.item.ItemBuilder;
+import dev.despical.commons.serializer.LocationSerializer;
+import dev.despical.commons.util.Strings;
+import dev.despical.commons.util.conversation.ConversationBuilder;
+import dev.despical.inventoryframework.GuiItem;
+import dev.despical.inventoryframework.pane.PaginatedPane;
+import dev.despical.inventoryframework.pane.StaticPane;
 import me.despical.tntrun.ConfigPreferences;
 import me.despical.tntrun.arena.ArenaState;
 import me.despical.tntrun.handlers.setup.ArenaEditorGUI;
@@ -152,7 +152,7 @@ public class MainMenuComponents extends AbstractComponent {
 					.name("       &e&lFinish Arena Setup")
 					.lore("&7  Click this when you are done.")
 					.lore("&7You'll still be able to edit arena.")
-					.flag(ItemFlag.HIDE_POTION_EFFECTS)
+					.flag(ItemFlag.HIDE_ADDITIONAL_TOOLTIP)
 					.build();
 		}
 
