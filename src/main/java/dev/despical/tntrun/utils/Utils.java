@@ -18,15 +18,16 @@
 
 package dev.despical.tntrun.utils;
 
-import dev.despical.commons.miscellaneous.DefaultFontInfo;
+import dev.despical.commons.serializer.InventorySerializer;
 import dev.despical.tntrun.Main;
 import dev.despical.tntrun.arena.ArenaState;
 import dev.despical.tntrun.user.User;
-import net.md_5.bungee.api.chat.BaseComponent;
-import net.md_5.bungee.api.chat.ComponentBuilder;
-import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
+
+import java.util.List;
 
 /**
  * @author Despical
@@ -35,97 +36,121 @@ import org.bukkit.scheduler.BukkitRunnable;
  */
 public class Utils {
 
-	private static final Main plugin = JavaPlugin.getPlugin(Main.class);
+    private static final Main plugin = JavaPlugin.getPlugin(Main.class);
 
-	private Utils() {
-	}
+    private Utils() {
+    }
 
-	public static void applyActionBarCooldown(final User user, int seconds) {
-		new BukkitRunnable() {
-			int ticks = 0;
+    public static void applyActionBarCooldown(final User user, int seconds) {
+        new BukkitRunnable() {
+            int ticks = 0;
 
-			@Override
-			public void run() {
-				var arena = user.getArena();
+            @Override
+            public void run() {
+                var arena = user.getArena();
 
-				if (arena == null || arena.isDeathPlayer(user) || !arena.isArenaState(ArenaState.IN_GAME)) {
-					cancel();
-					return;
-				}
+                if (arena == null || arena.isDeathPlayer(user) || !arena.isArenaState(ArenaState.IN_GAME)) {
+                    cancel();
+                    return;
+                }
 
-				var progress = getProgressBar(ticks, seconds * 20);
-				user.sendActionBar(plugin.getChatManager().message("messages.in-game.cooldown-format", user).replace("%progress%", progress).replace("%time%", Double.toString((double) ((seconds * 20) - ticks) / 20)));
+                var progress = getProgressBar(ticks, seconds * 20);
+                user.sendActionBar(plugin.getChatManager().message("messages.in-game.cooldown-format", user).replace("%progress%", progress).replace("%time%", Double.toString((double) ((seconds * 20) - ticks) / 20)));
 
-				if (ticks >= seconds * 20) {
-					cancel();
-					return;
-				}
+                if (ticks >= seconds * 20) {
+                    cancel();
+                    return;
+                }
 
-				ticks += 2;
-			}
-		}.runTaskTimer(plugin, 0, 2);
-	}
+                ticks += 2;
+            }
+        }.runTaskTimer(plugin, 0, 2);
+    }
 
-	private static String getProgressBar(int current, int max) {
-		float percent = (float) current / max;
-		int progressBars = (int) (10 * percent), leftOver = (10 - progressBars);
-		String[] colors = plugin.getChatManager().message("messages.in-game.cooldown-progress-format").split(":");
+    private static String getProgressBar(int current, int max) {
+        float percent = (float) current / max;
+        int progressBars = (int) (10 * percent), leftOver = (10 - progressBars);
+        String[] colors = plugin.getChatManager().message("messages.in-game.cooldown-progress-format").split(":");
 
-		return "%s%s%s%s".formatted(colors[0], colors[2].repeat(Math.max(0, progressBars)), colors[1], colors[2].repeat(Math.max(0, leftOver)));
-	}
+        return "%s%s%s%s".formatted(colors[0], colors[2].repeat(Math.max(0, progressBars)), colors[1], colors[2].repeat(Math.max(0, leftOver)));
+    }
 
-	public static void sendCenteredMessage(CommandSender sender, BaseComponent[] components) {
-		BaseComponent[] message;
-		String[] lines = org.bukkit.ChatColor.translateAlternateColorCodes('&', BaseComponent.toLegacyText(components)).split("\n", 40);
-		StringBuilder returnMessage = new StringBuilder();
-		String[] linesCopy = lines;
-		int length = lines.length;
+    public static String NONE = getMessage("none");
 
-		for (int i = 0; i < length; ++i) {
-			String line = linesCopy[i];
+    public static String getRawString(String string) {
+        return plugin.getConfig().getString(string, "&cThe value inside the path is null. (path: " + string + ")");
+    }
 
-			if (line.contains("%no_center%")) {
-				continue;
-			}
+    public static String getRawString(FileConfiguration config, String string) {
+        return config.getString(string);
+    }
 
-			int messagePxSize = 0;
-			boolean previousCode = false, isBold = false;
-			char[] array = line.toCharArray();
-			int spaceLength = array.length, compensated;
+    public static List<String> getStringList(String path) {
+        return plugin.getConfig().getStringList(path);
+    }
 
-			for (compensated = 0; compensated < spaceLength; ++compensated) {
-				char c = array[compensated];
+    public static String format(String string, Var... variables) {
+        for (Var variable : variables) {
+            string = string.replace(variable.name, variable.value.toString());
+        }
 
-				if (c == 167) {
-					previousCode = true;
-				} else if (previousCode) {
-					previousCode = false;
-					isBold = c == 'l';
-				} else {
-					DefaultFontInfo dFI = DefaultFontInfo.getDefaultFontInfo(c);
-					messagePxSize = isBold ? messagePxSize + dFI.getBoldLength() : messagePxSize + dFI.getLength();
-					++messagePxSize;
-				}
-			}
+        return string;
+    }
 
-			int toCompensate = 165 - messagePxSize / 2;
-			spaceLength = DefaultFontInfo.SPACE.getLength() + 1;
-			compensated = 0;
+    public static String getString(String path) {
+        if (plugin.getConfig().isList(path)) {
+            return getListAsString(path);
+        }
 
-			StringBuilder sb;
+        return getRawString(path);
+    }
 
-			for (sb = new StringBuilder(); compensated < toCompensate; compensated += spaceLength) {
-				sb.append(" ");
-			}
+    public static String getString(FileConfiguration file, String path) {
+        if (file.isList(path)) {
+            return getListAsString(file, path);
+        }
 
-			returnMessage.append(sb);
-		}
+        return getRawString(file, path);
+    }
 
-		message = new ComponentBuilder()
-				.append(returnMessage.toString().replace("%no_center%", ""))
-				.append(components)
-				.create();
+    public static String getMessage(String path, Var... variables) {
+        return plugin.getChatManager().getRawString(path, variables);
+    }
 
-		sender.spigot().sendMessage(message);
-	}
+    public static List<String> getStringList(FileConfiguration config, String string) {
+        return config.getStringList(string);
+    }
+
+    public static String getMessage(FileConfiguration config, String path) {
+        String message = getString(config, path);
+
+        return message
+            .replace("%prefix%", getString("prefix"))
+            .replace("%prefix-2%", getString("prefix-2"));
+    }
+
+    public static String getListAsString(String path) {
+        return listToString(getStringList(path));
+    }
+
+    public static String getListAsString(FileConfiguration file, String path) {
+        return listToString(getStringList(file, path));
+    }
+
+    public static String listToString(List<String> list) {
+        return String.join("\n", list);
+    }
+
+    public static void restoreSavedPlayerState(Player player) {
+        player.getActivePotionEffects().forEach(effect -> player.removePotionEffect(effect.getType()));
+        InventorySerializer.loadInventory(plugin, player);
+    }
+
+    public static String formatTime(long millis) {
+        long minutes = (millis / 1000) / 60;
+        long seconds = (millis / 1000) % 60;
+        long ms = millis % 1000;
+
+        return String.format("%02d:%02d.%03d", minutes, seconds, ms);
+    }
 }

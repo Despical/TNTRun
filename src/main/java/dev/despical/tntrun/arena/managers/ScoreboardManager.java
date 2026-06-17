@@ -28,7 +28,6 @@ import dev.despical.tntrun.option.BooleanOption;
 import dev.despical.tntrun.Main;
 import dev.despical.tntrun.arena.Arena;
 import dev.despical.tntrun.arena.ArenaState;
-import dev.despical.tntrun.handlers.ChatManager;
 import dev.despical.tntrun.user.User;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;

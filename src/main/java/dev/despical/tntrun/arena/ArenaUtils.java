@@ -21,7 +21,6 @@ package dev.despical.tntrun.arena;
 import dev.despical.tntrun.option.BooleanOption;
 import dev.despical.tntrun.Main;
 import dev.despical.tntrun.api.statistic.StatisticType;
-import dev.despical.tntrun.handlers.ChatManager;
 import dev.despical.tntrun.user.User;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scoreboard.Team;
