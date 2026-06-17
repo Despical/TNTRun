@@ -18,25 +18,16 @@
 
 package dev.despical.tntrun.leaderboard;
 
-import org.jetbrains.annotations.NotNull;
-
-import java.util.List;
+import java.util.UUID;
 
 /**
  * @author Despical
  * <p>
- * Created at 1.11.2024
+ * Created at 17.06.2026
  */
-public record Leaderboard<T extends Comparable<T>>(String id, List<LeaderboardEntry<T>> sortedEntries, T fallbackValue) {
+public record LeaderboardEntry<T extends Comparable<T>>(UUID uuid, String name, T value) {
 
-    @NotNull
-    public LeaderboardEntry<T> getEntryAtPosition(int pos) {
-        pos -= 1;
-
-        if (pos < 0 || pos >= sortedEntries.size()) {
-            return LeaderboardEntry.empty(fallbackValue);
-        }
-
-        return sortedEntries.get(pos);
+    public static <T extends Comparable<T>> LeaderboardEntry<T> empty(T fallbackValue) {
+        return new LeaderboardEntry<>(UUID.randomUUID(), "No Player", fallbackValue);
     }
 }

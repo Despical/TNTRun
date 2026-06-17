@@ -18,20 +18,15 @@
 
 package dev.despical.tntrun.leaderboard;
 
-import dev.despical.commons.configuration.ConfigUtils;
 import dev.despical.tntrun.Main;
-import dev.despical.tntrun.api.statistic.StatisticType;
-import dev.despical.tntrun.user.data.AbstractDatabase;
-import dev.despical.tntrun.user.data.MySQLStatistics;
-import org.bukkit.configuration.file.FileConfiguration;
+import dev.despical.tntrun.arena.Arena;
+import dev.despical.tntrun.stats.StatisticType;
+import dev.despical.tntrun.stats.Statistics;
+import dev.despical.tntrun.stats.offline.OfflineStats;
+import org.jetbrains.annotations.Nullable;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.EnumMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
+import java.util.function.Function;
 
 /**
  * @author Despical
@@ -41,53 +36,76 @@ import java.util.UUID;
 public class LeaderboardManager {
 
     private final Main plugin;
-    private final Map<StatisticType, Leaderboard> leaderboards;
+    private final Map<String, Leaderboard<?>> leaderboards;
 
     public LeaderboardManager(Main plugin) {
         this.plugin = plugin;
-        this.leaderboards = new EnumMap<>(StatisticType.class);
+        this.leaderboards = new HashMap<>();
     }
 
-    public Map.Entry<UUID, Integer> getEntry(StatisticType type, int placement) {
-        return leaderboards.get(type).getEntry(placement);
-    }
+    public void refreshAllLeaderboards() {
+        Set<OfflineStats> allPlayersCache = plugin.getDatabase().getAllPlayers();
 
-    public void updateLeaderboards() {
-        for (StatisticType type : StatisticType.values()) {
-            this.leaderboards.put(type, this.getLeaderboard(type));
-        }
+        for (StatisticType<?> type : Statistics.getPersistentStats()) {
+            if (type.getType() == Integer.class) {
+                @SuppressWarnings("unchecked")
+                StatisticType<Integer> intType = (StatisticType<Integer>) type;
 
-        this.leaderboards.values().forEach(Leaderboard::sort);
-    }
-
-    private Leaderboard getLeaderboard(StatisticType stat) {
-        Leaderboard leaderboard = new Leaderboard();
-        AbstractDatabase database = plugin.getUserManager().getUserDatabase();
-
-        if (database instanceof MySQLStatistics) {
-            MySQLStatistics mySQLManager = (MySQLStatistics) database;
-
-            try (Connection connection = mySQLManager.getDatabase().getConnection()) {
-                Statement statement = connection.createStatement();
-                ResultSet set = statement.executeQuery(String.format("SELECT UUID, %s FROM %s ORDER BY %s", stat.getName(), mySQLManager.getTableName(), stat.getName()));
-
-                while (set.next()) {
-                    leaderboard.addEntry(UUID.fromString(set.getString("UUID")), set.getInt(stat.getName()));
-                }
-
-                return leaderboard;
-            } catch (SQLException exception) {
-                exception.printStackTrace();
-                return null;
+                createLeaderboard(
+                    intType.getKey(),
+                    allPlayersCache,
+                    stats -> stats.getStat(intType),
+                    Comparator.<Integer>naturalOrder().reversed(),
+                    0
+                );
             }
         }
 
-        FileConfiguration config = ConfigUtils.getConfig(plugin, "stats");
+        for (Arena arena : plugin.getArenaRegistry().getArenas()) {
+//            if (!arena.isOptionPresent(ArenaKeys.READY)) {
+//                continue;
+//            }
 
-        for (String uuid : config.getKeys(false)) {
-            leaderboard.addEntry(UUID.fromString(uuid), config.getInt(uuid + "." + stat.getName()));
+            String arenaId = arena.getId();
+
+            createLeaderboard(
+                "arena_time_" + arenaId,
+                allPlayersCache,
+                stats -> {
+                    Map<String, Long> timesMap = stats.getStat(Statistics.ARENA_BEST_TIMES);
+                    return timesMap != null ? timesMap.getOrDefault(arenaId, -1L) : -1L;
+                },
+                Comparator.naturalOrder(),
+                0L
+            );
         }
+    }
 
-        return leaderboard;
+    private <T extends Comparable<T>> void createLeaderboard(String id, Set<OfflineStats> allPlayers, Function<OfflineStats, T> valueExtractor, Comparator<T> comparator, T fallbackValue) {
+        List<LeaderboardEntry<T>> entries = allPlayers.stream()
+            .map(stats -> new LeaderboardEntry<>(stats.getUuid(), stats.getName(), valueExtractor.apply(stats)))
+            .filter(entry -> {
+                if (entry.value() instanceof Number num) {
+                    return num.doubleValue() > 0;
+                }
+
+                return true;
+            })
+            .sorted((e1, e2) -> comparator.compare(e1.value(), e2.value()))
+            .toList();
+
+        Leaderboard<T> leaderboard = new Leaderboard<>(id, entries, fallbackValue);
+        leaderboards.put(id, leaderboard);
+    }
+
+    @Nullable
+    @SuppressWarnings("unchecked")
+    public <T extends Comparable<T>> Leaderboard<T> getLeaderboard(String id) {
+        return (Leaderboard<T>) leaderboards.get(id);
+    }
+
+    @Nullable
+    public <T extends Comparable<T>> Leaderboard<T> getLeaderboard(StatisticType<T> type) {
+        return getLeaderboard(type.getKey());
     }
 }
