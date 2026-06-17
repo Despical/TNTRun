@@ -170,7 +170,7 @@ public class Main extends JavaPlugin {
         commandFramework.addCustomParameter(Player.class, CommandArguments::getSender);
         commandFramework.addCustomParameter(User.class, args -> userManager.getUser(args.<Player>getSender()));
         commandFramework.addCustomParameter(Arena.class, args -> arenaRegistry.getArena(args.getFirst()));
-        commandFramework.registerAllInPackage("dev.despical.advancedparkour.command");
+        commandFramework.registerAllInPackage("dev.despical.tntrun.command");
 
         Message.setColorFormatter(Strings::format);
 
