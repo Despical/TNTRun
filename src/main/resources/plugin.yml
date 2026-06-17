@@ -3,7 +3,7 @@ version: ${project.version}
 description: The ultimate TNT Run plugin.
 author: Despical
 
-main: me.despical.tntrun.Main
+main: dev.despical.tntrun.Main
 api-version: 1.13
 
 softdepend:
