@@ -39,6 +39,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.NumberConversions;
 import org.jetbrains.annotations.NotNull;
@@ -111,7 +112,7 @@ public class Arena extends BukkitRunnable {
 
         final var player = user.getPlayer();
 
-        user.removePotionEffectsExcept(XPotion.BLINDNESS);
+        user.removePotionEffectsExcept(PotionEffectType.BLINDNESS);
 
         player.setFoodLevel(20);
         player.setFlying(false);
@@ -126,11 +127,6 @@ public class Arena extends BukkitRunnable {
     }
 
     public void teleportToEndLocation(User user) {
-        if (BooleanOption.BUNGEE_ENABLED.value()) {
-            plugin.getBungeeManager().connectToHub(user);
-            return;
-        }
-
         this.teleportToGameLocation(user, GameLocation.END);
     }
 
@@ -440,7 +436,7 @@ public class Arena extends BukkitRunnable {
         for (final var user : players) {
             var player = user.getPlayer();
 
-            user.removePotionEffectsExcept(XPotion.BLINDNESS);
+            user.removePotionEffectsExcept(PotionEffectType.BLINDNESS);
 
             for (final User other : players) {
                 final var otherPlayer = other.getPlayer();
@@ -657,7 +653,7 @@ public class Arena extends BukkitRunnable {
                             }
                         }
 
-                        user.removePotionEffectsExcept(XPotion.BLINDNESS);
+                        user.removePotionEffectsExcept(PotionEffectType.BLINDNESS);
                         user.setSpectator(false);
 
                         player.getInventory().clear();
@@ -680,16 +676,8 @@ public class Arena extends BukkitRunnable {
 
                 setArenaState(ArenaState.WAITING_FOR_PLAYERS);
 
-                if (!BooleanOption.BUNGEE_ENABLED.value()) {
-                    return;
-                }
-
                 for (Player player : plugin.getServer().getOnlinePlayers()) {
                     User user = plugin.getUserManager().getUser(player);
-
-                    if (plugin.getBungeeManager().connectToHub(user)) {
-                        return;
-                    }
 
                     var arenaManager = plugin.getArenaManager();
                     var userManager = plugin.getUserManager();

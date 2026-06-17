@@ -74,11 +74,6 @@ public class PlayerCommands extends AbstractCommand {
         senderType = Command.SenderType.PLAYER
     )
     public void randomJoinCommand(User user) {
-        if (BooleanOption.BUNGEE_ENABLED.value()) {
-            user.sendMessage("player-commands.no-random-join-for-bungee");
-            return;
-        }
-
         var arenas = plugin.getArenaRegistry().getArenas()
             .stream()
             .filter(arena -> arena.isArenaState(ArenaState.WAITING_FOR_PLAYERS, ArenaState.STARTING))

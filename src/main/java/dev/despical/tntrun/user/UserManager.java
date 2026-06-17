@@ -48,7 +48,7 @@ public class UserManager {
 
     public UserManager(Main plugin) {
         this.users = new HashMap<>();
-        this.userDatabase = BooleanOption.DATABASE_ENABLED.value() ? new MySQLStatistics() : new FlatFileStatistics();
+        this.userDatabase = new FlatFileStatistics();
     }
 
     @NotNull

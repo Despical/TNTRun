@@ -42,6 +42,7 @@ import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
+import org.bukkit.potion.PotionEffectType;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -79,7 +80,7 @@ public record ArenaManager(Main plugin) {
             return;
         }
 
-        if (!BooleanOption.BUNGEE_ENABLED.value() && !plugin.getPermissionManager().hasPermission(user, arena)) {
+        if (!plugin.getPermissionManager().hasPermission(user, arena)) {
             user.sendMessage("messages.arena.no-permission");
             return;
         }
@@ -197,17 +198,9 @@ public record ArenaManager(Main plugin) {
         user.setSpectator(false);
         user.removePotionEffectsExcept();
 
-        boolean bungeeEnabled = BooleanOption.BUNGEE_ENABLED.value();
-
-        if (!bungeeEnabled) {
-            InventorySerializer.loadInventory(plugin, player);
-        }
+        InventorySerializer.loadInventory(plugin, player);
 
         plugin.getUserManager().saveStatistics(user);
-
-        if (bungeeEnabled) {
-            plugin.getBungeeManager().connectToHub(user);
-        }
 
         if (arena.getArenaState() == ArenaState.IN_GAME) {
             var playersLeft = List.copyOf(arena.getPlayersLeft());
@@ -245,7 +238,7 @@ public record ArenaManager(Main plugin) {
             user.addStat(StatisticType.COINS, user.getStat(StatisticType.LOCAL_COINS));
             user.addStat(StatisticType.GAMES_PLAYED, 1);
             user.addGameItems("leave-item", "play-again");
-            user.removePotionEffectsExcept(XPotion.BLINDNESS);
+            user.removePotionEffectsExcept(PotionEffectType.BLINDNESS);
             user.addStat(isWinner ? StatisticType.WINS : StatisticType.LOSES, 1);
             user.performReward(isWinner ? Reward.RewardType.WIN : Reward.RewardType.LOSE);
 

@@ -270,10 +270,6 @@ public class GameItemEvents extends EventListener {
 	}
 
 	private void leaveArena(User user, Arena arena) {
-		if (BooleanOption.BUNGEE_ENABLED.value()) {
-			plugin.getBungeeManager().connectToHub(user);
-		} else {
 			plugin.getArenaManager().leaveAttempt(user, arena);
-		}
 	}
 }

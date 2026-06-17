@@ -40,7 +40,7 @@ public final class GameBarManager {
     public GameBarManager(Arena arena, Main plugin) {
         this.arena = arena;
         this.plugin = plugin;
-        this.gameBar = BooleanOption.GAME_BAR_ENABLED.value() ? plugin.getServer().createBossBar("", BarColor.BLUE, BarStyle.SOLID) : null;
+        this.gameBar = plugin.getServer().createBossBar("", BarColor.BLUE, BarStyle.SOLID);
     }
 
     public void doBarAction(User user, int action) {

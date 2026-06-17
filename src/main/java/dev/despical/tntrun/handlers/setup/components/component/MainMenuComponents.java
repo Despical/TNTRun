@@ -22,22 +22,15 @@ import dev.despical.commons.XMaterial;
 import dev.despical.commons.configuration.ConfigUtils;
 import dev.despical.commons.item.ItemBuilder;
 import dev.despical.commons.serializer.LocationSerializer;
-import dev.despical.commons.util.Strings;
-import dev.despical.commons.util.conversation.ConversationBuilder;
 import dev.despical.inventoryframework.GuiItem;
 import dev.despical.inventoryframework.pane.PaginatedPane;
 import dev.despical.inventoryframework.pane.StaticPane;
-import dev.despical.tntrun.option.BooleanOption;
 import dev.despical.tntrun.arena.ArenaState;
 import dev.despical.tntrun.handlers.setup.ArenaEditorGUI;
 import dev.despical.tntrun.handlers.setup.components.AbstractComponent;
 import org.bukkit.block.Sign;
-import org.bukkit.conversations.ConversationContext;
-import org.bukkit.conversations.Prompt;
-import org.bukkit.conversations.StringPrompt;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * @author Despical
@@ -69,47 +62,11 @@ public class MainMenuComponents extends AbstractComponent {
 		pane.fillProgressBorder(GuiItem.of(readyItem.build()), GuiItem.of(notReadyItem.build()), arena.getSetupProgress());
 		pane.addItem(GuiItem.of(lobbyLocationsItem.build(), event -> this.gui.setPage("   Set LOBBY and END locations", 3, 1)), 1, 1);
 		pane.addItem(GuiItem.of(playerAmountsItem.build(), event -> this.gui.setPage(" Set MIN and MAX player amount", 3, 3)), 7, 1);
-
-		pane.addItem(GuiItem.of(mapNameItem.build(), event -> {
-			user.closeOpenedInventory();
-
-			new ConversationBuilder(plugin).withPrompt(new StringPrompt() {
-
-				@Override
-				@NotNull
-				public String getPromptText(@NotNull ConversationContext context) {
-					return Strings.format("&ePlease type the map name of arena in the chat. You can use color codes.");
-				}
-
-				@Override
-				public Prompt acceptInput(@NotNull ConversationContext context, String input) {
-					var name = Strings.format(input);
-
-					arena.setMapName(name);
-
-					config.set(path + "mapName", name);
-					ConfigUtils.saveConfig(plugin, config, "arena");
-
-					plugin.getServer().getScheduler().runTask(plugin, () -> user.sendRawMessage("&e✔ Completed | &aMap name of arena &e{0} &aset to &e{1}&a.", arena.getId(), name));
-					return Prompt.END_OF_CONVERSATION;
-				}
-			}).buildFor(user.getPlayer());
-		}), 3, 1);
-
 		var gameSignItem = new ItemBuilder(XMaterial.OAK_SIGN).name("&e&l      Add Game Sign");
 
-		if (!BooleanOption.BUNGEE_ENABLED.value()) {
 			gameSignItem.lore("&7Target a sign and click this.");
-		} else {
-			gameSignItem
-					.lore("&cThis option disabled in Bungee-cord mode.", "")
-					.lore("&8Bungee mode is meant to be one arena per server.")
-					.lore("&8If you wish to have multi arena, disable bungee in config!");
-		}
 
 		pane.addItem(GuiItem.of(gameSignItem.build(), e -> {
-			if (BooleanOption.BUNGEE_ENABLED.value()) return;
-
 			user.closeOpenedInventory();
 
 			var block = user.getPlayer().getTargetBlock(null, 10);

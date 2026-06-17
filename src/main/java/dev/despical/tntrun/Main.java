@@ -34,7 +34,6 @@ import dev.despical.tntrun.events.EventListener;
 import dev.despical.tntrun.handlers.ChatManager;
 import dev.despical.tntrun.handlers.PermissionsManager;
 import dev.despical.tntrun.handlers.PlaceholderHandler;
-import dev.despical.tntrun.handlers.bungee.BungeeManager;
 import dev.despical.tntrun.handlers.rewards.RewardsFactory;
 import dev.despical.tntrun.handlers.sign.SignManager;
 import dev.despical.tntrun.leaderboard.LeaderboardManager;
@@ -43,14 +42,14 @@ import dev.despical.tntrun.option.ConfigOptions;
 import dev.despical.tntrun.user.User;
 import dev.despical.tntrun.user.UserManager;
 import lombok.Getter;
-import org.bstats.bukkit.Metrics;
-import org.bstats.charts.SimplePie;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.util.Locale;
 import java.util.Optional;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Stream;
 
 /**
@@ -67,7 +66,6 @@ public class Main extends JavaPlugin {
     private ConfigOptions options;
 	private ArenaRegistry arenaRegistry;
 	private ArenaManager arenaManager;
-	private BungeeManager bungeeManager;
 	private RewardsFactory rewardsFactory;
 	private ChatManager chatManager;
 	private UserManager userManager;
@@ -81,7 +79,7 @@ public class Main extends JavaPlugin {
 	public void onEnable() {
 		instance = this;
 		initializeClasses();
-		checkUpdate();
+		checkUpdates();
 
 		getLogger().info("Initialization finished.");
 		getLogger().info("Join our Discord server: https://discord.gg/uXVU8jmtpU");
@@ -139,10 +137,6 @@ public class Main extends JavaPlugin {
 		new AdminCommands();
 		new PlayerCommands();
 
-		if (BooleanOption.BUNGEE_ENABLED.value()) {
-			this.bungeeManager = new BungeeManager(this);
-		}
-
 		if (getServer().getPluginManager().isPluginEnabled("PlaceholderAPI")) {
 			this.leaderboardManager = new LeaderboardManager(this);
 
@@ -152,10 +146,6 @@ public class Main extends JavaPlugin {
 		if (BooleanOption.NAME_TAGS_HIDDEN.value()) {
 			getServer().getScheduler().scheduleSyncRepeatingTask(this, () -> userManager.getUsers().forEach(ArenaUtils::updateNameTagsVisibility), 60, 140);
 		}
-
-		Metrics metrics = new Metrics(this, 8147);
-		metrics.addCustomChart(new SimplePie("database_enabled", () -> BooleanOption.DATABASE_ENABLED.value() ? "Enabled" : "Disabled"));
-		metrics.addCustomChart(new SimplePie("update_notifier", () -> BooleanOption.UPDATE_NOTIFIER_ENABLED.value() ? "Enabled" : "Disabled"));
 
 		this.handleAutoDataSaving();
 	}
@@ -172,18 +162,17 @@ public class Main extends JavaPlugin {
 		}
 	}
 
-	private void checkUpdate() {
-		if (!BooleanOption.UPDATE_NOTIFIER_ENABLED.value()) {
-			return;
-		}
+    private void checkUpdates() {
+        if (!BooleanOption.UPDATE_NOTIFIER.value()) {
+            return;
+        }
 
-		UpdateChecker.init(this, 83196).onNewUpdate(result -> {
-			var logger = getLogger();
-			logger.info("Found a new version available: v" + result.getNewestVersion());
-			logger.info("Download it on SpigotMC:");
-			logger.info("https://spigotmc.org/resources/83196");
-		});
-	}
+        UpdateChecker.init(this, 83196).onNewUpdate(_ -> {
+            Logger logger = getLogger();
+            logger.log(Level.INFO, "An update for TNT Run ({0}) is available at:", getDescription().getVersion());
+            logger.log(Level.INFO, "https://www.spigotmc.org/resources/tnt-run.83196/");
+        });
+    }
 
 	private void setupConfigurationFiles() {
 		saveDefaultConfig();

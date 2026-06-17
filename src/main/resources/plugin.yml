@@ -1,5 +1,5 @@
 name: TNTRun
-version: ${project.version}
+version: ${version}
 description: The ultimate TNT Run plugin.
 author: Despical
 
