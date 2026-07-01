@@ -1,6 +1,6 @@
 plugins {
     id 'java'
-    id 'com.gradleup.shadow' version '9.4.2'
+    id 'com.gradleup.shadow' version '9.4.3'
 }
 
 group = 'dev.despical'
@@ -28,7 +28,7 @@ dependencies {
         exclude group: 'org.slf4j'
     }
 
-    implementation 'dev.despical:command-framework:1.6.2'
+    implementation 'dev.despical:command-framework:1.6.5'
     implementation 'dev.despical:inventory-framework:2.4.7'
     implementation 'dev.despical:file-items:1.2.5'
     implementation 'org.bstats:bstats-bukkit:3.2.1'
