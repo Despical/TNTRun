@@ -70,6 +70,17 @@ items:
     name: "<#FFAB00><bold>Create Arena Sign"
     material: OAK_SIGN
 
+  map-name:
+    name: "<#00E5FF><bold>Set Map Name"
+    material: NAME_TAG
+    lore:
+      - "<#2F2F2F>• <#00E5FF>CLICK <#BDBDBD>to open map name dialog"
+      - ""
+      - "<#2F2F2F>• <#B0BEC5>Current Name: <#29B6F6>%map_name%"
+      - ""
+      - "<#2F2F2F>• <#B0BEC5>This name can be used in"
+      - "<#B0BEC5>  scoreboards and other arena displays."
+
   register-arena:
     name: "<#00E676><bold>Register the Arena"
     material: FIREWORK_ROCKET
