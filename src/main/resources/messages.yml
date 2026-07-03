@@ -7,18 +7,18 @@ messages:
     cooldown-progress-format: "<#00E676>:<#FF5252>:■"
 summary-message:
   content:
-    - "%no_center%<#00E676><bold>------------------------------------------------------------"
+    - "%no_center%<#00E676><bold>▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬"
     - "<white><bold>TNT Run"
     - ""
     - "<#FFCA28><bold>1st Place: <white><bold>%player_1%"
     - "<#B0BEC5><bold>2nd Place: <white><bold>%player_2%"
     - "<#CD7F32><bold>3rd Place: <white><bold>%player_3%"
     - ""
-    - "%no_center%<#00E676><bold>------------------------------------------------------------"
+    - "%no_center%<#00E676><bold>▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬"
   hover:
     - "<#2F2F2F><bold>Remaining Perks"
     - "<#B0BEC5>Double Jump: <white>%double_jumps%<#B0BEC5>/<#00E676>%max_double_jumps%"
-  no-opponent: "<#757575>No one"
+  no-opponent: "<#757575>---"
 
 game-explanation:
   - "%no_center%<#00E676><bold>▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬"
