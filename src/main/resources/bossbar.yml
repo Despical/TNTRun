@@ -35,7 +35,7 @@ states:
 
   # The active gameplay phase.
   in-game:
-    title: ""
+    title: "<yellow><bold>Playing <gradient:#ff3b3b:#ff7a7a>TNT</gradient> <gradient:#ff7a7a:#ff3b3b>RUN</gradient> <yellow><bold>on <aqua><bold>DESPICAL.DEV"
     overlay: PROGRESS
     color: PINK
   
