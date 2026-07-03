@@ -43,6 +43,16 @@ Jump-Bar: true
 # For custom formats, see messages.yml.
 Chat-Format-Enabled: true
 
+chat-settings:
+  # Should arena chat be exclusive to arena players?
+  separate-chat: true
+  # Disable chat messages sent by players inside arenas.
+  disable-chat-in-game: false
+  # Enable plugin chat formatting for arena messages.
+  enable-formatting: true
+  # Should alive players also see dead/spectator chat messages?
+  dead-chat-visible-to-alive: false
+
 # Defines the block scan depth in different scenarios.
 Scanning-Depth:
   On-Ground: 2

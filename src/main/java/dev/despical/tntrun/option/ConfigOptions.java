@@ -43,6 +43,6 @@ public class ConfigOptions {
 
         Stream.of(IntOption.values(), BooleanOption.values())
             .flatMap(Arrays::stream)
-            .forEach(option -> options.put(option, config.get(option.getPath())));
+            .forEach(option -> options.put(option, config.get(option.getPath(), option.getDefaultValue())));
     }
 }

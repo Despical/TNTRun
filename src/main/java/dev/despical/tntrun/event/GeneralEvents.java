@@ -100,7 +100,8 @@ public class GeneralEvents extends ListenerAdapter {
     public void onChat(AsyncPlayerChatEvent event) {
         Player player = event.getPlayer();
         Arena arena = arenaRegistry.getArena(player);
-        boolean separateChat = BooleanOption.SEPARATE_CHAT.value();
+
+        boolean separateChat = BooleanOption.CHAT_SEPARATE.value();
         Set<Player> recipients = event.getRecipients();
 
         if (arena == null) {
@@ -116,18 +117,51 @@ public class GeneralEvents extends ListenerAdapter {
 
         event.setCancelled(true);
 
-        Component formattedMessage = chatManager.getMessageComponent(
-            "chat-format",
-            Var.of("%sender%", player.getName()),
-            Var.of("%message%", event.getMessage())
-        );
-
-        if (separateChat) {
-            arena.getGame().broadcastRawComponent(formattedMessage);
+        if (BooleanOption.CHAT_DISABLE_IN_GAME.value()) {
             return;
         }
 
-        plugin.getServer().broadcast(formattedMessage);
+        User user = userManager.getUser(player);
+        boolean deadChat = user.isSpectator() || arena.isDeathPlayer(user);
+        Component formattedMessage = createChatMessage(player, event.getMessage(), deadChat);
+
+        if (deadChat) {
+            sendDeadChatMessage(arena.getGame(), formattedMessage);
+            return;
+        }
+
+        sendAliveChatMessage(arena.getGame(), formattedMessage, separateChat);
+    }
+
+    private void sendAliveChatMessage(Game game, Component message, boolean separateChat) {
+        if (!separateChat) {
+            plugin.getServer().broadcast(message);
+            return;
+        }
+
+        game.getPlayers().forEach(player -> player.sendMessage(message));
+    }
+
+    private void sendDeadChatMessage(Game game, Component message) {
+        boolean visibleToAlive = BooleanOption.CHAT_DEAD_CHAT_VISIBLE_TO_ALIVE.value();
+
+        game.getUsers().stream()
+            .filter(user -> visibleToAlive || user.isSpectator() || game.getArena().isDeathPlayer(user))
+            .map(User::getPlayer)
+            .filter(Objects::nonNull)
+            .forEach(player -> player.sendMessage(message));
+    }
+
+    private Component createChatMessage(Player player, String message, boolean deadChat) {
+        if (!BooleanOption.CHAT_ENABLE_FORMATTING.value()) {
+            return Component.text("<%s> %s".formatted(player.getName(), message));
+        }
+
+        return chatManager.getMessageComponent(
+            deadChat ? "death-chat-format" : "chat-format",
+            Var.of("%sender%", player.getName()),
+            Var.of("%message%", message)
+        );
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
@@ -158,15 +192,11 @@ public class GeneralEvents extends ListenerAdapter {
         Arena arena = arenaRegistry.getArena(player);
         if (arena == null) return;
 
+        event.setCancelled(true);
+
         Game game = arena.getGame();
-        boolean gameStarted = !game.isState(GameState.WAITING, GameState.STARTING);
-
-        if (cause == EntityDamageEvent.DamageCause.VOID) {
-            event.setCancelled(true);
-
-            if (!gameStarted) {
-                player.teleport(arena.getOption(ArenaKeys.LOBBY_LOCATION));
-            }
+        if (cause == EntityDamageEvent.DamageCause.VOID && game.isState(GameState.WAITING, GameState.STARTING)) {
+            player.teleport(arena.getOption(ArenaKeys.LOBBY_LOCATION));
         }
     }
 
