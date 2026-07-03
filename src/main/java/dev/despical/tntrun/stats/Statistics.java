@@ -37,6 +37,8 @@ public final class Statistics {
 
     public static final StatisticType<Integer> WIN = createIntStat("wins");
     public static final StatisticType<Integer> LOSE = createIntStat("loses");
+    public static final StatisticType<Integer> WIN_STREAK = createIntStat("win_streak");
+    public static final StatisticType<Integer> LONGEST_WIN_STREAK = createIntStat("longest_win_streak");
     public static final StatisticType<Integer> COIN = createIntStat("coins");
     public static final StatisticType<Integer> GAMES_PLAYED = createIntStat("games_played");
     public static final StatisticType<Integer> LONGEST_SURVIVE = createIntStat("longest_survive");
@@ -62,11 +64,11 @@ public final class Statistics {
     };
 
     private static final List<StatisticType<?>> PERSISTENT_STATS = List.of(
-        WIN, LOSE, COIN, GAMES_PLAYED, LONGEST_SURVIVE, ARENA_BEST_TIMES
+        WIN, LOSE, WIN_STREAK, COIN, GAMES_PLAYED, LONGEST_SURVIVE, ARENA_BEST_TIMES
     );
 
     private static final List<StatisticType<?>> ALL_STATS = List.of(
-        WIN, LOSE, COIN, GAMES_PLAYED, LONGEST_SURVIVE, ARENA_BEST_TIMES,
+        WIN, LOSE, COIN, WIN_STREAK, GAMES_PLAYED, LONGEST_SURVIVE, ARENA_BEST_TIMES,
         SPECTATOR_NIGHT_VISION_LEVEL, SPECTATOR_SHOW_OTHERS, SPECTATOR_SPEED
     );
 
@@ -81,7 +83,7 @@ public final class Statistics {
             protected Integer parse(String value) {
                 try {
                     return Integer.parseInt(value);
-                } catch (NumberFormatException ignored) {
+                } catch (NumberFormatException _) {
                     return 0;
                 }
             }

@@ -1,0 +1,145 @@
+rows: 6
+title: "<dark_gray>➜ <gradient:#00E676:#2979FF><bold>Statistics</bold></gradient>"
+
+items:
+  background_fill:
+    slots: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 17, 18, 26, 27, 35, 36, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53]
+    decoration-only: true
+    material: GRAY_STAINED_GLASS_PANE
+    amount: 1
+
+  decoration_borders:
+    slots: [10, 11, 12, 14, 15, 16]
+    decoration-only: true
+    material: RED_STAINED_GLASS_PANE
+    amount: 1
+
+  player_head:
+    slot: 13
+    name: "<!i><#00e5ff><bold>%target%'s Profile"
+    material: PLAYER_HEAD
+    skull: "%target%"
+    lore: []
+
+  view_arenas:
+    slot: 22
+    action: "open_arenas"
+    material: COMPASS
+    name: "<!i><#00E676><bold>🗺 View Arena Records"
+    lore:
+      - "<!i><#B0BEC5>Click to view personal"
+      - "<!i><#B0BEC5>records and leaderboard"
+      - "<!i><#B0BEC5>standings for each arena."
+      - ""
+      - "<!i><#00E676><bold>→ Click to explore"
+
+  games_played:
+    slot: 28
+    name: "<!i><white><bold>▶ Games Played"
+    material: TNT
+    lore:
+      - "<!i><#B0BEC5>Total TNT Run games"
+      - "<!i><#B0BEC5>played by this player."
+      - ""
+      - "<!i><white>● <gray>Count: <white>%games_played%"
+
+  wins:
+    slot: 29
+    name: "<!i><light_purple><bold>★ Wins"
+    material: NETHER_STAR
+    glow: true
+    lore:
+      - "<!i><#B0BEC5>Total games won."
+      - ""
+      - "<!i><white>● <gray>Count: <light_purple>%wins%"
+
+  loses:
+    slot: 30
+    name: "<!i><red><bold>⚡ Losses"
+    material: REDSTONE_BLOCK
+    lore:
+      - "<!i><#B0BEC5>Total games lost."
+      - ""
+      - "<!i><white>● <gray>Count: <red>%loses%"
+
+  win_streak:
+    slot: 31
+    name: "<!i><green><bold>✦ Win Streak"
+    material: EMERALD
+    glow: true
+    lore:
+      - "<!i><#B0BEC5>Current win streak."
+      - ""
+      - "<!i><white>● <gray>Count: <green>%win_streak%"
+
+  longest_win_streak:
+    slot: 32
+    name: "<!i><gold><bold>🔥 Best Win Streak"
+    material: BLAZE_POWDER
+    lore:
+      - "<!i><#B0BEC5>Highest win streak"
+      - "<!i><#B0BEC5>this player has reached."
+      - ""
+      - "<!i><white>● <gray>Count: <gold>%longest_win_streak%"
+
+  coins:
+    slot: 33
+    name: "<!i><#64B5F6><bold>● Coins"
+    material: GOLD_INGOT
+    lore:
+      - "<!i><#B0BEC5>Total coins earned."
+      - ""
+      - "<!i><white>● <gray>Count: <#64B5F6>%coins%"
+
+  longest_survive:
+    slot: 34
+    name: "<!i><#00E676><bold>⏱ Longest Survive"
+    material: CLOCK
+    lore:
+      - "<!i><#B0BEC5>Longest survival time"
+      - "<!i><#B0BEC5>across all games."
+      - ""
+      - "<!i><white>● <gray>Time: <#00E676>%longest_survive%"
+
+  back_button:
+    slot: 49
+    action: "back"
+    material: DARK_OAK_DOOR
+    name: "<!i><b><#FF5252>← Go Back"
+    lore:
+      - "<!i><gray>Return to the previous menu"
+
+  previous_page:
+    slot: 45
+    action: "previous_page"
+    material: ARROW
+    name: "<!i><b><#FFCA28>← Previous Page"
+    lore:
+      - "<!i><gray>View previous arenas"
+
+  next_page:
+    slot: 53
+    action: "next_page"
+    material: ARROW
+    name: "<!i><b><#FFCA28>Next Page →"
+    lore:
+      - "<!i><gray>View more arenas"
+
+  arena_template:
+    material: MAP
+    name: "<!i><#29B6F6><bold>✦ %arena%"
+    lore:
+      - "<!i><dark_gray><st>---------------"
+      - "<!i> <#B0BEC5>Your Best Time:"
+      - "<!i> <#00E676><bold>%best_time%"
+      - ""
+      - "<!i> <#FFD700><bold>⭐ Leaderboard Top 3"
+      - "<!i><dark_gray><st>---------------"
+    no-record: "<#FF5252>No record"
+    empty-leaderboard: "<!i><#B0BEC5>No leaderboard entries yet."
+    leaderboard-entry: "<!i>%color%#%rank% <white>%player% <gray>- <#FFCA28>%time%"
+    leaderboard-separator: "<!i><dark_gray><st>-----------------"
+    leaderboard-player-entry: "<!i><#00E676>#%rank% <white>%player% <gray>- <#FFCA28>%time%"
+    color-1: "<#FFD700>"
+    color-2: "<#E0E0E0>"
+    color-3: "<#CD7F32>"

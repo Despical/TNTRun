@@ -20,6 +20,7 @@ package dev.despical.tntrun.leaderboard;
 
 import dev.despical.tntrun.Main;
 import dev.despical.tntrun.arena.Arena;
+import dev.despical.tntrun.arena.options.ArenaKeys;
 import dev.despical.tntrun.stats.StatisticType;
 import dev.despical.tntrun.stats.Statistics;
 import dev.despical.tntrun.stats.offline.OfflineStats;
@@ -62,9 +63,9 @@ public class LeaderboardManager {
         }
 
         for (Arena arena : plugin.getArenaRegistry().getArenas()) {
-//            if (!arena.isOptionPresent(ArenaKeys.READY)) {
-//                continue;
-//            }
+            if (!arena.isOptionPresent(ArenaKeys.READY)) {
+                continue;
+            }
 
             String arenaId = arena.getId();
 
