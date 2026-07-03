@@ -21,7 +21,9 @@ package dev.despical.tntrun.utils;
 import dev.despical.commons.serializer.InventorySerializer;
 import dev.despical.tntrun.Main;
 import dev.despical.tntrun.game.GameState;
+import dev.despical.tntrun.stats.Statistics;
 import dev.despical.tntrun.user.User;
+import net.kyori.adventure.text.Component;
 import org.bukkit.GameMode;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
@@ -45,6 +47,7 @@ public class Utils {
     public static void applyActionBarCooldown(final User user, int seconds) {
         new BukkitRunnable() {
             int ticks = 0;
+            final int maxTicks = seconds * 20;
 
             @Override
             public void run() {
@@ -55,17 +58,44 @@ public class Utils {
                     return;
                 }
 
-                var progress = getProgressBar(ticks, seconds * 20);
-                user.sendRawActionBar(plugin.getChatManager().message("messages.in-game.cooldown-format", user).replace("%progress%", progress).replace("%time%", Double.toString((double) ((seconds * 20) - ticks) / 20)));
-
-                if (ticks >= seconds * 20) {
+                if (ticks >= maxTicks || !user.hasCooldown("double_jump")) {
+                    user.removeCooldown("double_jump");
+                    user.sendRawActionBarComponent(Component.empty());
+                    restoreDoubleJumpFlight(user);
                     cancel();
                     return;
                 }
 
+                var progress = getProgressBar(ticks, maxTicks);
+                double remaining = Math.max(0.1D, (maxTicks - ticks) / 20D);
+                user.sendRawActionBar(plugin.getChatManager().message("messages.in-game.cooldown-format", user)
+                    .replace("%progress%", progress)
+                    .replace("%time%", String.format(java.util.Locale.US, "%.1f", remaining)));
+
                 ticks += 2;
             }
         }.runTaskTimer(plugin, 0, 2);
+    }
+
+    public static void restoreDoubleJumpFlightWhenReady(User user, int seconds) {
+        plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
+            if (!user.hasCooldown("double_jump")) {
+                restoreDoubleJumpFlight(user);
+            }
+        }, seconds * 20L);
+    }
+
+    private static void restoreDoubleJumpFlight(User user) {
+        var arena = user.getArena();
+        Player player = user.getPlayer();
+
+        if (player == null || arena == null || arena.isDeathPlayer(user) || !arena.isArenaState(GameState.IN_GAME)) {
+            return;
+        }
+
+        if (user.getStatistic(Statistics.LOCAL_DOUBLE_JUMPS) > 0) {
+            player.setAllowFlight(true);
+        }
     }
 
     private static String getProgressBar(int current, int max) {

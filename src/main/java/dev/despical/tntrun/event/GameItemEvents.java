@@ -20,8 +20,10 @@ package dev.despical.tntrun.event;
 
 import dev.despical.fileitems.SpecialItem;
 import dev.despical.tntrun.api.event.player.PlayerLeaveGameEvent;
-import dev.despical.tntrun.option.BooleanOption;
 import dev.despical.tntrun.arena.Arena;
+import dev.despical.tntrun.game.GameState;
+import dev.despical.tntrun.option.BooleanOption;
+import dev.despical.tntrun.sound.GameSound;
 import dev.despical.tntrun.stats.Statistics;
 import dev.despical.tntrun.user.User;
 import dev.despical.tntrun.utils.Utils;
@@ -34,6 +36,8 @@ import org.bukkit.event.player.PlayerToggleFlightEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.HashSet;
+import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 import java.util.UUID;
 
@@ -50,14 +54,14 @@ public class GameItemEvents extends ListenerAdapter {
 	public void onDoubleJump(PlayerToggleFlightEvent event) {
 		var player = event.getPlayer();
 
-		if (!event.isFlying() && player.getGameMode() != GameMode.ADVENTURE) {
+		if (!event.isFlying() || player.getGameMode() != GameMode.ADVENTURE) {
 			return;
 		}
 
 		User user = plugin.getUserManager().getUser(player);
 		Arena arena = user.getArena();
 
-		if (arena == null || user.isSpectator() || arena.isDeathPlayer(user)) {
+		if (!canUseDoubleJump(user, player, arena)) {
 			return;
 		}
 
@@ -67,9 +71,10 @@ public class GameItemEvents extends ListenerAdapter {
 	@EventHandler
 	public void onDoubleJump(PlayerInteractEvent event) {
 		Player player = event.getPlayer();
-		Action action = event.getAction();
 
-		if (action == Action.LEFT_CLICK_AIR || action == Action.LEFT_CLICK_BLOCK || action == Action.PHYSICAL) return;
+        if (player.getGameMode() != GameMode.ADVENTURE) {
+            return;
+        }
 
 		User user = plugin.getUserManager().getUser(player);
 
@@ -87,15 +92,23 @@ public class GameItemEvents extends ListenerAdapter {
 			return;
 		}
 
-		if (doubleJumpItem.equals(event.getItem())) {
+		if (isDoubleJumpItem(doubleJumpItem, event) && isActionAllowed(doubleJumpItem, event.getAction())) {
             Arena arena = user.getArena();
-            if (arena == null || user.isSpectator() || arena.isDeathPlayer(user)) {
+            if (!canUseDoubleJump(user, player, arena)) {
                 return;
             }
 
 			event.setCancelled(performDoubleJump(user, player, arena));
 		}
 	}
+
+    private boolean canUseDoubleJump(User user, Player player, Arena arena) {
+        return player.getGameMode() == GameMode.ADVENTURE &&
+            arena != null &&
+            arena.isArenaState(GameState.IN_GAME) &&
+            !user.isSpectator() &&
+            !arena.isDeathPlayer(user);
+    }
 
     private boolean performDoubleJump(User user, Player player, Arena arena) {
         if (user.getCooldown("double_jump") > 0) {
@@ -112,10 +125,12 @@ public class GameItemEvents extends ListenerAdapter {
 
         user.setStatistic(Statistics.LOCAL_DOUBLE_JUMPS, jumps - 1);
         user.setCooldown("double_jump", plugin.getPermissionManager().getDoubleJumpDelay());
+        Utils.restoreDoubleJumpFlightWhenReady(user, plugin.getPermissionManager().getDoubleJumpDelay());
 
         player.setFlying(false);
         player.setAllowFlight(false);
         player.setVelocity(player.getLocation().getDirection().multiply(1.5D).setY(0.7D));
+        plugin.getSoundManager().play(player, GameSound.DOUBLE_JUMP);
 
         arena.getGame().getScoreboardManager().updateScoreboard(player);
 
@@ -124,6 +139,43 @@ public class GameItemEvents extends ListenerAdapter {
         }
 
         return true;
+    }
+
+    private boolean isDoubleJumpItem(SpecialItem doubleJumpItem, PlayerInteractEvent event) {
+        return doubleJumpItem.getOriginalItemStack().isSimilar(event.getItem());
+    }
+
+    private boolean isActionAllowed(SpecialItem item, Action action) {
+        if (action == Action.PHYSICAL) {
+            return false;
+        }
+
+        List<String> configuredActions = item.getCustomKey("actions");
+        if (configuredActions == null || configuredActions.isEmpty()) {
+            return action.isRightClick();
+        }
+
+        for (String configuredAction : configuredActions) {
+            if (matchesAction(configuredAction, action)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private boolean matchesAction(String configuredAction, Action action) {
+        String normalized = configuredAction
+            .trim()
+            .replace('-', '_')
+            .toUpperCase(Locale.ENGLISH);
+
+        return switch (normalized) {
+            case "ANY", "BOTH", "CLICK" -> action.isLeftClick() || action.isRightClick();
+            case "LEFT_CLICK" -> action.isLeftClick();
+            case "RIGHT_CLICK" -> action.isRightClick();
+            default -> action.name().equals(normalized);
+        };
     }
 
     @EventHandler

@@ -43,13 +43,7 @@ import java.util.function.Consumer;
  */
 public class User {
 
-    private static final Main plugin;
-    private static long cooldownCounter;
-
-    static {
-        plugin = Main.getInstance();
-        plugin.getServer().getScheduler().runTaskTimerAsynchronously(plugin, () -> cooldownCounter++, 20, 20);
-    }
+    private static final Main plugin = Main.getInstance();
 
     @Getter
     @Setter
@@ -60,7 +54,7 @@ public class User {
     @Getter
     private final String name;
 
-    private final Map<String, Double> cooldowns;
+    private final Map<String, Long> cooldowns;
     private final Map<StatisticType<?>, Object> stats;
 
     public User(Player player) {
@@ -164,7 +158,7 @@ public class User {
     }
 
     public void setCooldown(String cooldownName, double seconds) {
-        cooldowns.put(cooldownName, seconds + cooldownCounter);
+        cooldowns.put(cooldownName, System.currentTimeMillis() + Math.round(seconds * 1000D));
     }
 
     public void removeCooldown(String cooldownName) {
@@ -172,7 +166,18 @@ public class User {
     }
 
     public double getCooldown(String cooldownName) {
-        return Math.max(0D, cooldowns.getOrDefault(cooldownName, 0D) - cooldownCounter);
+        Long expiresAt = cooldowns.get(cooldownName);
+        if (expiresAt == null) {
+            return 0D;
+        }
+
+        long remainingMillis = expiresAt - System.currentTimeMillis();
+        if (remainingMillis <= 0L) {
+            cooldowns.remove(cooldownName);
+            return 0D;
+        }
+
+        return remainingMillis / 1000D;
     }
 
     @SuppressWarnings("unchecked")

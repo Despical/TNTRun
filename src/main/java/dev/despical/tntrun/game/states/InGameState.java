@@ -34,6 +34,8 @@ public class InGameState extends GameStateHandler {
         game.getPlayers().forEach(player -> {
             player.getInventory().clear();
             player.teleport(startLocation);
+
+            giveDoubleJumpItem(player);
             applyArenaPotionEffects(player);
         });
 
@@ -43,6 +45,13 @@ public class InGameState extends GameStateHandler {
         game.startBlockRemoving();
 
         plugin.getEventManager().gameStart(game);
+    }
+
+    private void giveDoubleJumpItem(Player player) {
+        var doubleJumpItem = plugin.getItemManager().getItem("double-jump");
+        if (doubleJumpItem != null) {
+            doubleJumpItem.giveTo(player, "slot");
+        }
     }
 
     @Override
