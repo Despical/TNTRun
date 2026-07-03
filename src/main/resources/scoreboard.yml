@@ -1,0 +1,107 @@
+# =================================================================
+#                TNT Run - Scoreboard Configuration               #
+# =================================================================
+#                                                                 #
+# GLOBAL PLACEHOLDERS:                                            #
+#   %player%            : Name of the player                      #
+#   %date%              : Current date                            #
+#   %players%           : Current number of players in the arena  #
+#   %max_players%       : Maximum player capacity                 #
+#   %min_players%       : Minimum players required to start       #
+#   %timer%             : Time remaining in seconds (e.g., 30)    #
+#   %formatted_timer%   : Time remaining in MM:SS (e.g., 00:30)   #
+#                                                                 #
+# STATE-SPECIFIC:                                                 #
+#   %players_needed%    : Players remaining to reach the minimum  #
+#   %s%                 : Plural suffix (empty if 1, "s" if > 1)  #
+#   %players_left%      : Players still alive in the arena        #
+#   %double_jumps%      : Remaining double jumps                  #
+#   %max_double_jumps%  : Maximum double jumps                    #
+#   %coins_earned%      : Coins earned during the current game    #
+#                                                                 #
+# =================================================================
+
+# Arena hasn't reached the minimum player count yet.
+waiting:
+  title: "<#FFC800><bold>TNT RUN"
+  lines:
+    - "<#B0C4DE>%date%"
+    - ""
+    - "<#E6E6E6>Players: <#00FF95>%players%/%max_players%"
+    - ""
+    - "<#E6E6E6>Starting in <#00FF95>%formatted_timer% <#E6E6E6>if"
+    - "<#00FF95>%players_needed% <#E6E6E6>more player%s% join"
+    - ""
+    - "<#FFC800>www.despical.dev"
+
+# Minimum player count reached. Countdown is active, but slots are still available.
+starting-half:
+  title: "<#FFC800><bold>TNT RUN"
+  lines:
+    - "<#B0C4DE>%date%"
+    - ""
+    - "<#E6E6E6>Players: <#00FF95>%players%/%max_players%"
+    - ""
+    - "<#E6E6E6>Starting in <#00FF95>%formatted_timer% <#E6E6E6>to"
+    - "<#E6E6E6>allow time for"
+    - "<#E6E6E6>additional players"
+    - ""
+    - "<#FFC800>www.despical.dev"
+
+# Waiting for additional players and the game is about to start.
+starting:
+  title: "<#FFC800><bold>TNT RUN"
+  lines:
+    - "<#B0C4DE>%date%"
+    - ""
+    - "<#E6E6E6>Players: <#00FF95>%players%/%max_players%"
+    - ""
+    - "<#E6E6E6>Starting in <#00FF95>%formatted_timer% <#E6E6E6>to"
+    - "<#E6E6E6>allow time for"
+    - "<#E6E6E6>additional players"
+    - ""
+    - "<#FFC800>www.despical.dev"
+
+# Arena is completely full and the game is about to start.
+starting-full:
+  title: "<#FFC800><bold>TNT RUN"
+  lines:
+    - "<#B0C4DE>%date%"
+    - ""
+    - "<#E6E6E6>Players: <#00FF95>%players%/%max_players%"
+    - ""
+    - "<#E6E6E6>Starting in <#00FF95>%timer%s"
+    - ""
+    - "<#FFC800>www.despical.dev"
+
+# During the active gameplay.
+in-game:
+  title: "<#FFC800><bold>TNT RUN"
+  lines:
+    - "<#B0C4DE>%date%"
+    - ""
+    - "<#E6E6E6>Duration: <#00FF95>%formatted_timer%"
+    - ""
+    - "<#E6E6E6>Double Jump: <#00FF95>%double_jumps%<#B0C4DE>/<#00FF95>%max_double_jumps%"
+    - ""
+    - "<#E6E6E6>Players Alive: <#00FF95>%players_left%"
+    - ""
+    - "<#E6E6E6>Coins Earned: <#00FF95>%coins_earned%"
+    - ""
+    - "<#FFC800>www.despical.dev"
+
+# Game has been finished and players are about to be teleported to the lobby.
+ending:
+  title: "<#FFC800><bold>TNT RUN"
+  lines:
+    - "<#B0C4DE>%date%"
+    - ""
+    - "<#E6E6E6>Survived For: <#00FF95>%formatted_timer%"
+    - ""
+    - "<#E6E6E6>Double Jump: <#00FF95>%double_jumps%<#B0C4DE>/<#00FF95>%max_double_jumps%"
+    - ""
+    - "<#E6E6E6>Coins Earned: <#00FF95>%coins_earned%"
+    - ""
+    - "<#E6E6E6>Players Alive: <#00FF95>%players_left%"
+    - ""
+    - "<#FFC800>www.despical.dev"

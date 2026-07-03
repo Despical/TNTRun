@@ -1,6 +1,7 @@
 package dev.despical.tntrun.bossbar;
 
 import dev.despical.tntrun.Main;
+import dev.despical.tntrun.arena.options.ArenaKeys;
 import dev.despical.tntrun.game.Game;
 import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.text.Component;
@@ -24,7 +25,7 @@ public class BossBarManager {
     }
 
     public void update() {
-        if (!configProvider.isEnabled()) {
+        if (!isEnabled()) {
             removeAll();
             return;
         }
@@ -60,5 +61,9 @@ public class BossBarManager {
 
     public void removePlayer(Player player) {
         bossBar.removeViewer(player);
+    }
+
+    private boolean isEnabled() {
+        return configProvider.isEnabled() && game.getArena().getOption(ArenaKeys.ARENA_BOSSBAR_ENABLED);
     }
 }
