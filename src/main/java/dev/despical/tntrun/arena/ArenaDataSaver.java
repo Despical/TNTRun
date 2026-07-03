@@ -70,8 +70,6 @@ public class ArenaDataSaver {
             .toList();
 
         config.set(rootPath + "signs", signLocations);
-        config.set(rootPath + "record-holder", arena.getRecordHolderName());
-        config.set(rootPath + "record-time", arena.getRecordTime());
     }
 
     private <T> void saveSingleOption(Arena arena, FileConfiguration config, String rootPath, ArenaOption<T> option) {

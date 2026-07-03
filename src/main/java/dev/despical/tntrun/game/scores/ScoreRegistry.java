@@ -18,19 +18,25 @@ public class ScoreRegistry {
 
     private final Game game;
     private final Map<UUID, Integer> scores;
+    private final Map<UUID, String> scorerNames;
 
     public ScoreRegistry(Game game) {
         this.game = game;
         this.scores = new HashMap<>();
+        this.scorerNames = new HashMap<>();
         this.top3Cache = new LinkedHashMap<>();
     }
 
     public void resetScores() {
         scores.clear();
+        scorerNames.clear();
         top3Cache.clear();
         winner = null;
 
-        game.getUsers().forEach(user -> scores.put(user.getUUID(), 0));
+        game.getUsers().forEach(user -> {
+            scores.put(user.getUUID(), 0);
+            scorerNames.put(user.getUUID(), user.getName());
+        });
 
         refreshTop3Cache();
     }
@@ -57,6 +63,11 @@ public class ScoreRegistry {
     public void addScore(UUID uuid, int score) {
         this.scores.put(uuid, score);
         this.dirtyCache = true;
+    }
+
+    public void addScore(User user, int score) {
+        this.scorerNames.put(user.getUUID(), user.getName());
+        addScore(user.getUUID(), score);
     }
 
     public void removePlayer(UUID uuid) {
@@ -144,5 +155,18 @@ public class ScoreRegistry {
         }
 
         return top3Cache.containsKey(uuid);
+    }
+
+    public Optional<RecordScore> getHighestScore() {
+        return scores.entrySet().stream()
+            .max(Map.Entry.comparingByValue())
+            .map(entry -> new RecordScore(
+                entry.getKey(),
+                scorerNames.getOrDefault(entry.getKey(), "None"),
+                entry.getValue()
+            ));
+    }
+
+    public record RecordScore(UUID uuid, String playerName, int score) {
     }
 }

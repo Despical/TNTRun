@@ -121,14 +121,6 @@ public class ArenaRegistry {
         for (ArenaOption<?> option : ArenaKeys.getPersistentKeys()) {
             loadSingleOption(arena, config, option);
         }
-
-        String path = arena.getId() + ".";
-
-        String recordHolder = config.getString(path + "record-holder", "None");
-        long recordTime = config.getLong(path + "record-time", -1);
-
-        arena.setRecordHolderName(recordHolder);
-        arena.setRecordTime(recordTime);
     }
 
     private <T> void loadSingleOption(Arena arena, FileConfiguration config, ArenaOption<T> option) {

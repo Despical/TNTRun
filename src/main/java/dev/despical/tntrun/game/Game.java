@@ -172,6 +172,7 @@ public class Game extends BukkitRunnable {
 
         user.resetTemporaryStats();
         user.setSpectator(true);
+
         users.add(user);
 
         states.get(gameState).join(user);
@@ -323,7 +324,7 @@ public class Game extends BukkitRunnable {
             return;
         }
 
-        scores.addScore(user.getUUID(), user.getStatistic(Statistics.LOCAL_SURVIVE_TIME));
+        scores.addScore(user, user.getStatistic(Statistics.LOCAL_SURVIVE_TIME));
         user.setSpectator(true);
         arena.addDeathPlayer(user);
         prepareSpectator(user, true);
@@ -349,7 +350,7 @@ public class Game extends BukkitRunnable {
 
         User winner = playersLeft.iterator().next();
         arena.addWinner(winner);
-        scores.addScore(winner.getUUID(), winner.getStatistic(Statistics.LOCAL_SURVIVE_TIME));
+        scores.addScore(winner, winner.getStatistic(Statistics.LOCAL_SURVIVE_TIME));
         scores.setWinner(winner);
         setGameState(GameState.ENDING);
     }

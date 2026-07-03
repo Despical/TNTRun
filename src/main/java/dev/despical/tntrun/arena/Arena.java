@@ -28,7 +28,6 @@ import dev.despical.tntrun.scoreboard.ScoreboardManager;
 import dev.despical.tntrun.user.User;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 import org.bukkit.Location;
 import org.bukkit.block.BlockState;
 import org.bukkit.entity.Player;
@@ -62,12 +61,6 @@ public class Arena {
     private final List<User> deaths = new ArrayList<>();
     private final List<User> winners = new ArrayList<>();
     private boolean forceStart;
-
-    @Setter
-    private String recordHolderName = "None";
-
-    @Setter
-    private long recordTime = -1;
 
     Arena(String id) {
         this.id = id;
@@ -131,6 +124,22 @@ public class Arena {
     }
 
     public void setMapName(String mapName) {
+    }
+
+    public String getRecordHolderName() {
+        return getOption(ArenaKeys.RECORD_HOLDER_NAME);
+    }
+
+    public void setRecordHolderName(String recordHolderName) {
+        setOption(ArenaKeys.RECORD_HOLDER_NAME, recordHolderName);
+    }
+
+    public long getRecordTime() {
+        return getOption(ArenaKeys.RECORD_TIME);
+    }
+
+    public void setRecordTime(long recordTime) {
+        setOption(ArenaKeys.RECORD_TIME, recordTime);
     }
 
     public int getTimer() {

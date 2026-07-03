@@ -56,6 +56,22 @@ public final class ArenaKeys {
         }
     };
 
+    public static final ArenaOption<String> RECORD_HOLDER_NAME = new ArenaOption<>("record-holder", "None", String.class) {
+
+        @Override
+        protected String parse(String value) {
+            return value == null || value.isBlank() ? getDefaultValue() : value;
+        }
+    };
+
+    public static final ArenaOption<Long> RECORD_TIME = new ArenaOption<>("record-time", -1L, Long.class) {
+
+        @Override
+        protected Long parse(String value) {
+            return Long.parseLong(value);
+        }
+    };
+
     public static final ArenaOption<Location> LOBBY_LOCATION = new ArenaOption<>("lobby", null, Location.class) {
 
         @Override
@@ -195,6 +211,8 @@ public final class ArenaKeys {
         return List.of(
             READY,
             MAP_NAME,
+            RECORD_HOLDER_NAME,
+            RECORD_TIME,
             LOBBY_LOCATION,
             START_LOCATION,
             END_LOCATION,

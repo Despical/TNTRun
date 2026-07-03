@@ -74,7 +74,7 @@ public class InGameState extends GameStateHandler {
             }
 
             user.addStat(Statistics.LOCAL_SURVIVE_TIME, 1);
-            game.getScores().addScore(user.getUUID(), user.getStatistic(Statistics.LOCAL_SURVIVE_TIME));
+            game.getScores().addScore(user, user.getStatistic(Statistics.LOCAL_SURVIVE_TIME));
         }
     }
 
@@ -98,7 +98,7 @@ public class InGameState extends GameStateHandler {
     @Override
     public void leave(User user) {
         boolean wasSpectator = user.isSpectator();
-        game.getScores().addScore(user.getUUID(), user.getStatistic(Statistics.LOCAL_SURVIVE_TIME));
+        game.getScores().addScore(user, user.getStatistic(Statistics.LOCAL_SURVIVE_TIME));
         if (!wasSpectator) {
             game.broadcastMessage("disconnected-from-the-game", Var.ofPlayer(user));
         }

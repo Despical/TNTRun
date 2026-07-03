@@ -1,6 +1,7 @@
 package dev.despical.tntrun.game.states;
 
 import dev.despical.fileitems.SpecialItem;
+import dev.despical.tntrun.arena.ArenaDataSaver;
 import dev.despical.tntrun.arena.options.ArenaKeys;
 import dev.despical.tntrun.game.Game;
 import dev.despical.tntrun.game.GameState;
@@ -42,6 +43,7 @@ public class EndingState extends GameStateHandler {
         });
 
         this.applyStatistics();
+        this.updateArenaRecord();
 
         plugin.getEventManager().gameEnd(game);
     }
@@ -91,5 +93,18 @@ public class EndingState extends GameStateHandler {
                 user.setStatisticIfHigher(Statistics.LONGEST_WIN_STREAK, currentStreak);
             }
         }
+    }
+
+    private void updateArenaRecord() {
+        ScoreRegistry.RecordScore highestScore = game.getScores().getHighestScore().orElse(null);
+
+        if (highestScore == null || highestScore.score() <= arena.getRecordTime()) {
+            return;
+        }
+
+        arena.setRecordHolderName(highestScore.playerName());
+        arena.setRecordTime(highestScore.score());
+
+        new ArenaDataSaver(plugin).saveAllArenas();
     }
 }
