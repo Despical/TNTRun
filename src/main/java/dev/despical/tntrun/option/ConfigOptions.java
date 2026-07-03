@@ -25,7 +25,7 @@ public class ConfigOptions {
     }
 
     public <T> T get(ConfigOption<T> option) {
-        return option.getType().cast(options.computeIfAbsent(option, opt -> option.getDefaultValue()));
+        return option.getType().cast(options.computeIfAbsent(option, _ -> option.getDefaultValue()));
     }
 
     public boolean isEnabled(BooleanOption option) {

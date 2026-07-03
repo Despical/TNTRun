@@ -13,9 +13,8 @@ import lombok.RequiredArgsConstructor;
 public enum BooleanOption implements ConfigOption<Boolean> {
 
     BLOCK_OUTSIDE_CHAT("chat-settings.block-outside-chat", true),
-    CLEAR_EFFECTS_ON_JOIN("player-settings.clear-effects-on-join", true),
-    CLEAR_INVENTORY_ON_JOIN("player-settings.clear-inventory-on-join", true),
     DEBUG("debug", false),
+    LEVEL_BAR_TIMER("level-bar-timer", false),
     DISABLE_CHAT_IN_GAME("chat-settings.disable-chat-in-game", false),
     DISABLE_COMMANDS_WHILE_PLAYING("command-settings.disable-commands-while-playing", true),
     ENABLE_CHAT_FORMATTING("chat-settings.enable-formatting", true),

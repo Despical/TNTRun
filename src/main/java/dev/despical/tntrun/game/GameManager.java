@@ -1,0 +1,109 @@
+/*
+ * TNT Run - A Minecraft parkour minigame
+ * Copyright (C) 2024  Berke Akçen
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+package dev.despical.tntrun.game;
+
+import dev.despical.commons.serializer.InventorySerializer;
+import dev.despical.tntrun.Main;
+import dev.despical.tntrun.arena.Arena;
+import dev.despical.tntrun.arena.options.ArenaKeys;
+import dev.despical.tntrun.bossbar.BossBarConfig;
+import dev.despical.tntrun.game.messages.MessageTicker;
+import dev.despical.tntrun.game.visibility.VisibilityManager;
+import dev.despical.tntrun.user.User;
+import dev.despical.tntrun.utils.ItemUtils;
+import lombok.AccessLevel;
+import lombok.Getter;
+import org.bukkit.GameMode;
+import org.bukkit.Location;
+import org.bukkit.entity.Player;
+
+import java.util.List;
+
+/**
+ * @author Despical
+ * <p>
+ * Created at 17.06.2026
+ */
+@Getter
+public class GameManager {
+
+    @Getter(AccessLevel.NONE)
+    private final Main plugin;
+    private final MessageTicker messageTicker;
+    private final BossBarConfig bossBarConfig;
+
+    public GameManager(Main plugin) {
+        this.plugin = plugin;
+        this.messageTicker = new MessageTicker();
+        this.bossBarConfig = new BossBarConfig(plugin);
+    }
+
+    public void startGame(Game game) {
+        game.setGameState(GameState.IN_GAME);
+    }
+
+    public void stopGame(Game game, StopReason reason) {
+        if (game == null) return;
+
+        game.getScoreboardManager().removeAllScoreboards();
+        game.getBossBarManager().removeAll();
+        game.broadcastMessage(reason.getMessagePath());
+
+        VisibilityManager visibilityManager = game.getVisibilityManager();
+        visibilityManager.showPlayersToEachOther();
+
+        Arena arena = game.getArena();
+        Location endLocation = arena.getOption(ArenaKeys.END_LOCATION);
+
+
+        List<User> users = game.getUsers();
+        users.forEach(user -> {
+            Player player = user.getPlayer();
+            player.teleport(endLocation);
+            player.setGameMode(GameMode.SURVIVAL);
+            player.setHealth(20);
+            player.setFoodLevel(20);
+            player.getInventory().clear();
+            player.getInventory().setArmorContents(ItemUtils.EMPTY_ARMORS);
+            player.getActivePotionEffects().forEach(effect -> player.removePotionEffect(effect.getType()));
+
+            InventorySerializer.loadInventory(plugin, player);
+
+            visibilityManager.showPlayerOutsideTheGame(player);
+        });
+        users.clear();
+
+        plugin.getEventManager().gameStop(game, reason);
+
+        game.setGameState(GameState.RESTARTING);
+    }
+
+    public List<Game> getGames() {
+        return plugin.getArenaRegistry().getArenas()
+            .stream()
+            .filter(Arena::isGameNonnull)
+            .map(Arena::getGame)
+            .toList();
+    }
+
+    public void reload() {
+        getGames().forEach(game -> game.getScoreboardManager().loadContents());
+        bossBarConfig.load();
+    }
+}

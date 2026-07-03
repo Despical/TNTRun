@@ -1,0 +1,46 @@
+# ==========================================================
+#             TNT Run - BossBar Configuration             #
+# ==========================================================
+#                                                          #
+#  BAR STYLES:                                             #
+#    - PROGRESS   : Solid, undivided bar                   #
+#    - NOTCHED_6  : Divided into 6 segments                #
+#    - NOTCHED_10 : Divided into 10 segments               #
+#    - NOTCHED_12 : Divided into 12 segments               #
+#    - NOTCHED_20 : Divided into 20 segments               #
+#                                                          #
+#  BAR COLORS:                                             #
+#    - PINK, BLUE, RED, GREEN, YELLOW, PURPLE, WHITE       #
+#                                                          #
+# ==========================================================
+
+# Determines whether the BossBar system is enabled.
+# If set to 'false', the bar will not be displayed during any game stage.
+enabled: true
+
+# BossBar appearance settings for different game stages.
+# You can customize the title, overlay (style), and color for each state.
+states:
+  # The stage where players are waiting in the lobby for the game to start.
+  waiting:
+    title: "<yellow><bold>Playing <gradient:#ff3b3b:#ff7a7a>TNT</gradient> <gradient:#ff7a7a:#ff3b3b>RUN</gradient> <yellow><bold>on <aqua><bold>DESPICAL.DEV"
+    overlay: PROGRESS
+    color: PINK
+  
+  # The stage where the pre-game countdown begins.
+  starting:
+    title: "<yellow><bold>Playing <gradient:#ff3b3b:#ff7a7a>TNT</gradient> <gradient:#ff7a7a:#ff3b3b>RUN</gradient> <yellow><bold>on <aqua><bold>DESPICAL.DEV"
+    overlay: PROGRESS
+    color: PINK
+
+  # The active gameplay phase.
+  in-game:
+    title: ""
+    overlay: PROGRESS
+    color: PINK
+  
+  # The stage when the game ends and the winner is declared.
+  ending:
+    title: "<yellow><bold>Playing <gradient:#ff3b3b:#ff7a7a>TNT</gradient> <gradient:#ff7a7a:#ff3b3b>RUN</gradient> <yellow><bold>on <aqua><bold>DESPICAL.DEV"
+    overlay: PROGRESS
+    color: PINK
