@@ -60,7 +60,7 @@ public class SetupHomePage extends SetupPage {
 
         GuiItem resetArenaRecordsItem = createArenaRecordResetItem();
         if (resetArenaRecordsItem != null) {
-            pane.addItem(resetArenaRecordsItem, 5, 3);
+            pane.addItem(resetArenaRecordsItem, 3, 3);
         }
 
         if (!arena.getOption(ArenaKeys.READY)) {

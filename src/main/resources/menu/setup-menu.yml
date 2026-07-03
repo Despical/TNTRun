@@ -74,7 +74,7 @@ items:
     name: "<#2196F3><bold>Set Map Name"
     material: NAME_TAG
     lore:
-      - "<#2F2F2F>• <#00E5FF>CLICK <#BDBDBD>to open map name dialog"
+      - "<#2F2F2F>• <#2196F3>CLICK <#BDBDBD>to open map name dialog"
       - ""
       - "<#2F2F2F>• <#B0BEC5>Current Name: <#29B6F6>%map_name%"
       - ""
@@ -115,44 +115,30 @@ items:
       - "<#B0BEC5>  gamemode when players join."
 
   arena-record-reset:
-    name: "<!i><#FF5252><bold>Reset Arena Records"
+    name: "<#FF5252><bold>Reset Arena Records"
     material: PLAYER_HEAD
     lore:
-      - "<!i><#2F2F2F>• <#FF5252>CLICK <#BDBDBD>to open reset confirmation"
+      - "<#2F2F2F>• <#FF5252>CLICK <#BDBDBD>to open reset confirmation"
       - ""
-      - "<!i><#2F2F2F>• <#B0BEC5>Record Holder: <#81D4FA>%record_holder%"
-      - "<!i><#2F2F2F>• <#B0BEC5>Best Time: <#FFD54F>%record_time%"
+      - "<#2F2F2F>• <#B0BEC5>Record Holder: <#81D4FA>%record_holder%"
+      - "<#2F2F2F>• <#B0BEC5>Best Time: <#FFD54F>%record_time%"
       - ""
-      - "<!i><#2F2F2F>• <#EF9A9A>Removes this arena's best time and"
-      - "<!i><#EF9A9A>  stored arena records from every player."
+      - "<#2F2F2F>• <#EF9A9A>Removes this arena's best time and"
+      - "<#EF9A9A>  stored arena records from every player."
 
   confirm-arena-record-reset:
-    name: "<!i><#00E676><bold>Confirm Reset"
+    name: "<#00E676><bold>Confirm Reset"
     material: LIME_DYE
     lore:
-      - "<!i><#2F2F2F>• <#00E676>CLICK <#BDBDBD>to permanently clear"
-      - "<!i><#BDBDBD>  this arena's best survival records."
+      - "<#2F2F2F>• <#00E676>CLICK <#BDBDBD>to permanently clear"
+      - "<#BDBDBD>  this arena's best survival records."
 
   cancel-arena-record-reset:
-    name: "<!i><#FF5252><bold>Cancel"
+    name: "<#FF5252><bold>Cancel"
     material: RED_DYE
     lore:
-      - "<!i><#2F2F2F>• <#FF5252>CLICK <#BDBDBD>to go back without"
-      - "<!i><#BDBDBD>  changing any records."
-
-  gamemode-selector:
-    name: "<#FFB300><bold>Set Join Gamemode"
-    material: DIAMOND_PICKAXE
-    lore:
-      - "<#2F2F2F>• <#FFB300>CLICK <#BDBDBD>to select gamemode"
-      - ""
-      - "<#2F2F2F>• <#B0BEC5>Gamemode: <#FFB300>%current_gamemode%"
-    available-modes:
-      - "SURVIVAL"
-      - "CREATIVE"
-      - "ADVENTURE"
-    item-flags:
-      - HIDE_ATTRIBUTES
+      - "<#2F2F2F>• <#FF5252>CLICK <#BDBDBD>to go back without"
+      - "<#BDBDBD>  changing any records."
 
   potion-effects-selector:
     name: "<#9C27B0><bold>Manage Potion Effects"
