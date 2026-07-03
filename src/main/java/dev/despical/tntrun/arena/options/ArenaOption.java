@@ -18,61 +18,48 @@
 
 package dev.despical.tntrun.arena.options;
 
-import dev.despical.tntrun.Main;
-import org.bukkit.plugin.java.JavaPlugin;
+import lombok.Getter;
 
 /**
  * @author Despical
  * <p>
- * Created at 10.07.2020
+ * Created at 17.06.2026
  */
-public enum ArenaOption {
+@Getter
+public abstract class ArenaOption<T> {
 
-    TIMER(45),
+    private final String key;
+    private final T defaultValue;
+    private final Class<T> type;
 
-    MINIMUM_PLAYERS(2),
-
-    MAXIMUM_PLAYERS(12),
-
-    MIN_DEPTH("Scanning-Depth.On-Ground", 2),
-
-    MAX_DEPTH("Scanning-Depth.In-Air", 6),
-
-    START_BLOCK_REMOVING("Time-Settings.Start-Block-Removing", 5),
-
-    BLOCK_REMOVE_DELAY("Time-Settings.Block-Remove-Delay", 12),
-
-    LOBBY_WAITING_TIME("Time-Settings.Lobby-Waiting-Time", 45),
-
-    LOBBY_STARTING_TIME("Time-Settings.Lobby-Starting-Time", 16),
-
-    LOBBY_ENDING_TIME("Time-Settings.Ending-Time", 6);
-
-    int integerValue;
-    boolean booleanValue;
-
-    ArenaOption(int defaultValue) {
-        this.integerValue = defaultValue;
+    public ArenaOption(String key, T defaultValue, Class<T> type) {
+        this.key = key;
+        this.defaultValue = defaultValue;
+        this.type = type;
     }
 
-    ArenaOption(String path, boolean defaultValue) {
-        final var plugin = JavaPlugin.getPlugin(Main.class);
-
-        this.booleanValue = plugin.getConfig().getBoolean(path, defaultValue);
+    public Object serialize(T value) {
+        return value;
     }
 
-    ArenaOption(String path, int defaultValue) {
-        final var plugin = JavaPlugin.getPlugin(Main.class);
-        final var value = plugin.getConfig().getInt(path, defaultValue);
+    public T deserialize(Object value) {
+        try {
+            if (type.isInstance(value)) {
+                return type.cast(value);
+            }
 
-        this.integerValue = value < 0 ? defaultValue : value;
+            return parse(String.valueOf(value));
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            return defaultValue;
+        }
     }
 
-    public boolean getBooleanValue() {
-        return booleanValue;
+    protected T parse(String value) {
+        throw new UnsupportedOperationException("Parse method not implemented for option: " + key);
     }
 
-    public int getIntegerValue() {
-        return integerValue;
+    public boolean isPersistent() {
+        return key != null && !key.isEmpty();
     }
 }

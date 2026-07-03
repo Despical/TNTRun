@@ -18,696 +18,265 @@
 
 package dev.despical.tntrun.arena;
 
-import dev.despical.commons.XPotion;
-import dev.despical.commons.XSound;
-import dev.despical.commons.miscellaneous.PlayerUtils;
-import dev.despical.commons.serializer.InventorySerializer;
 import dev.despical.tntrun.Main;
-import dev.despical.tntrun.api.events.game.GameStartEvent;
-import dev.despical.tntrun.api.events.game.GameStateChangeEvent;
-import dev.despical.tntrun.api.statistic.StatisticType;
-import dev.despical.tntrun.arena.managers.GameBarManager;
-import dev.despical.tntrun.arena.managers.ScoreboardManager;
+import dev.despical.tntrun.arena.options.ArenaKeys;
 import dev.despical.tntrun.arena.options.ArenaOption;
+import dev.despical.tntrun.game.Game;
+import dev.despical.tntrun.game.GameState;
+import dev.despical.tntrun.option.IntOption;
+import dev.despical.tntrun.scoreboard.ScoreboardManager;
 import dev.despical.tntrun.user.User;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.World;
-import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.potion.PotionEffectType;
-import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.util.NumberConversions;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 import java.util.function.Predicate;
-import java.util.logging.Level;
 import java.util.stream.Collectors;
 
 /**
  * @author Despical
  * <p>
- * Created at 10.07.2020
+ * Created at 18.06.2026
  */
-public class Arena extends BukkitRunnable {
+@Getter
+@RequiredArgsConstructor
+public class Arena {
 
-    private static final Main plugin = JavaPlugin.getPlugin(Main.class);
-    private static final ChatManager chatManager = plugin.getChatManager();
+    private static final Main plugin = Main.getInstance();
+
+    private Game game;
 
     private final String id;
+    private final Map<ArenaOption<?>, Object> options;
+    private final Set<BlockState> destroyedBlocks = new HashSet<>();
+    private final List<User> deaths = new ArrayList<>();
+    private final List<User> winners = new ArrayList<>();
+    private boolean forceStart;
 
-    private final Map<ArenaOption, Integer> arenaOptions;
-    private final Map<GameLocation, Location> gameLocations;
+    @Setter
+    private String recordHolderName = "None";
 
-    private final Set<BlockState> destroyedBlocks;
-    private final Set<User> players;
-    private final List<User> spectators, deaths, winners;
+    @Setter
+    private long recordTime = -1;
 
-    @NotNull
-    private final GameBarManager gameBarManager;
-
-    @NotNull
-    private final ScoreboardManager scoreboardManager;
-
-    private boolean ready, forceStart, stopped;
-    private String mapName;
-    private ArenaState arenaState = ArenaState.INACTIVE;
-
-    public Arena(final @NotNull String id) {
+    Arena(String id) {
         this.id = id;
-        this.mapName = id;
-        this.destroyedBlocks = new HashSet<>();
-        this.players = new HashSet<>();
-        this.spectators = new ArrayList<>();
-        this.deaths = new ArrayList<>();
-        this.winners = new ArrayList<>();
-        this.arenaOptions = new EnumMap<>(ArenaOption.class);
-        this.gameLocations = new EnumMap<>(GameLocation.class);
-        this.gameBarManager = new GameBarManager(this, plugin);
-        this.scoreboardManager = new ScoreboardManager(this, plugin);
+        this.options = new HashMap<>();
+        this.registerDefaultOptions();
+    }
 
-        for (final var option : ArenaOption.values()) {
-            arenaOptions.put(option, option.getIntegerValue());
+    public boolean isGameNonnull() {
+        return game != null;
+    }
+
+    public boolean isArenaState(GameState gameState, GameState... states) {
+        return game != null && game.isState(gameState, states);
+    }
+
+    public GameState getArenaState() {
+        return game == null ? GameState.INACTIVE : game.getState();
+    }
+
+    public void setArenaState(GameState gameState) {
+        if (game != null) {
+            game.setGameState(gameState);
         }
     }
 
-    public boolean isInArena(User user) {
-        return user != null && this.players.contains(user);
+    public void start() {
+        int period = plugin.getOptions().get(IntOption.ARENA_TICK_PERIOD);
+
+        game = new Game(this, period);
+        game.setGameState(GameState.WAITING);
+        game.runTaskTimer(plugin, 0, period);
     }
 
-    public boolean isArenaState(ArenaState arenaState, ArenaState... states) {
-        if (arenaState == this.arenaState) return true;
-        for (var state : states) if (this.arenaState == state) return true;
-        return false;
+    public <T> T getOption(ArenaOption<T> option) {
+        Object value = options.computeIfAbsent(option, opt -> option.getDefaultValue());
+        return option.getType().cast(value);
     }
 
-    private void teleportToGameLocation(User user, GameLocation gameLocation) {
-        if (!validateLocation(gameLocation)) return;
-
-        final var player = user.getPlayer();
-
-        user.removePotionEffectsExcept(PotionEffectType.BLINDNESS);
-
-        player.setFoodLevel(20);
-        player.setFlying(false);
-        player.setAllowFlight(false);
-        player.setFlySpeed(.1F);
-        player.setWalkSpeed(.2F);
-        player.teleport(gameLocations.get(gameLocation));
+    public void setOption(ArenaOption<?> option, Object value) {
+        options.put(option, value);
     }
 
-    public void teleportToLobby(User user) {
-        this.teleportToGameLocation(user, GameLocation.LOBBY);
-    }
-
-    public void teleportToEndLocation(User user) {
-        this.teleportToGameLocation(user, GameLocation.END);
-    }
-
-    public GameBarManager getGameBar() {
-        return gameBarManager;
-    }
-
-    public ArenaState getArenaState() {
-        return this.arenaState;
-    }
-
-    public void setArenaState(final ArenaState arenaState) {
-        final var event = new GameStateChangeEvent(this, this.arenaState);
-
-        this.arenaState = arenaState;
-        this.gameBarManager.handleGameBar();
-        this.updateSigns();
-
-        plugin.getServer().getPluginManager().callEvent(event);
+    public boolean isOptionPresent(ArenaOption<?> option) {
+        return options.containsKey(option);
     }
 
     public boolean isReady() {
-        return ready;
+        return getOption(ArenaKeys.READY);
     }
 
     public void setReady(boolean ready) {
-        this.ready = ready;
+        setOption(ArenaKeys.READY, ready);
     }
 
     public int getSetupProgress() {
-        return ready ? 100 : 0;
+        return isReady() ? 100 : 0;
     }
 
     public String getMapName() {
-        return mapName;
+        return id;
     }
 
     public void setMapName(String mapName) {
-        this.mapName = mapName;
     }
 
     public int getTimer() {
-        return getOption(ArenaOption.TIMER);
+        return game == null ? 0 : game.getTimer();
     }
 
     public void setTimer(int timer) {
-        setOptionValue(ArenaOption.TIMER, timer);
-    }
-
-    public int getMaximumPlayers() {
-        return getOption(ArenaOption.MAXIMUM_PLAYERS);
-    }
-
-    public void setMaximumPlayers(int maximumPlayers) {
-        setOptionValue(ArenaOption.MAXIMUM_PLAYERS, maximumPlayers);
-    }
-
-    public int getMinimumPlayers() {
-        return getOption(ArenaOption.MINIMUM_PLAYERS);
-    }
-
-    public void setMinimumPlayers(int minimumPlayers) {
-        setOptionValue(ArenaOption.MINIMUM_PLAYERS, minimumPlayers);
-    }
-
-    public Location getLobbyLocation() {
-        return gameLocations.get(GameLocation.LOBBY);
-    }
-
-    public void setLobbyLocation(Location lobbyLocation) {
-        gameLocations.put(GameLocation.LOBBY, lobbyLocation);
-    }
-
-    public Location getEndLocation() {
-        return gameLocations.get(GameLocation.END);
-    }
-
-    public void setEndLocation(Location endLocation) {
-        gameLocations.put(GameLocation.END, endLocation);
-    }
-
-    @NotNull
-    public ScoreboardManager getScoreboardManager() {
-        return scoreboardManager;
-    }
-
-    public Set<User> getPlayers() {
-        return players.stream().filter(user -> {
-            Player player = user.getPlayer();
-
-            return player != null && player.isOnline();
-        }).collect(Collectors.toSet());
-    }
-
-    public void addUser(User user) {
-        this.players.add(user);
-    }
-
-    public void removeUser(User user) {
-        if (players.size() < 4) {
-            winners.add(user);
+        if (game != null) {
+            game.setTimer(timer);
         }
-
-        players.remove(user);
-    }
-
-    public void addWinner(User user) {
-        winners.add(user);
     }
 
     public boolean isForceStart() {
-        return this.forceStart;
+        return forceStart;
     }
 
     public void setForceStart(boolean forceStart) {
         this.forceStart = forceStart;
     }
 
-    public void addDeathPlayer(User user) {
-        deaths.add(user);
+    public int getMaximumPlayers() {
+        return getOption(ArenaKeys.MAX_PLAYERS);
+    }
 
-        if (this.getPlayersLeft().size() < 4) {
-            winners.add(user);
+    public void setMaximumPlayers(int maximumPlayers) {
+        setOption(ArenaKeys.MAX_PLAYERS, maximumPlayers);
+    }
+
+    public int getMinimumPlayers() {
+        return getOption(ArenaKeys.MIN_PLAYERS);
+    }
+
+    public void setMinimumPlayers(int minimumPlayers) {
+        setOption(ArenaKeys.MIN_PLAYERS, minimumPlayers);
+    }
+
+    public Location getLobbyLocation() {
+        return getOption(ArenaKeys.LOBBY_LOCATION);
+    }
+
+    public void setLobbyLocation(Location lobbyLocation) {
+        setOption(ArenaKeys.LOBBY_LOCATION, lobbyLocation);
+    }
+
+    public Location getEndLocation() {
+        return getOption(ArenaKeys.END_LOCATION);
+    }
+
+    public void setEndLocation(Location endLocation) {
+        setOption(ArenaKeys.END_LOCATION, endLocation);
+    }
+
+    public ScoreboardManager getScoreboardManager() {
+        return game.getScoreboardManager();
+    }
+
+    public Set<User> getPlayers() {
+        if (game == null) {
+            return Set.of();
         }
 
-        this.hideSpectator(user);
-        this.addSpectator(user);
+        return game.getUsers().stream()
+            .filter(user -> {
+                Player player = user.getPlayer();
+                return player != null && player.isOnline();
+            })
+            .collect(Collectors.toSet());
+    }
+
+    public Set<User> getPlayersLeft() {
+        return getPlayers().stream().filter(Predicate.not(User::isSpectator)).collect(Collectors.toSet());
+    }
+
+    public boolean isInArena(User user) {
+        return game != null && game.isPlaying(user);
     }
 
     public boolean isDeathPlayer(User user) {
-        return this.deaths.contains(user);
+        return deaths.contains(user);
+    }
+
+    public void addDeathPlayer(User user) {
+        deaths.add(user);
+
+        if (getPlayersLeft().size() < 4) {
+            winners.add(user);
+        }
+
+        if (game != null) {
+            game.hideSpectator(user);
+            game.addSpectator(user);
+        }
+    }
+
+    public void addWinner(User user) {
+        winners.add(user);
     }
 
     public List<User> getWinners() {
         return winners;
     }
 
-    public void addSpectator(User user) {
-        this.spectators.add(user);
-
-        final var nightVision = user.getStat(StatisticType.SPECTATOR_NIGHT_VISION);
-        final var player = user.getPlayer();
-
-        if (nightVision == 1) {
-            player.addPotionEffect(XPotion.NIGHT_VISION.buildPotionEffect(Integer.MAX_VALUE, 1));
-        }
-
-        final var level = user.getStat(StatisticType.SPECTATOR_SPEED) + 1;
-
-        player.setFlySpeed(.1F + level * .05F);
-        player.addPotionEffect(XPotion.SPEED.buildPotionEffect(Integer.MAX_VALUE, level));
-    }
-
-    public void removeSpectator(User user) {
-        this.spectators.remove(user);
-    }
-
-    public boolean isSpectator(User user) {
-        return spectators.contains(user);
-    }
-
-    public void start() {
-        this.startBlockRemoving();
-        this.runTaskTimer(plugin, 20L, 20L);
-        this.setArenaState(ArenaState.WAITING_FOR_PLAYERS);
-    }
-
-    public void stop() {
-        this.stopped = true;
-
-        if (arenaState != ArenaState.INACTIVE) this.cancel();
-
-        this.cleanUpArena();
-        this.getPlayers().forEach(user -> plugin.getArenaManager().leaveAttempt(user, this));
-    }
-
-    private void startBlockRemoving() {
-        final var startBlockRemoving = ArenaOption.START_BLOCK_REMOVING.getIntegerValue();
-        final var blockRemoveDelay = ArenaOption.BLOCK_REMOVE_DELAY.getIntegerValue();
-        final var removableBlocks = plugin.getConfig().getStringList("Whitelisted-Blocks");
-
-        new BukkitRunnable() {
-
-            @Override
-            public void run() {
-                for (var user : getPlayersLeft()) {
-                    if (stopped) cancel();
-                    if (arenaState != ArenaState.IN_GAME) return;
-                    if (getTimer() <= startBlockRemoving) return;
-
-                    for (final var block : getRemovableBlocks(user)) {
-                        if (!removableBlocks.contains(block.getType().name())) continue;
-
-                        destroyedBlocks.add(block.getState());
-
-                        if (plugin.isEnabled())
-                            plugin.getServer().getScheduler().runTaskLater(plugin, () -> block.setType(Material.AIR), blockRemoveDelay);
-                    }
-                }
-            }
-        }.runTaskTimerAsynchronously(plugin, 0, 1);
-    }
-
-    private List<Block> getRemovableBlocks(User user) {
-        List<Block> removableBlocks = new ArrayList<>();
-        Location loc = user.getLocation();
-        int SCAN_DEPTH = getOption(user.getPlayer().isOnGround() ? ArenaOption.MIN_DEPTH : ArenaOption.MAX_DEPTH), y = loc.getBlockY();
-
-        Block block;
-
-        for (int i = 0; i <= SCAN_DEPTH; i++) {
-            block = getBlockUnderPlayer(y--, loc);
-
-            if (block != null) {
-                removableBlocks.add(block);
-            }
-        }
-
-        return removableBlocks;
-    }
-
-    private Block getBlockUnderPlayer(int y, Location location) {
-        Position loc = new Position(location.getX(), y, location.getZ());
-        Block b1 = loc.getBlock(location.getWorld(), 0.3, -0.3);
-
-        if (b1.getType() != Material.AIR) {
-            return b1;
-        }
-
-        Block b2 = loc.getBlock(location.getWorld(), -0.3, 0.3);
-
-        if (b2.getType() != Material.AIR) {
-            return b2;
-        }
-
-        Block b3 = loc.getBlock(location.getWorld(), 0.3, 0.3);
-
-        if (b3.getType() != Material.AIR) {
-            return b3;
-        }
-
-        Block b4 = loc.getBlock(location.getWorld(), -0.3, -0.3);
-
-        if (b4.getType() != Material.AIR) {
-            return b4;
-        }
-
-        return null;
-    }
-
-    public Set<User> getPlayersLeft() {
-        return this.getPlayers().stream().filter(Predicate.not(User::isSpectator)).collect(Collectors.toSet());
-    }
-
-    public void playSound(XSound sound) {
-        this.getPlayers().forEach(user -> sound.play(user.getPlayer()));
-    }
-
-    public void broadcastFormattedMessage(final String path, final User user, boolean onlySpectators) {
-        if (!onlySpectators) {
-            this.broadcastFormattedMessage(path, user);
-            return;
-        }
-
-        if (user.isSpectator()) {
-            this.getPlayers().stream().filter(u -> isSpectator(u) && !user.equals(u)).forEach(u -> u.sendRawMessage(chatManager.message(path, this, user)));
-        }
-    }
-
-    public void broadcastFormattedMessage(final String path, final User user) {
-        this.getPlayers().forEach(u -> u.sendRawMessage(chatManager.message(path, this, user)));
-    }
-
-    public void broadcastMessage(final String path, Object... params) {
-        this.getPlayers().forEach(user -> user.sendRawMessage(chatManager.message(path, this, user), params));
-    }
-
-    @Nullable
     public User getWinner() {
-        for (final var user : this.getPlayersLeft()) return user;
-        return null;
+        return getPlayersLeft().stream().filter(Objects::nonNull).findFirst().orElse(null);
+    }
+
+    public void addDestroyedBlock(BlockState blockState) {
+        destroyedBlocks.add(blockState);
     }
 
     public void cleanUpArena() {
-        players.clear();
         deaths.clear();
-        spectators.clear();
         winners.clear();
 
-        final var iterator = destroyedBlocks.iterator();
-
+        var iterator = destroyedBlocks.iterator();
         while (iterator.hasNext()) {
             iterator.next().update(true);
             iterator.remove();
         }
-
-        stopped = false;
-        forceStart = false;
-
-        setTimer(getOption(ArenaOption.LOBBY_WAITING_TIME));
-    }
-
-    // TODO - Move visibility changer methods to another class, eg. VisibilityManager.
-    public void showPlayers() {
-        final var players = this.getPlayers();
-
-        for (final var user : players) {
-            var player = user.getPlayer();
-
-            user.removePotionEffectsExcept(PotionEffectType.BLINDNESS);
-
-            for (final User other : players) {
-                final var otherPlayer = other.getPlayer();
-
-                PlayerUtils.showPlayer(player, otherPlayer, plugin);
-                PlayerUtils.showPlayer(otherPlayer, player, plugin);
-            }
-        }
-    }
-
-    public void showUserToArena(final User user) {
-        final var player = user.getPlayer();
-
-        for (final var otherUser : this.getPlayers()) {
-            final var otherPlayer = otherUser.getPlayer();
-
-            PlayerUtils.showPlayer(player, otherPlayer, plugin);
-            PlayerUtils.showPlayer(otherPlayer, player, plugin);
-        }
-    }
-
-    public void hideSpectator(final User user) {
-        if (!user.isSpectator()) return;
-
-        final var player = user.getPlayer();
-
-        for (final var otherUser : this.getPlayers()) {
-            final var otherPlayer = otherUser.getPlayer();
-
-            PlayerUtils.showPlayer(player, otherPlayer, plugin);
-
-            if (otherUser.isSpectator()) {
-                PlayerUtils.showPlayer(otherPlayer, player, plugin);
-            } else {
-                PlayerUtils.hidePlayer(otherPlayer, player, plugin);
-            }
-        }
-    }
-
-    public void hideUserOutsideTheGame(final User user) {
-        final var player = user.getPlayer();
-
-        for (final var otherUser : plugin.getUserManager().getUsers()) {
-            final var otherPlayer = otherUser.getPlayer();
-
-            if (isInArena(otherUser)) {
-                this.showUserToArena(otherUser);
-            } else {
-                PlayerUtils.hidePlayer(player, otherPlayer, plugin);
-                PlayerUtils.hidePlayer(otherPlayer, player, plugin);
-            }
-        }
-    }
-
-    public void showUserOutsideTheGame(final User user) {
-        final var player = user.getPlayer();
-
-        for (final var otherUser : plugin.getUserManager().getUsers()) {
-            final var otherPlayer = otherUser.getPlayer();
-
-            if (!this.isInArena(otherUser)) {
-                PlayerUtils.showPlayer(player, otherPlayer, plugin);
-                PlayerUtils.showPlayer(otherPlayer, player, plugin);
-            } else {
-                PlayerUtils.hidePlayer(player, otherPlayer, plugin);
-                PlayerUtils.hidePlayer(otherPlayer, player, plugin);
-            }
-        }
-    }
-
-    public void updateSigns() {
-        Optional.ofNullable(plugin.getSignManager()).ifPresent(signManager -> signManager.updateSign(this));
-    }
-
-    private int getOption(ArenaOption option) {
-        return arenaOptions.get(option);
-    }
-
-    private void setOptionValue(ArenaOption option, int value) {
-        arenaOptions.put(option, value);
-    }
-
-    private boolean validateLocation(final GameLocation gameLocation) {
-        final var location = this.gameLocations.get(gameLocation);
-
-        if (location == null) {
-            plugin.getLogger().log(Level.WARNING, "Lobby location isn't initialized for arena {0}!", id);
-            return false;
-        }
-
-        return true;
     }
 
     public void broadcastWaitingForPlayers() {
-        int neededPlayers = this.getMinimumPlayers() - players.size();
-
-        this.broadcastMessage("messages.arena.waiting-for-players", neededPlayers, neededPlayers > 1 ? "s are" : " is");
-    }
-
-    @Override
-    public void run() {
-        if (players.isEmpty() && arenaState == ArenaState.WAITING_FOR_PLAYERS) {
+        if (game == null) {
             return;
         }
 
-        final int minPlayers = getMinimumPlayers(), waitingTime = getOption(ArenaOption.LOBBY_WAITING_TIME), startingTime = getOption(ArenaOption.LOBBY_STARTING_TIME);
-
-        switch (arenaState) {
-            case WAITING_FOR_PLAYERS -> {
-                if (players.size() < minPlayers) {
-                    if (getTimer() <= 0) {
-                        setTimer(waitingTime);
-                        broadcastWaitingForPlayers();
-                        break;
-                    }
-                } else {
-                    setArenaState(ArenaState.STARTING);
-                    showPlayers();
-                    setTimer(startingTime);
-                }
-
-                setTimer(getTimer() - 1);
-            }
-
-            case STARTING -> {
-                if (players.size() < minPlayers) {
-                    setArenaState(ArenaState.WAITING_FOR_PLAYERS);
-                    setTimer(waitingTime);
-                    setForceStart(false);
-                    broadcastMessage("messages.arena.countdown-cancelled");
-                    break;
-                }
-
-                if (getTimer() == 20) {
-                    broadcastMessage("messages.arena.starts-in-20s");
-
-                    this.playSound(XSound.UI_BUTTON_CLICK);
-                }
-
-                if (getTimer() == 10) {
-                    broadcastMessage("messages.arena.starts-in-10s");
-
-                    this.playSound(XSound.UI_BUTTON_CLICK);
-                }
-
-                if (getTimer() <= 5 && getTimer() != 0) {
-                    broadcastMessage("messages.arena.starts-in-5s-and-less");
-
-                    this.playSound(XSound.UI_BUTTON_CLICK);
-                }
-
-                if (getTimer() == 0) {
-                    setArenaState(ArenaState.IN_GAME);
-                    broadcastMessage("messages.in-game.game-started");
-
-                    plugin.getServer().getPluginManager().callEvent(new GameStartEvent(this));
-
-                    this.playSound(XSound.ENTITY_ENDER_DRAGON_GROWL);
-
-                    for (final var user : this.players) {
-                        teleportToLobby(user);
-
-                        user.addGameItems("double-jump");
-                        user.getPlayer().addPotionEffect(XPotion.NIGHT_VISION.buildPotionEffect(Integer.MAX_VALUE, 1));
-
-                        ArenaUtils.updateNameTagsVisibility(user);
-                    }
-
-                    break;
-                }
-
-                setTimer(getTimer() - 1);
-            }
-
-            case IN_GAME -> {
-                int timer = getTimer();
-
-                for (final var user : this.players) {
-                    if (user.isSpectator() || isDeathPlayer(user)) continue;
-
-                    final var player = user.getPlayer();
-
-                    if (user.getCooldown("double_jump") > 0) {
-                        player.setAllowFlight(false);
-                    } else if (user.getStat(StatisticType.LOCAL_DOUBLE_JUMPS) > 0) {
-                        player.setAllowFlight(true);
-                    }
-
-                    user.addStat(StatisticType.LOCAL_SURVIVE, 1);
-
-                    if (timer > 0 && timer % 30 == 0) {
-                        ArenaUtils.addScore(user, ArenaUtils.ScoreAction.SURVIVE_TIME);
-                    }
-                }
-
-                setTimer(getTimer() + 1);
-            }
-
-            case ENDING -> {
-                if (getTimer() <= 0) {
-                    scoreboardManager.stopAllScoreboards();
-                    gameBarManager.removeAll();
-
-                    for (final var user : this.players) {
-                        plugin.getUserManager().saveStatistics(user);
-
-                        final var player = user.getPlayer();
-
-                        for (final var users : plugin.getUserManager().getUsers()) {
-                            player.showPlayer(plugin, users.getPlayer());
-
-                            if (!users.isInArena()) {
-                                users.getPlayer().showPlayer(plugin, player);
-                            }
-                        }
-
-                        user.removePotionEffectsExcept(PotionEffectType.BLINDNESS);
-                        user.setSpectator(false);
-
-                        player.getInventory().clear();
-                        player.getInventory().setArmorContents(null);
-
-
-                        InventorySerializer.loadInventory(plugin, player);
-
-                        teleportToEndLocation(user);
-                    }
-
-                    setArenaState(ArenaState.RESTARTING);
-                }
-
-                setTimer(getTimer() - 1);
-            }
-
-            case RESTARTING -> {
-                cleanUpArena();
-
-                setArenaState(ArenaState.WAITING_FOR_PLAYERS);
-
-                for (Player player : plugin.getServer().getOnlinePlayers()) {
-                    User user = plugin.getUserManager().getUser(player);
-
-                    var arenaManager = plugin.getArenaManager();
-                    var userManager = plugin.getUserManager();
-
-                    plugin.getArenaRegistry().shuffleBungeeArena();
-
-                    var bungeeArena = plugin.getArenaRegistry().getBungeeArena();
-
-                    arenaManager.joinAttempt(userManager.getUser(player), bungeeArena);
-                }
-            }
-        }
+        int neededPlayers = getMinimumPlayers() - getPlayers().size();
+        game.broadcastMessage("waiting-for-players",
+            dev.despical.tntrun.utils.Var.of("%players_needed%", neededPlayers),
+            dev.despical.tntrun.utils.Var.of("%s%", neededPlayers > 1 ? "s" : ""),
+            dev.despical.tntrun.utils.Var.of("%to_be_form%", neededPlayers > 1 ? "are" : "is")
+        );
     }
 
-    @NotNull
-    public String getId() {
-        return this.id;
+    public void updateSigns() {
+        plugin.getSignManager().updateSigns(this);
+    }
+
+    private void registerDefaultOptions() {
+        for (ArenaOption<?> setting : ArenaKeys.getAllKeys()) {
+            options.put(setting, setting.getDefaultValue());
+        }
     }
 
     @Override
     public String toString() {
-        return this.id;
-    }
-
-    public enum GameLocation {
-        LOBBY, END
-    }
-
-    private record Position(double x, int y, double z) {
-
-        public Block getBlock(World world, double addx, double addz) {
-            return world.getBlockAt(NumberConversions.floor(x + addx), y, NumberConversions.floor(z + addz));
-        }
+        return "Arena[id=%s, game=%s]".formatted(id, String.valueOf(game));
     }
 }

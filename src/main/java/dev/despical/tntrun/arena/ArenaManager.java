@@ -16,12 +16,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package dev.despical.tntrun.arena.managers;
+package dev.despical.tntrun.arena;
 
 import dev.despical.tntrun.Main;
 import dev.despical.tntrun.api.event.player.PlayerJoinAttemptEvent;
 import dev.despical.tntrun.api.event.player.PlayerLeaveGameEvent.LeaveReason;
-import dev.despical.tntrun.arena.Arena;
 import dev.despical.tntrun.game.Game;
 import dev.despical.tntrun.game.GameManager;
 import dev.despical.tntrun.game.StopReason;
@@ -29,12 +28,12 @@ import dev.despical.tntrun.user.User;
 import dev.despical.tntrun.utils.ShutdownDetector;
 import lombok.RequiredArgsConstructor;
 
-import java.util.*;
+import java.util.Objects;
 
 /**
  * @author Despical
  * <p>
- * Created at 4.02.2023
+ * Created at 18.06.2026
  */
 @RequiredArgsConstructor
 public class ArenaManager {

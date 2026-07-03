@@ -20,6 +20,8 @@ package dev.despical.tntrun.arena;
 
 import dev.despical.commons.configuration.ConfigUtils;
 import dev.despical.tntrun.Main;
+import dev.despical.tntrun.arena.options.ArenaKeys;
+import dev.despical.tntrun.arena.options.ArenaOption;
 import dev.despical.tntrun.user.User;
 import lombok.Getter;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -86,7 +88,6 @@ public class ArenaRegistry {
 
     public void unregisterArena(Arena arena) {
         arenas.remove(arena.getId());
-        removeCheckpointIndex(arena);
 
         plugin.getSignManager().removeArenaSigns(arena);
 
