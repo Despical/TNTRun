@@ -7,38 +7,9 @@ admin-commands:
   no-arena-found-with-that-name: "&cNo arena found with that name!"
   deleted-arena-successfully: "&cDeleted arena called {0} successfully!"
   must-be-in-arena: "&cYou must be in the arena to perform this command!"
-  system-reloaded: "&aSystem files and configurations successfully reloaded!"
-  list-command:
-    no-arenas-created: "&cThere aren't any arena to show!"
-    format: "&aExisting arenas: &7%list%"
-
-player-commands:
-  only-command-is-leave: "&cYou can only use /tntrun leave command while playing TNT Run!"
-  no-player-found: "&cNo player found with that name!"
-  no-free-arenas: "&cThere aren't any available arena to join!"
-  no-random-join-for-bungee: "&cYou can not random join in Bungee server."
-  statistics:
-    type-name: "&cPlease type statistic name to view!"
-    invalid-name: "&cNo statistic found with that name!"
-    header: "&8&m-------------------[&6 Top 10 &8&m]-------------------"
-    format: "&e#%position% %name% - %value% &7%statistic%"
-  stats-command:
-    header: "&l[-----YOUR STATS-----]"
-    header-other: "&l[-----STATS FOR %player%-----]"
-    messages:
-      - "%header%"
-      - "&8 • &fTotal Wins: &a%wins%"
-      - "&8 • &fTotal Loses: &a%loses%"
-      - "&8 • &fTotal Coins: &a%coins%"
-      - "&8 • &fLongest Survive: &a%longest_survive%"
-      - "&8 • &fGames Played: &a%games_played%"
-      - "&l[--------------------]"
 
 messages:
   arena:
-    no-permission: "&cYou don't have enough permission to join this arena!"
-    not-configured: "&cThis arena is not ready yet to play!"
-    already-playing: "&cYou are already playing TNT Run!"
     not-playing: "&cYou cannot leave the game if you are not playing!"
     restarting: "&cYou cannot join while this arena is restarting!"
     waiting-for-players: "\n&a{0} more player{1} required for the game to start.\n"
@@ -56,15 +27,6 @@ messages:
       - "&e&lsurvive longer than everyone else!"
       - ""
       - "%no_center%&a&l▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬"
-  spectators:
-    show-spectators: "&aYou can now see other spectators!"
-    hide-spectators: "&cYou can no longer see other spectators!"
-    have-night-vision: "&aYou now have night vision!"
-    removed-night-vision: "&cYou no longer have night vision!"
-    auto-teleport-enabled: "&aOnce you select a player using your compass, it will auto teleport you to them!"
-    auto-teleport-disabled: "&cYou will no longer auto teleport to targets!"
-    have-speed: "&aYou now have Speed %speed%!"
-    no-longer-speed: "&cYou no longer have any speed effects!"
   in-game:
     game-started: "&a&lThe game has started!"
     you-are-spectator-now: "&7You are spectator now!"
@@ -74,16 +36,11 @@ messages:
     game-death-format: "&7[DEAD CHAT] "
     fell-into-void: "&7%player% &cdied!\n&e%players_left% players remaining."
     last-one-fell-into-void: "&7%player% &cdied!"
-    cooldown-format: "&6CHARGING &8&l[%progress%&8&l] &6%time%s"
-    cooldown-progress-format: "&a:&c:■"
-  premium:
-    kicked-for-premium-slot: "&c%player% got removed from the game to make a place for premium players!"
-    you-were-kicked-for-premium-slot: "&cYou got kicked out of the game to make a place for a premium player!"
-    no-slots-for-premium: "&cThis game is already full of premium players!"
-    full-game-no-permission: "&cYou don't have the permission to join full games!"
+    cooldown-format: "<#FFCA28>CHARGING <#2F2F2F><bold>[%progress%<#2F2F2F><bold>] <#FFCA28>%time%s"
+    cooldown-progress-format: "<#00E676>:<#FF5252>:■"
   score-actions:
-    bonus-score: "&6%score% score! %action%"
-    survive: "Survived 30 seconds"
+    bonus-score: "<#FFCA28>%score% score! <#E6E6E6>%action%"
+    survive: "<#00E676>Survived 30 seconds"
   game-items:
     leave-item:
       returning-lobby: "&a&lTeleporting you to the lobby in 3 seconds...\n&a&lRight-click again to cancel the teleport!"
@@ -98,72 +55,6 @@ messages:
     - ""
     - "%no_center%&a&l▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬"
   summary-message-hover: "&8Remaining Perks\n&7Double Jump: %double_jumps%&7/%max_double_jumps%"
-
-# To hide the bar in a specific arena state, leave the message field empty for that state.
-game-bar:
-  waiting-for-players:
-    # This is the message displayed when the arena is in waiting for players state.
-    message: "&e&lPLAYING &f&lTNT Run &e&lby &b&lDespical"
-    # The color of the bar when waiting for players.
-    # If a color is not set for this state, the color from the previous state will be used.
-    color: BLUE
-    # The style of the bar when waiting for players.
-    # If a style is not set for this state, the style from the previous state will be used.
-    style: SOLID
-  starting:
-    # This is the message displayed when the arena is in starting state.
-    message: "&e&lPLAYING &f&lTNT Run &e&lby &b&lDespical"
-  in-game:
-    # The game bar won't be visible if the arena is in-game state because the message is empty.
-    message: ""
-  ending:
-    # This is the message displayed when the arena is in ending state.
-    message: "&e&lPLAYING &f&lTNT Run &e&lby &b&lDespical"
-
-Scoreboard:
-  Title: " &e&lTNT Run "
-  # > %75, < %50, EMPTY
-  Double-Jumps: "&a:&e:&c"
-  # The timer format.
-  Timer-Format: "%02d:%02d"
-  # The date format.
-  Date-Format: "dd/MM/yy"
-  Waiting:
-    - "&7%date%"
-    - ""
-    - "&fMap: &a%map%"
-    - "&fPlayers: &a%players%/%max_players%"
-    - ""
-    - "&fStarting in &a%formatted_time% &fif"
-    - "&fmore players join"
-    - ""
-    - "&fGame: &aTNT Run"
-    - ""
-    - "&epatreon.com/despical"
-  Starting:
-    - "&7%date%"
-    - ""
-    - "Map: &a%map%"
-    - "Players: &a%players%/%max_players%"
-    - ""
-    - "&fStarting in &a%formatted_time% &fto"
-    - "&fallow time for"
-    - "&fadditional players"
-    - ""
-    - "Game: &aTNT Run"
-    - ""
-    - "&epatreon.com/despical"
-  Playing:
-    - "&7Duration: %formatted_time%"
-    - ""
-    - "&fDouble Jump: %double_jumps%&7/%max_double_jumps%"
-    - ""
-    - "&fPlayers Alive: &a%players_left%"
-    - ""
-    - "&fCoins Earned: &a%coins_earned%"
-    - ""
-    - "&7%date%"
-    - "&epatreon.com/despical"
 
 spectator-gui:
   title: "         Spectator Settings"
@@ -212,14 +103,308 @@ signs:
     - "%map_name%"
     - "&5[%players%/%max_players%]"
 
-placeholders:
-  empty-position: "No Player"
-  empty-value: "NaN"
+game:
+  finished:
+    - "%no_center%<green><bold>▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬"
+    - ""
+    - "<gradient:#00E676:#2979FF><bold>COURSE COMPLETED!</bold></gradient>"
+    - ""
+    - "<gray>Final Time: <white>%time%"
+    - "<gray>Total Falls: <#FF5252>%fails%"
+    - ""
+    - "%no_center%<green><bold>▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬"
 
-arena-states:
-  waiting: "Waiting"
-  starting: "Starting"
-  playing: "Playing"
-  ending: "Ending"
-  restarting: "Restarting"
-  inactive: "Inactive"
+  new-record:
+    - "%no_center%<green><bold>▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬"
+    - ""
+    - "<gradient:#FFD700:#FFFF00><bold>♕ NEW PERSONAL BEST! ♕</bold></gradient>"
+    - ""
+    - "<gray>You beat your previous record!"
+    - "<gray>New Time: <#00E676><bold>%time%</bold>"
+    - "<gray>Total Falls: <#FF5252>%fails%"
+    - ""
+    - "%no_center%<green><bold>▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬"
+
+  global-record-broken:
+    - "%no_center%<green><bold>▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬"
+    - ""
+    - "<gradient:#FFD700:#FFFF00><bold>♕ GLOBAL RECORD BROKEN! ♕</bold></gradient>"
+    - ""
+    - "<gray>Player: <#00E676>%player%"
+    - "<gray>Arena: <#29B6F6>%arena%"
+    - "<gray>Time: <#FFD54F><bold>%time%</bold>"
+    - ""
+    - "%no_center%<green><bold>▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬"
+
+  global-record-broken-and-pr:
+    - "%no_center%<green><bold>▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬"
+    - ""
+    - "<gradient:#FFD700:#FFFF00><bold>♕ GLOBAL RECORD BROKEN! ♕</bold></gradient>"
+    - ""
+    - "<gray>Player: <#00E676>%player%"
+    - "<gray>Arena: <#29B6F6>%arena%"
+    - "<gray>Time: <#FFD54F><bold>%time%</bold>"
+    - ""
+    - "<yellow>Also a new personal best with <#FFCA28>%fails% <yellow>fails."
+    - ""
+    - "%no_center%<green><bold>▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬"
+
+  chat-disabled-in-game: "<#FF5252>✖ <#BDBDBD>You cannot send chat messages while in a game!"
+
+  command-disabled-in-game: "<#FF5252>✖ Command blocked! <#BDBDBD>You cannot use that command while playing."
+
+# Game Ticker Messages
+ticker:
+  waiting: []
+  starting:
+    30: "<yellow>The game starts in <green>30 <yellow>seconds!"
+    10:
+      - "title:<green>10"
+      - "<yellow>The game starts in <gold>10 <yellow>seconds!"
+      - "sound:BLOCK_NOTE_BLOCK_HAT,20,1"
+    5:
+      - "title:<yellow>5"
+      - "<yellow>The game starts in <#FF5252>5 <yellow>seconds!"
+      - "sound:BLOCK_NOTE_BLOCK_HAT,20,1"
+    4:
+      - "title:<yellow>4"
+      - "<yellow>The game starts in <#FF5252>4 <yellow>seconds!"
+      - "sound:BLOCK_NOTE_BLOCK_HAT,20,1"
+    3:
+      - "title:<#FF5252>3"
+      - "<yellow>The game starts in <#FF5252>3 <yellow>seconds!"
+      - "sound:BLOCK_NOTE_BLOCK_HAT,20,1"
+    2:
+      - "title:<#FF5252>2"
+      - "<yellow>The game starts in <#FF5252>2 <yellow>seconds!"
+      - "sound:BLOCK_NOTE_BLOCK_HAT,20,1"
+    1:
+      - "title:<#FF5252>1"
+      - "<yellow>The game starts in <#FF5252>1 <yellow>second!"
+      - "sound:BLOCK_NOTE_BLOCK_HAT,20,1"
+  in-game:
+    1:
+      - "sound:ENTITY_ARROW_HIT_PLAYER,1,0.492063"
+    2:
+      - "sound:ENTITY_ARROW_HIT_PLAYER,1,0.492063"
+    3:
+      - "sound:ENTITY_ARROW_HIT_PLAYER,1,0.746032"
+  ending: []
+
+# Help Messages
+help-message:
+  - "<#424242>▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬"
+  - "<#29B6F6>✦ <#E0E0E0>TNT Run <white>Player Commands <#29B6F6>✦"
+  - ""
+  - "<!i><#29B6F6>• <#FFCA28>/%label% help <gray>» <#BDBDBD>Show the available player commands."
+  - "<!i><#29B6F6>• <#FFCA28>/%label% join <white><arena> <gray>» <#BDBDBD>Join an arena and start from the start plate."
+  - "<!i><#29B6F6>• <#FFCA28>/%label% start <white><arena> <gray>» <#BDBDBD>Join an arena and wait on the start block."
+  - "<!i><#29B6F6>• <#FFCA28>/%label% leave <gray>» <#BDBDBD>Leave your current parkour run."
+  - "<!i><#29B6F6>• <#FFCA28>/%label% stats <white>[player] <gray>» <#BDBDBD>Open your stats or inspect another player's stats."
+  - "<#424242>▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬"
+
+admin-help-message:
+  - "<#424242>▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬"
+  - "<#00E676>✦ <#E0E0E0>TNT Run <white>Admin Commands <#00E676>✦"
+  - ""
+  - "<!i><#00E676>• <#81C784>/%label% reload <gray>» <#BDBDBD>Reload plugin configuration files."
+  - "<!i><#00E676>• <#81C784>/%label% stop <white>[arena] <gray>» <#BDBDBD>Stop your current game or a specific arena game."
+  - "<!i><#00E676>• <#81C784>/%label% kick <white><player> <gray>» <#BDBDBD>Kick a player out of their active parkour arena."
+  - "<!i><#00E676>• <#81C784>/%label% create <white><arena id> <gray>» <#BDBDBD>Create a new arena."
+  - "<!i><#00E676>• <#81C784>/%label% delete <white><arena id> <gray>» <#BDBDBD>Delete an arena, with confirm or cancel flags."
+  - "<!i><#00E676>• <#81C784>/%label% edit <white><arena id> <gray>» <#BDBDBD>Open the setup menu for an arena."
+  - "<!i><#00E676>• <#81C784>/%label% list <gray>» <#BDBDBD>List all arenas and their readiness state."
+  - "<#424242>▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬"
+
+debug-help-message:
+  - "<#424242>▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬"
+  - "<#FFCA28>✦ <#E0E0E0>TNT Run <white>Debug Commands <#FFCA28>✦"
+  - ""
+  - "<!i><#FFCA28>• <#FFD54F>/%label% debug join <white><arena> <gray>» <#BDBDBD>Force-join an arena for debugging."
+  - "<!i><#FFCA28>• <#FFD54F>/%label% debug component <white><message> <gray>» <#BDBDBD>Parse and preview MiniMessage components."
+  - "<!i><#FFCA28>• <#FFD54F>/%label% debug dump <gray>» <#BDBDBD>Send the current timings report to the sender."
+  - "<#424242>▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬"
+
+# Setup Messages
+setup:
+  no-permission: "<#FF5252><bold>✕ Error</bold> <gray>You don't have permission to modify arena setups."
+  arena-record-reset: "<#00E676>✔ <#BDBDBD>Arena records for <#29B6F6><bold>%arena_id%</bold> <#BDBDBD>have been reset."
+  arena-record-reset-failed: "<#FF5252>✖ <#BDBDBD>Failed to reset records for <#29B6F6><bold>%arena_id%</bold><#BDBDBD>. Check console for details."
+
+kick-command:
+  not-playing: "<#FF1744>✖ <#BDBDBD>Player <#FF5252>%player% <#BDBDBD>is <#FF5252>not playing<#BDBDBD>."
+  kicked: "<#00E676>✔ <#BDBDBD>Player <#FF5252>%player% <#BDBDBD>has been kicked from <#00B0FF>%arena%<#BDBDBD>."
+
+reloaded-configuration: "<#00E676>✔ <#BDBDBD>Configuration files have been <#00E676>successfully reloaded<#BDBDBD>."
+
+server-reload-detected:
+  - " "
+  - "<#FF5252><bold>Game cancelled due to reload. Stats were not affected."
+  - " "
+server-shutdown-detected:
+  - " "
+  - "<#FF5252><bold>Game cancelled due to shutdown. Stats were not affected."
+  - " "
+game-stopped-by-command:
+  - " "
+  - "<#FF5252><bold>Game cancelled by an administrator. Stats were not affected."
+  - " "
+
+game-stopped-due-to-arena-deletion:
+  - ""
+  - "<#FF5252><bold>The arena you were playing in was deleted by an admin. Stats were not affected."
+  - ""
+
+correct-usage: "<red>Correct usage: %usage%"
+unrecognized-arguments: "<#FF1744>✖ <#BDBDBD>Unrecognized argument: <#FF5252>/%label% %arguments%"
+no-player-with-that-name: "<#FF1744>✖ <#BDBDBD>No player found with <#FF5252>that name<#BDBDBD>."
+game-instance-not-present: "<#D50000>✖ <#BDBDBD>The game instance could <#FF5252>not be found<#BDBDBD>."
+arena-not-available: "<#D50000>✖ <#BDBDBD>This arena instance is <#FF5252>not ready yet<#BDBDBD>."
+
+created-arena:
+  - "<#37474F><st>                                                                                 </st>"
+  - ""
+  - "<gradient:#00E676:#1DE9B6><bold>CREATION SUCCESSFUL</bold></gradient>"
+  - ""
+  - "<#CFD8DC>The arena '<#00B0FF>%id%<#CFD8DC>' has been successfully registered."
+  - "<#CFD8DC>You can now configure the settings."
+  - ""
+  - "<click:run_command:/tr edit %id%><hover:show_text:'<#69F0AE>Click to configure this arena.'><#FFD740><bold><underlined>CLICK HERE TO SETUP</underlined></bold></hover></click>"
+  - ""
+  - "<#37474F><st>                                                                                 </st>"
+
+arena-already-exists:
+  - "<#37474F><st>                                                                                 </st>"
+  - "<gradient:#FF1744:#D50000><bold>OPERATION FAILED</bold></gradient>"
+  - ""
+  - "<#CFD8DC>An arena with the ID '<#FF5252>%id%<#CFD8DC>' already exists."
+  - "<#CFD8DC>Please choose a different name."
+  - ""
+  - "<#37474F><st>                                                                                 </st>"
+
+delete-confirmation:
+  - "<#37474F><st>                                                                                 </st>"
+  - ""
+  - "<gradient:#FFCA28:#FF6F00><bold>FORCE DELETE</bold></gradient>"
+  - ""
+  - "<#CFD8DC>Are you sure you want to delete '<#FFAB40>%id%<#CFD8DC>'?"
+  - ""
+  - "<#B0BEC5><italic>Any active players will be kicked immediately.</italic>"
+  - "<#B0BEC5><italic>All data will be lost forever.</italic>"
+  - ""
+  - "   <click:run_command:/tr delete %id% --confirm><hover:show_text:'<#FF5252>Click to confirm.'><#FF5252><bold>[ ✔ CONFIRM ]</bold></hover></click>    <click:run_command:/tr delete %id% --cancel><hover:show_text:'<#B9F6CA>Click to cancel.'><#B0BEC5><bold>[ ✖ CANCEL ]</bold></hover></click>"
+  - ""
+  - "<#37474F><st>                                                                                 </st>"
+
+delete-cancelled:
+  - "<#37474F><st>                                                                                 </st>"
+  - ""
+  - "<gradient:#B9F6CA:#00C853><bold>ACTION CANCELLED</bold></gradient>"
+  - ""
+  - "<#CFD8DC>The arena '<#B9F6CA>%id%<#CFD8DC>' was <bold>not</bold> deleted."
+  - "<#CFD8DC>It is safe and sound."
+  - ""
+  - "<#37474F><st>                                                                                 </st>"
+
+deleted-arena:
+  - "<#37474F><st>                                                                                 </st>"
+  - ""
+  - "<gradient:#FF5252:#D32F2F><bold>DELETION SUCCESSFUL</bold></gradient>"
+  - ""
+  - "<#CFD8DC>The arena '<#FF8A80>%id%<#CFD8DC>' has been deleted permanently."
+  - ""
+  - "<#37474F><st>                                                                                 </st>"
+
+no-arena-found:
+  - "<#37474F><st>                                                                                 </st>"
+  - ""
+  - "<gradient:#FF1744:#D50000><bold>ARENA NOT FOUND</bold></gradient>"
+  - ""
+  - "<#CFD8DC>No arena found with the ID '<#FF8A80>%id%<#CFD8DC>'."
+  - "<#CFD8DC>Please check the ID and try again."
+  - ""
+  - "<#37474F><st>                                                                                 </st>"
+
+created-arenas:
+  - ""
+  - "<#BDBDBD>Here is the list of <#00E676><hover:show_text:'<#00E676>Playable arenas'>ready</hover><#BDBDBD> and <#FF5252><hover:show_text:'<#FF5252>Requires setup'>not ready</hover><#BDBDBD> arenas:"
+  - "<dark_gray>➥ <white>%arenas%"
+  - ""
+
+can-not-unregister-now: "<#FFCA28>⚠ <#BDBDBD>Cannot unregister this arena while <#FFD54F>players are inside<#BDBDBD>."
+no-arena-found-with-that-name: "<#FF1744>✖ <#BDBDBD>No arena found with <#FF5252>that ID<#BDBDBD>."
+arena-not-ready-yet: "<#FFCA28>⚠ <#BDBDBD>This arena is <gradient:#FFA000:#FFCA28><bold>NOT READY</bold></gradient> <#BDBDBD>to be played yet."
+no-arenas-registered: "<#FFCA28>⚠ <#BDBDBD>There are <#FFD54F>no arenas <#BDBDBD>registered yet!"
+registered-arenas: "<#00E676>ℹ <#BDBDBD>Registered Arenas: <#00E676>%arenas%"
+already-playing: "<#FF1744>✖ <#BDBDBD>You are <#FF5252>already playing <#BDBDBD>TNT Run!"
+not-playing: "<#FF1744>✖ <#BDBDBD>You are not playing <#D50000><bold>TNT Run</bold> <#BDBDBD>right now."
+only-for-players: "<#FF1744>✖ <#BDBDBD>Only <#FF5252>players <#BDBDBD>can perform this command."
+player-not-found: "<#FF1744>✖ <#BDBDBD>That player was <#FF5252>not found<#BDBDBD>."
+cannot-join-now: "<#FF1744>✖ <#BDBDBD>You <#FF5252>cannot join <#BDBDBD>the game right now."
+chat-format: "<gray>%sender%<dark_gray>: <white>%message%"
+none: "<#FF5252>None"
+
+stats-menu:
+  no-arenas: "<#FF5252>✖ <gray>There are no game arenas available to show statistics for."
+
+# Game Over Messages
+game-over:
+  you-won:
+    message: ""
+    title: "<gold>Game Over!"
+    subtitle: "<green>You won!"
+  you-lost:
+    message: ""
+    title: "<gold>Game Over!"
+    subtitle: "<gold>%player% <#FF5252>won!"
+
+disconnected-from-the-game: "<gray>%player% <#FF5252>disconnected from the game."
+player-joined: '<gray>%player% <yellow>has joined (<aqua>%players%<yellow>/<aqua>%max_players%<yellow>)!'
+player-left: '<gray>%player% <yellow>has quit!'
+waiting-for-players:
+  - " "
+  - "<green>%players_needed% more player%s% %to_be_form% required for the game to start."
+  - " "
+no-enough-players: "<#FF5252>We don't have enough players! Start delayed."
+game-starting-in: "<yellow>The game starting in <aqua>%timer% <yellow>seconds!"
+
+# Sign & Setup Messages
+sign:
+  created: "<#00E676>✔ <#BDBDBD>Arena sign created. <dark_gray>[ <#81D4FA>X: %x%, Y: %y%, Z: %z% <dark_gray>] <#BDBDBD>facing <#29B6F6><bold>%direction%<#BDBDBD>."
+  removed: "<#00E676>✔ <#BDBDBD>Arena sign removed. <dark_gray>[ <#EF9A9A>X: %x%, Y: %y%, Z: %z% <dark_gray>]<#BDBDBD>."
+  no-perm-to-break: "<#FF5252>✖ You do not have permission to break this sign."
+  look-at-a-sign: "<#FF5252>No sign detected! <#BDBDBD>Please look directly at a <#FFB74D>Sign block <#BDBDBD>and try again."
+
+  game-states:
+    waiting: "<#00E676><bold>WAITING"
+    starting: "<#FFAB00><bold>STARTING"
+    in-game: "<#FF5252><bold>IN GAME"
+    full-game: "<#D50000><bold>FULL"
+    ending: "<#9E9E9E><bold>ENDING"
+    restarting: "<#607D8B><bold>REBOOTING"
+    inactive: "<#B0BEC5><bold>MAINTENANCE"
+
+  lines:
+    - "<gradient:#FF1744:#D50000><bold>TNT Run</gradient>"
+    - "%state%"
+    - ""
+    - "<#455A64>[ <#CFD8DC>%players% <#455A64>/ <#CFD8DC>%max_players% <#455A64>]"
+
+# Command & System Messages
+stop-command:
+  correct-usage: "<#FF1744>✖ <#BDBDBD>Correct usage: <#FF5252>/%label% stop <arena>"
+  not-playing: "<#FF1744>✖ <#BDBDBD>The game is <#FF5252>not running <#BDBDBD>at the moment."
+  stopped: "<#00E676>✔ <#BDBDBD>The game has been <gradient:#FF1744:#D50000>forcibly stopped.</gradient>"
+
+start-command:
+  correct-usage: "<#FF1744>✖ <#BDBDBD>Correct sage: <#FF5252>/%label% start <arena>"
+  you-are-not-playing: "<#FF1744>✖ <#BDBDBD>You are <#FF5252>not in a game <#BDBDBD>to start it."
+  no-players: "<#FFCA28>⚠ <#BDBDBD>Can not start: <#FFD54F>No players <#BDBDBD>are currently in the arena!"
+  started: "<#00E676>✔ <#BDBDBD>The game has been <gradient:#00E676:#69F0AE>successfully started.</gradient>"
+
+game-items:
+  leave-item:
+    returning-lobby:
+      - "<#00E676><bold>Teleporting you to the lobby in 3 seconds..."
+      - "<#00E676><bold>Right-click again to cancel the teleport!"
+    teleport-cancelled: "<#FF5252><bold>Teleport cancelled!"
