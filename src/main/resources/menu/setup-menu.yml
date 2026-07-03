@@ -1,0 +1,297 @@
+title: "<gradient:#FF5252:#D50000><bold>GAME SETUP</bold></gradient> <dark_gray><bold>></bold></dark_gray> <gold><bold>%arena_id%</bold>"
+
+items:
+  game-locations:
+    name: "<#FFB74D><bold>Manage Arena Locations"
+    material: FILLED_MAP
+    lore:
+      - "<#2F2F2F>• <#2196F3>CLICK <#BDBDBD>to open location settings"
+      - ""
+      - "<#2F2F2F>• <#B0BEC5>Configure spawn points for"
+      - "<#B0BEC5>  lobby, start, and end phases."
+
+  lobby:
+    name: "<#29B6F6><bold>Set Lobby Location"
+    material: LODESTONE
+    lore:
+      - "<#2F2F2F>• <#2196F3>CLICK <#BDBDBD>to set at <#64B5F6>your pos"
+      - "<#2F2F2F>• <#90CAF9>SHIFT-CLICK <#BDBDBD>to <#BBDEFB>center block"
+      - ""
+      - "<#2F2F2F>• <#B0BEC5>Players wait here before"
+      - "<#B0BEC5>  the countdown starts."
+    message: "<#29B6F6>Lobby Location <#BDBDBD>has been set successfully."
+
+  start:
+    name: "<#00E676><bold>Set Start Location"
+    material: BEACON
+    lore:
+      - "<#2F2F2F>• <#43A047>CLICK <#BDBDBD>to set at <#66BB6A>your pos"
+      - "<#2F2F2F>• <#2E7D32>SHIFT-CLICK <#BDBDBD>to <#A5D6A7>center block"
+      - ""
+      - "<#2F2F2F>• <#B0BEC5>The spawn point where"
+      - "<#B0BEC5>  players begin the TNT Run."
+    message: "<#00E676>Start Location <#BDBDBD>has been set successfully."
+
+  end:
+    name: "<#E040FB><bold>Set End Location"
+    material: END_PORTAL_FRAME
+    lore:
+      - "<#2F2F2F>• <#D500F9>CLICK <#BDBDBD>to set at <#EA80FC>your pos"
+      - "<#2F2F2F>• <#B388FF>SHIFT-CLICK <#BDBDBD>to <#F8BBD0>center block"
+      - ""
+      - "<#2F2F2F>• <#B0BEC5>The fallback location used when"
+      - "<#B0BEC5>  players leave or games end."
+    message: "<#E040FB>End Location <#BDBDBD>has been set successfully."
+
+  player-amounts:
+    name: "<#FFAB00><bold>Player Amounts"
+    material: GLOWSTONE_DUST
+  min-player-amount:
+    name: "<#B2FF59><bold>Set Minimum Players"
+    material: LIME_DYE
+    lore:
+      - "<#2F2F2F>• <#2196F3>LEFT  <#BDBDBD>click to <#64B5F6>increase <#BDBDBD>(+1)"
+      - "<#2F2F2F>• <#EF5350>RIGHT <#BDBDBD>click to <#E57373>decrease <#BDBDBD>(-1)"
+      - ""
+      - "<#2F2F2F>• <#B0BEC5>Determines the required player"
+      - "<#B0BEC5>  count to start the countdown."
+
+  max-player-amount:
+    name: "<#FF5252><bold>Set Maximum Players"
+    material: RED_DYE
+    lore:
+      - "<#2F2F2F>• <#2196F3>LEFT  <#BDBDBD>click to <#64B5F6>increase <#BDBDBD>(+1)"
+      - "<#2F2F2F>• <#EF5350>RIGHT <#BDBDBD>click to <#E57373>decrease <#BDBDBD>(-1)"
+      - ""
+      - "<#2F2F2F>• <#B0BEC5>Limits the total capacity"
+      - "<#B0BEC5>  of players for this arena."
+
+  arena-sign:
+    name: "<#FFAB00><bold>Create Arena Sign"
+    material: OAK_SIGN
+
+  register-arena:
+    name: "<#00E676><bold>Register the Arena"
+    material: FIREWORK_ROCKET
+    hide-tooltip: true
+    missing-option:
+      - "<#37474F><st>                                                                                 </st>"
+      - "<#FF5252><bold>REGISTRATION FAILED"
+      - ""
+      - "<gray>The arena configuration integrity check has failed."
+      - "<gray>A mandatory configuration value is missing."
+      - ""
+      - "<gray>Missing arena option: <#FFD54F>%option%"
+      - ""
+      - "<#37474F><st>                                                                                 </st>"
+    registered-successfully:
+      - "<#37474F><st>                                                                                 </st>"
+      - "<gradient:#00E676:#1DE9B6><bold>REGISTRATION COMPLETE</gradient>"
+      - ""
+      - "<#CFD8DC>The arena '<#00B0FF>%arena_id%<#CFD8DC>' has been successfully registered."
+      - ""
+      - "<click:run_command:%command%><hover:show_text:'<#69F0AE>Click to join instantly.'><#FFD740><bold><underlined>CLICK HERE TO JOIN & PLAY</underlined></bold></hover></click>"
+      - ""
+      - "<#37474F><st>                                                                                 </st>"
+
+  player-settings:
+    name: "<#2196F3><bold>Configure Player Settings"
+    material: BOOK
+    lore:
+      - "<#2F2F2F>• <#2196F3>CLICK <#BDBDBD>to open player settings"
+      - ""
+      - "<#2F2F2F>• <#B0BEC5>Configure inventory, effects, and"
+      - "<#B0BEC5>  gamemode when players join."
+
+  arena-record-reset:
+    name: "<!i><#FF5252><bold>Reset Arena Records"
+    material: PLAYER_HEAD
+    lore:
+      - "<!i><#2F2F2F>• <#FF5252>CLICK <#BDBDBD>to open reset confirmation"
+      - ""
+      - "<!i><#2F2F2F>• <#B0BEC5>Record Holder: <#81D4FA>%record_holder%"
+      - "<!i><#2F2F2F>• <#B0BEC5>Best Time: <#FFD54F>%record_time%"
+      - ""
+      - "<!i><#2F2F2F>• <#EF9A9A>Removes this arena's best time and"
+      - "<!i><#EF9A9A>  checkpoint bests from every player."
+
+  confirm-arena-record-reset:
+    name: "<!i><#00E676><bold>Confirm Reset"
+    material: LIME_DYE
+    lore:
+      - "<!i><#2F2F2F>• <#00E676>CLICK <#BDBDBD>to permanently clear"
+      - "<!i><#BDBDBD>  this arena's stored records."
+
+  cancel-arena-record-reset:
+    name: "<!i><#FF5252><bold>Cancel"
+    material: RED_DYE
+    lore:
+      - "<!i><#2F2F2F>• <#FF5252>CLICK <#BDBDBD>to go back without"
+      - "<!i><#BDBDBD>  changing any records."
+
+  gamemode-selector:
+    name: "<#FFB300><bold>Set Join Gamemode"
+    material: DIAMOND_PICKAXE
+    lore:
+      - "<#2F2F2F>• <#FFB300>CLICK <#BDBDBD>to select gamemode"
+      - ""
+      - "<#2F2F2F>• <#B0BEC5>Gamemode: <#FFB300>%current_gamemode%"
+    available-modes:
+      - "SURVIVAL"
+      - "CREATIVE"
+      - "ADVENTURE"
+    item-flags:
+      - HIDE_ATTRIBUTES
+
+  potion-effects-selector:
+    name: "<#9C27B0><bold>Manage Potion Effects"
+    material: DRAGON_BREATH
+    lore:
+      - "<#2F2F2F>• <#9C27B0>CLICK <#BDBDBD>to open effects menu"
+      - ""
+      - "<#2F2F2F>• <#B0BEC5>Configure potion effects applied"
+      - "<#B0BEC5>  when players join the arena."
+      - ""
+      - "<#2F2F2F>• <#B0BEC5>Active Effects: <#9C27B0>%potion_effect_count%"
+    item-flags:
+      - HIDE_ATTRIBUTES
+
+  scoreboard-toggle:
+    name: "<#00BCD4><bold>Challenge Scoreboard"
+    material: NAME_TAG
+    lore:
+      - "<#2F2F2F>• <#2196F3>CLICK <#BDBDBD>to toggle setting"
+      - ""
+      - "<#2F2F2F>• <#B0BEC5>Status: %scoreboard_toggle_status%"
+      - ""
+      - "<#B0BEC5>• <#B0BEC5>Show the parkour scoreboard"
+      - "<#B0BEC5>  automatically when a run starts."
+
+  bossbar-toggle:
+    name: "<#FF7043><bold>Game BossBar"
+    material: ORANGE_DYE
+    lore:
+      - "<#2F2F2F>• <#2196F3>CLICK <#BDBDBD>to toggle setting"
+      - ""
+      - "<#2F2F2F>• <#B0BEC5>Status: %bossbar_toggle_status%"
+      - ""
+      - "<#B0BEC5>• <#B0BEC5>Show the BossBar for waiting,"
+      - "<#B0BEC5>  starting, and active parkour states."
+
+  potion-effect-item:
+    name: "<#9C27B0>♦ <#76FF03>%effect_name% <#FFFFFF>Lv. <#FFD54F>%effect_level%"
+    material: DRAGON_BREATH
+    lore:
+      - "<#2F2F2F>• <#EF5350>RIGHT-CLICK <#BDBDBD>to <#E57373>remove"
+      - ""
+      - "<#2F2F2F>• <#B0BEC5>Applied effect for arena players."
+    item-flags:
+      - HIDE_ATTRIBUTES
+
+  add-potion-effect:
+    name: "<#00E676><bold>Add Potion Effect"
+    material: LIME_DYE
+    lore:
+      - "<#2F2F2F>• <#00E676>CLICK <#BDBDBD>to select effect type"
+      - ""
+      - "<#2F2F2F>• <#B0BEC5>Add a new potion effect to be"
+      - "<#B0BEC5>  applied when players join."
+    available-effects:
+      - "SPEED"
+      - "JUMP_BOOST"
+      - "NIGHT_VISION"
+      - "SLOW_FALLING"
+    item-flags:
+      - HIDE_ATTRIBUTES
+
+  selected-potion-effects:
+    name: "<#FFCA28><bold>Selected Effects"
+    material: ENDER_CHEST
+    lore:
+      - "<#2F2F2F>• <#FFCA28>CLICK <#BDBDBD>to view active effects"
+      - ""
+      - "<#2F2F2F>• <#B0BEC5>Open a separate page showing"
+      - "<#B0BEC5>  the potion effects currently added."
+    item-flags:
+      - HIDE_ATTRIBUTES
+
+  potion-effect-speed:
+    name: "<#64B5F6><bold>Speed"
+    material: SUGAR
+    lore:
+      - "<#2F2F2F>• <#00E676>CLICK <#BDBDBD>to choose a level"
+      - ""
+      - "<#2F2F2F>• <#B0BEC5>Best for fast-paced parkour lanes"
+      - "<#B0BEC5>  and momentum-heavy stages."
+    item-flags:
+      - HIDE_ATTRIBUTES
+
+  potion-effect-jump-boost:
+    name: "<#81C784><bold>Jump Boost"
+    material: SLIME_BALL
+    lore:
+      - "<#2F2F2F>• <#00E676>CLICK <#BDBDBD>to choose a level"
+      - ""
+      - "<#2F2F2F>• <#B0BEC5>Useful for long jumps, vertical"
+      - "<#B0BEC5>  climbs, and bounce sections."
+    item-flags:
+      - HIDE_ATTRIBUTES
+
+  potion-effect-night-vision:
+    name: "<#B39DDB><bold>Night Vision"
+    material: GLOWSTONE_DUST
+    lore:
+      - "<#2F2F2F>• <#00E676>CLICK <#BDBDBD>to choose a level"
+      - ""
+      - "<#2F2F2F>• <#B0BEC5>Keeps darker caves and neon maps"
+      - "<#B0BEC5>  easy to read for players."
+    item-flags:
+      - HIDE_ATTRIBUTES
+
+  potion-effect-slow-falling:
+    name: "<#E1BEE7><bold>Slow Falling"
+    material: PHANTOM_MEMBRANE
+    lore:
+      - "<#2F2F2F>• <#00E676>CLICK <#BDBDBD>to choose a level"
+      - ""
+      - "<#2F2F2F>• <#B0BEC5>Great for large drops, glide-like"
+      - "<#B0BEC5>  movement, and recovery maps."
+    item-flags:
+      - HIDE_ATTRIBUTES
+
+  potion-level-1:
+    name: "<#B0BEC5><bold>%effect_name% I"
+    material: IRON_INGOT
+    lore:
+      - "<#2F2F2F>• <#00E676>CLICK <#BDBDBD>to apply Level <#E0E0E0>I"
+      - ""
+      - "<#2F2F2F>• <#B0BEC5>Adds <#FFFFFF>%effect_name% <#B0BEC5>with a"
+      - "<#B0BEC5>  light bonus for the arena."
+    item-flags:
+      - HIDE_ATTRIBUTES
+
+  potion-level-2:
+    name: "<#FFD54F><bold>%effect_name% II"
+    material: GOLD_INGOT
+    lore:
+      - "<#2F2F2F>• <#00E676>CLICK <#BDBDBD>to apply Level <#FFD54F>II"
+      - ""
+      - "<#2F2F2F>• <#B0BEC5>Adds <#FFFFFF>%effect_name% <#B0BEC5>with a"
+      - "<#B0BEC5>  stronger boost for the arena."
+    item-flags:
+      - HIDE_ATTRIBUTES
+
+  potion-level-3:
+    name: "<#4DD0E1><bold>%effect_name% III"
+    material: DIAMOND
+    lore:
+      - "<#2F2F2F>• <#00E676>CLICK <#BDBDBD>to apply Level <#4DD0E1>III"
+      - ""
+      - "<#2F2F2F>• <#B0BEC5>Adds <#FFFFFF>%effect_name% <#B0BEC5>at a"
+      - "<#B0BEC5>  powerful level for advanced maps."
+    item-flags:
+      - HIDE_ATTRIBUTES
+
+  go-back:
+    name: "<#FF5252><bold>Return to Main Menu"
+    material: ARROW
