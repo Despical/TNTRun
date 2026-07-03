@@ -1,34 +1,5 @@
-admin-commands:
-  did-you-mean: "&3Did you mean &b%command%?"
-  correct-usage: "&cCorrect usage: %usage%"
-  cannot-do-that-ingame: "&cYou can not do that while playing!"
-  provide-an-arena-name: "&cPlease provide an arena name!"
-  there-is-already-an-arena: "&cThere is already an arena with that name!"
-  no-arena-found-with-that-name: "&cNo arena found with that name!"
-  deleted-arena-successfully: "&cDeleted arena called {0} successfully!"
-  must-be-in-arena: "&cYou must be in the arena to perform this command!"
-
 messages:
-  arena:
-    not-playing: "&cYou cannot leave the game if you are not playing!"
-    restarting: "&cYou cannot join while this arena is restarting!"
-    waiting-for-players: "\n&a{0} more player{1} required for the game to start.\n"
-    starts-in-20s: "&eThe game starts in 20 seconds!"
-    starts-in-10s: "&eThe game starts in &610&e seconds!"
-    starts-in-5s-and-less: "&eThe game starts in &c%time%&e seconds!"
-    countdown-cancelled: "&c&lCountdown cancelled! There aren't enough players to start!"
-    join-arena: "&7%player%&e has joined (&b%players%&e/&b%max_players%&e)!"
-    quit-arena: "&7%player%&e has quit!"
-    game-explanation:
-      - "%no_center%&a&l▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬"
-      - "&f&lTNT Run"
-      - ""
-      - "&e&lAvoid the falling blocks and try to"
-      - "&e&lsurvive longer than everyone else!"
-      - ""
-      - "%no_center%&a&l▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬"
   in-game:
-    game-started: "&a&lThe game has started!"
     you-are-spectator-now: "&7You are spectator now!"
     force-start: "&c&lAn admin set waiting time to 0. The game starts now!"
     already-force-start: "&cThe game is already starting!"
@@ -39,12 +10,8 @@ messages:
     cooldown-format: "<#FFCA28>CHARGING <#2F2F2F><bold>[%progress%<#2F2F2F><bold>] <#FFCA28>%time%s"
     cooldown-progress-format: "<#00E676>:<#FF5252>:■"
   score-actions:
-    bonus-score: "<#FFCA28>%score% score! <#E6E6E6>%action%"
-    survive: "<#00E676>Survived 30 seconds"
-  game-items:
-    leave-item:
-      returning-lobby: "&a&lTeleporting you to the lobby in 3 seconds...\n&a&lRight-click again to cancel the teleport!"
-      teleport-cancelled: "&c&lTeleport cancelled!"
+    bonus-score: "<#FFCA28>%score% score! %action%"
+    survive: "<#00E676>(Survive Bonus)"
   summary-message:
     - "%no_center%&a&l▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬"
     - "&f&lTNT Run"
@@ -55,6 +22,17 @@ messages:
     - ""
     - "%no_center%&a&l▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬"
   summary-message-hover: "&8Remaining Perks\n&7Double Jump: %double_jumps%&7/%max_double_jumps%"
+
+game-explanation:
+  - "%no_center%<#00E676><bold>▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬"
+  - "<white><bold>TNT RUN"
+  - ""
+  - "<yellow><bold>Avoid the falling blocks and try to"
+  - "<yellow><bold>survive longer than everyone else!"
+  - ""
+  - "%no_center%<#00E676><bold>▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬"
+
+game-started: "<#00E676><bold>The game has started!"
 
 spectator-gui:
   title: "         Spectator Settings"
@@ -157,7 +135,12 @@ game:
 ticker:
   waiting: []
   starting:
-    30: "<yellow>The game starts in <green>30 <yellow>seconds!"
+    30:
+      - "<yellow>The game starts in <green>30 <yellow>seconds!"
+      - "sound:BLOCK_NOTE_BLOCK_HAT,20,1"
+    20:
+      - "<yellow>The game starts in 20 seconds!"
+      - "sound:BLOCK_NOTE_BLOCK_HAT,20,1"
     10:
       - "title:<green>10"
       - "<yellow>The game starts in <gold>10 <yellow>seconds!"

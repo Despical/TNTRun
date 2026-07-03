@@ -88,6 +88,7 @@ public class WaitingState extends GameStateHandler {
         };
 
         game.broadcastMessage("player-joined", vars);
+        plugin.getChatManager().sendCenteredMessage(player, "game-explanation");
 
         handleInventory(player);
         resetPlayerAttributes(player);

@@ -27,10 +27,13 @@ waiting:
   lines:
     - "<#B0C4DE>%date%"
     - ""
+    - "<#E6E6E6>Map: <#00FF95>%map_name%"
     - "<#E6E6E6>Players: <#00FF95>%players%/%max_players%"
     - ""
     - "<#E6E6E6>Starting in <#00FF95>%formatted_timer% <#E6E6E6>if"
     - "<#00FF95>%players_needed% <#E6E6E6>more player%s% join"
+    - ""
+    - "<#E6E6E6>Game: <#00FF95>TNT Run"
     - ""
     - "<#FFC800>www.despical.dev"
 
@@ -40,11 +43,14 @@ starting-half:
   lines:
     - "<#B0C4DE>%date%"
     - ""
+    - "<#E6E6E6>Map: <#00FF95>%map_name%"
     - "<#E6E6E6>Players: <#00FF95>%players%/%max_players%"
     - ""
     - "<#E6E6E6>Starting in <#00FF95>%formatted_timer% <#E6E6E6>to"
     - "<#E6E6E6>allow time for"
     - "<#E6E6E6>additional players"
+    - ""
+    - "<#E6E6E6>Game: <#00FF95>TNT Run"
     - ""
     - "<#FFC800>www.despical.dev"
 
@@ -54,11 +60,14 @@ starting:
   lines:
     - "<#B0C4DE>%date%"
     - ""
+    - "<#E6E6E6>Map: <#00FF95>%map_name%"
     - "<#E6E6E6>Players: <#00FF95>%players%/%max_players%"
     - ""
     - "<#E6E6E6>Starting in <#00FF95>%formatted_timer% <#E6E6E6>to"
     - "<#E6E6E6>allow time for"
     - "<#E6E6E6>additional players"
+    - ""
+    - "<#E6E6E6>Game: <#00FF95>TNT Run"
     - ""
     - "<#FFC800>www.despical.dev"
 
@@ -68,9 +77,12 @@ starting-full:
   lines:
     - "<#B0C4DE>%date%"
     - ""
+    - "<#E6E6E6>Map: <#00FF95>%map_name%"
     - "<#E6E6E6>Players: <#00FF95>%players%/%max_players%"
     - ""
     - "<#E6E6E6>Starting in <#00FF95>%timer%s"
+    - ""
+    - "<#E6E6E6>Game: <#00FF95>TNT Run"
     - ""
     - "<#FFC800>www.despical.dev"
 
