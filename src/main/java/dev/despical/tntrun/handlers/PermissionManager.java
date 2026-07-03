@@ -19,8 +19,7 @@
 package dev.despical.tntrun.handlers;
 
 import dev.despical.tntrun.Main;
-import dev.despical.tntrun.arena.Arena;
-import dev.despical.tntrun.user.User;
+import lombok.Getter;
 import org.bukkit.entity.Player;
 
 import java.util.List;
@@ -32,8 +31,10 @@ import java.util.List;
  */
 public class PermissionManager {
 
-    private final int defaultDoubleJumps, doubleJumpDelay;
-    private final String joinPermission, fullJoin;
+    private final int defaultDoubleJumps;
+
+    @Getter
+    private final int doubleJumpDelay;
     private final List<String> doubleJumpsPerms;
 
     public PermissionManager(Main plugin) {
@@ -41,22 +42,9 @@ public class PermissionManager {
 
         this.defaultDoubleJumps = config.getInt("Double-Jumps.Default", 5);
         this.doubleJumpDelay = config.getInt("Double-Jumps.Delay", 4);
-        this.joinPermission = config.getString("Join-Permission", "");
-        this.fullJoin = config.getString("Join-Full-Game-Permission", "");
         this.doubleJumpsPerms = config.getStringList("Double-Jumps.Permissions");
     }
 
-    public boolean hasPermission(final User user, final Arena arena) {
-        return joinPermission.isEmpty() || user.getPlayer().hasPermission(joinPermission.replace("<arena>", arena.getId()));
-    }
-
-    public boolean hasFullGamePerm(Player player) {
-        return fullJoin.isEmpty() || player.hasPermission(fullJoin);
-    }
-
-    public int getDoubleJumpDelay() {
-        return doubleJumpDelay;
-    }
 
     public int getDoubleJumps(Player player) {
         for (String perm : doubleJumpsPerms) {

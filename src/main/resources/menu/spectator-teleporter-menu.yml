@@ -1,0 +1,35 @@
+rows: 5
+title: "<#E67E22><bold>Teleporter</bold>"
+
+items:
+  spectator-teleporter:
+    slot: 0
+    material: COMPASS
+    name: "<#FF5252><bold>Teleporter"
+    lore:
+      - "<#B0BEC5>Right-click to teleport to"
+      - "<#B0BEC5>alive players."
+
+  background-fill:
+    slots: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 17, 18, 26, 27, 35, 36, 37, 38, 39, 41, 42, 43, 44]
+    decoration-only: true
+    material: GRAY_STAINED_GLASS_PANE
+    name: " "
+
+  teleport-player:
+    material: PLAYER_HEAD
+    name: "<#00E676><bold>%target%"
+    lore:
+      - "<#B0BEC5>Click to teleport to this player."
+
+  previous-page:
+    slot: 36
+    material: ARROW
+    name: "<#FFCA28><bold>Previous Page"
+    lore: []
+
+  next-page:
+    slot: 44
+    material: ARROW
+    name: "<#FFCA28><bold>Next Page"
+    lore: []

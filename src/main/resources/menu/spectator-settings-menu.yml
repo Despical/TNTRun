@@ -1,0 +1,68 @@
+rows: 3
+title: "<#E67E22><bold>Spectator Settings</bold>"
+
+items:
+  spectator-settings:
+    slot: 4
+    material: COMPARATOR
+    name: "<#00E676><bold>Spectator Settings"
+    lore:
+      - "<#B0BEC5>Right-click to open spectator"
+      - "<#B0BEC5>settings."
+
+  background-fill:
+    slots: []
+    decoration-only: true
+    material: GRAY_STAINED_GLASS_PANE
+    name: " "
+
+  night-vision-enabled:
+    slot: 11
+    material: ENDER_EYE
+    glow: true
+    name: "<#3F7DCC><bold>Night Vision"
+    lore:
+      - "<#B0BEC5>Click to disable night vision."
+
+  night-vision-disabled:
+    slot: 11
+    material: ENDER_PEARL
+    name: "<#3F7DCC><bold>Night Vision"
+    lore:
+      - "<#B0BEC5>Click to enable night vision."
+
+  show-spectators-enabled:
+    slot: 13
+    material: LIME_DYE
+    glow: true
+    name: "<#00E676><bold>Spectators"
+    lore:
+      - "<#B0BEC5>Click to hide other spectators."
+
+  show-spectators-disabled:
+    slot: 13
+    material: GRAY_DYE
+    name: "<#00E676><bold>Spectators"
+    lore:
+      - "<#B0BEC5>Click to show other spectators."
+
+  speed-disabled:
+    slot: 15
+    material: GUNPOWDER
+    name: "<#EAFBFF><bold>Speed"
+    lore:
+      - "<#B0BEC5>Click to cycle spectator speed."
+
+  speed:
+    slot: 15
+    material: SUGAR
+    name: "<#EAFBFF><bold>Speed"
+    lore:
+      - "<#B0BEC5>Click to cycle spectator speed."
+
+  close:
+    slot: 26
+    material: BARRIER
+    name: "<#FF5252><bold>Close"
+    lore:
+      - "<#B0BEC5>Click to close this menu."

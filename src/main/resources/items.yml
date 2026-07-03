@@ -1,23 +1,21 @@
 items:
   double-jump:
     name: "<#00E676><bold>Double Jump"
-    # Custom-modeled items by the Oraxen plugin are supported.
-    # To use them, simply replace the material with oraxen:item_id_here.
     material: FEATHER
     slot: 0
-    # Should this item has a glowing effect?
-    # This option is optional and is false by default.
-    glow: false
     actions:
       - RIGHT_CLICK
     lore:
       - "<#B0BEC5>Right-click to double jump!"
+
   play-again:
-    name: "&b&lPlay Again &7(Right Click)"
+    name: "<#00E5FF><bold>Play Again"
     material: PAPER
     slot: 7
+    no-arena-sound: "ENTITY_VILLAGER_NO,1.0,1.2"
     lore:
-      - "&7Right-click to play another game!"
+      - "<#B0BEC5>Right-click to play another"
+      - "<#B0BEC5>game!"
 
   leave-item:
     name: "<#FF5252><bold>Return to Lobby"

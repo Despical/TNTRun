@@ -22,12 +22,16 @@ import dev.despical.fileitems.SpecialItem;
 import dev.despical.tntrun.api.event.player.PlayerLeaveGameEvent;
 import dev.despical.tntrun.arena.Arena;
 import dev.despical.tntrun.game.GameState;
+import dev.despical.tntrun.menu.spectator.SpectatorSettingsMenu;
+import dev.despical.tntrun.menu.spectator.SpectatorTeleportMenu;
 import dev.despical.tntrun.option.BooleanOption;
 import dev.despical.tntrun.sound.GameSound;
 import dev.despical.tntrun.stats.Statistics;
 import dev.despical.tntrun.user.User;
 import dev.despical.tntrun.utils.Utils;
+import dev.despical.tntrun.utils.Var;
 import org.bukkit.GameMode;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.Action;
@@ -38,6 +42,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
@@ -125,6 +130,7 @@ public class GameItemEvents extends ListenerAdapter {
 
         user.setStatistic(Statistics.LOCAL_DOUBLE_JUMPS, jumps - 1);
         user.setCooldown("double_jump", plugin.getPermissionManager().getDoubleJumpDelay());
+
         Utils.restoreDoubleJumpFlightWhenReady(user, plugin.getPermissionManager().getDoubleJumpDelay());
 
         player.setFlying(false);
@@ -176,6 +182,109 @@ public class GameItemEvents extends ListenerAdapter {
             case "RIGHT_CLICK" -> action.isRightClick();
             default -> action.name().equals(normalized);
         };
+    }
+
+    @EventHandler
+    public void onSpectatorMenuItem(PlayerInteractEvent event) {
+        if (!event.getAction().isRightClick()) return;
+        if (event.getItem() == null) return;
+
+        SpecialItem matchingItem = getSpectatorMenuItem(event);
+        if (matchingItem == null) {
+            return;
+        }
+
+        User user = userManager.getUser(event.getPlayer());
+        Arena arena = user.getArena();
+        if (arena == null || !arena.isArenaState(GameState.IN_GAME) || !user.isSpectator()) {
+            return;
+        }
+
+        event.setCancelled(true);
+        if ("spectator-teleporter".equals(matchingItem.getKey())) {
+            new SpectatorTeleportMenu(user).open();
+            return;
+        }
+
+        new SpectatorSettingsMenu(user).open();
+    }
+
+    private SpecialItem getSpectatorMenuItem(PlayerInteractEvent event) {
+        SpecialItem settingsItem = itemManager.getItemFromCategory("spectator-settings-menu-items", "spectator-settings");
+        if (settingsItem != null && settingsItem.getOriginalItemStack().isSimilar(event.getItem())) {
+            return settingsItem;
+        }
+
+        SpecialItem teleporterItem = itemManager.getItemFromCategory("spectator-teleporter-menu-items", "spectator-teleporter");
+        if (teleporterItem != null && teleporterItem.getOriginalItemStack().isSimilar(event.getItem())) {
+            return teleporterItem;
+        }
+
+        return null;
+    }
+
+    @EventHandler
+    public void onPlayAgainItem(PlayerInteractEvent event) {
+        if (!event.getAction().isRightClick()) return;
+
+        SpecialItem playAgainItem = getPlayAgainItem(event);
+        if (playAgainItem == null) {
+            return;
+        }
+
+        Player player = event.getPlayer();
+        Arena currentArena = arenaRegistry.getArena(player);
+        if (currentArena == null) {
+            return;
+        }
+
+        event.setCancelled(true);
+
+        User user = userManager.getUser(player);
+        Optional<Arena> targetArena = findPlayAgainArena(currentArena);
+        if (targetArena.isEmpty()) {
+            user.sendMessage("play-again.no-arena-found");
+            playConfiguredSound(player, playAgainItem, "no-arena-sound");
+            return;
+        }
+
+        Arena target = targetArena.get();
+        user.sendMessage("play-again.transferring", Var.of("%arena%", target.getId()));
+
+        arenaManager.leaveAttempt(user, PlayerLeaveGameEvent.LeaveReason.LEAVE_ITEM);
+        arenaManager.joinAttempt(user, target);
+    }
+
+    private Optional<Arena> findPlayAgainArena(Arena currentArena) {
+        return arenaRegistry.getArenas().stream()
+            .filter(arena -> !arena.equals(currentArena))
+            .filter(Arena::isReady)
+            .filter(Arena::isGameNonnull)
+            .filter(arena -> arena.isArenaState(GameState.WAITING, GameState.STARTING))
+            .filter(arena -> arena.getGame().getUsers().size() < arena.getMaximumPlayers())
+            .findFirst();
+    }
+
+    private SpecialItem getPlayAgainItem(PlayerInteractEvent event) {
+        SpecialItem item = itemManager.getItem("play-again");
+        return item != null && item.getOriginalItemStack().isSimilar(event.getItem()) ? item : null;
+    }
+
+    private void playConfiguredSound(Player player, SpecialItem item, String key) {
+        String rawSound = item.getCustomKey(key);
+        if (rawSound == null || rawSound.isBlank()) {
+            return;
+        }
+
+        String[] parts = rawSound.split(",");
+        try {
+            Sound sound = Sound.valueOf(parts[0].trim().toUpperCase(Locale.ENGLISH));
+            float volume = parts.length > 1 ? Float.parseFloat(parts[1].trim()) : 1f;
+            float pitch = parts.length > 2 ? Float.parseFloat(parts[2].trim()) : 1f;
+
+            player.playSound(player.getLocation(), sound, volume, pitch);
+        } catch (IllegalArgumentException ignored) {
+        }
     }
 
     @EventHandler

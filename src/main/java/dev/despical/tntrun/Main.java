@@ -159,6 +159,8 @@ public class Main extends JavaPlugin {
         itemManager.registerItems("items", "items");
         itemManager.registerItems("menu/setup-menu", "items");
         itemManager.registerItems("stats-menu-items", "items", "menu/stats-menu");
+        itemManager.registerItems("spectator-settings-menu-items", "items", "menu/spectator-settings-menu");
+        itemManager.registerItems("spectator-teleporter-menu-items", "items", "menu/spectator-teleporter-menu");
     }
 
     private Database createDatabase() {
