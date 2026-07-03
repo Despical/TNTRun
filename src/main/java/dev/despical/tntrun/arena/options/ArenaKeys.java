@@ -48,6 +48,14 @@ public final class ArenaKeys {
         }
     };
 
+    public static final ArenaOption<String> MAP_NAME = new ArenaOption<>("map-name", "Unknown Map", String.class) {
+
+        @Override
+        protected String parse(String value) {
+            return value == null || value.isBlank() ? getDefaultValue() : value;
+        }
+    };
+
     public static final ArenaOption<Location> LOBBY_LOCATION = new ArenaOption<>("lobby", null, Location.class) {
 
         @Override
@@ -186,6 +194,7 @@ public final class ArenaKeys {
     public static List<ArenaOption<?>> getAllKeys() {
         return List.of(
             READY,
+            MAP_NAME,
             LOBBY_LOCATION,
             START_LOCATION,
             END_LOCATION,

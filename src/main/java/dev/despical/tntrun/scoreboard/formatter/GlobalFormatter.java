@@ -28,6 +28,7 @@ public final class GlobalFormatter {
             Var.of("%formatted_timer%", "%02d:%02d".formatted(timer / 60, timer % 60)),
             Var.of("%date%", date),
             Var.of("%players%", game.getUsers().size()),
+            Var.of("%map_name%", arena.getOption(ArenaKeys.MAP_NAME)),
             Var.of("%min_players%", arena.getOption(ArenaKeys.MIN_PLAYERS)),
             Var.of("%max_players%", arena.getOption(ArenaKeys.MAX_PLAYERS)),
         };
