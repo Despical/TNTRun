@@ -20,7 +20,6 @@ package dev.despical.tntrun.event;
 
 import dev.despical.tntrun.arena.Arena;
 import dev.despical.tntrun.game.GameState;
-import dev.despical.tntrun.option.BooleanOption;
 import dev.despical.tntrun.user.User;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -99,14 +98,9 @@ public class GameEvents extends ListenerAdapter {
             return;
         }
 
-        if (BooleanOption.PVP_DISABLED.value()) {
-            event.setCancelled(true);
-        } else {
-            User user = userManager.getUser(victim);
-
-            if (!user.isSpectator()) {
-                event.setDamage(0);
-            }
+        User user = userManager.getUser(victim);
+        if (!user.isSpectator()) {
+            event.setDamage(0);
         }
 
         victim.setFireTicks(0);

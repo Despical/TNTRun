@@ -24,7 +24,6 @@ public enum BooleanOption implements ConfigOption<Boolean> {
     JUMP_BAR("jump-bar", true),
     LONGEST_SURVIVE_ON_WINS("longest-survive-on-wins", false),
     NAME_TAGS_HIDDEN("name-tags-hidden", false),
-    PVP_DISABLED("pvp-disabled", true),
     SCOREBOARD_ENABLED("scoreboard-enabled", true),
     SEPARATE_CHAT("chat-settings.separate-chat", true),
     UPDATE_NOTIFIER("update-notifier", true);
