@@ -193,6 +193,10 @@ public class SignManager {
         };
     }
 
+    public boolean isGameSign(Block block) {
+        return getArenaSignByBlock(block) != null;
+    }
+
     private Component formatSign(Component component, String state, int onlineCount, int maxPlayers, int minPlayers) {
         return chatManager.replaceVarsInComponent(component,
             Var.of("%state%", state),

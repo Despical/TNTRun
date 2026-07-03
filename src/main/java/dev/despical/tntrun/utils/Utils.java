@@ -20,8 +20,9 @@ package dev.despical.tntrun.utils;
 
 import dev.despical.commons.serializer.InventorySerializer;
 import dev.despical.tntrun.Main;
-import dev.despical.tntrun.arena.ArenaState;
+import dev.despical.tntrun.game.GameState;
 import dev.despical.tntrun.user.User;
+import org.bukkit.GameMode;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -49,13 +50,13 @@ public class Utils {
             public void run() {
                 var arena = user.getArena();
 
-                if (arena == null || arena.isDeathPlayer(user) || !arena.isArenaState(ArenaState.IN_GAME)) {
+                if (arena == null || arena.isDeathPlayer(user) || !arena.isArenaState(GameState.IN_GAME)) {
                     cancel();
                     return;
                 }
 
                 var progress = getProgressBar(ticks, seconds * 20);
-                user.sendActionBar(plugin.getChatManager().message("messages.in-game.cooldown-format", user).replace("%progress%", progress).replace("%time%", Double.toString((double) ((seconds * 20) - ticks) / 20)));
+                user.sendRawActionBar(plugin.getChatManager().message("messages.in-game.cooldown-format", user).replace("%progress%", progress).replace("%time%", Double.toString((double) ((seconds * 20) - ticks) / 20)));
 
                 if (ticks >= seconds * 20) {
                     cancel();
@@ -146,11 +147,18 @@ public class Utils {
         InventorySerializer.loadInventory(plugin, player);
     }
 
-    public static String formatTime(long millis) {
-        long minutes = (millis / 1000) / 60;
-        long seconds = (millis / 1000) % 60;
-        long ms = millis % 1000;
-
-        return String.format("%02d:%02d.%03d", minutes, seconds, ms);
+    public static void resetPlayerAttributes(Player player) {
+        player.setHealth(20D);
+        player.setFoodLevel(20);
+        player.setExp(0F);
+        player.setExhaustion(0F);
+        player.setSaturation(20F);
+        player.setFireTicks(0);
+        player.setFlying(false);
+        player.setItemOnCursor(null);
+        player.setAllowFlight(false);
+        player.setFlying(false);
+        player.getActivePotionEffects().forEach(effect -> player.removePotionEffect(effect.getType()));
+        player.setGameMode(GameMode.ADVENTURE);
     }
 }

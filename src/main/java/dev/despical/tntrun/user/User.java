@@ -19,13 +19,16 @@
 package dev.despical.tntrun.user;
 
 import dev.despical.tntrun.Main;
+import dev.despical.tntrun.api.event.player.PlayerStatisticChangeEvent;
 import dev.despical.tntrun.arena.Arena;
 import dev.despical.tntrun.stats.StatisticType;
 import dev.despical.tntrun.stats.Statistics;
 import dev.despical.tntrun.utils.Var;
 import lombok.Getter;
+import lombok.Setter;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
@@ -47,6 +50,10 @@ public class User {
         plugin = Main.getInstance();
         plugin.getServer().getScheduler().runTaskTimerAsynchronously(plugin, () -> cooldownCounter++, 20, 20);
     }
+
+    @Getter
+    @Setter
+    private boolean spectator;
 
     private final UUID uuid;
 
@@ -87,6 +94,23 @@ public class User {
             Component message = plugin.getChatManager().parseMessage(msg, variables);
             player.sendMessage(message);
         });
+    }
+
+    public void sendRawMessage(String msg, Object... values) {
+        for (int i = 0; i < values.length; i++) {
+            msg = msg.replace("{" + i + "}", String.valueOf(values[i]));
+        }
+
+        sendRawMessage(msg);
+    }
+
+    public void closeOpenedInventory() {
+        ifPlayerPresent(Player::closeInventory);
+    }
+
+    public Location getLocation() {
+        Player player = getPlayer();
+        return player == null ? null : player.getLocation();
     }
 
     public void sendRawActionBarComponent(Component message) {
@@ -179,14 +203,14 @@ public class User {
         T finalValue = newValue;
 
         if (callEvent) {
-//            PlayerStatisticChangeEvent<T> event =
-//                plugin.getEventManager().statChange(getPlayer(), type, oldValue, newValue);
-//
-//            if (event.isCancelled()) {
-//                return;
-//            }
-//
-//            finalValue = event.getNewValue();
+            PlayerStatisticChangeEvent<T> event =
+                plugin.getEventManager().statChange(getPlayer(), type, oldValue, newValue);
+
+            if (event.isCancelled()) {
+                return;
+            }
+
+            finalValue = event.getNewValue();
         }
 
         if (oldValue != null && oldValue.equals(finalValue)) {

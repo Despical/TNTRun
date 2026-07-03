@@ -172,10 +172,18 @@ public class ChatManager {
     public String getRawString(String path, Var... variables) {
         String string = messagesFile.getString(path, "");
         for (Var var : variables) {
-            string = string.replace(var.name, (String) var.value);
+            string = string.replace(var.name, String.valueOf(var.value));
         }
 
         return string;
+    }
+
+    public String message(String path, Var... variables) {
+        return getRawString(path, variables);
+    }
+
+    public String message(String path, User user) {
+        return getRawString(path, Var.ofPlayer(user));
     }
 
     public Component parseMessage(String message, Var... vars) {
