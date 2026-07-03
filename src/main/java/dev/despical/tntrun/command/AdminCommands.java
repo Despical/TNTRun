@@ -73,6 +73,7 @@ public final class AdminCommands extends CommandCategory {
         plugin.getOptions().reloadOptions();
         plugin.getPlayingCommandPolicy().reload();
         plugin.registerItems();
+        plugin.getSoundManager().reload();
         plugin.getEventManager().reload();
         plugin.getSignManager().reload();
         gameManager.reload();

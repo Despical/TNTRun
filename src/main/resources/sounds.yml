@@ -1,0 +1,6 @@
+sounds:
+  double-jump:
+    enabled: true
+    sound: ENTITY_FIREWORK_ROCKET_LAUNCH
+    volume: 0.8
+    pitch: 1.35

@@ -48,6 +48,7 @@ import dev.despical.tntrun.leaderboard.LeaderboardManager;
 import dev.despical.tntrun.option.BooleanOption;
 import dev.despical.tntrun.option.ConfigOptions;
 import dev.despical.tntrun.sign.SignManager;
+import dev.despical.tntrun.sound.SoundManager;
 import dev.despical.tntrun.stats.offline.StatsCacheManager;
 import dev.despical.tntrun.user.User;
 import dev.despical.tntrun.user.UserManager;
@@ -93,6 +94,7 @@ public class Main extends JavaPlugin {
     private CommandFramework commandFramework;
     private PlayingCommandPolicy playingCommandPolicy;
     private PermissionManager permissionManager;
+    private SoundManager soundManager;
 
     @Override
     public void onEnable() {
@@ -133,6 +135,7 @@ public class Main extends JavaPlugin {
         leaderboardManager = new LeaderboardManager(this);
         playingCommandPolicy = new PlayingCommandPolicy(this);
         permissionManager = new PermissionManager(this);
+        soundManager = new SoundManager(this);
 
         registerCommands();
         registerEvents();
