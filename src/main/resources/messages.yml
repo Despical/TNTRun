@@ -1,27 +1,24 @@
 messages:
   in-game:
-    you-are-spectator-now: "&7You are spectator now!"
-    force-start: "&c&lAn admin set waiting time to 0. The game starts now!"
-    already-force-start: "&cThe game is already starting!"
-    game-chat-format: "&7%player%: %message%"
-    game-death-format: "&7[DEAD CHAT] "
-    fell-into-void: "&7%player% &cdied!\n&e%players_left% players remaining."
-    last-one-fell-into-void: "&7%player% &cdied!"
+    you-are-spectator-now: "<gray>You are now watching the game."
+    fell-into-void: "<#FF5252>%player% fell! <#FFCA28>%players_left% <#B0BEC5>players remaining."
+    last-one-fell-into-void: "<#FF5252>%player% fell!"
     cooldown-format: "<#FFCA28>CHARGING <#2F2F2F><bold>[%progress%<#2F2F2F><bold>] <#FFCA28>%time%s"
     cooldown-progress-format: "<#00E676>:<#FF5252>:■"
-  score-actions:
-    bonus-score: "<#FFCA28>%score% score! %action%"
-    survive: "<#00E676>(Survive Bonus)"
-  summary-message:
-    - "%no_center%&a&l▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬"
-    - "&f&lTNT Run"
+summary-message:
+  content:
+    - "%no_center%<#00E676><bold>------------------------------------------------------------"
+    - "<white><bold>TNT Run"
     - ""
-    - "&e&l1st Place: &f&l%player_1%"
-    - "&e&l2nd Place: &f&l%player_2%"
-    - "&e&l3rd Place: &f&l%player_3%"
+    - "<#FFCA28><bold>1st Place: <white><bold>%player_1%"
+    - "<#B0BEC5><bold>2nd Place: <white><bold>%player_2%"
+    - "<#CD7F32><bold>3rd Place: <white><bold>%player_3%"
     - ""
-    - "%no_center%&a&l▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬"
-  summary-message-hover: "&8Remaining Perks\n&7Double Jump: %double_jumps%&7/%max_double_jumps%"
+    - "%no_center%<#00E676><bold>------------------------------------------------------------"
+  hover:
+    - "<#2F2F2F><bold>Remaining Perks"
+    - "<#B0BEC5>Double Jump: <white>%double_jumps%<#B0BEC5>/<#00E676>%max_double_jumps%"
+  no-opponent: "<#757575>No one"
 
 game-explanation:
   - "%no_center%<#00E676><bold>▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬"
@@ -33,38 +30,6 @@ game-explanation:
   - "%no_center%<#00E676><bold>▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬"
 
 game-started: "<#00E676><bold>The game has started!"
-
-spectator-gui:
-  title: "         Spectator Settings"
-  close-item: "&cClose"
-  speed-prefix: "&aSpeed "
-  no-speed: "&aNo Speed"
-  teleporter:
-    title: "Teleporter"
-    skull-name: "&7%player%"
-    lore:
-      - "&7Click to teleport!"
-  auto-teleport-item:
-    enable: "&aEnable Auto Teleport"
-    disable: "&cDisable Auto Teleport"
-    enabled-lore:
-      - "&7Click to disable auto teleport!"
-    disabled-lore:
-      - "&7Click to enable auto teleport!"
-  night-vision-item:
-    enable: "&aEnable Night Vision"
-    disable: "&cDisable Night Vision"
-    enabled-lore:
-      - "&7Click to disable night vision!"
-    disabled-lore:
-      - "&7Click to enable night vision!"
-  hide-spectators-item:
-    enable: "&cHide Spectators"
-    disable: "&aShow Spectators"
-    enabled-lore:
-      - "&7Click to hide other spectators!"
-    disabled-lore:
-      - "&7Click to show other spectators!"
 
 signs:
   game-states:
@@ -326,6 +291,10 @@ only-for-players: "<#FF1744>✖ <#BDBDBD>Only <#FF5252>players <#BDBDBD>can perf
 player-not-found: "<#FF1744>✖ <#BDBDBD>That player was <#FF5252>not found<#BDBDBD>."
 cannot-join-now: "<#FF1744>✖ <#BDBDBD>You <#FF5252>cannot join <#BDBDBD>the game right now."
 chat-format: "<gray>%sender%<dark_gray>: <white>%message%"
+death-chat-format: "<#FF5252><bold>[DEAD CHAT]</bold> <#B0BEC5>%sender%<dark_gray>: <white>%message%"
+play-again:
+  no-arena-found: "<#FF5252>✖ <#BDBDBD>No available arena was found for a new game."
+  transferring: "<#00E676>✔ <#BDBDBD>Sending you to <#FFCA28>%arena%<#BDBDBD>..."
 none: "<#FF5252>None"
 
 stats-menu:
