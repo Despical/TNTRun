@@ -136,4 +136,19 @@ public class SetupMenu implements Menu {
 
         gui.update();
     }
+
+    public void openArenaRecordResetConfirmation() {
+        gui.removePanes();
+
+        basePane = new PaginatedPane(9, 6);
+        gui.addPane(basePane);
+
+        SetupPage confirmationPage = new ResetArenaRecordsConfirmationPage(this);
+        confirmationPage.beforeOpening(gui);
+        confirmationPage.injectItems(basePane);
+
+        basePane.setPage(0);
+
+        gui.update();
+    }
 }

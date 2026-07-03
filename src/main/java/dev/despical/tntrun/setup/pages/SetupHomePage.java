@@ -5,6 +5,7 @@ import dev.despical.tntrun.setup.SetupMenu;
 import dev.despical.tntrun.setup.SetupPage;
 import dev.despical.tntrun.sign.SignManager;
 import dev.despical.tntrun.utils.ItemUtils;
+import dev.despical.tntrun.utils.Schedulers;
 import dev.despical.tntrun.utils.Utils;
 import dev.despical.tntrun.utils.Var;
 import dev.despical.fileitems.SpecialItem;
@@ -20,7 +21,6 @@ import io.papermc.paper.registry.data.dialog.action.DialogAction;
 import io.papermc.paper.registry.data.dialog.input.DialogInput;
 import io.papermc.paper.registry.data.dialog.type.DialogType;
 import net.kyori.adventure.audience.Audience;
-import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickCallback;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
@@ -56,7 +56,12 @@ public class SetupHomePage extends SetupPage {
         pane.addItem(createPlayerAmountsItem(), 3, 1);
         pane.addItem(createArenaSignItem(), 5, 1);
         pane.addItem(createPlayerSettingsItem(), 7, 1);
-        pane.addItem(createMapNameItem(), 4, 3);
+        pane.addItem(createMapNameItem(), 1, 3);
+
+        GuiItem resetArenaRecordsItem = createArenaRecordResetItem();
+        if (resetArenaRecordsItem != null) {
+            pane.addItem(resetArenaRecordsItem, 5, 3);
+        }
 
         if (!arena.getOption(ArenaKeys.READY)) {
             pane.addItem(createRegisterItem(), 8, 5);
@@ -135,11 +140,12 @@ public class SetupHomePage extends SetupPage {
             player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 1f, 1f);
 
             menu.close();
-            player.showDialog(createMapNameDialog(player));
+
+            Schedulers.runInTheNextTick(() -> player.showDialog(createMapNameDialog()));
         });
     }
 
-    private Dialog createMapNameDialog(Player opener) {
+    private Dialog createMapNameDialog() {
         String currentMapName = arena.getOption(ArenaKeys.MAP_NAME);
 
         return Dialog.create(factory -> factory.empty()
@@ -148,10 +154,11 @@ public class SetupHomePage extends SetupPage {
                 .canCloseWithEscape(true)
                 .pause(false)
                 .afterAction(DialogBase.DialogAfterAction.CLOSE)
-                .inputs(List.of(DialogInput.text(MAP_NAME_INPUT_KEY, chatManager.parseMessage("<#B0BEC5>Map display name"))
+                .inputs(List.of(DialogInput.text(MAP_NAME_INPUT_KEY, chatManager.parseMessage("<#B0BEC5>Map name"))
+                    .labelVisible(false)
                     .initial(currentMapName)
                     .maxLength(48)
-                    .width(300)
+                    .width(220)
                     .build()))
                 .build())
             .type(DialogType.notice(ActionButton.builder(chatManager.parseMessage("<#00E676><bold>Save"))
@@ -229,5 +236,28 @@ public class SetupHomePage extends SetupPage {
         };
 
         return GuiItem.of(item, eventConsumer);
+    }
+
+    private GuiItem createArenaRecordResetItem() {
+        String recordHolderName = arena.getRecordHolderName();
+        long recordTime = arena.getRecordTime();
+
+        if (recordTime <= 0 || recordHolderName == null || recordHolderName.equalsIgnoreCase("None")) {
+            return null;
+        }
+
+        SpecialItem specialItem = itemManager.getItem("arena-record-reset");
+        ItemStack item = ItemUtils.formatItemStack(specialItem,
+            Var.of("%record_holder%", recordHolderName),
+            Var.of("%record_time%", Utils.formatTime(recordTime))
+        );
+        ItemUtils.applyArenaRecordResetHead(item, recordHolderName);
+
+        return GuiItem.of(item, event -> {
+            Player player = (Player) event.getWhoClicked();
+            player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 1f, 1.15f);
+
+            menu.openArenaRecordResetConfirmation();
+        });
     }
 }

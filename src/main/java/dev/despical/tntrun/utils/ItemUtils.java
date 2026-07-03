@@ -99,12 +99,12 @@ public class ItemUtils {
         ItemMeta meta = item.getItemMeta();
 
         String displayName = specialItem.getCustomKey("name");
-        Component nameComponent = PLUGIN.getChatManager().parseMessage(displayName, vars);
+        Component nameComponent = PLUGIN.getChatManager().parseMessage("<!i>" + displayName, vars);
         meta.displayName(nameComponent);
 
         List<String> lore = specialItem.getCustomKey("lore");
         if (lore != null) {
-            meta.lore(lore.stream().map(line -> PLUGIN.getChatManager().parseMessage(line, vars)).toList());
+            meta.lore(lore.stream().map(line -> PLUGIN.getChatManager().parseMessage("<!i>" + line, vars)).toList());
         }
 
         boolean decorationOnly = SUPPORTS_1_21_5 && specialItem.getCustomKey("decoration-only") != null;

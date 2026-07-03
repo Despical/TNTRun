@@ -172,6 +172,10 @@ public class Utils {
         return String.join("\n", list);
     }
 
+    public static String formatTime(long seconds) {
+        return "%02d:%02d".formatted(seconds / 60, seconds % 60);
+    }
+
     public static void restoreSavedPlayerState(Player player) {
         player.getActivePotionEffects().forEach(effect -> player.removePotionEffect(effect.getType()));
         InventorySerializer.loadInventory(plugin, player);

@@ -2,7 +2,7 @@ title: "<gradient:#FF5252:#D50000><bold>GAME SETUP</bold></gradient> <dark_gray>
 
 items:
   game-locations:
-    name: "<#FFB74D><bold>Manage Arena Locations"
+    name: "<#2196F3><bold>Manage Arena Locations"
     material: FILLED_MAP
     lore:
       - "<#2F2F2F>• <#2196F3>CLICK <#BDBDBD>to open location settings"
@@ -44,7 +44,7 @@ items:
     message: "<#E040FB>End Location <#BDBDBD>has been set successfully."
 
   player-amounts:
-    name: "<#FFAB00><bold>Player Amounts"
+    name: "<#2196F3><bold>Player Amounts"
     material: GLOWSTONE_DUST
   min-player-amount:
     name: "<#B2FF59><bold>Set Minimum Players"
@@ -67,19 +67,19 @@ items:
       - "<#B0BEC5>  of players for this arena."
 
   arena-sign:
-    name: "<#FFAB00><bold>Create Arena Sign"
+    name: "<#2196F3><bold>Create Arena Sign"
     material: OAK_SIGN
 
   map-name:
-    name: "<#00E5FF><bold>Set Map Name"
+    name: "<#2196F3><bold>Set Map Name"
     material: NAME_TAG
     lore:
       - "<#2F2F2F>• <#00E5FF>CLICK <#BDBDBD>to open map name dialog"
       - ""
       - "<#2F2F2F>• <#B0BEC5>Current Name: <#29B6F6>%map_name%"
       - ""
-      - "<#2F2F2F>• <#B0BEC5>This name can be used in"
-      - "<#B0BEC5>  scoreboards and other arena displays."
+      - "<#2F2F2F>• <#B0BEC5>This name can be used in scoreboards"
+      - "<#B0BEC5>  and other arena displays."
 
   register-arena:
     name: "<#00E676><bold>Register the Arena"
@@ -124,14 +124,14 @@ items:
       - "<!i><#2F2F2F>• <#B0BEC5>Best Time: <#FFD54F>%record_time%"
       - ""
       - "<!i><#2F2F2F>• <#EF9A9A>Removes this arena's best time and"
-      - "<!i><#EF9A9A>  checkpoint bests from every player."
+      - "<!i><#EF9A9A>  stored arena records from every player."
 
   confirm-arena-record-reset:
     name: "<!i><#00E676><bold>Confirm Reset"
     material: LIME_DYE
     lore:
       - "<!i><#2F2F2F>• <#00E676>CLICK <#BDBDBD>to permanently clear"
-      - "<!i><#BDBDBD>  this arena's stored records."
+      - "<!i><#BDBDBD>  this arena's best survival records."
 
   cancel-arena-record-reset:
     name: "<!i><#FF5252><bold>Cancel"
