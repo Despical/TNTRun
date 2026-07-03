@@ -81,19 +81,7 @@ public final class TabCompleters extends CommandCategory {
         }
 
         if (arguments.getLength() == 1) {
-            List<String> subCommands = new ArrayList<>(List.of("component", "dump", "join"));
-
-            if (arenaRegistry.isInArena(arguments.getSender())) {
-                subCommands.add("timer");
-            }
-
-            return helper.copyMatches(0, subCommands);
-        }
-
-        if (arenaRegistry.isInArena(arguments.getSender())) {
-            if (helper.equalsAny(0, "timer") && arguments.getLength() == 2) {
-                return helper.copyMatches(1, List.of("3", "5", "10", "30", "60"));
-            }
+            return helper.copyMatches(0, List.of("component", "dump", "join"));
         }
 
         if (helper.equalsAny(0, "join") && arguments.getLength() == 2) {

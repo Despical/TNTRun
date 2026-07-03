@@ -20,7 +20,12 @@ package dev.despical.tntrun.command;
 
 import dev.despical.commandframework.CommandArguments;
 import dev.despical.commandframework.annotations.Command;
+import dev.despical.tntrun.api.event.player.PlayerLeaveGameEvent.LeaveReason;
 import dev.despical.tntrun.arena.Arena;
+import dev.despical.tntrun.arena.options.ArenaKeys;
+import dev.despical.tntrun.command.arguments.Arguments;
+import dev.despical.tntrun.game.Game;
+import dev.despical.tntrun.game.StopReason;
 import dev.despical.tntrun.option.BooleanOption;
 import dev.despical.tntrun.user.User;
 import dev.despical.tntrun.utils.Var;
@@ -39,15 +44,15 @@ public final class AdminCommands extends CommandCategory {
         aliases = "tr",
         fallbackPrefix = "thetntrun",
         permission = "tntrun.command.help",
-        usage = "/%label% help",
+        usage = "/tntrun help",
         desc = "Main command of the TNT Run."
     )
     public void mainCommand(CommandArguments arguments) {
         if (arguments.isArgumentsEmpty()) {
-            arguments.sendMessage("&3This server is running &bTNT Run v{0} &3by &bDespical&3.", plugin.getDescription().getVersion());
+            arguments.sendMessage("<#00aaaa>This server is running <#55ffff>TNT Run v{0} <#00aaaa>by <#55ffff>Despical<#00aaaa>.", plugin.getDescription().getVersion());
 
-            if (arguments.hasPermission("tntrun.admin")) {
-                arguments.sendMessage("&3Commands: &b/{0} help", arguments.getLabel());
+            if (arguments.hasPermission("tntrun.admin.help")) {
+                arguments.sendMessage("<#00aaaa>Commands: <#55ffff>/{0} help", arguments.getLabel());
             }
 
             return;
@@ -57,7 +62,7 @@ public final class AdminCommands extends CommandCategory {
     }
 
     @Command(
-        name = "tntrun",
+        name = "tntrun.reload",
         aliases = "tr.reload",
         permission = "tntrun.admin.reload",
         usage = "/%label% reload",
@@ -128,6 +133,67 @@ public final class AdminCommands extends CommandCategory {
     }
 
     @Command(
+        name = "tntrun.start",
+        aliases = "tr.start",
+        permission = "tntrun.admin.start",
+        usage = "/%label% start [arena]",
+        desc = "Starts the current or specified arena game.",
+        max = 1
+    )
+    public void startCommand(Arguments arguments) {
+        boolean isConsoleSender = arguments.isSenderConsole();
+
+        if (arguments.isArgumentsEmpty()) {
+            if (isConsoleSender) {
+                arguments.sendMessage("start-command.correct-usage", Var.of("%label%", arguments.getLabel()));
+                return;
+            }
+
+            Player player = arguments.getSender();
+            Arena arena = arenaRegistry.getArena(player);
+
+            if (arena == null) {
+                arguments.sendMessage("start-command.you-are-not-playing");
+                return;
+            }
+
+            Game game = arena.getGame();
+            if (game.getUsers().isEmpty()) {
+                arguments.sendMessage("start-command.no-players");
+                return;
+            }
+
+            gameManager.startGame(arena.getGame());
+            return;
+        }
+
+        Arena arena = arenaRegistry.getArena(arguments.getFirst());
+        if (arena == null) {
+            arguments.sendMessage("no-arena-found-with-that-name");
+            return;
+        }
+
+        Game game = arena.getGame();
+        if (game == null) {
+            arguments.sendMessage("game-instance-not-present");
+            return;
+        }
+
+        if (game.getUsers().isEmpty()) {
+            arguments.sendMessage("start-command.no-players");
+            return;
+        }
+
+        gameManager.startGame(arena.getGame());
+
+        if (!isConsoleSender && game.isPlaying(arguments.<Player>getSender())) {
+            return;
+        }
+
+        arguments.sendMessage("start-command.started");
+    }
+
+    @Command(
         name = "tntrun.help",
         aliases = "tr.help",
         permission = "tntrun.command.help",
@@ -178,7 +244,7 @@ public final class AdminCommands extends CommandCategory {
             return;
         }
 
-        arenaManager.leaveAttempt(targetUser, Reason.KICK);
+        arenaManager.leaveAttempt(targetUser, LeaveReason.LEAVE_COMMAND);
 
         Location endLocation = playerArena.getOption(ArenaKeys.END_LOCATION);
 

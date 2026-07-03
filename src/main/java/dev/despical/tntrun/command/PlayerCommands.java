@@ -20,7 +20,9 @@ package dev.despical.tntrun.command;
 
 import dev.despical.commandframework.CommandArguments;
 import dev.despical.commandframework.annotations.Command;
+import dev.despical.tntrun.api.event.player.PlayerLeaveGameEvent.LeaveReason;
 import dev.despical.tntrun.arena.Arena;
+import dev.despical.tntrun.menu.stats.StatsMenu;
 import dev.despical.tntrun.user.User;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -59,7 +61,7 @@ public final class PlayerCommands extends CommandCategory {
         senderType = Command.SenderType.PLAYER
     )
     public void leaveCommand(User user) {
-        arenaManager.leaveAttempt(user, Reason.LEAVE_COMMAND);
+        arenaManager.leaveAttempt(user, LeaveReason.LEAVE_COMMAND);
     }
 
     @Command(
@@ -81,7 +83,6 @@ public final class PlayerCommands extends CommandCategory {
         }
 
         OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayerIfCached(arguments.getFirst());
-
         if (offlinePlayer == null) {
             chatManager.sendMessage(arguments, "no-player-with-that-name");
             return;
