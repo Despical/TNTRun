@@ -221,6 +221,7 @@ debug-help-message:
   - "<#FFCA28>✦ <#E0E0E0>TNT Run <white>Debug Commands <#FFCA28>✦"
   - ""
   - "<!i><#FFCA28>• <#FFD54F>/%label% debug join <white><arena> <gray>» <#BDBDBD>Force-join an arena for debugging."
+  - "<!i><#FFCA28>• <#FFD54F>/%label% debug timer <white>[arena] <time> <gray>» <#BDBDBD>Set an arena game's internal timer."
   - "<!i><#FFCA28>• <#FFD54F>/%label% debug component <white><message> <gray>» <#BDBDBD>Parse and preview MiniMessage components."
   - "<!i><#FFCA28>• <#FFD54F>/%label% debug dump <gray>» <#BDBDBD>Send the current timings report to the sender."
   - "<#424242>▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬"

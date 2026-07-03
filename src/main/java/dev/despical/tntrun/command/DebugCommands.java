@@ -23,7 +23,10 @@ import dev.despical.commandframework.annotations.Command;
 import dev.despical.commandframework.annotations.Option;
 import dev.despical.commandframework.debug.Debug;
 import dev.despical.tntrun.arena.Arena;
+import dev.despical.tntrun.command.arguments.Arguments;
+import dev.despical.tntrun.game.Game;
 import dev.despical.tntrun.user.User;
+import dev.despical.tntrun.utils.Var;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 
@@ -52,7 +55,7 @@ public final class DebugCommands extends CommandCategory {
         Arena arena = arenaRegistry.getArena(arguments.getFirst());
 
         if (arena == null) {
-            arguments.sendMessage("&cArena ''{0}'' does not exist.", arguments.getFirst());
+            arguments.sendMessage("<#FF5252>✖ <#BDBDBD>Arena <#FFCA28>{0} <#BDBDBD>does not exist.", arguments.getFirst());
             return;
         }
 
@@ -66,6 +69,49 @@ public final class DebugCommands extends CommandCategory {
                 .map(userManager::getUser)
                 .forEach(player -> arenaManager.joinAttempt(player, arena));
         }
+    }
+
+    @Command(
+        name = "tntrun.debug.timer",
+        aliases = "tr.debug.timer",
+        permission = "tntrun.debug.timer",
+        usage = "/%label% debug timer [arena] <time>",
+        min = 1,
+        max = 2,
+        senderType = Command.SenderType.PLAYER
+    )
+    public void debugTimerCommand(User user, Arguments arguments) {
+        Arena arena;
+        int index = 0;
+
+        if (arguments.getLength() >= 2) {
+            arena = arenaRegistry.getArena(arguments.getFirst());
+            index = 1;
+        } else {
+            arena = user.getArena();
+        }
+
+        if (arena == null || !arena.isGameNonnull()) {
+            arguments.sendRawMessage("<#FF5252>✖ <#BDBDBD>No active game instance was found for that arena.");
+            return;
+        }
+
+        if (!arguments.isNumeric(index)) {
+            arguments.sendRawMessage("<#FF5252>✖ <#BDBDBD>The timer value must be a <#FFCA28>valid number<#BDBDBD>.");
+            return;
+        }
+
+        Game game = arena.getGame();
+        int time = arguments.getArgumentAsInt(index);
+        Var[] vars = {
+            Var.of("%previous%", game.getTimer()),
+            Var.of("%current%", time),
+            Var.of("%arena%", arena.getId())
+        };
+        arguments.sendRawMessage("<#00E676>✔ <#BDBDBD>Timer for <#29B6F6>%arena% <#BDBDBD>updated from <#FFCA28>%previous%s <#BDBDBD>to <#00E5FF>%current%s<#BDBDBD>.", vars);
+
+        game.setTimer(time);
+        game.resetTickProgress();
     }
 
     @Command(

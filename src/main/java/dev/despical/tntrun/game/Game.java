@@ -70,8 +70,6 @@ public class Game extends BukkitRunnable {
 
     private final int period;
 
-    private boolean stopped;
-
     private final @Getter Arena arena;
     private final @Getter VisibilityManager visibilityManager;
     private final @Getter ScoreboardManager scoreboardManager;
@@ -127,6 +125,10 @@ public class Game extends BukkitRunnable {
         tickImmediately = true;
     }
 
+    public void resetTickProgress() {
+        tick = 0;
+    }
+
     public void broadcastMessage(String msgPath) {
         users.forEach(user -> user.sendMessage(msgPath));
     }
@@ -178,7 +180,7 @@ public class Game extends BukkitRunnable {
     }
 
     public void quitUser(User user) {
-        this.leaveUser(user, player -> {});
+        this.leaveUser(user, _ -> {});
     }
 
     private void leaveUser(User user, Consumer<Player> playerConsumer) {

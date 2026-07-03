@@ -34,6 +34,8 @@ import java.util.List;
  */
 public final class TabCompleters extends CommandCategory {
 
+    private static final List<String> DEBUG_TIMER_VALUES = List.of("0", "30", "60", "120", "300");
+
     @Completer(
         name = "tntrun",
         aliases = "tr",
@@ -81,11 +83,29 @@ public final class TabCompleters extends CommandCategory {
         }
 
         if (arguments.getLength() == 1) {
-            return helper.copyMatches(0, List.of("component", "dump", "join"));
+            return helper.copyMatches(0, List.of("component", "dump", "join", "timer"));
         }
 
         if (helper.equalsAny(0, "join") && arguments.getLength() == 2) {
             return helper.copyMatches(1, arenaRegistry.getArenaNames());
+        }
+
+        if (helper.equalsAny(0, "timer")) {
+            return completeDebugTimer(arguments, helper);
+        }
+
+        return helper.empty();
+    }
+
+    private List<String> completeDebugTimer(CommandArguments arguments, CompleterHelper helper) {
+        if (arguments.getLength() == 2) {
+            List<String> values = new ArrayList<>(arenaRegistry.getArenaNames());
+            values.addAll(DEBUG_TIMER_VALUES);
+            return helper.copyMatches(1, values);
+        }
+
+        if (arguments.getLength() == 3) {
+            return helper.copyMatches(2, DEBUG_TIMER_VALUES);
         }
 
         return helper.empty();
