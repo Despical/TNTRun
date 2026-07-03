@@ -218,11 +218,6 @@ public class Arena {
         if (getPlayersLeft().size() < 4) {
             winners.add(user);
         }
-
-        if (game != null) {
-            game.hideSpectator(user);
-            game.addSpectator(user);
-        }
     }
 
     public void addWinner(User user) {

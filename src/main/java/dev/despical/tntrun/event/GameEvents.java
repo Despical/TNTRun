@@ -45,28 +45,24 @@ public class GameEvents extends ListenerAdapter {
         }
 
         switch (e.getCause()) {
-            case DROWNING, FALL -> e.setCancelled(true);
+            case DROWNING -> e.setCancelled(true);
+            case FALL -> {
+                e.setCancelled(true);
+            }
             case VOID -> {
                 e.setCancelled(true);
 
-                victim.teleport(arena.getLobbyLocation());
-
                 if (!arena.isArenaState(GameState.IN_GAME)) {
+                    victim.teleport(arena.getLobbyLocation());
                     return;
                 }
 
-                if (!user.isSpectator()) {
-                    user.setSpectator(true);
-                    plugin.getItemManager().getItem("leave-item").giveTo(victim, "slot");
-
-                    arena.addDeathPlayer(user);
-
-                    if (arena.getPlayersLeft().size() == 1) {
-                        arena.getWinners().add(arena.getWinner());
-
-                        arena.getGame().setGameState(GameState.ENDING);
-                    }
+                if (user.isSpectator()) {
+                    victim.teleport(arena.getGame().getStartLocation());
+                    return;
                 }
+
+                arena.getGame().eliminate(user);
             }
         }
     }
@@ -88,7 +84,7 @@ public class GameEvents extends ListenerAdapter {
     @EventHandler
     public void onPlayerDamage(EntityDamageByEntityEvent event) {
         if (!(event.getEntity() instanceof Player victim)) return;
-        if (!(event.getDamager() instanceof Player)) return;
+        if (!(event.getDamager() instanceof Player damager)) return;
 
         Arena arena = arenaRegistry.getArena(victim);
         if (arena == null) return;
@@ -98,11 +94,7 @@ public class GameEvents extends ListenerAdapter {
             return;
         }
 
-        User user = userManager.getUser(victim);
-        if (!user.isSpectator()) {
-            event.setDamage(0);
-        }
-
+        event.setCancelled(true);
         victim.setFireTicks(0);
     }
 

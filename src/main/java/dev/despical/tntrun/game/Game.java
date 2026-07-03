@@ -19,7 +19,6 @@
 package dev.despical.tntrun.game;
 
 import dev.despical.commons.serializer.InventorySerializer;
-import dev.despical.commons.XPotion;
 import dev.despical.commons.XSound;
 import dev.despical.tntrun.Main;
 import dev.despical.tntrun.api.event.game.GameStateChangeEvent;
@@ -29,15 +28,18 @@ import dev.despical.tntrun.bossbar.BossBarManager;
 import dev.despical.tntrun.game.messages.MessageTicker;
 import dev.despical.tntrun.game.messages.PlacementMessenger;
 import dev.despical.tntrun.game.scores.ScoreRegistry;
+import dev.despical.tntrun.game.spectator.SpectatorManager;
 import dev.despical.tntrun.game.states.*;
 import dev.despical.tntrun.game.visibility.VisibilityManager;
 import dev.despical.tntrun.option.IntOption;
 import dev.despical.tntrun.scoreboard.ScoreboardManager;
+import dev.despical.tntrun.stats.Statistics;
 import dev.despical.tntrun.user.User;
 import dev.despical.tntrun.utils.ItemUtils;
 import dev.despical.tntrun.utils.Var;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -62,6 +64,7 @@ public class Game extends BukkitRunnable {
     @Getter
     private int timer;
     private int tick;
+    private int peakActivePlayers;
 
     private boolean tickImmediately;
 
@@ -74,6 +77,7 @@ public class Game extends BukkitRunnable {
     private final @Getter VisibilityManager visibilityManager;
     private final @Getter ScoreboardManager scoreboardManager;
     private final @Getter ScoreRegistry scores;
+    private final @Getter SpectatorManager spectatorManager;
     private final @Getter MessageTicker messageTicker;
     private final @Getter PlacementMessenger placementMessenger;
     private final @Getter BossBarManager bossBarManager;
@@ -86,6 +90,7 @@ public class Game extends BukkitRunnable {
         this.period = tickPeriod;
         this.visibilityManager = new VisibilityManager(this);
         this.scoreboardManager = new ScoreboardManager(this);
+        this.spectatorManager = new SpectatorManager(this);
         this.messageTicker = plugin.getGameManager().getMessageTicker();
         this.placementMessenger = new PlacementMessenger(this);
         this.bossBarManager = new BossBarManager(this);
@@ -159,6 +164,23 @@ public class Game extends BukkitRunnable {
         join(user, users);
     }
 
+    public void joinAsSpectator(User user) {
+        if (!isState(GameState.IN_GAME)) {
+            user.sendMessage("cannot-join-now");
+            return;
+        }
+
+        user.resetTemporaryStats();
+        user.setSpectator(true);
+        users.add(user);
+
+        states.get(gameState).join(user);
+
+        scoreboardManager.updateAllScoreboards();
+
+        plugin.getSignManager().updateSigns(arena);
+    }
+
     private void join(User user, List<User> list) {
         if (!isState(GameState.WAITING, GameState.STARTING)) {
             user.sendMessage("cannot-join-now");
@@ -166,6 +188,7 @@ public class Game extends BukkitRunnable {
         }
 
         user.resetTemporaryStats();
+        user.setSpectator(false);
 
         list.add(user);
         states.get(gameState).join(user);
@@ -187,6 +210,7 @@ public class Game extends BukkitRunnable {
         users.remove(user);
 
         states.get(gameState).leave(user);
+        user.setSpectator(false);
         scoreboardManager.updateAllScoreboards();
 
         plugin.getSignManager().updateSigns(arena);
@@ -197,6 +221,10 @@ public class Game extends BukkitRunnable {
             player.teleport(arena.getOption(ArenaKeys.END_LOCATION));
             player.clearTitle();
             player.sendActionBar(Component.empty());
+            player.setInvulnerable(false);
+            player.setAllowFlight(false);
+            player.setFlying(false);
+            player.getActivePotionEffects().forEach(effect -> player.removePotionEffect(effect.getType()));
             player.setItemOnCursor(null);
 
             PlayerInventory inventory = player.getInventory();
@@ -286,46 +314,84 @@ public class Game extends BukkitRunnable {
         return users.stream().filter(user -> !user.isSpectator()).collect(java.util.stream.Collectors.toSet());
     }
 
-    public void addSpectator(User user) {
-        Player player = user.getPlayer();
-        if (player == null) {
-            return;
-        }
-
-        int nightVision = user.getStatistic(dev.despical.tntrun.stats.Statistics.SPECTATOR_NIGHT_VISION_LEVEL);
-        if (nightVision == 1) {
-            player.addPotionEffect(XPotion.NIGHT_VISION.buildPotionEffect(Integer.MAX_VALUE, 1));
-        }
-
-        int level = user.getStatistic(dev.despical.tntrun.stats.Statistics.SPECTATOR_SPEED) + 1;
-        player.setFlySpeed(.1F + level * .05F);
-        player.addPotionEffect(XPotion.SPEED.buildPotionEffect(Integer.MAX_VALUE, level));
+    public void startSurvivalRound() {
+        peakActivePlayers = getPlayersLeft().size();
     }
 
-    public void hideSpectator(User user) {
-        if (!user.isSpectator()) {
+    public void eliminate(User user) {
+        if (!isState(GameState.IN_GAME) || user.isSpectator() || arena.isDeathPlayer(user)) {
             return;
         }
 
+        scores.addScore(user.getUUID(), user.getStatistic(Statistics.LOCAL_SURVIVE_TIME));
+        user.setSpectator(true);
+        arena.addDeathPlayer(user);
+        prepareSpectator(user, true);
+
+        int playersLeft = getPlayersLeft().size();
+        broadcastMessage(playersLeft == 0 ? "messages.in-game.last-one-fell-into-void" : "messages.in-game.fell-into-void",
+            Var.ofPlayer(user),
+            Var.of("%players_left%", playersLeft)
+        );
+
+        finishIfLastSurvivor();
+    }
+
+    public void finishIfLastSurvivor() {
+        if (!isState(GameState.IN_GAME) || peakActivePlayers <= 1) {
+            return;
+        }
+
+        Set<User> playersLeft = getPlayersLeft();
+        if (playersLeft.size() != 1) {
+            return;
+        }
+
+        User winner = playersLeft.iterator().next();
+        arena.addWinner(winner);
+        scores.addScore(winner.getUUID(), winner.getStatistic(Statistics.LOCAL_SURVIVE_TIME));
+        scores.setWinner(winner);
+        setGameState(GameState.ENDING);
+    }
+
+    public void prepareSpectator(User user, boolean teleportToStart) {
         Player player = user.getPlayer();
         if (player == null) {
             return;
         }
 
-        for (User otherUser : users) {
-            Player otherPlayer = otherUser.getPlayer();
-            if (otherPlayer == null) {
-                continue;
-            }
+        InventorySerializer.saveInventoryToFile(plugin, player);
 
-            otherPlayer.showPlayer(plugin, player);
+        PlayerInventory inventory = player.getInventory();
+        inventory.clear();
+        inventory.setArmorContents(ItemUtils.EMPTY_ARMORS);
 
-            if (otherUser.isSpectator()) {
-                player.showPlayer(plugin, otherPlayer);
-            } else {
-                otherPlayer.hidePlayer(plugin, player);
-            }
+        if (teleportToStart) {
+            player.teleport(getStartLocation());
         }
+
+        player.setGameMode(GameMode.ADVENTURE);
+        player.setAllowFlight(true);
+        player.setFlying(true);
+        player.setInvulnerable(true);
+        player.setFireTicks(0);
+        player.sendActionBar(Component.empty());
+
+        spectatorManager.giveItems(player);
+        spectatorManager.applySettings(user);
+        spectatorManager.updateVisibility();
+        scoreboardManager.createScoreboard(player);
+        bossBarManager.addPlayer(player);
+
+        user.sendMessage("messages.in-game.you-are-spectator-now");
+    }
+
+    public void applySpectatorSettings(User user) {
+        spectatorManager.applySettings(user);
+    }
+
+    public void updateSpectatorVisibility() {
+        spectatorManager.updateVisibility();
     }
 
     public void playSound(XSound sound) {

@@ -6,13 +6,11 @@ import dev.despical.tntrun.game.Game;
 import dev.despical.tntrun.game.GameState;
 import dev.despical.tntrun.stats.Statistics;
 import dev.despical.tntrun.user.User;
+import dev.despical.tntrun.utils.PotionUtils;
 import dev.despical.tntrun.utils.Var;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
-import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-
-import java.util.UUID;
 
 /**
  * @author Despical
@@ -20,8 +18,6 @@ import java.util.UUID;
  * Created at 29.12.2025
  */
 public class InGameState extends GameStateHandler {
-
-    private static final int SURVIVE_TIME_REWARD = 30;
 
     public InGameState(Game game) {
         super(game);
@@ -41,6 +37,7 @@ public class InGameState extends GameStateHandler {
 
         game.getScoreboardManager().updateNameTagsVisibility();
         game.getScores().resetScores();
+        game.startSurvivalRound();
         game.setTimer(0);
         game.startBlockRemoving();
         game.broadcastMessage("game-started");
@@ -77,25 +74,8 @@ public class InGameState extends GameStateHandler {
             }
 
             user.addStat(Statistics.LOCAL_SURVIVE_TIME, 1);
-
-            if (timer > 0 && timer % 30 == 0) {
-                rewardSurviveTime(user);
-                game.getScores().addScore(user.getUUID(), user.getStatistic(Statistics.LOCAL_COIN));
-            }
+            game.getScores().addScore(user.getUUID(), user.getStatistic(Statistics.LOCAL_SURVIVE_TIME));
         }
-    }
-
-    private void rewardSurviveTime(User user) {
-        String score = (SURVIVE_TIME_REWARD > 0 ? "+" : "") + SURVIVE_TIME_REWARD;
-        String action = plugin.getChatManager().message("messages.score-actions.survive");
-        String message = plugin.getChatManager().message("messages.score-actions.bonus-score",
-            Var.of("%score%", score),
-            Var.of("%action%", action)
-        );
-
-        user.addStat(Statistics.LOCAL_COIN, SURVIVE_TIME_REWARD);
-        user.sendRawActionBar(message.replace(action, "").trim());
-        user.sendRawMessage(message);
     }
 
     private void applyArenaPotionEffects(Player player) {
@@ -106,28 +86,30 @@ public class InGameState extends GameStateHandler {
                 continue;
             }
 
-            int amplifier = Math.max(0, arenaEffect.getLevel() - 1);
-            PotionEffect effect = new PotionEffect(type, Integer.MAX_VALUE, amplifier, false, false, false);
-            player.addPotionEffect(effect);
+            PotionUtils.applyInfinite(player, type, arenaEffect.getLevel());
         }
     }
 
     @Override
     public void join(User user) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        game.prepareSpectator(user, true);
     }
 
     @Override
     public void leave(User user) {
-        UUID uuid = user.getUUID();
-        game.getScores().removePlayer(uuid);
-        game.broadcastMessage("disconnected-from-the-game", Var.ofPlayer(user));
+        boolean wasSpectator = user.isSpectator();
+        game.getScores().addScore(user.getUUID(), user.getStatistic(Statistics.LOCAL_SURVIVE_TIME));
+        if (!wasSpectator) {
+            game.broadcastMessage("disconnected-from-the-game", Var.ofPlayer(user));
+        }
 
-        int playerAmount = game.getUsers().size();
-        if (playerAmount == 1) {
-            game.setGameState(GameState.ENDING);
-        } else if (playerAmount == 0) {
+        if (game.getUsers().isEmpty()) {
             game.setGameState(GameState.RESTARTING);
+            return;
+        }
+
+        if (!wasSpectator) {
+            game.finishIfLastSurvivor();
         }
     }
 }

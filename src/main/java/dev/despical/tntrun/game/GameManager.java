@@ -32,7 +32,9 @@ import lombok.Getter;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.PlayerInventory;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -72,22 +74,41 @@ public class GameManager {
         Location endLocation = arena.getOption(ArenaKeys.END_LOCATION);
 
 
-        List<User> users = game.getUsers();
+        List<User> users = new ArrayList<>(game.getUsers());
         users.forEach(user -> {
             Player player = user.getPlayer();
-            player.teleport(endLocation);
+            if (player == null) {
+                return;
+            }
+
+            game.getScoreboardManager().removeScoreboard(player);
+            game.getBossBarManager().removePlayer(player);
+
+            player.clearTitle();
+            player.sendActionBar(net.kyori.adventure.text.Component.empty());
+            player.setItemOnCursor(null);
+            player.setInvulnerable(false);
+            player.setAllowFlight(false);
+            player.setFlying(false);
             player.setGameMode(GameMode.SURVIVAL);
             player.setHealth(20);
             player.setFoodLevel(20);
-            player.getInventory().clear();
-            player.getInventory().setArmorContents(ItemUtils.EMPTY_ARMORS);
+            player.setFireTicks(0);
+            player.setExp(0F);
+            player.setLevel(0);
+
+            PlayerInventory inventory = player.getInventory();
+            inventory.clear();
+            inventory.setArmorContents(ItemUtils.EMPTY_ARMORS);
             player.getActivePotionEffects().forEach(effect -> player.removePotionEffect(effect.getType()));
 
             InventorySerializer.loadInventory(plugin, player);
+            player.teleport(endLocation);
+            user.setSpectator(false);
 
             visibilityManager.showPlayerOutsideTheGame(player);
         });
-        users.clear();
+        game.getUsers().clear();
 
         plugin.getEventManager().gameStop(game, reason);
 

@@ -42,6 +42,11 @@ public class ScoreRegistry {
             .orElse(null);
     }
 
+    public void setWinner(User winner) {
+        this.winner = winner == null ? null : winner.getUUID();
+        this.dirtyCache = true;
+    }
+
     public User getWinner() {
         return game.getUsers().stream()
             .filter(user -> user.getUUID().equals(winner))
@@ -82,6 +87,10 @@ public class ScoreRegistry {
         List<Map.Entry<UUID, Integer>> topEntries = new ArrayList<>(3);
 
         for (Map.Entry<UUID, Integer> entry : scores.entrySet()) {
+            if (entry.getKey().equals(winner)) {
+                continue;
+            }
+
             int insertIndex = topEntries.size();
             for (int i = 0; i < topEntries.size(); i++) {
                 if (entry.getValue() > topEntries.get(i).getValue()) {
@@ -101,7 +110,15 @@ public class ScoreRegistry {
         }
 
         LinkedHashMap<UUID, Integer> refreshedCache = new LinkedHashMap<>(topEntries.size());
+        if (winner != null && scores.containsKey(winner)) {
+            refreshedCache.put(winner, scores.get(winner));
+        }
+
         for (Map.Entry<UUID, Integer> entry : topEntries) {
+            if (refreshedCache.size() >= 3) {
+                break;
+            }
+
             refreshedCache.put(entry.getKey(), entry.getValue());
         }
 
@@ -110,7 +127,7 @@ public class ScoreRegistry {
     }
 
     public int getScore(UUID uuid) {
-        return scores.get(uuid);
+        return scores.getOrDefault(uuid, 0);
     }
 
     public Map<UUID, Integer> getTop3() {

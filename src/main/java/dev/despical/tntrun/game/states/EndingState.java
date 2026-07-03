@@ -27,7 +27,9 @@ public class EndingState extends GameStateHandler {
     @Override
     public void firstTick() {
         game.setTimer(IntOption.ENDING_TIME);
-        game.getScores().calculateWinner();
+        if (game.getScores().getWinner() == null) {
+            game.getScores().calculateWinner();
+        }
         game.getPlacementMessenger().sendSummaryMessages();
 
         Location startLocation = getLocation(ArenaKeys.LOBBY_LOCATION);

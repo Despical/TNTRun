@@ -24,6 +24,7 @@ import dev.despical.tntrun.api.event.player.PlayerLeaveGameEvent.LeaveReason;
 import dev.despical.tntrun.arena.Arena;
 import dev.despical.tntrun.game.Game;
 import dev.despical.tntrun.game.GameManager;
+import dev.despical.tntrun.game.GameState;
 import dev.despical.tntrun.game.StopReason;
 import dev.despical.tntrun.user.User;
 import dev.despical.tntrun.utils.ShutdownDetector;
@@ -56,6 +57,11 @@ public class ArenaManager {
 
         PlayerJoinAttemptEvent event = plugin.getEventManager().playerJoinAttempt(user.getPlayer(), game);
         if (event.isCancelled()) return;
+
+        if (game.isState(GameState.IN_GAME)) {
+            game.joinAsSpectator(user);
+            return;
+        }
 
         game.joinAsPlayer(user);
     }

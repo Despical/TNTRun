@@ -3,10 +3,12 @@ package dev.despical.tntrun.game.messages;
 import dev.despical.tntrun.Main;
 import dev.despical.tntrun.chat.ChatManager;
 import dev.despical.tntrun.game.Game;
+import dev.despical.tntrun.stats.Statistics;
 import dev.despical.tntrun.user.User;
 import dev.despical.tntrun.utils.Schedulers;
 import dev.despical.tntrun.utils.StringUtils;
 import dev.despical.tntrun.utils.Var;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -14,6 +16,7 @@ import org.bukkit.entity.Player;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 
 /**
@@ -38,24 +41,18 @@ public final class PlacementMessenger {
         if (players.isEmpty()) return;
 
         ChatManager chatManager = plugin.getChatManager();
-        String noOpponent = chatManager.getRawString("summary.no-opponent");
-        List<String> messages = chatManager.getStringList("summary.messages");
+        String noOpponent = chatManager.getRawString("summary-message.no-opponent");
+        List<String> messages = chatManager.getStringList("summary-message.content");
 
         Map<UUID, Integer> top3 = game.getScores().getTop3();
         List<UUID> ranked = new ArrayList<>(top3.keySet());
 
-        String p1 = getNameOrFallback(ranked, 0, noOpponent);
-        String p2 = getNameOrFallback(ranked, 1, noOpponent);
-        String p3 = getNameOrFallback(ranked, 2, noOpponent);
-
         for (String line : messages) {
-            String formatted = line
-                .replace("%player_1%", p1)
-                .replace("%player_2%", p2)
-                .replace("%player_3%", p3);
+            Component formatted = createSummaryLine(line, ranked, noOpponent);
 
             if (line.startsWith("%no_center%")) {
-                game.broadcastRawMessage(formatted.substring(11));
+                Component stripped = createSummaryLine(line.substring(11), ranked, noOpponent);
+                game.broadcastRawComponent(stripped);
                 continue;
             }
 
@@ -63,6 +60,10 @@ public final class PlacementMessenger {
         }
 
         User winner = game.getScores().getWinner();
+        if (winner == null) {
+            return;
+        }
+
         TickerMessage winnerMessage = ticker.getGameOverMessage("you-won");
 
         TickerMessage loserMessage = ticker.getGameOverMessage("you-lost");
@@ -94,6 +95,57 @@ public final class PlacementMessenger {
             : fallback;
     }
 
+    private Component createSummaryLine(String line, List<UUID> ranked, String noOpponent) {
+        Component component = Component.empty();
+        String remaining = line;
+
+        for (int i = 0; i < 3; i++) {
+            String placeholder = "%player_" + (i + 1) + "%";
+            int index = remaining.indexOf(placeholder);
+
+            if (index == -1) {
+                continue;
+            }
+
+            component = component.append(plugin.getChatManager().parseMessage(remaining.substring(0, index)));
+            component = component.append(createPlayerComponent(ranked, i, noOpponent));
+            remaining = remaining.substring(index + placeholder.length());
+        }
+
+        return component.append(plugin.getChatManager().parseMessage(remaining));
+    }
+
+    private Component createPlayerComponent(List<UUID> ranked, int index, String noOpponent) {
+        if (ranked.size() <= index) {
+            return plugin.getChatManager().parseMessage(noOpponent);
+        }
+
+        UUID uuid = ranked.get(index);
+        Component playerName = plugin.getChatManager().parseMessage(getNameOrFallback(ranked, index, noOpponent));
+        Component hover = createHover(uuid);
+
+        return Component.empty().equals(hover) ? playerName : playerName.hoverEvent(hover);
+    }
+
+    private Component createHover(UUID uuid) {
+        User user = plugin.getUserManager().getUser(uuid);
+        Player player = Bukkit.getPlayer(uuid);
+
+        Var[] vars = {
+            Var.of("%double_jumps%", user == null ? 0 : user.getStatistic(Statistics.LOCAL_DOUBLE_JUMPS)),
+            Var.of("%max_double_jumps%", player == null ? 0 : plugin.getPermissionManager().getDoubleJumps(player))
+        };
+
+        List<Component> lines = plugin.getChatManager().getStringList("summary-message.hover")
+            .stream()
+            .map(line -> plugin.getChatManager().parseMessage(line, vars))
+            .toList();
+
+        return lines.stream()
+            .filter(Objects::nonNull)
+            .reduce((first, second) -> first.append(Component.newline()).append(second))
+            .orElse(Component.empty());
+    }
 
     private void message(User user, TickerMessage message, Var... vars) {
         this.message(user, message, 40, vars);
