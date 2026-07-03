@@ -39,14 +39,12 @@ public final class Statistics {
     public static final StatisticType<Integer> LOSE = createIntStat("loses");
     public static final StatisticType<Integer> WIN_STREAK = createIntStat("win_streak");
     public static final StatisticType<Integer> LONGEST_WIN_STREAK = createIntStat("longest_win_streak");
-    public static final StatisticType<Integer> COIN = createIntStat("coins");
     public static final StatisticType<Integer> GAMES_PLAYED = createIntStat("games_played");
     public static final StatisticType<Integer> LONGEST_SURVIVE = createIntStat("longest_survive");
-    public static final StatisticType<Integer> SPECTATOR_NIGHT_VISION_LEVEL = createIntStat("spectator_night_vision_level");
-    public static final StatisticType<Integer> SPECTATOR_SHOW_OTHERS = createIntStat("spectator_show_others");
+    public static final StatisticType<Integer> SPECTATOR_NIGHT_VISION_LEVEL = createIntStat("spectator_night_vision_level", 1);
+    public static final StatisticType<Integer> SPECTATOR_SHOW_OTHERS = createIntStat("spectator_show_others", 1);
     public static final StatisticType<Integer> SPECTATOR_SPEED = createIntStat("spectator_speed");
 
-    public static final StatisticType<Integer> LOCAL_COIN = createLocalIntStat();
     public static final StatisticType<Integer> LOCAL_DOUBLE_JUMPS = createLocalIntStat();
     public static final StatisticType<Integer> LOCAL_SURVIVE_TIME = createLocalIntStat();
 
@@ -64,27 +62,32 @@ public final class Statistics {
     };
 
     private static final List<StatisticType<?>> PERSISTENT_STATS = List.of(
-        WIN, LOSE, WIN_STREAK, COIN, GAMES_PLAYED, LONGEST_SURVIVE, ARENA_BEST_TIMES
+        WIN, LOSE, WIN_STREAK, GAMES_PLAYED, LONGEST_SURVIVE, ARENA_BEST_TIMES,
+        SPECTATOR_NIGHT_VISION_LEVEL, SPECTATOR_SHOW_OTHERS, SPECTATOR_SPEED
     );
 
     private static final List<StatisticType<?>> ALL_STATS = List.of(
-        WIN, LOSE, COIN, WIN_STREAK, GAMES_PLAYED, LONGEST_SURVIVE, ARENA_BEST_TIMES,
+        WIN, LOSE, WIN_STREAK, GAMES_PLAYED, LONGEST_SURVIVE, ARENA_BEST_TIMES,
         SPECTATOR_NIGHT_VISION_LEVEL, SPECTATOR_SHOW_OTHERS, SPECTATOR_SPEED
     );
 
     private static final List<StatisticType<?>> TEMPORARY_STATS = List.of(
-        LOCAL_COIN, LOCAL_DOUBLE_JUMPS, LOCAL_SURVIVE_TIME
+        LOCAL_DOUBLE_JUMPS, LOCAL_SURVIVE_TIME
     );
 
     private static StatisticType<Integer> createIntStat(String key) {
-        return new StatisticType<>(key, 0, Integer.class) {
+        return createIntStat(key, 0);
+    }
+
+    private static StatisticType<Integer> createIntStat(String key, int defaultValue) {
+        return new StatisticType<>(key, defaultValue, Integer.class) {
 
             @Override
             protected Integer parse(String value) {
                 try {
                     return Integer.parseInt(value);
                 } catch (NumberFormatException _) {
-                    return 0;
+                    return defaultValue;
                 }
             }
         };

@@ -85,7 +85,6 @@ public class StatsMenu implements Menu {
             Var.of("%games_played%", statProvider.apply(Statistics.GAMES_PLAYED)),
             Var.of("%wins%", statProvider.apply(Statistics.WIN)),
             Var.of("%loses%", statProvider.apply(Statistics.LOSE)),
-            Var.of("%coins%", statProvider.apply(Statistics.COIN)),
             Var.of("%win_streak%", statProvider.apply(Statistics.WIN_STREAK)),
             Var.of("%longest_win_streak%", statProvider.apply(Statistics.LONGEST_WIN_STREAK)),
             Var.of("%longest_survive%", formatTime(((Number) statProvider.apply(Statistics.LONGEST_SURVIVE)).longValue()))

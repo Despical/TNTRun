@@ -26,7 +26,7 @@ import org.bukkit.event.Cancellable;
  * <pre>{@code
  * @EventHandler
  * public void onStatChange(PlayerStatisticChangeEvent event) {
- *     if (event.getStat() == Statistics.COIN) {
+ *     if (event.getStat() == Statistics.WIN) {
  *         event.setNewValue(event.getNewValue() * 2);
  *     }
  * }

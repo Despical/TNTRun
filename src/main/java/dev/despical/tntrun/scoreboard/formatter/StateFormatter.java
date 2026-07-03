@@ -45,7 +45,6 @@ public enum StateFormatter {
             Var[] vars = {
                 Var.of("%max_double_jumps%", max),
                 Var.of("%double_jumps%", getDoubleJumpColor(jumps, max) + jumps),
-                Var.of("%coins_earned%", user.getStatistic(Statistics.LOCAL_COIN)),
                 Var.of("%players_left%", game.getPlayersLeft().size()),
             };
 

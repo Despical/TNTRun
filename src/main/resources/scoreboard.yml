@@ -17,7 +17,6 @@
 #   %players_left%      : Players still alive in the arena        #
 #   %double_jumps%      : Remaining double jumps                  #
 #   %max_double_jumps%  : Maximum double jumps                    #
-#   %coins_earned%      : Coins earned during the current game    #
 #                                                                 #
 # =================================================================
 
@@ -98,8 +97,6 @@ in-game:
     - ""
     - "<#E6E6E6>Players Alive: <#00FF95>%players_left%"
     - ""
-    - "<#E6E6E6>Coins Earned: <#00FF95>%coins_earned%"
-    - ""
     - "<#FFC800>www.despical.dev"
 
 # Game has been finished and players are about to be teleported to the lobby.
@@ -111,8 +108,6 @@ ending:
     - "<#E6E6E6>Survived For: <#00FF95>%formatted_timer%"
     - ""
     - "<#E6E6E6>Double Jump: <#00FF95>%double_jumps%<#B0C4DE>/<#00FF95>%max_double_jumps%"
-    - ""
-    - "<#E6E6E6>Coins Earned: <#00FF95>%coins_earned%"
     - ""
     - "<#E6E6E6>Players Alive: <#00FF95>%players_left%"
     - ""
