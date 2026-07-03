@@ -18,14 +18,13 @@
 
 package dev.despical.tntrun.event;
 
+import dev.despical.fileitems.SpecialItem;
+import dev.despical.tntrun.api.event.player.PlayerLeaveGameEvent;
 import dev.despical.tntrun.option.BooleanOption;
 import dev.despical.tntrun.arena.Arena;
-import dev.despical.tntrun.arena.ArenaState;
-import dev.despical.tntrun.event.spectator.SpectatorSettingsGUI;
-import dev.despical.tntrun.event.spectator.SpectatorTeleporterGUI;
-import dev.despical.tntrun.stats.Statistics;
 import dev.despical.tntrun.stats.Statistics;
 import dev.despical.tntrun.user.User;
+import dev.despical.tntrun.utils.Utils;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -36,6 +35,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 /**
  * @author Despical
@@ -44,7 +44,7 @@ import java.util.Set;
  */
 public class GameItemEvents extends ListenerAdapter {
 
-	private final Set<User> leaveConfirmations = new HashSet<>();
+    private final Set<UUID> leaveConfirmations = new HashSet<>();
 
 	@EventHandler
 	public void onDoubleJump(PlayerToggleFlightEvent event) {
@@ -54,25 +54,14 @@ public class GameItemEvents extends ListenerAdapter {
 			return;
 		}
 
-		var user = plugin.getUserManager().getUser(player);
-		var arena = user.getArena();
+		User user = plugin.getUserManager().getUser(player);
+		Arena arena = user.getArena();
 
 		if (arena == null || user.isSpectator() || arena.isDeathPlayer(user)) {
 			return;
 		}
 
-		if (user.getCooldown("double_jump") > 0) {
-			return;
-		}
-
-		if (user.getStatistic(Statistics.LOCAL_DOUBLE_JUMPS) > 0) {
-			event.setCancelled(true);
-
-//			user.applyDoubleJumpDelay();
-
-			player.setFlying(false);
-			player.setVelocity(player.getLocation().getDirection().multiply(1.5D).setY(0.7D));
-		}
+        event.setCancelled(performDoubleJump(user, player, arena));
 	}
 
 	@EventHandler
@@ -92,10 +81,6 @@ public class GameItemEvents extends ListenerAdapter {
 			return;
 		}
 
-		if (user.getCooldown("double_jump") > 0) {
-			return;
-		}
-
 		var doubleJumpItem = plugin.getItemManager().getItem("double-jump");
 
 		if (doubleJumpItem == null) {
@@ -103,167 +88,106 @@ public class GameItemEvents extends ListenerAdapter {
 		}
 
 		if (doubleJumpItem.equals(event.getItem())) {
-			event.setCancelled(true);
+            Arena arena = user.getArena();
+            if (arena == null || user.isSpectator() || arena.isDeathPlayer(user)) {
+                return;
+            }
 
-			if (user.getStatistic(Statistics.LOCAL_DOUBLE_JUMPS) > 0) {
-				event.setCancelled(true);
-
-//				user.applyDoubleJumpDelay();
-
-				player.setVelocity(player.getLocation().getDirection().multiply(1.5D).setY(0.7D));
-				player.setFlying(false);
-			}
+			event.setCancelled(performDoubleJump(user, player, arena));
 		}
 	}
 
-	@EventHandler
-	public void onTeleporterItem(PlayerInteractEvent event) {
-		User user = plugin.getUserManager().getUser(event.getPlayer());
-		Arena arena = user.getArena();
+    private boolean performDoubleJump(User user, Player player, Arena arena) {
+        if (user.getCooldown("double_jump") > 0) {
+            player.setFlying(false);
+            return true;
+        }
 
-		if (arena == null) return;
-		if (event.getItem() == null) return;
+        int jumps = user.getStatistic(Statistics.LOCAL_DOUBLE_JUMPS);
+        if (jumps <= 0) {
+            player.setAllowFlight(false);
+            player.setFlying(false);
+            return true;
+        }
 
-		var teleporterItem = plugin.getItemManager().getItem("teleporter-item");
+        user.setStatistic(Statistics.LOCAL_DOUBLE_JUMPS, jumps - 1);
+        user.setCooldown("double_jump", plugin.getPermissionManager().getDoubleJumpDelay());
 
-		if (teleporterItem == null) return;
-		if (!teleporterItem.equals(event.getItem())) return;
+        player.setFlying(false);
+        player.setAllowFlight(false);
+        player.setVelocity(player.getLocation().getDirection().multiply(1.5D).setY(0.7D));
 
-		new SpectatorTeleporterGUI(plugin, user, arena).showGui();
-	}
+        arena.getGame().getScoreboardManager().updateScoreboard(player);
 
-	@EventHandler
-	public void onSettingsItem(PlayerInteractEvent event) {
-		User user = plugin.getUserManager().getUser(event.getPlayer());
-		Arena arena = user.getArena();
+        if (options.isEnabled(BooleanOption.JUMP_BAR)) {
+            Utils.applyActionBarCooldown(user, plugin.getPermissionManager().getDoubleJumpDelay());
+        }
 
-		if (arena == null) return;
-		if (event.getItem() == null) return;
+        return true;
+    }
 
-		var settingsItem = plugin.getItemManager().getItem("settings-item");
+    @EventHandler
+    public void onLeaveItem(PlayerInteractEvent event) {
+        if (!event.getAction().isRightClick()) return;
 
-		if (settingsItem == null) return;
-		if (!settingsItem.equals(event.getItem())) return;
+        SpecialItem leaveItem = this.getLeaveItem(event);
+        if (leaveItem == null) {
+            return;
+        }
 
-		new SpectatorSettingsGUI(plugin, user, arena).showGui();
-	}
+        Player player = event.getPlayer();
+        Arena arena = arenaRegistry.getArena(player);
 
-	@EventHandler
-	public void onPlayAgainItem(PlayerInteractEvent event) {
-		User user = plugin.getUserManager().getUser(event.getPlayer());
-		Arena arena = user.getArena();
+        if (arena == null) {
+            return;
+        }
 
-		if (arena == null) return;
-		if (event.getItem() == null) return;
+        event.setCancelled(true);
 
-		var playAgainItem = plugin.getItemManager().getItem("play-again");
+        User user = userManager.getUser(player);
+        if (options.isEnabled(BooleanOption.INSTANT_LEAVE)) {
+            arena.getGame().leaveUser(user);
+            return;
+        }
 
-		if (playAgainItem == null) return;
-		if (!playAgainItem.equals(event.getItem())) return;
+        UUID uuid = player.getUniqueId();
+        if (!leaveConfirmations.add(uuid)) {
+            leaveConfirmations.remove(uuid);
 
-		var arenas = plugin.getArenaRegistry().getArenas().stream().filter(a -> a.isArenaState(ArenaState.WAITING_FOR_PLAYERS, ArenaState.STARTING) && a.getPlayers().size() < a.getMaximumPlayers()).toList();
+            user.sendMessage("game-items.leave-item.teleport-cancelled");
+            return;
+        }
 
-		if (!arenas.isEmpty()) {
-			arena.getScoreboardManager().removeScoreboard(user);
-			arena.getGameBar().doBarAction(user, 0);
-			arena.removeUser(user);
+        user.sendMessage("game-items.leave-item.returning-lobby");
 
-			var newArena = arenas.get(0);
+        new BukkitRunnable() {
 
-			plugin.getArenaManager().joinAttempt(user, newArena);
-			return;
-		}
+            private int ticks;
 
-		user.sendMessage("player-commands.no-free-arenas");
-	}
+            @Override
+            public void run() {
+                if (!player.isOnline() ||
+                    !arena.getGame().isPlaying(user) ||
+                    !leaveConfirmations.contains(uuid)
+                ) {
+                    leaveConfirmations.remove(uuid);
 
-	@EventHandler
-	public void onForceStartItem(PlayerInteractEvent event) {
-		var user = plugin.getUserManager().getUser(event.getPlayer());
-		var arena = user.getArena();
+                    cancel();
+                    return;
+                }
 
-		if (arena == null) return;
-		if (event.getItem() == null) return;
+                if ((ticks += 2) >= 60) {
+                    cancel();
 
-		var forceStartItem = plugin.getItemManager().getItem("force-start-item");
+                    arenaManager.leaveAttempt(user, PlayerLeaveGameEvent.LeaveReason.LEAVE_ITEM);
+                    leaveConfirmations.remove(uuid);
+                }
+            }
+        }.runTaskTimer(plugin, 0, 2);
+    }
 
-		if (forceStartItem == null) return;
-		if (!forceStartItem.equals(event.getItem())) return;
-
-		if (arena.getPlayers().size() < 2) {
-			arena.broadcastWaitingForPlayers();
-			return;
-		}
-
-		if (arena.isForceStart()) {
-			user.sendMessage("messages.in-game.already-force-start");
-			return;
-		}
-
-		if (arena.isArenaState(ArenaState.WAITING_FOR_PLAYERS, ArenaState.STARTING)) {
-			arena.setArenaState(ArenaState.STARTING);
-			arena.setForceStart(true);
-			arena.setTimer(0);
-			arena.getPlayers().forEach(u -> u.sendMessage("messages.in-game.force-start"));
-		}
-	}
-
-	@EventHandler
-	public void onLeaveItem(PlayerInteractEvent event) {
-		var user = plugin.getUserManager().getUser(event.getPlayer());
-		var arena = user.getArena();
-
-		if (arena == null) return;
-		if (event.getItem() == null) return;
-
-		var leaveItem = plugin.getItemManager().getItem("leave-item");
-
-		if (leaveItem == null) return;
-		if (!leaveItem.equals(event.getItem())) return;
-
-		if (BooleanOption.INSTANT_LEAVE.value()) {
-			this.leaveArena(user, arena);
-			return;
-		}
-
-		if (leaveConfirmations.contains(user)) {
-			this.leaveConfirmations.remove(user);
-
-			user.sendMessage("messages.game-items.leave-item.teleport-cancelled");
-		} else {
-			user.sendMessage("messages.game-items.leave-item.returning-lobby");
-
-			this.leaveConfirmations.add(user);
-
-			new BukkitRunnable() {
-
-				int ticks = 0;
-
-				@Override
-				public void run() {
-					if (!leaveConfirmations.contains(user)) {
-						cancel();
-						return;
-					}
-
-					if (!arena.isInArena(user)) {
-						cancel();
-						leaveConfirmations.remove(user);
-						return;
-					}
-
-					if ((ticks += 2) == 60) {
-						cancel();
-						leaveArena(user, arena);
-
-						leaveConfirmations.remove(user);
-					}
-				}
-			}.runTaskTimer(plugin, 0, 2);
-		}
-	}
-
-	private void leaveArena(User user, Arena arena) {
-			plugin.getArenaManager().leaveAttempt(user, arena);
-	}
+    private SpecialItem getLeaveItem(PlayerInteractEvent event) {
+        SpecialItem item = itemManager.getItem("leave-item");
+        return item != null && item.getOriginalItemStack().isSimilar(event.getItem()) ? item : null;
+    }
 }

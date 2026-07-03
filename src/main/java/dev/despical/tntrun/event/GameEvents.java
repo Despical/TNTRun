@@ -18,25 +18,14 @@
 
 package dev.despical.tntrun.event;
 
+import dev.despical.tntrun.arena.Arena;
+import dev.despical.tntrun.game.GameState;
 import dev.despical.tntrun.option.BooleanOption;
-import dev.despical.tntrun.Main;
-import dev.despical.tntrun.api.events.player.PlayerEliminatedEvent;
-import dev.despical.tntrun.arena.ArenaState;
 import dev.despical.tntrun.user.User;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.entity.FoodLevelChangeEvent;
-import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryType;
-import org.bukkit.event.player.PlayerDropItemEvent;
-import org.bukkit.event.player.PlayerSwapHandItemsEvent;
-
-import java.util.Optional;
 
 /**
  * @author Despical
@@ -44,24 +33,6 @@ import java.util.Optional;
  * Created at 4.02.2023
  */
 public class GameEvents extends ListenerAdapter {
-
-    @EventHandler
-    public void onFoodLevelChange(FoodLevelChangeEvent event) {
-        if (!(event.getEntity() instanceof Player player)) return;
-
-        var user = this.userManager.getUser(player);
-
-        if (user.isInArena()) {
-            event.setCancelled(true);
-        }
-    }
-
-    @EventHandler
-    public void onDropItem(PlayerDropItemEvent event) {
-        if (arenaRegistry.isInArena(event.getPlayer())) {
-            event.setCancelled(true);
-        }
-    }
 
     @EventHandler
     public void onEntityDamage(EntityDamageEvent e) {
@@ -81,67 +52,23 @@ public class GameEvents extends ListenerAdapter {
 
                 victim.teleport(arena.getLobbyLocation());
 
-                if (!arena.isArenaState(ArenaState.IN_GAME)) {
+                if (!arena.isArenaState(GameState.IN_GAME)) {
                     return;
                 }
 
                 if (!user.isSpectator()) {
                     user.setSpectator(true);
-                    user.playDeathEffect();
-                    user.addGameItems("leave-item", "settings-item", "teleporter-item");
+                    plugin.getItemManager().getItem("leave-item").giveTo(victim, "slot");
 
                     arena.addDeathPlayer(user);
 
-                    plugin.getServer().getPluginManager().callEvent(new PlayerEliminatedEvent(arena, user));
-
                     if (arena.getPlayersLeft().size() == 1) {
                         arena.getWinners().add(arena.getWinner());
-                        arena.broadcastFormattedMessage("messages.in-game.last-one-fell-into-void", user);
 
-                        plugin.getArenaManager().stopGame(false, arena);
-                        return;
+                        arena.getGame().setGameState(GameState.ENDING);
                     }
-
-                    arena.broadcastFormattedMessage("messages.in-game.fell-into-void", user);
                 }
             }
-        }
-    }
-
-    @EventHandler
-    public void onItemMove(InventoryClickEvent e) {
-        if (e.getWhoClicked() instanceof Player player && arenaRegistry.isInArena(player)) {
-            if (e.getView().getType() == InventoryType.CRAFTING || e.getView().getType() == InventoryType.PLAYER) {
-                e.setResult(Event.Result.DENY);
-            }
-        }
-    }
-
-    @EventHandler
-    public void onItemSwap(PlayerSwapHandItemsEvent event) {
-        if (arenaRegistry.isInArena(event.getPlayer())) {
-            event.setCancelled(true);
-        }
-    }
-
-    @EventHandler
-    public void onDrop(PlayerDropItemEvent event) {
-        if (arenaRegistry.isInArena(event.getPlayer())) {
-            event.setCancelled(true);
-        }
-    }
-
-    @EventHandler
-    public void onBlockBreak(BlockBreakEvent event) {
-        if (arenaRegistry.isInArena(event.getPlayer())) {
-            event.setCancelled(true);
-        }
-    }
-
-    @EventHandler
-    public void onBlockPlace(BlockPlaceEvent event) {
-        if (arenaRegistry.isInArena(event.getPlayer())) {
-            event.setCancelled(true);
         }
     }
 
@@ -149,8 +76,8 @@ public class GameEvents extends ListenerAdapter {
     public void onLobbyDamage(EntityDamageEvent event) {
         if (!(event.getEntity() instanceof Player player)) return;
 
-        Optional.ofNullable(this.userManager.getUser(player).getArena()).ifPresent(arena -> {
-            if (arena.isArenaState(ArenaState.IN_GAME)) {
+        arenaRegistry.findArena(player).ifPresent(arena -> {
+            if (arena.isArenaState(GameState.IN_GAME)) {
                 return;
             }
 
@@ -160,26 +87,39 @@ public class GameEvents extends ListenerAdapter {
     }
 
     @EventHandler
-    public void onGeneralDamage(EntityDamageByEntityEvent event) {
+    public void onPlayerDamage(EntityDamageByEntityEvent event) {
         if (!(event.getEntity() instanceof Player victim)) return;
         if (!(event.getDamager() instanceof Player)) return;
 
-        User user = userManager.getUser(victim);
+        Arena arena = arenaRegistry.getArena(victim);
+        if (arena == null) return;
 
-        Optional.ofNullable(user.getArena()).ifPresent(arena -> {
-            if (!arena.isArenaState(ArenaState.IN_GAME)) {
-                return;
+        if (!arena.isArenaState(GameState.IN_GAME)) {
+            event.setCancelled(true);
+            return;
+        }
+
+        if (BooleanOption.PVP_DISABLED.value()) {
+            event.setCancelled(true);
+        } else {
+            User user = userManager.getUser(victim);
+
+            if (!user.isSpectator()) {
+                event.setDamage(0);
             }
+        }
 
-            if (BooleanOption.PVP_DISABLED.value()) {
-                event.setCancelled(true);
-            } else {
-                if (!user.isSpectator()) {
-                    event.setDamage(0);
-                }
-            }
+        victim.setFireTicks(0);
+    }
 
-            victim.setFireTicks(0);
-        });
+    @EventHandler
+    public void onEntityDamage(EntityDamageByEntityEvent event) {
+        if (event.getEntity() instanceof Player) return;
+        if (!(event.getDamager() instanceof Player player)) return;
+
+        Arena arena = arenaRegistry.getArena(player);
+        if (arena == null) return;
+
+        event.setCancelled(true);
     }
 }
