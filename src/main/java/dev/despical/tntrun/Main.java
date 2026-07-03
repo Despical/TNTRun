@@ -19,31 +19,41 @@
 package dev.despical.tntrun;
 
 import dev.despical.commandframework.CommandArguments;
+import dev.despical.commandframework.CommandErrorMessage;
 import dev.despical.commandframework.CommandFramework;
-import dev.despical.commandframework.Message;
 import dev.despical.commandframework.options.FrameworkOption;
-import dev.despical.commons.util.Strings;
 import dev.despical.commons.util.UpdateChecker;
 import dev.despical.fileitems.ItemManager;
 import dev.despical.fileitems.ItemOption;
+import dev.despical.tntrun.api.EventManager;
 import dev.despical.tntrun.arena.Arena;
+import dev.despical.tntrun.arena.ArenaDataSaver;
 import dev.despical.tntrun.arena.ArenaRegistry;
 import dev.despical.tntrun.arena.managers.ArenaManager;
+import dev.despical.tntrun.arena.options.ArenaKeys;
 import dev.despical.tntrun.chat.ChatManager;
 import dev.despical.tntrun.command.PlayingCommandPolicy;
+import dev.despical.tntrun.command.arguments.Arguments;
 import dev.despical.tntrun.database.Database;
 import dev.despical.tntrun.database.DatabaseType;
 import dev.despical.tntrun.database.FlatFileStorage;
 import dev.despical.tntrun.database.MySQLStorage;
-import dev.despical.tntrun.handlers.sign.SignManager;
+import dev.despical.tntrun.event.CommandBlockEvents;
+import dev.despical.tntrun.event.GameEvents;
+import dev.despical.tntrun.event.GameItemEvents;
+import dev.despical.tntrun.event.GeneralEvents;
+import dev.despical.tntrun.game.GameManager;
+import dev.despical.tntrun.handlers.PermissionManager;
 import dev.despical.tntrun.leaderboard.LeaderboardManager;
 import dev.despical.tntrun.option.BooleanOption;
 import dev.despical.tntrun.option.ConfigOptions;
+import dev.despical.tntrun.sign.SignManager;
 import dev.despical.tntrun.stats.offline.StatsCacheManager;
 import dev.despical.tntrun.user.User;
 import dev.despical.tntrun.user.UserManager;
 import dev.despical.tntrun.utils.AutoSaveHandler;
 import dev.despical.tntrun.utils.ShutdownDetector;
+import dev.despical.tntrun.utils.Var;
 import lombok.Getter;
 import org.bstats.bukkit.Metrics;
 import org.bstats.charts.SimplePie;
@@ -71,8 +81,8 @@ public class Main extends JavaPlugin {
     private ConfigOptions options;
     private ItemManager itemManager;
     private ChatManager chatManager;
-//    private GameManager gameManager;
-//    private EventManager eventManager;
+    private GameManager gameManager;
+    private EventManager eventManager;
     private ArenaRegistry arenaRegistry;
     private Database database;
     private StatsCacheManager statsCacheManager;
@@ -82,6 +92,7 @@ public class Main extends JavaPlugin {
     private LeaderboardManager leaderboardManager;
     private CommandFramework commandFramework;
     private PlayingCommandPolicy playingCommandPolicy;
+    private PermissionManager permissionManager;
 
     @Override
     public void onEnable() {
@@ -95,9 +106,9 @@ public class Main extends JavaPlugin {
 
     @Override
     public void onDisable() {
-//        new ArenaDataSaver(this).saveAllArenas();
+        new ArenaDataSaver(this).saveAllArenas();
 
-//        arenaManager.handleDisable();
+        arenaManager.handleDisable();
         database.shutdown();
     }
 
@@ -111,8 +122,8 @@ public class Main extends JavaPlugin {
 
         options = new ConfigOptions(this);
         chatManager = new ChatManager(this);
-//        gameManager = new GameManager(this);
-//        eventManager = new EventManager(this);
+        gameManager = new GameManager(this);
+        eventManager = new EventManager(this);
         arenaRegistry = new ArenaRegistry(this);
         database = createDatabase();
         statsCacheManager = new StatsCacheManager(this);
@@ -121,6 +132,7 @@ public class Main extends JavaPlugin {
         signManager = new SignManager(this);
         leaderboardManager = new LeaderboardManager(this);
         playingCommandPolicy = new PlayingCommandPolicy(this);
+        permissionManager = new PermissionManager(this);
 
         registerCommands();
         registerEvents();
@@ -128,8 +140,6 @@ public class Main extends JavaPlugin {
         runAutoSave();
         initializeMetrics();
         checkUpdates();
-
-//        getServer().getOnlinePlayers().forEach(ScoreboardManager::resetPlayerScoreboard);
     }
 
     private void runAutoSave() {
@@ -137,13 +147,13 @@ public class Main extends JavaPlugin {
     }
 
     public void loadItemManager() {
-        itemManager = new ItemManager(this, manager -> ItemOption.enableOptions(ItemOption.GLOW, ItemOption.AMOUNT));
+        itemManager = new ItemManager(this, _ -> ItemOption.enableOptions(ItemOption.GLOW, ItemOption.AMOUNT));
 
         registerItems();
     }
 
     public void registerItems() {
-        itemManager.registerItems("game-items", "game-items", "items");
+        itemManager.registerItems("items", "items");
         itemManager.registerItems("menu/setup-menu", "items");
         itemManager.registerItems("stats-menu-items", "items", "menu/stats-menu");
     }
@@ -171,22 +181,21 @@ public class Main extends JavaPlugin {
         commandFramework.addCustomParameter(Player.class, CommandArguments::getSender);
         commandFramework.addCustomParameter(User.class, args -> userManager.getUser(args.<Player>getSender()));
         commandFramework.addCustomParameter(Arena.class, args -> arenaRegistry.getArena(args.getFirst()));
+        commandFramework.setDefaultArguments(Arguments::new);
         commandFramework.registerAllInPackage("dev.despical.tntrun.command");
 
-        Message.setColorFormatter(Strings::format);
-
-        var messages = Stream.of(Message.SHORT_ARG_SIZE, Message.LONG_ARG_SIZE);
-        messages.forEach(message -> message.setMessage((cmd, args) -> {
-            args.sendMessage("&cCorrect usage: " + cmd.usage().replace("%label%", args.getLabel()));
+        var messages = Stream.of(CommandErrorMessage.SHORT_ARG_SIZE, CommandErrorMessage.LONG_ARG_SIZE);
+        messages.forEach(message -> message.setHandler((cmd, args) -> {
+            chatManager.sendMessage(args, "correct-usage", Var.of("%usage%", cmd.usage().replace("%label%", args.getLabel())));
             return true;
         }));
     }
 
     private void registerEvents() {
-//        new GeneralEvents();
-//        new CommandBlockEvents();
-//        new GameEvents();
-//        new GameItemEvents();
+        new GeneralEvents();
+        new CommandBlockEvents();
+        new GameEvents();
+        new GameItemEvents();
     }
 
     private void registerPlaceholderManager() {
@@ -204,7 +213,7 @@ public class Main extends JavaPlugin {
         metrics.addCustomChart(new SimplePie("database_type", this::resolveMetricsDatabaseType));
         metrics.addCustomChart(new SimplePie("placeholderapi_enabled", () -> isPluginEnabled("PlaceholderAPI") ? "yes" : "no"));
         metrics.addCustomChart(new SingleLineChart("arenas_total", () -> arenaRegistry.getArenas().size()));
-//        metrics.addCustomChart(new SingleLineChart("arenas_ready", () -> (int) arenaRegistry.getArenas().stream().filter(arena -> arena.getOption(ArenaKeys.READY)).count()));
+        metrics.addCustomChart(new SingleLineChart("arenas_ready", () -> (int) arenaRegistry.getArenas().stream().filter(arena -> arena.getOption(ArenaKeys.READY)).count()));
     }
 
     private void checkUpdates() {

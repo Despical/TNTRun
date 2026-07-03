@@ -30,13 +30,13 @@ import java.util.List;
  * <p>
  * Created at 10.07.2020
  */
-public class PermissionsManager {
+public class PermissionManager {
 
     private final int defaultDoubleJumps, doubleJumpDelay;
     private final String joinPermission, fullJoin;
     private final List<String> doubleJumpsPerms;
 
-    public PermissionsManager(Main plugin) {
+    public PermissionManager(Main plugin) {
         final var config = plugin.getConfig();
 
         this.defaultDoubleJumps = config.getInt("Double-Jumps.Default", 5);
@@ -47,7 +47,7 @@ public class PermissionsManager {
     }
 
     public boolean hasPermission(final User user, final Arena arena) {
-        return joinPermission.isEmpty() || user.hasPermission(joinPermission.replace("<arena>", arena.getId()));
+        return joinPermission.isEmpty() || user.getPlayer().hasPermission(joinPermission.replace("<arena>", arena.getId()));
     }
 
     public boolean hasFullGamePerm(Player player) {
