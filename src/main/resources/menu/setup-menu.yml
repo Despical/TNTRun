@@ -124,7 +124,8 @@ items:
       - "<#2F2F2F>• <#B0BEC5>Best Time: <#FFD54F>%record_time%"
       - ""
       - "<#2F2F2F>• <#EF9A9A>Removes this arena's best time and"
-      - "<#EF9A9A>  stored arena records from every player."
+      - "<#EF9A9A>  stored arena records from every"
+      - "<#EF9A9A>  player"
 
   confirm-arena-record-reset:
     name: "<#00E676><bold>Confirm Reset"
