@@ -14,7 +14,7 @@
 #                                                          #
 # ==========================================================
 
-# Determines whether the BossBar system is enabled.
+# Determines whether the BossBar is enabled.
 # If set to 'false', the bar will not be displayed during any game stage.
 enabled: true
 
