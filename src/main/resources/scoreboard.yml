@@ -6,6 +6,7 @@
 #   %player%            : Name of the player                      #
 #   %date%              : Current date                            #
 #   %players%           : Current number of players in the arena  #
+#   %map_name%          : Display name of the arena map           #
 #   %max_players%       : Maximum player capacity                 #
 #   %min_players%       : Minimum players required to start       #
 #   %timer%             : Time remaining in seconds (e.g., 30)    #
