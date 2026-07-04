@@ -118,11 +118,32 @@ public final class DebugCommands extends CommandCategory {
         name = "tntrun.debug.component",
         aliases = "tr.debug.component",
         permission = "tntrun.debug.component",
-        usage = "/%label% debug component <message>",
-        min = 1,
+        usage = "/%label% debug component [message] [--path=message.path]",
         senderType = Command.SenderType.PLAYER
     )
+    @Option("path")
     public void debugComponentCommand(CommandArguments arguments) {
+        List<String> pathOption = arguments.getOption("path");
+        String path = pathOption == null || pathOption.isEmpty() ? null : pathOption.getFirst();
+
+        if (path != null && !path.isBlank()) {
+            List<String> messages = chatManager.getStringList(path);
+            if (!messages.isEmpty()) {
+                messages.stream()
+                    .map(chatManager::parseMessage)
+                    .forEach(arguments::sendMessage);
+                return;
+            }
+
+            chatManager.sendMessage(arguments, path);
+            return;
+        }
+
+        if (arguments.isArgumentsEmpty()) {
+            arguments.sendMessage("<#FF5252>✖ <#BDBDBD>Provide a MiniMessage string or use <#FFCA28>--path=<message.path><#BDBDBD>.");
+            return;
+        }
+
         Component component = chatManager.parseMessage(arguments.concatArguments());
         arguments.sendMessage(component);
     }
