@@ -4,6 +4,7 @@ import dev.despical.tntrun.arena.options.ArenaKeys;
 import dev.despical.tntrun.game.ArenaPotionEffect;
 import dev.despical.tntrun.game.Game;
 import dev.despical.tntrun.game.GameState;
+import dev.despical.tntrun.sound.GameSound;
 import dev.despical.tntrun.stats.Statistics;
 import dev.despical.tntrun.user.User;
 import dev.despical.tntrun.utils.PotionUtils;
@@ -38,6 +39,7 @@ public class InGameState extends GameStateHandler {
         game.getScoreboardManager().updateNameTagsVisibility();
         game.getScores().resetScores();
         game.startSurvivalRound();
+        game.getPlayers().forEach(player -> plugin.getSoundManager().play(player, GameSound.GAME_START));
         game.setTimer(0);
         game.getBlockRemovalManager().start();
         game.broadcastMessage("game-started");

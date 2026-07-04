@@ -4,3 +4,8 @@ sounds:
     sound: ENTITY_FIREWORK_ROCKET_LAUNCH
     volume: 0.8
     pitch: 1.35
+  game-start:
+    enabled: true
+    sound: minecraft:entity.ender_dragon.growl
+    volume: 1.0
+    pitch: 1.0
