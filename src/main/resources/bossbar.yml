@@ -1,5 +1,5 @@
 # ==========================================================
-#             TNT Run - BossBar Configuration             #
+#             TNT Run - BossBar Configuration              #
 # ==========================================================
 #                                                          #
 #  BAR STYLES:                                             #
@@ -23,24 +23,24 @@ enabled: true
 states:
   # The stage where players are waiting in the lobby for the game to start.
   waiting:
-    title: "<yellow><bold>Playing <#E67E22><bold>TNT RUN <yellow><bold>on <aqua><bold>DESPICAL.DEV"
+    title: "<yellow><bold>Playing <white><bold>TNT RUN <yellow><bold>on <aqua><bold>DESPICAL.DEV"
     overlay: PROGRESS
-    color: PINK
-  
+    color: BLUE
+
   # The stage where the pre-game countdown begins.
   starting:
-    title: "<yellow><bold>Playing <#E67E22><bold>TNT RUN <yellow><bold>on <aqua><bold>DESPICAL.DEV"
+    title: "<yellow><bold>Playing <white><bold>TNT RUN <yellow><bold>on <aqua><bold>DESPICAL.DEV"
     overlay: PROGRESS
-    color: PINK
+    color: BLUE
 
   # The active gameplay phase.
   in-game:
-    title: "<yellow><bold>Playing <#E67E22><bold>TNT RUN <yellow><bold>on <aqua><bold>DESPICAL.DEV"
+    title: "<yellow><bold>Playing <white><bold>TNT RUN <yellow><bold>on <aqua><bold>DESPICAL.DEV"
     overlay: PROGRESS
-    color: PINK
-  
+    color: BLUE
+
   # The stage when the game ends and the winner is declared.
   ending:
-    title: "<yellow><bold>Playing <#E67E22><bold>TNT RUN <yellow><bold>on <aqua><bold>DESPICAL.DEV"
+    title: "<yellow><bold>Playing <white><bold>TNT RUN <yellow><bold>on <aqua><bold>DESPICAL.DEV"
     overlay: PROGRESS
-    color: PINK
+    color: BLUE
