@@ -273,10 +273,3 @@ start-command:
   you-are-not-playing: "<#FF1744>✖ <#BDBDBD>You are <#FF5252>not in a game <#BDBDBD>to start it."
   no-players: "<#FFCA28>⚠ <#BDBDBD>Can not start: <#FFD54F>No players <#BDBDBD>are currently in the arena!"
   started: "<#00E676>✔ <#BDBDBD>The game has been <gradient:#00E676:#69F0AE>successfully started.</gradient>"
-
-game-items:
-  leave-item:
-    returning-lobby:
-      - "<#00E676><bold>Teleporting you to the lobby in 3 seconds..."
-      - "<#00E676><bold>Right-click again to cancel the teleport!"
-    teleport-cancelled: "<#FF5252><bold>Teleport cancelled!"

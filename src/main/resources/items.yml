@@ -24,3 +24,7 @@ items:
     lore:
       - "<#B0BEC5>Right-click to leave the game"
       - "<#B0BEC5>and return to the hub."
+    returning-lobby:
+      - "<#00E676><bold>Teleporting you to the lobby in 3 seconds..."
+      - "<#00E676><bold>Right-click again to cancel the teleport!"
+    teleport-cancelled: "<#FF5252><bold>Teleport cancelled!"

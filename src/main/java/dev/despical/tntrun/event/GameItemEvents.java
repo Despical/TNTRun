@@ -318,11 +318,11 @@ public class GameItemEvents extends ListenerAdapter {
         if (!leaveConfirmations.add(uuid)) {
             leaveConfirmations.remove(uuid);
 
-            user.sendMessage("game-items.leave-item.teleport-cancelled");
+            sendItemMessage(player, leaveItem, "teleport-cancelled");
             return;
         }
 
-        user.sendMessage("game-items.leave-item.returning-lobby");
+        sendItemMessage(player, leaveItem, "returning-lobby");
 
         new BukkitRunnable() {
 
@@ -353,5 +353,20 @@ public class GameItemEvents extends ListenerAdapter {
     private SpecialItem getLeaveItem(PlayerInteractEvent event) {
         SpecialItem item = itemManager.getItem("leave-item");
         return item != null && item.getOriginalItemStack().isSimilar(event.getItem()) ? item : null;
+    }
+
+    private void sendItemMessage(Player player, SpecialItem item, String key) {
+        Object message = item.getCustomKey(key);
+
+        if (message instanceof List<?> messages) {
+            messages.stream()
+                .map(String::valueOf)
+                .forEach(line -> chatManager.sendRawMessage(player, line));
+            return;
+        }
+
+        if (message != null) {
+            chatManager.sendRawMessage(player, String.valueOf(message));
+        }
     }
 }
