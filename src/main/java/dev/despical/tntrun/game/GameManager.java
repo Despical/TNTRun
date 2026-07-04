@@ -22,6 +22,8 @@ import dev.despical.commons.serializer.InventorySerializer;
 import dev.despical.tntrun.Main;
 import dev.despical.tntrun.arena.Arena;
 import dev.despical.tntrun.arena.options.ArenaKeys;
+import dev.despical.tntrun.blocks.BlockRemovalConfig;
+import dev.despical.tntrun.blocks.BlockSnapshotStore;
 import dev.despical.tntrun.bossbar.BossBarConfig;
 import dev.despical.tntrun.game.messages.MessageTicker;
 import dev.despical.tntrun.game.visibility.VisibilityManager;
@@ -49,11 +51,16 @@ public class GameManager {
     private final Main plugin;
     private final MessageTicker messageTicker;
     private final BossBarConfig bossBarConfig;
+    private final BlockRemovalConfig blockRemovalConfig;
+    private final BlockSnapshotStore blockSnapshotStore;
 
     public GameManager(Main plugin) {
         this.plugin = plugin;
         this.messageTicker = new MessageTicker();
         this.bossBarConfig = new BossBarConfig(plugin);
+        this.blockRemovalConfig = new BlockRemovalConfig(plugin);
+        this.blockSnapshotStore = new BlockSnapshotStore(plugin, blockRemovalConfig);
+        this.blockSnapshotStore.restoreStartupSnapshots();
     }
 
     public void startGame(Game game) {
@@ -125,10 +132,16 @@ public class GameManager {
 
     public void reload() {
         bossBarConfig.load();
+        blockRemovalConfig.reload();
+        blockSnapshotStore.reload();
 
         getGames().forEach(game -> {
             game.getScoreboardManager().loadContents();
             game.getBossBarManager().update();
         });
+    }
+
+    public void shutdown() {
+        blockSnapshotStore.shutdown();
     }
 }

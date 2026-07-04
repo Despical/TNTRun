@@ -1,0 +1,41 @@
+# =================================================================
+#              TNT Run - Block Removal Configuration              #
+# =================================================================
+
+# Enables the block removal system during active games.
+enabled: true
+
+timing:
+  # Time, in seconds, before block removal begins after the game starts.
+  start-after-seconds: 5
+  # Delay, in ticks, before blocks are removed after players step on them.
+  remove-delay-ticks: 12
+  # How often players are scanned for removable blocks.
+  scan-interval-ticks: 1
+
+scanning:
+  # How many blocks below a grounded player should be checked.
+  depth-on-ground: 2
+  # How many blocks below an airborne player should be checked.
+  depth-in-air: 6
+
+safety:
+  # Persist removed block snapshots so blocks can be restored after a server crash.
+  persist-snapshots: true
+  # Restore persisted snapshots when the plugin starts.
+  restore-snapshots-on-startup: true
+  # During startup recovery, only restore locations that are still air.
+  restore-only-air: true
+  # How often pending snapshots are flushed to disk.
+  # The plugin caps this below remove-delay-ticks so snapshots can reach disk before blocks are removed.
+  flush-interval-ticks: 5
+
+# List of blocks that are allowed to be removed during gameplay.
+removable-blocks:
+  - TNT
+  - SAND
+  - SANDSTONE
+  - GRAVEL
+  - STAINED_CLAY
+  - RED_SANDSTONE
+  - RED_SAND

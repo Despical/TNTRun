@@ -27,11 +27,9 @@ import dev.despical.tntrun.option.IntOption;
 import dev.despical.tntrun.user.User;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import org.bukkit.block.BlockState;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -54,7 +52,6 @@ public class Arena {
 
     private final String id;
     private final Map<ArenaOption<?>, Object> options;
-    private final Set<BlockState> destroyedBlocks = new HashSet<>();
     private final List<User> deaths = new ArrayList<>();
     private final List<User> winners = new ArrayList<>();
 
@@ -146,19 +143,9 @@ public class Arena {
         winners.add(user);
     }
 
-    public void addDestroyedBlock(BlockState blockState) {
-        destroyedBlocks.add(blockState);
-    }
-
     public void cleanUpArena() {
         deaths.clear();
         winners.clear();
-
-        var iterator = destroyedBlocks.iterator();
-        while (iterator.hasNext()) {
-            iterator.next().update(true);
-            iterator.remove();
-        }
     }
 
     private void registerDefaultOptions() {

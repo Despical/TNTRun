@@ -39,7 +39,7 @@ public class InGameState extends GameStateHandler {
         game.getScores().resetScores();
         game.startSurvivalRound();
         game.setTimer(0);
-        game.startBlockRemoving();
+        game.getBlockRemovalManager().start();
         game.broadcastMessage("game-started");
 
         plugin.getEventManager().gameStart(game);

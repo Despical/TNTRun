@@ -24,6 +24,7 @@ import dev.despical.tntrun.Main;
 import dev.despical.tntrun.api.event.game.GameStateChangeEvent;
 import dev.despical.tntrun.arena.Arena;
 import dev.despical.tntrun.arena.options.ArenaKeys;
+import dev.despical.tntrun.blocks.BlockRemovalManager;
 import dev.despical.tntrun.bossbar.BossBarManager;
 import dev.despical.tntrun.game.messages.MessageTicker;
 import dev.despical.tntrun.game.messages.PlacementMessenger;
@@ -36,19 +37,14 @@ import dev.despical.tntrun.scoreboard.ScoreboardManager;
 import dev.despical.tntrun.stats.Statistics;
 import dev.despical.tntrun.user.User;
 import dev.despical.tntrun.utils.ItemUtils;
-import dev.despical.tntrun.utils.Schedulers;
 import dev.despical.tntrun.utils.Var;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.World;
-import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.util.NumberConversions;
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -82,6 +78,7 @@ public class Game extends BukkitRunnable {
     private final @Getter MessageTicker messageTicker;
     private final @Getter PlacementMessenger placementMessenger;
     private final @Getter BossBarManager bossBarManager;
+    private final @Getter BlockRemovalManager blockRemovalManager;
 
     private final @Getter List<User> users;
     private final Map<UUID, PlayerMetadata> playerMetadata;
@@ -96,6 +93,7 @@ public class Game extends BukkitRunnable {
         this.messageTicker = plugin.getGameManager().getMessageTicker();
         this.placementMessenger = new PlacementMessenger(this);
         this.bossBarManager = new BossBarManager(this);
+        this.blockRemovalManager = new BlockRemovalManager(this);
         this.users = new ArrayList<>();
         this.playerMetadata = new HashMap<>();
         this.scores = new ScoreRegistry(this);
@@ -298,38 +296,6 @@ public class Game extends BukkitRunnable {
         return arena.getOption(ArenaKeys.START_LOCATION).clone();
     }
 
-    public void startBlockRemoving() {
-        int startBlockRemoving = plugin.getConfig().getInt("Time-Settings.Start-Block-Removing", 5);
-        int blockRemoveDelay = plugin.getConfig().getInt("Time-Settings.Block-Remove-Delay", 12);
-        List<String> removableBlocks = plugin.getConfig().getStringList("Whitelisted-Blocks");
-
-        new BukkitRunnable() {
-
-            @Override
-            public void run() {
-                if (!isState(GameState.IN_GAME)) {
-                    cancel();
-                    return;
-                }
-
-                if (getTimer() <= startBlockRemoving) {
-                    return;
-                }
-
-                for (User user : getPlayersLeft()) {
-                    for (Block block : getRemovableBlocks(user)) {
-                        if (!removableBlocks.contains(block.getType().name())) {
-                            continue;
-                        }
-
-                        arena.addDestroyedBlock(block.getState());
-                        Schedulers.runTaskLater(() -> block.setType(Material.AIR), blockRemoveDelay);
-                    }
-                }
-            }
-        }.runTaskTimer(plugin, 0L, 1L);
-    }
-
     public Set<User> getPlayersLeft() {
         return users.stream().filter(user -> !user.isSpectator()).collect(java.util.stream.Collectors.toSet());
     }
@@ -420,58 +386,6 @@ public class Game extends BukkitRunnable {
         getPlayers().forEach(sound::play);
     }
 
-    private List<Block> getRemovableBlocks(User user) {
-        List<Block> removableBlocks = new ArrayList<>();
-
-        Player player = user.getPlayer();
-        if (player == null) {
-            return removableBlocks;
-        }
-
-        Location location = player.getLocation();
-        int scanDepth = plugin.getConfig().getInt(player.isOnGround() ? "Scanning-Depth.On-Ground" : "Scanning-Depth.In-Air", player.isOnGround() ? 2 : 6);
-        int y = location.getBlockY();
-
-        for (int i = 0; i <= scanDepth; i++) {
-            Block block = getBlockUnderPlayer(y--, location);
-
-            if (block != null) {
-                removableBlocks.add(block);
-            }
-        }
-
-        return removableBlocks;
-    }
-
-    private Block getBlockUnderPlayer(int y, Location location) {
-        Position loc = new Position(location.getX(), y, location.getZ());
-        Block b1 = loc.getBlock(location.getWorld(), 0.3, -0.3);
-
-        if (b1.getType() != Material.AIR) {
-            return b1;
-        }
-
-        Block b2 = loc.getBlock(location.getWorld(), -0.3, 0.3);
-
-        if (b2.getType() != Material.AIR) {
-            return b2;
-        }
-
-        Block b3 = loc.getBlock(location.getWorld(), 0.3, 0.3);
-
-        if (b3.getType() != Material.AIR) {
-            return b3;
-        }
-
-        Block b4 = loc.getBlock(location.getWorld(), -0.3, -0.3);
-
-        if (b4.getType() != Material.AIR) {
-            return b4;
-        }
-
-        return null;
-    }
-
     @SuppressWarnings("unchecked")
     public <T extends GameStateHandler> T getHandler(GameState gameState) {
         return (T) states.get(gameState);
@@ -490,13 +404,6 @@ public class Game extends BukkitRunnable {
     @Override
     public String toString() {
         return "Game[state=%s, players=%d]".formatted(gameState, users.size());
-    }
-
-    private record Position(double x, int y, double z) {
-
-        public Block getBlock(World world, double addx, double addz) {
-            return world.getBlockAt(NumberConversions.floor(x + addx), y, NumberConversions.floor(z + addz));
-        }
     }
 
     public record PlayerMetadata(String name, int doubleJumps, int maxDoubleJumps) {

@@ -111,12 +111,14 @@ public class Main extends JavaPlugin {
         new ArenaDataSaver(this).saveAllArenas();
 
         arenaManager.handleDisable();
+        gameManager.shutdown();
         database.shutdown();
     }
 
     private void createConfigFiles() {
         saveDefaultConfig();
         saveResourceIfMissing("mysql.yml");
+        saveResourceIfMissing("block-removal.yml");
     }
 
     private void initializeClasses() {

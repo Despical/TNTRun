@@ -16,10 +16,6 @@ Time-Settings:
   # The duration of the end phase in seconds.
   # After this time, players will be sent back to the lobby.
   Ending-Time: 6
-  # Time, in seconds, before block removal begins after the game starts.
-  Start-Block-Removing: 5
-  # Delay, in ticks, before blocks are removed after players step on them.
-  Block-Remove-Delay: 12
 
 Double-Jumps:
   # Default number of double jumps given to each player in the game who lacks double jump permissions.
@@ -52,11 +48,6 @@ chat-settings:
   enable-formatting: true
   # Should alive players also see dead/spectator chat messages?
   dead-chat-visible-to-alive: false
-
-# Defines the block scan depth in different scenarios.
-Scanning-Depth:
-  On-Ground: 2
-  In-Air: 6
 
 # Enable BungeeCord server support?
 Bungee-Enabled: false
@@ -92,16 +83,6 @@ Longest-Survive-On-Wins: false
 
 # Enable notifications for plugin updates?
 Update-Notifier-Enabled: true
-
-# List of blocks that are allowed to be removed during gameplay.
-Whitelisted-Blocks:
-  - TNT
-  - SAND
-  - SANDSTONE
-  - GRAVEL
-  - STAINED_CLAY
-  - RED_SANDSTONE
-  - RED_SAND
 
 # Leave this empty to allow all players to join.
 # Operators (OPs) will bypass all permissions.
