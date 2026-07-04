@@ -75,6 +75,6 @@ public class UserManager {
     }
 
     private void loadDataOfOnlinePlayers() {
-        plugin.getServer().getOnlinePlayers().forEach(this::createNewUser);
+        Bukkit.getOnlinePlayers().forEach(this::createNewUser);
     }
 }

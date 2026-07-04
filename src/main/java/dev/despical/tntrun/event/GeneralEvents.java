@@ -29,6 +29,7 @@ import dev.despical.tntrun.utils.ItemUtils;
 import dev.despical.tntrun.utils.Schedulers;
 import dev.despical.tntrun.utils.Var;
 import net.kyori.adventure.text.Component;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.EventHandler;
@@ -135,7 +136,7 @@ public class GeneralEvents extends ListenerAdapter {
 
     private void sendAliveChatMessage(Game game, Component message, boolean separateChat) {
         if (!separateChat) {
-            plugin.getServer().broadcast(message);
+            Bukkit.broadcast(message);
             return;
         }
 

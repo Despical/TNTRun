@@ -26,6 +26,7 @@ import dev.despical.tntrun.chat.ChatManager;
 import dev.despical.tntrun.game.GameManager;
 import dev.despical.tntrun.option.ConfigOptions;
 import dev.despical.tntrun.user.UserManager;
+import org.bukkit.Bukkit;
 import org.bukkit.event.Listener;
 
 /**
@@ -54,6 +55,6 @@ public abstract class ListenerAdapter implements Listener {
         this.chatManager = plugin.getChatManager();
         this.gameManager = plugin.getGameManager();
 
-        plugin.getServer().getPluginManager().registerEvents(this, plugin);
+        Bukkit.getPluginManager().registerEvents(this, plugin);
     }
 }

@@ -19,6 +19,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.Team;
@@ -41,7 +42,7 @@ public class ScoreboardManager {
         Map<GameState, List<StateFormatter>> map = new EnumMap<>(GameState.class);
 
         for (var formatter : StateFormatter.values()) {
-            map.computeIfAbsent(formatter.getState(), k -> new ArrayList<>()).add(formatter);
+            map.computeIfAbsent(formatter.getState(), _ -> new ArrayList<>()).add(formatter);
         }
 
         STATE_FORMATTER_CACHE = Collections.unmodifiableMap(map);
@@ -126,10 +127,10 @@ public class ScoreboardManager {
     }
 
     private org.bukkit.scoreboard.Scoreboard getOrCreatePlayerScoreboard(Player player) {
-        org.bukkit.scoreboard.Scoreboard scoreboard = player.getScoreboard();
+        var scoreboard = player.getScoreboard();
 
-        if (scoreboard == plugin.getServer().getScoreboardManager().getMainScoreboard()) {
-            return plugin.getServer().getScoreboardManager().getNewScoreboard();
+        if (scoreboard == Bukkit.getScoreboardManager().getMainScoreboard()) {
+            return Bukkit.getScoreboardManager().getNewScoreboard();
         }
 
         return scoreboard;
