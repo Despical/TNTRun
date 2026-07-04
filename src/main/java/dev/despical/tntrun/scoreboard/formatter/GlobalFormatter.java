@@ -5,18 +5,17 @@ import dev.despical.tntrun.arena.Arena;
 import dev.despical.tntrun.arena.options.ArenaKeys;
 import dev.despical.tntrun.utils.Utils;
 import dev.despical.tntrun.utils.Var;
+import lombok.experimental.UtilityClass;
 
 /**
  * @author Despical
  * <p>
  * Created at 17.06.2026
  */
+@UtilityClass
 public final class GlobalFormatter {
 
     private static final String date = StringFormatUtils.formatToday();
-
-    private GlobalFormatter() {
-    }
 
     public static final LineFormatter GLOBAL_FORMATTER = (user, game, line) -> {
         int timer = game.getTimer();
