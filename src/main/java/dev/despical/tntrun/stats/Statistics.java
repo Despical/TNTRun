@@ -114,13 +114,13 @@ public final class Statistics {
 
     public static int getDoubleJumps(Player player) {
         Main plugin = Main.getInstance();
-        int defaultDoubleJumps = plugin.getConfig().getInt("Double-Jumps.Default", 5);
+        int defaultDoubleJumps = plugin.getConfig().getInt("double-jumps.default", 5);
 
         if (player == null) {
             return defaultDoubleJumps;
         }
 
-        for (String perm : plugin.getConfig().getStringList("Double-Jumps.Permissions")) {
+        for (String perm : plugin.getConfig().getStringList("double-jumps.permissions")) {
             if (perm.startsWith("tntrun") && player.hasPermission(perm)) {
                 return Integer.parseInt(perm.substring(perm.lastIndexOf('.') + 1));
             }

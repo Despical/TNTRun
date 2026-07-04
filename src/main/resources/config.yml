@@ -1,110 +1,107 @@
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #                                                             #
-#                           TNTRun                            #
-#                          Despical                           #
+#                           TNT Run                           #
+#                         by Despical                         #
 #                                                             #
-#            https://www.buymeacoffee.com/despical            #
+#              https://github.com/Despical/TNTRun             #
+#              https://docs.despical.dev/tnt-run              #
 #                                                             #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
-Time-Settings:
-  # Every 45 seconds, a broadcast message will be sent to players
-  # notifying them about how many more players are needed for the arena to start.
-  Lobby-Waiting-Time: 45
-  # The waiting time, in seconds, after reaching the minimum player requirement in the arena.
-  Lobby-Starting-Time: 16
-  # The duration of the end phase in seconds.
-  # After this time, players will be sent back to the lobby.
-  Ending-Time: 6
+# Choose the storage method for player data. Supported values are flat or mysql.
+# Please note that data migration is not supported, and changes will only take effect after a server restart or plugin reload.
+database: flat
 
-Double-Jumps:
-  # Default number of double jumps given to each player in the game who lacks double jump permissions.
-  Default: 5
-  # Interval between double jumps, in seconds.
-  Delay: 4
-  # Permission levels for different double jump counts.
-  # More details: https://github.com/Despical/TNTRun/wiki/Commands-and-permissions#double-jump-permissions
-  Permissions:
+arena-settings:
+  # How often arena game logic should tick, in server ticks.
+  # Lower values make games update more often; higher values reduce update frequency.
+  tick-period: 5
+
+time-settings:
+  # How long, in seconds, a waiting arena can stay idle before sending waiting reminders.
+  waiting-time: 300
+
+  # How long, in seconds, the pre-game waiting phase can last.
+  pre-game-waiting-time: 120
+
+  # Countdown length, in seconds, after enough players are available to start.
+  game-starting-time: 30
+
+  # Countdown length, in seconds, when the arena reaches its maximum player count.
+  full-game-starting-time: 15
+
+  # Duration, in seconds, of the ending phase before players are returned/reset.
+  ending-time: 10
+
+# If enabled, players will see the TNT Run scoreboard while playing.
+# This is the global scoreboard switch; arenas can still disable their own scoreboard separately.
+scoreboard-enabled: true
+
+# If enabled, player name tags are hidden during games.
+name-tags-hidden: false
+
+double-jumps:
+  # Default amount of double jumps given to players without a custom permission.
+  default: 5
+
+  # Cooldown, in seconds, before a player can use another double jump.
+  delay: 4
+
+  # Permission-based double jump amounts.
+  # The number after the last dot is used as the player's double jump amount.
+  permissions:
     - tntrun.doublejumps.3
     - tntrun.doublejumps.2
     - tntrun.doublejumps.1
 
-# Enable scoreboards for in-game players?
-Scoreboard-Enabled: true
+# If enabled, players see an action bar cooldown after using a double jump.
+jump-bar: true
 
-# Should we create a progress bar to show how many seconds are left until a new double jump can be used?
-Jump-Bar: true
+# If enabled, the player's experience level can be used as a timer display.
+level-bar-timer: false
 
-# Enable chat message formatting?
-# For custom formats, see messages.yml.
-Chat-Format-Enabled: true
+# If enabled, the leave item removes players from the arena instantly.
+instant-leave: false
 
 chat-settings:
-  # Should arena chat be exclusive to arena players?
-  separate-chat: true
-  # Disable chat messages sent by players inside arenas.
-  disable-chat-in-game: false
-  # Enable plugin chat formatting for arena messages.
+  # Whether the plugin should format arena chat using messages.yml formats.
+  # If false, chat messages use a simple "<player> message" format.
   enable-formatting: true
-  # Should alive players also see dead/spectator chat messages?
+
+  # When enabled, arena chat is isolated from the rest of the server.
+  # Players inside arenas only see arena chat, and players outside do not see it.
+  separate-chat: true
+
+  # When enabled, players who are actively in a game cannot send chat messages.
+  disable-chat-in-game: false
+
+  # When enabled, alive players can also see dead/spectator chat messages.
   dead-chat-visible-to-alive: false
 
-# Enable BungeeCord server support?
-Bungee-Enabled: false
+command-settings:
+  # When enabled, players who are in an arena can only use commands listed below.
+  disable-commands-while-playing: true
 
-# Enable the Inventory Manager for games? (Useful feature for multi-arena setups)
-# This saves players' inventory contents and restores them after they leave the arena.
-# Saved items include: max health, health, food level, experience, full inventory, armor, etc.
-Inventory-Manager:
-  Enabled: true
-  # Available elements: health, max-health, health-scale
-  Do-Not-Restore:
-    - "max-health"
-    - "health-scale"
+  # Commands players may still use while playing.
+  # Use command roots such as "msg" to allow all arguments, or subcommands such as "tr leave".
+  allowed-commands:
+    - "tr leave"
+    - "tntrun leave"
+    - "tr stats"
+    - "tntrun stats"
 
-# Should we disable fall damage for players?
-Disable-Fall-Damage: true
+# If enabled, the plugin checks for newer releases on startup.
+update-notifier: true
 
-# Block commands that are not associated with TNTRun?
-Block-Commands: true
+# Enabling debug mode allows administrators to access advanced troubleshooting commands.
+# Keep this disabled on production servers unless you are actively testing or diagnosing an issue.
+debug: false
 
-# Enable MySQL database support?
-# For configuration details, see mysql.yml.
-Database-Enabled: false
+# Event profiling measures how long TNT Run event listeners take to execute.
+# Useful for diagnosing lag or slow integrations, but usually not needed during normal gameplay.
+event-profiling:
+  enabled: false
 
-# Should arena chat be exclusive to arena players or visible to all?
-Disable-Separate-Chat: false
-
-# Allow players to leave the arena instantly using a leave item?
-Instant-Leave: false
-
-# Only update players' longest survival record when they win?
-Longest-Survive-On-Wins: false
-
-# Enable notifications for plugin updates?
-Update-Notifier-Enabled: true
-
-# Leave this empty to allow all players to join.
-# Operators (OPs) will bypass all permissions.
-Join-Permission: ""
-
-# Permission to join a full game.
-Join-Full-Game-Permission: "tntrun.fullgames"
-
-# The frequency for saving statistics, in seconds. (0 = only save stats on server shutdown/reload)
-Statistic-Saving-Period: 300
-
-# Hide players' name tags in-game?
-Name-Tags-Hidden: false
-
-# Allow players to hit each other? (Damage cannot be enabled.)
-PVP-Disabled: true
-
-# Commands that are allowed during gameplay.
-# Use 'exact:command here' to specify an exact command to check for.
-# By default, any command that starts with an item in this list will be checked.
-Whitelisted-Commands: []
-
-# Enable a game bar for in-game players?
-# See messages.yml for game bar messages.
-Game-Bar-Enabled: true
+  # If enabled, every profiled event execution is logged with timing details.
+  # This can spam the console heavily, so only enable it for short debugging sessions.
+  verbose: false

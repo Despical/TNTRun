@@ -34,6 +34,6 @@ public class PermissionManager {
     public PermissionManager(Main plugin) {
         final var config = plugin.getConfig();
 
-        this.doubleJumpDelay = config.getInt("Double-Jumps.Delay", 4);
+        this.doubleJumpDelay = config.getInt("double-jumps.delay", 4);
     }
 }
