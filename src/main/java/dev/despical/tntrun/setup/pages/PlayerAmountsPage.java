@@ -58,7 +58,7 @@ public class PlayerAmountsPage extends SetupPage {
             }
 
             arena.setOption(option, amount);
-            arena.updateSigns();
+            plugin.getSignManager().updateSigns(arena);
 
             Player player = (Player) event.getWhoClicked();
             player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 1f, amount > originalAmount ? 1.5f : 0.8f);

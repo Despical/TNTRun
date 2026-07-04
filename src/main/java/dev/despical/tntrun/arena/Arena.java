@@ -93,10 +93,6 @@ public class Arena {
         return options.containsKey(option);
     }
 
-    public boolean isReady() {
-        return getOption(ArenaKeys.READY);
-    }
-
     public String getRecordHolderName() {
         return getOption(ArenaKeys.RECORD_HOLDER_NAME);
     }
@@ -111,16 +107,6 @@ public class Arena {
 
     public void setRecordTime(long recordTime) {
         setOption(ArenaKeys.RECORD_TIME, recordTime);
-    }
-
-    public int getTimer() {
-        return game == null ? 0 : game.getTimer();
-    }
-
-    public void setTimer(int timer) {
-        if (game != null) {
-            game.setTimer(timer);
-        }
     }
 
     public Set<User> getPlayers() {
@@ -173,10 +159,6 @@ public class Arena {
             iterator.next().update(true);
             iterator.remove();
         }
-    }
-
-    public void updateSigns() {
-        plugin.getSignManager().updateSigns(this);
     }
 
     private void registerDefaultOptions() {

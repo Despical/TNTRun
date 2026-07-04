@@ -261,7 +261,7 @@ public class GameItemEvents extends ListenerAdapter {
     private Optional<Arena> findPlayAgainArena(Arena currentArena) {
         return arenaRegistry.getArenas().stream()
             .filter(arena -> !arena.equals(currentArena))
-            .filter(Arena::isReady)
+            .filter(arena -> arena.getOption(ArenaKeys.READY))
             .filter(Arena::isGameNonnull)
             .filter(arena -> arena.isState(GameState.WAITING, GameState.STARTING))
             .filter(arena -> arena.getGame().getUsers().size() < arena.getOption(ArenaKeys.MAX_PLAYERS))
