@@ -1,6 +1,16 @@
+# =================================================================
+#                  TNT Run - Sounds Configuration                 #
+# =================================================================
+
 sounds:
+  # Sound played when a player uses a double jump.
   double-jump:
+    # Set to false to disable this sound.
     enabled: true
+    # You can find Minecraft sound keys here: https://mcasset.cloud/26.2/assets/minecraft/sounds
+    # Example: minecraft:entity.firework_rocket.launch
     sound: ENTITY_FIREWORK_ROCKET_LAUNCH
+    # Sound volume. 1.0 is normal volume, higher values can be heard from farther away.
     volume: 0.8
+    # Sound pitch. 1.0 is normal pitch, lower is deeper, higher is sharper.
     pitch: 1.35
