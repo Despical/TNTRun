@@ -2,11 +2,13 @@
 #                  TNT Run - Sign Configuration                   #
 # =================================================================
 
+# System messages about the signs.
 created: "<#00E676>✔ <#BDBDBD>Arena sign created. <dark_gray>[ <#81D4FA>X: %x%, Y: %y%, Z: %z% <dark_gray>] <#BDBDBD>facing <#29B6F6><bold>%direction%<#BDBDBD>."
 removed: "<#00E676>✔ <#BDBDBD>Arena sign removed. <dark_gray>[ <#EF9A9A>X: %x%, Y: %y%, Z: %z% <dark_gray>]<#BDBDBD>."
 no-perm-to-break: "<#FF5252>✖ You do not have permission to break this sign."
 look-at-a-sign: "<#FF5252>No sign detected! <#BDBDBD>Please look directly at a <#FFB74D>Sign block <#BDBDBD>and try again."
 
+# Display text used for each arena state on signs.
 game-states:
   waiting: "<#00E676><bold>WAITING"
   starting: "<#FFAB00><bold>STARTING"
@@ -16,6 +18,7 @@ game-states:
   restarting: "<#607D8B><bold>REBOOTING"
   inactive: "<#B0BEC5><bold>MAINTENANCE"
 
+# Sign layout, from top line to bottom line.
 lines:
   - "<gradient:#FF1744:#D50000><bold>TNT Run</gradient>"
   - "%state%"
