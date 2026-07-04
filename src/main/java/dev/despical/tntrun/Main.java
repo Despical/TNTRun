@@ -119,6 +119,7 @@ public class Main extends JavaPlugin {
         saveDefaultConfig();
         saveResourceIfMissing("mysql.yml");
         saveResourceIfMissing("block-removal.yml");
+        saveResourceIfMissing("signs.yml");
     }
 
     private void initializeClasses() {

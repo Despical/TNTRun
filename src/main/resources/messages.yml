@@ -262,28 +262,6 @@ waiting-for-players:
 no-enough-players: "<#FF5252>We don't have enough players! Start delayed."
 game-starting-in: "<yellow>The game starting in <aqua>%timer% <yellow>seconds!"
 
-# Sign & Setup Messages
-sign:
-  created: "<#00E676>✔ <#BDBDBD>Arena sign created. <dark_gray>[ <#81D4FA>X: %x%, Y: %y%, Z: %z% <dark_gray>] <#BDBDBD>facing <#29B6F6><bold>%direction%<#BDBDBD>."
-  removed: "<#00E676>✔ <#BDBDBD>Arena sign removed. <dark_gray>[ <#EF9A9A>X: %x%, Y: %y%, Z: %z% <dark_gray>]<#BDBDBD>."
-  no-perm-to-break: "<#FF5252>✖ You do not have permission to break this sign."
-  look-at-a-sign: "<#FF5252>No sign detected! <#BDBDBD>Please look directly at a <#FFB74D>Sign block <#BDBDBD>and try again."
-
-  game-states:
-    waiting: "<#00E676><bold>WAITING"
-    starting: "<#FFAB00><bold>STARTING"
-    in-game: "<#FF5252><bold>IN GAME"
-    full-game: "<#D50000><bold>FULL"
-    ending: "<#9E9E9E><bold>ENDING"
-    restarting: "<#607D8B><bold>REBOOTING"
-    inactive: "<#B0BEC5><bold>MAINTENANCE"
-
-  lines:
-    - "<gradient:#FF1744:#D50000><bold>TNT Run</gradient>"
-    - "%state%"
-    - ""
-    - "<#455A64>[ <#CFD8DC>%players% <#455A64>/ <#CFD8DC>%max_players% <#455A64>]"
-
 # Command & System Messages
 stop-command:
   correct-usage: "<#FF1744>✖ <#BDBDBD>Correct usage: <#FF5252>/%label% stop <arena>"

@@ -99,17 +99,17 @@ public class SetupHomePage extends SetupPage {
 
             Player player = (Player) event.getWhoClicked();
             Block block = player.getTargetBlock(null, 10);
+            SignManager signManager = plugin.getSignManager();
 
             if (!(block.getState() instanceof Sign)) {
-                chatManager.sendMessage(player, "sign.look-at-a-sign");
+                signManager.sendMessage(player, "look-at-a-sign");
                 player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1f, 1f);
                 return;
             }
 
-            SignManager signManager = plugin.getSignManager();
             signManager.addArenaSign(arena, block);
 
-            chatManager.sendMessage(player, "sign.created", signManager.getSignVars(block));
+            signManager.sendMessage(player, "created", signManager.getSignVars(block));
 
             player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1f, 2.0f);
             player.playSound(player.getLocation(), Sound.BLOCK_WOOD_PLACE, 1f, 0.8f);

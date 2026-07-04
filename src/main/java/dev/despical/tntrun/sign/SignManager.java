@@ -1,5 +1,6 @@
 package dev.despical.tntrun.sign;
 
+import dev.despical.commons.configuration.ConfigUtils;
 import dev.despical.commons.serializer.LocationSerializer;
 import dev.despical.tntrun.Main;
 import dev.despical.tntrun.arena.Arena;
@@ -15,6 +16,7 @@ import org.bukkit.block.Sign;
 import org.bukkit.block.data.Directional;
 import org.bukkit.block.sign.Side;
 import org.bukkit.block.sign.SignSide;
+import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.HandlerList;
 
@@ -28,11 +30,12 @@ import java.util.*;
 public class SignManager {
 
     private String fullGameState;
+    private FileConfiguration config;
+    private List<Component> signLines;
     private List<Component> inactiveSignLines;
 
     private final Main plugin;
     private final ChatManager chatManager;
-    private final List<Component> signLines;
     private final Map<BlockKey, ArenaSign> signsByBlock;
     private final Map<Arena, Set<ArenaSign>> signsByArena;
     private final Map<GameState, String> gameStateToString;
@@ -43,20 +46,22 @@ public class SignManager {
         this.chatManager = plugin.getChatManager();
         this.signsByBlock = new HashMap<>();
         this.signsByArena = new HashMap<>();
-        this.signLines = chatManager.getComponentList("sign.lines");
+        this.signLines = List.of();
+        this.inactiveSignLines = List.of();
         this.gameStateToString = new EnumMap<>(GameState.class);
         this.loadSigns();
     }
 
     private void loadSigns() {
+        loadConfig();
         signsByBlock.clear();
         signsByArena.clear();
 
         for (GameState state : GameState.values()) {
-            gameStateToString.put(state, chatManager.getRawString("sign.game-states." + state.getPath()));
+            gameStateToString.put(state, getRawString("game-states." + state.getPath()));
         }
 
-        fullGameState = chatManager.getRawString("sign.game-states.full-game");
+        fullGameState = getRawString("game-states.full-game");
 
         inactiveSignLines = signLines.stream()
             .map(this::formatInactiveArena)
@@ -98,6 +103,10 @@ public class SignManager {
 
     public void reload() {
         this.loadSigns();
+    }
+
+    public void sendMessage(CommandSender recipient, String path, Var... vars) {
+        recipient.sendMessage(getMessageComponent(path, vars));
     }
 
     public void updateSigns(Arena arena) {
@@ -280,6 +289,22 @@ public class SignManager {
 
         HandlerList.unregisterAll(arenaSignEvents);
         arenaSignEvents = null;
+    }
+
+    private void loadConfig() {
+        config = ConfigUtils.getConfig(plugin, "signs");
+        signLines = config.getStringList("lines")
+            .stream()
+            .map(chatManager::parseMessage)
+            .toList();
+    }
+
+    private Component getMessageComponent(String path, Var... vars) {
+        return chatManager.parseMessage(getRawString(path), vars);
+    }
+
+    private String getRawString(String path) {
+        return config.getString(path, "");
     }
 
     private record BlockKey(UUID worldId, int x, int y, int z) {

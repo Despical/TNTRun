@@ -38,12 +38,12 @@ public class ArenaSignEvents extends ListenerAdapter {
         if (!player.hasPermission("tntrun.sign.break")) {
             event.setCancelled(true);
 
-            chatManager.sendMessage(player, "sign.no-perm-to-break");
+            signManager.sendMessage(player, "no-perm-to-break");
             return;
         }
 
         signManager.removeArenaSign(arenaSign);
-        chatManager.sendMessage(player, "sign.removed", signManager.getSignVars(block));
+        signManager.sendMessage(player, "removed", signManager.getSignVars(block));
     }
 
     @EventHandler
