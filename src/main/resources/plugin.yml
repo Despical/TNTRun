@@ -1,31 +1,126 @@
 name: TNTRun
-version: ${version}
-description: The ultimate TNT Run plugin.
 author: Despical
-
 main: dev.despical.tntrun.Main
+version: ${version}
 api-version: 1.13
+prefix: TNTRun
+description: "A fast-paced jump 'n run TNT game"
 
 softdepend:
   - PlaceholderAPI
   - Multiverse-Core
-  - WorldGuard
+  - SlimeWorldManager
+  - SlimeWorldPlugin
   - MultiWorld
-  - Oraxen
+  - My_Worlds
+  - WorldGuard
+  - NoteBlockAPI
 
 permissions:
-  tntrun.admin.*:
+  tntrun.*:
+    description: Grants access to all TNT Run commands and features.
     default: op
     children:
+      tntrun.command.help: true
+      tntrun.command.start: true
+      tntrun.command.tabcompleter: true
       tntrun.admin: true
-      tntrun.admin.create: true
-      tntrun.admin.delete: true
-      tntrun.admin.edit: true
-      tntrun.admin.list: true
+      tntrun.arena.*: true
+      tntrun.debug: true
+      tntrun.sign.break: true
+      tntrun.commandblock.bypass: true
+
+  tntrun.command.help:
+    description: Allows using the root and help commands to view TNT Run command information.
+    default: true
+  tntrun.command.start:
+    description: Allows seeing the start command in TNT Run tab completions.
+    default: op
+  tntrun.command.tabcompleter:
+    description: Allows receiving standard tab completions for TNT Run commands.
+    default: true
+
+  tntrun.admin:
+    description: Grants access to all administrative commands.
+    default: op
+    children:
       tntrun.admin.help: true
-      tntrun.admin.forcestart: true
-      tntrun.admin.stop: true
-      tntrun.admin.sign.create: true
-      tntrun.admin.sign.break: true
+      tntrun.admin.kick: true
       tntrun.admin.reload: true
-      tntrun.command.override: true
+      tntrun.admin.start: true
+      tntrun.admin.stop: true
+      tntrun.arena.*: true
+      tntrun.sign.break: true
+      tntrun.command.start: true
+      tntrun.commandblock.bypass: true
+
+  tntrun.admin.help:
+    description: Allows viewing the admin help menu.
+    default: op
+  tntrun.admin.kick:
+    description: Allows removing a player from an active TNT Run arena.
+    default: op
+  tntrun.admin.reload:
+    description: Allows reloading the plugin configuration.
+    default: op
+  tntrun.admin.start:
+    description: Allows force-starting a TNT Run game.
+    default: op
+  tntrun.admin.stop:
+    description: Allows force-stopping a TNT Run game.
+    default: op
+  tntrun.commandblock.bypass:
+    description: Allows using blocked commands while playing.
+    default: op
+
+  tntrun.arena.*:
+    description: Grants access to all arena management commands.
+    default: op
+    children:
+      tntrun.arena.create: true
+      tntrun.arena.delete: true
+      tntrun.arena.list: true
+      tntrun.arena.edit: true
+
+  tntrun.arena.create:
+    description: Allows creating a new arena.
+    default: op
+  tntrun.arena.delete:
+    description: Allows deleting an existing arena.
+    default: op
+  tntrun.arena.list:
+    description: Allows listing all arenas.
+    default: op
+  tntrun.arena.edit:
+    description: Allows editing arena properties.
+    default: op
+
+  tntrun.sign.break:
+    description: Allows breaking TNT Run arena signs.
+    default: op
+
+  tntrun.debug:
+    description: Grants access to all debug commands.
+    default: op
+    children:
+      tntrun.debug.join: true
+      tntrun.debug.timer: true
+      tntrun.debug.component: true
+      tntrun.debug.dump: true
+      tntrun.debug.tabcompleter: true
+
+  tntrun.debug.join:
+    description: Allows force-joining arenas for debug testing.
+    default: op
+  tntrun.debug.timer:
+    description: Allows changing an active game's timer for debug testing.
+    default: op
+  tntrun.debug.component:
+    description: Allows testing MiniMessage components and configured messages.
+    default: op
+  tntrun.debug.dump:
+    description: Allows sending debug timing reports.
+    default: op
+  tntrun.debug.tabcompleter:
+    description: Allows receiving debug command tab completions.
+    default: op
