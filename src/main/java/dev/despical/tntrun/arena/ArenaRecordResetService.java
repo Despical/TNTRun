@@ -25,7 +25,7 @@ public class ArenaRecordResetService {
         Set<User> activeUsers = plugin.getUserManager().getUsers();
 
         return plugin.getDatabase().resetArenaRecords(arenaId, activeUsers)
-            .thenCompose(ignored -> {
+            .thenCompose(_ -> {
                 CompletableFuture<Void> future = new CompletableFuture<>();
 
                 Schedulers.runInTheNextTick(() -> {

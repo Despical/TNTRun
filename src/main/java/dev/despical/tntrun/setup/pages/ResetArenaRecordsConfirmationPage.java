@@ -61,7 +61,7 @@ public class ResetArenaRecordsConfirmationPage extends SetupPage {
             menu.close();
 
             new ArenaRecordResetService(plugin).resetArenaRecords(arena)
-                .whenComplete((ignored, throwable) -> Schedulers.runInTheNextTick(() -> {
+                .whenComplete((_, throwable) -> Schedulers.runInTheNextTick(() -> {
                     if (throwable != null) {
                         plugin.getLogger().log(Level.WARNING, "Failed to reset arena records for " + arena.getId(), throwable);
 
@@ -71,6 +71,7 @@ public class ResetArenaRecordsConfirmationPage extends SetupPage {
                     }
 
                     chatManager.sendMessage(player, "setup.arena-record-reset", Var.of("%arena_id%", arena.getId()));
+
                     player.playSound(player.getLocation(), Sound.BLOCK_BEACON_DEACTIVATE, 1f, 0.7f);
                     player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 0.8f, 1.3f);
                 }));
@@ -83,6 +84,7 @@ public class ResetArenaRecordsConfirmationPage extends SetupPage {
         return GuiItem.of(item, event -> {
             Player player = (Player) event.getWhoClicked();
             player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 1f, 0.8f);
+
             menu.setPage(0);
         });
     }
