@@ -12,8 +12,7 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum GameSound {
 
-    DOUBLE_JUMP("double-jump"),
-    GAME_START("game-start");
+    DOUBLE_JUMP("double-jump");
 
     private final String path;
 }

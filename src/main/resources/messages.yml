@@ -74,10 +74,7 @@ ticker:
   in-game:
     1:
       - "sound:ENTITY_ARROW_HIT_PLAYER,1,0.492063"
-    2:
-      - "sound:ENTITY_ARROW_HIT_PLAYER,1,0.492063"
-    3:
-      - "sound:ENTITY_ARROW_HIT_PLAYER,1,0.746032"
+      - "sound:minecraft:entity.ender_dragon.growl,1.0,1.0"
   ending: []
 
 # Help Messages
