@@ -17,14 +17,16 @@ scanning:
   depth-in-air: 6
 
 safety:
-  # Persist removed block snapshots so blocks can be restored after a server crash.
+  # Save removed blocks during games so arenas can be restored after a crash or forced shutdown.
   persist-snapshots: true
-  # Restore persisted snapshots when the plugin starts.
+  # Automatically restore saved blocks when the plugin starts again.
+  # Keep this enabled if you want crash recovery to happen without manual arena cleanup.
   restore-snapshots-on-startup: true
-  # During startup recovery, only restore locations that are still air.
+  # During recovery, only restore blocks where the space is still empty.
+  # This helps avoid overwriting blocks placed by an admin, a world reset, or another plugin.
   restore-only-air: true
-  # How often pending snapshots are flushed to disk.
-  # The plugin caps this below remove-delay-ticks so snapshots can reach disk before blocks are removed.
+  # How often recovery data is saved while a game is running.
+  # Lower values improve crash safety; higher values slightly reduce disk activity.
   flush-interval-ticks: 5
 
 # List of blocks that are allowed to be removed during gameplay.
