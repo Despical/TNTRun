@@ -2,9 +2,6 @@
 #              TNT Run - Block Removal Configuration              #
 # =================================================================
 
-# Enables the block removal system during active games.
-enabled: true
-
 timing:
   # Time, in seconds, before block removal begins after the game starts.
   start-after-seconds: 5
@@ -36,6 +33,6 @@ removable-blocks:
   - SAND
   - SANDSTONE
   - GRAVEL
-  - STAINED_CLAY
+  - TERRACOTTA
   - RED_SANDSTONE
   - RED_SAND

@@ -21,7 +21,6 @@ public class BlockRemovalConfig {
 
     private final Main plugin;
 
-    private boolean enabled;
     private int startAfterSeconds;
     private int removeDelayTicks;
     private int scanIntervalTicks;
@@ -41,7 +40,6 @@ public class BlockRemovalConfig {
     public void reload() {
         FileConfiguration config = ConfigUtils.getConfig(plugin, "block-removal");
 
-        this.enabled = config.getBoolean("enabled", true);
         this.startAfterSeconds = config.getInt("timing.start-after-seconds", 5);
         this.removeDelayTicks = config.getInt("timing.remove-delay-ticks", 12);
         this.scanIntervalTicks = Math.max(1, config.getInt("timing.scan-interval-ticks", 1));
@@ -67,7 +65,7 @@ public class BlockRemovalConfig {
         Set<Material> materials = EnumSet.noneOf(Material.class);
 
         for (String blockName : config.getStringList("removable-blocks")) {
-            Material material = Material.matchMaterial(blockName.trim().toUpperCase(Locale.ENGLISH), true);
+            Material material = Material.matchMaterial(blockName.trim().toUpperCase(Locale.ENGLISH));
 
             if (material == null || !material.isBlock()) {
                 plugin.getLogger().warning("Invalid removable block in block-removal.yml: " + blockName);

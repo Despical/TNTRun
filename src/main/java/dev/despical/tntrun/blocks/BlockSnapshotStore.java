@@ -41,6 +41,7 @@ public class BlockSnapshotStore {
         if (!config.isPersistSnapshots() && !snapshots.isEmpty()) {
             snapshots.clear();
             dirty = true;
+
             flushNow(true);
         }
 
@@ -62,6 +63,7 @@ public class BlockSnapshotStore {
 
         snapshots.clear();
         dirty = true;
+
         flushNow(true);
 
         if (restored > 0) {
@@ -111,6 +113,7 @@ public class BlockSnapshotStore {
 
         try {
             yaml.save(file);
+
             dirty = false;
         } catch (IOException ex) {
             plugin.getLogger().log(Level.WARNING, "Could not save block removal recovery file.", ex);

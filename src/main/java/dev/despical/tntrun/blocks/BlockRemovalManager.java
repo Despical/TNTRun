@@ -48,10 +48,6 @@ public class BlockRemovalManager {
     public void start() {
         stopScanning();
 
-        if (!config.isEnabled()) {
-            return;
-        }
-
         scanTask = Bukkit.getScheduler().runTaskTimer(plugin, this::scanPlayers, 0L, config.getScanIntervalTicks());
     }
 
