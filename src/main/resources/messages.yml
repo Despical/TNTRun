@@ -1,10 +1,12 @@
-messages:
-  in-game:
-    you-are-spectator-now: "<gray>You are now watching the game."
-    fell-into-void: "<#FF5252>%player% fell! <#FFCA28>%players_left% <#B0BEC5>players remaining."
-    last-one-fell-into-void: "<#FF5252>%player% fell!"
-    cooldown-format: "<#FFCA28>CHARGING <#2F2F2F><bold>[%progress%<#2F2F2F><bold>] <#FFCA28>%time%s"
-    cooldown-progress-format: "<#00E676>:<#FF5252>:■"
+cooldown-format: "<#FFCA28><bold>CHARGING <#2F2F2F><bold>[%progress%<#2F2F2F><bold>] <#FFCA28>%time%s"
+cooldown-progress-format: "<#00E676>:<#FF5252>:■"
+
+you-are-spectator-now: "<gray>You are now watching the game."
+
+you-eliminated:
+  - "<gray>%player% <#FF5252>died!"
+  - "<yellow>%players_left% players remaining."
+
 summary-message:
   content:
     - "%no_center%<#00E676><bold>▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬"
@@ -16,8 +18,8 @@ summary-message:
     - ""
     - "%no_center%<#00E676><bold>▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬"
   hover:
-    - "<#2F2F2F><bold>Remaining Perks"
-    - "<#B0BEC5>Double Jump: <white>%double_jumps%<#B0BEC5>/<#00E676>%max_double_jumps%"
+    - "<gray>Remaining Perks"
+    - "<white>Double Jump: %double_jumps%<gray>/%max_double_jumps%"
   no-opponent: "<#757575>---"
 
 game-explanation:
@@ -31,70 +33,9 @@ game-explanation:
 
 game-started: "<#00E676><bold>The game has started!"
 
-signs:
-  game-states:
-    waiting: "&lWaiting..."
-    starting: "&e&lStarting"
-    playing: "&lIn-game"
-    full-game: "&c&lFULL"
-    ending: "&lEnding"
-    restarting: "&c&lRestarting"
-    inactive: "&lInactive..."
-  lines:
-    - "&4&lTNT Run"
-    - "%state%"
-    - "%map_name%"
-    - "&5[%players%/%max_players%]"
+chat-disabled-in-game: "<#FF5252>✖ <#BDBDBD>You cannot send chat messages while in a game!"
 
-game:
-  finished:
-    - "%no_center%<green><bold>▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬"
-    - ""
-    - "<gradient:#00E676:#2979FF><bold>COURSE COMPLETED!</bold></gradient>"
-    - ""
-    - "<gray>Final Time: <white>%time%"
-    - "<gray>Total Falls: <#FF5252>%fails%"
-    - ""
-    - "%no_center%<green><bold>▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬"
-
-  new-record:
-    - "%no_center%<green><bold>▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬"
-    - ""
-    - "<gradient:#FFD700:#FFFF00><bold>♕ NEW PERSONAL BEST! ♕</bold></gradient>"
-    - ""
-    - "<gray>You beat your previous record!"
-    - "<gray>New Time: <#00E676><bold>%time%</bold>"
-    - "<gray>Total Falls: <#FF5252>%fails%"
-    - ""
-    - "%no_center%<green><bold>▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬"
-
-  global-record-broken:
-    - "%no_center%<green><bold>▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬"
-    - ""
-    - "<gradient:#FFD700:#FFFF00><bold>♕ GLOBAL RECORD BROKEN! ♕</bold></gradient>"
-    - ""
-    - "<gray>Player: <#00E676>%player%"
-    - "<gray>Arena: <#29B6F6>%arena%"
-    - "<gray>Time: <#FFD54F><bold>%time%</bold>"
-    - ""
-    - "%no_center%<green><bold>▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬"
-
-  global-record-broken-and-pr:
-    - "%no_center%<green><bold>▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬"
-    - ""
-    - "<gradient:#FFD700:#FFFF00><bold>♕ GLOBAL RECORD BROKEN! ♕</bold></gradient>"
-    - ""
-    - "<gray>Player: <#00E676>%player%"
-    - "<gray>Arena: <#29B6F6>%arena%"
-    - "<gray>Time: <#FFD54F><bold>%time%</bold>"
-    - ""
-    - "<yellow>Also a new personal best with <#FFCA28>%fails% <yellow>fails."
-    - ""
-    - "%no_center%<green><bold>▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬"
-
-  chat-disabled-in-game: "<#FF5252>✖ <#BDBDBD>You cannot send chat messages while in a game!"
-
-  command-disabled-in-game: "<#FF5252>✖ Command blocked! <#BDBDBD>You cannot use that command while playing."
+command-disabled-in-game: "<#FF5252>✖ Command blocked! <#BDBDBD>You cannot use that command while playing."
 
 # Game Ticker Messages
 ticker:

@@ -45,6 +45,6 @@ public class CommandBlockEvents extends ListenerAdapter {
         }
 
         event.setCancelled(true);
-        chatManager.sendMessage(player, "game.command-disabled-in-game");
+        chatManager.sendMessage(player, "command-disabled-in-game");
     }
 }
