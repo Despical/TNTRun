@@ -1,8 +1,9 @@
 package dev.despical.tntrun.game.messages;
 
-import dev.despical.commons.XSound;
 import dev.despical.tntrun.game.Game;
+import dev.despical.tntrun.sound.SoundResolver;
 import dev.despical.tntrun.user.User;
+import org.bukkit.Sound;
 
 /**
  * @author Despical
@@ -34,14 +35,14 @@ public enum TickerActionType {
         @Override
         void execute(Game game, TickerAction action) {
             String[] split = action.sound().split(",");
-            XSound sound = XSound.of(split[0]).orElse(null);
+            Sound sound = SoundResolver.resolve(split[0]);
 
             if (sound == null) return;
 
             float volume = split.length > 1 ? Float.parseFloat(split[1]) : 1F;
             float pitch = split.length > 2 ? Float.parseFloat(split[2]) : 1F;
 
-            game.getPlayers().forEach(player -> sound.play(player, volume, pitch));
+            game.getPlayers().forEach(player -> player.playSound(player.getLocation(), sound, volume, pitch));
         }
     };
 

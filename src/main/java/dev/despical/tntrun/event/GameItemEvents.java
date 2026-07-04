@@ -27,6 +27,7 @@ import dev.despical.tntrun.menu.spectator.SpectatorSettingsMenu;
 import dev.despical.tntrun.menu.spectator.SpectatorTeleportMenu;
 import dev.despical.tntrun.option.BooleanOption;
 import dev.despical.tntrun.sound.GameSound;
+import dev.despical.tntrun.sound.SoundResolver;
 import dev.despical.tntrun.stats.Statistics;
 import dev.despical.tntrun.user.User;
 import dev.despical.tntrun.utils.Utils;
@@ -280,13 +281,15 @@ public class GameItemEvents extends ListenerAdapter {
         }
 
         String[] parts = rawSound.split(",");
-        try {
-            Sound sound = Sound.valueOf(parts[0].trim().toUpperCase(Locale.ENGLISH));
-            float volume = parts.length > 1 ? Float.parseFloat(parts[1].trim()) : 1f;
-            float pitch = parts.length > 2 ? Float.parseFloat(parts[2].trim()) : 1f;
+        Sound sound = SoundResolver.resolve(parts[0]);
 
-            player.playSound(player.getLocation(), sound, volume, pitch);
-        } catch (IllegalArgumentException ignored) {
+        if (sound != null) {
+            try {
+                float volume = parts.length > 1 ? Float.parseFloat(parts[1].trim()) : 1f;
+                float pitch = parts.length > 2 ? Float.parseFloat(parts[2].trim()) : 1f;
+                player.playSound(player.getLocation(), sound, volume, pitch);
+            } catch (NumberFormatException ignored) {
+            }
         }
     }
 

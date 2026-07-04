@@ -19,7 +19,6 @@
 package dev.despical.tntrun.game;
 
 import dev.despical.commons.serializer.InventorySerializer;
-import dev.despical.commons.XSound;
 import dev.despical.tntrun.Main;
 import dev.despical.tntrun.api.event.game.GameStateChangeEvent;
 import dev.despical.tntrun.arena.Arena;
@@ -380,10 +379,6 @@ public class Game extends BukkitRunnable {
 
     public void updateSpectatorVisibility() {
         spectatorManager.updateVisibility();
-    }
-
-    public void playSound(XSound sound) {
-        getPlayers().forEach(sound::play);
     }
 
     @SuppressWarnings("unchecked")

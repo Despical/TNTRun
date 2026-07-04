@@ -7,7 +7,6 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 
 import java.util.EnumMap;
-import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -43,10 +42,8 @@ public class SoundManager {
                 continue;
             }
 
-            Sound sound;
-            try {
-                sound = Sound.valueOf(soundName.toUpperCase(Locale.ENGLISH));
-            } catch (IllegalArgumentException exception) {
+            Sound sound = SoundResolver.resolve(soundName);
+            if (sound == null) {
                 plugin.getLogger().warning("Could not register sound '" + gameSound.getPath() + "': invalid Bukkit sound name '" + soundName + "'.");
                 continue;
             }
