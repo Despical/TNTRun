@@ -1,3 +1,7 @@
+# =================================================================
+#                    TNT Run - Setup Menu                         #
+# =================================================================
+
 title: "<gradient:#FF5252:#D50000><bold>GAME SETUP</bold></gradient> <dark_gray><bold>></bold></dark_gray> <gold><bold>%arena_id%</bold>"
 
 items:
