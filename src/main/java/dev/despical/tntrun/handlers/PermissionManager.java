@@ -20,9 +20,6 @@ package dev.despical.tntrun.handlers;
 
 import dev.despical.tntrun.Main;
 import lombok.Getter;
-import org.bukkit.entity.Player;
-
-import java.util.List;
 
 /**
  * @author Despical
@@ -31,28 +28,12 @@ import java.util.List;
  */
 public class PermissionManager {
 
-    private final int defaultDoubleJumps;
-
     @Getter
     private final int doubleJumpDelay;
-    private final List<String> doubleJumpsPerms;
 
     public PermissionManager(Main plugin) {
         final var config = plugin.getConfig();
 
-        this.defaultDoubleJumps = config.getInt("Double-Jumps.Default", 5);
         this.doubleJumpDelay = config.getInt("Double-Jumps.Delay", 4);
-        this.doubleJumpsPerms = config.getStringList("Double-Jumps.Permissions");
-    }
-
-
-    public int getDoubleJumps(Player player) {
-        for (String perm : doubleJumpsPerms) {
-            if (perm.startsWith("tntrun") && player.hasPermission(perm)) {
-                return Integer.parseInt(perm.substring(perm.lastIndexOf('.') + 1));
-            }
-        }
-
-        return defaultDoubleJumps;
     }
 }

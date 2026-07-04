@@ -21,6 +21,7 @@ package dev.despical.tntrun.event;
 import dev.despical.fileitems.SpecialItem;
 import dev.despical.tntrun.api.event.player.PlayerLeaveGameEvent;
 import dev.despical.tntrun.arena.Arena;
+import dev.despical.tntrun.arena.options.ArenaKeys;
 import dev.despical.tntrun.game.GameState;
 import dev.despical.tntrun.menu.spectator.SpectatorSettingsMenu;
 import dev.despical.tntrun.menu.spectator.SpectatorTeleportMenu;
@@ -110,7 +111,7 @@ public class GameItemEvents extends ListenerAdapter {
     private boolean canUseDoubleJump(User user, Player player, Arena arena) {
         return player.getGameMode() == GameMode.ADVENTURE &&
             arena != null &&
-            arena.isArenaState(GameState.IN_GAME) &&
+            arena.isState(GameState.IN_GAME) &&
             !user.isSpectator() &&
             !arena.isDeathPlayer(user);
     }
@@ -129,6 +130,7 @@ public class GameItemEvents extends ListenerAdapter {
         }
 
         user.setStatistic(Statistics.LOCAL_DOUBLE_JUMPS, jumps - 1);
+        arena.getGame().updatePlayerMetadata(user);
         user.setCooldown("double_jump", plugin.getPermissionManager().getDoubleJumpDelay());
 
         Utils.restoreDoubleJumpFlightWhenReady(user, plugin.getPermissionManager().getDoubleJumpDelay());
@@ -196,7 +198,8 @@ public class GameItemEvents extends ListenerAdapter {
 
         User user = userManager.getUser(event.getPlayer());
         Arena arena = user.getArena();
-        if (arena == null || !arena.isArenaState(GameState.IN_GAME) || !user.isSpectator()) {
+
+        if (arena == null || !arena.isState(GameState.IN_GAME) || !user.isSpectator()) {
             return;
         }
 
@@ -260,8 +263,8 @@ public class GameItemEvents extends ListenerAdapter {
             .filter(arena -> !arena.equals(currentArena))
             .filter(Arena::isReady)
             .filter(Arena::isGameNonnull)
-            .filter(arena -> arena.isArenaState(GameState.WAITING, GameState.STARTING))
-            .filter(arena -> arena.getGame().getUsers().size() < arena.getMaximumPlayers())
+            .filter(arena -> arena.isState(GameState.WAITING, GameState.STARTING))
+            .filter(arena -> arena.getGame().getUsers().size() < arena.getOption(ArenaKeys.MAX_PLAYERS))
             .findFirst();
     }
 

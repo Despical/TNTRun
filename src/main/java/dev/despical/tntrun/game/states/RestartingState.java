@@ -18,8 +18,9 @@ public class RestartingState extends GameStateHandler {
     @Override
     public void firstTick() {
         arena.cleanUpArena();
-        game.setGameState(GameState.WAITING);
         game.getUsers().clear();
+        game.clearPlayerMetadata();
+        game.setGameState(GameState.WAITING);
     }
 
     @Override

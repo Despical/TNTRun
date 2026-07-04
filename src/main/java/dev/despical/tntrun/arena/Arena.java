@@ -24,11 +24,9 @@ import dev.despical.tntrun.arena.options.ArenaOption;
 import dev.despical.tntrun.game.Game;
 import dev.despical.tntrun.game.GameState;
 import dev.despical.tntrun.option.IntOption;
-import dev.despical.tntrun.scoreboard.ScoreboardManager;
 import dev.despical.tntrun.user.User;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import org.bukkit.Location;
 import org.bukkit.block.BlockState;
 import org.bukkit.entity.Player;
 
@@ -37,7 +35,6 @@ import java.util.HashSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -60,7 +57,6 @@ public class Arena {
     private final Set<BlockState> destroyedBlocks = new HashSet<>();
     private final List<User> deaths = new ArrayList<>();
     private final List<User> winners = new ArrayList<>();
-    private boolean forceStart;
 
     Arena(String id) {
         this.id = id;
@@ -72,18 +68,8 @@ public class Arena {
         return game != null;
     }
 
-    public boolean isArenaState(GameState gameState, GameState... states) {
+    public boolean isState(GameState gameState, GameState... states) {
         return game != null && game.isState(gameState, states);
-    }
-
-    public GameState getArenaState() {
-        return game == null ? GameState.INACTIVE : game.getState();
-    }
-
-    public void setArenaState(GameState gameState) {
-        if (game != null) {
-            game.setGameState(gameState);
-        }
     }
 
     public void start() {
@@ -95,7 +81,7 @@ public class Arena {
     }
 
     public <T> T getOption(ArenaOption<T> option) {
-        Object value = options.computeIfAbsent(option, opt -> option.getDefaultValue());
+        Object value = options.computeIfAbsent(option, _ -> option.getDefaultValue());
         return option.getType().cast(value);
     }
 
@@ -109,21 +95,6 @@ public class Arena {
 
     public boolean isReady() {
         return getOption(ArenaKeys.READY);
-    }
-
-    public void setReady(boolean ready) {
-        setOption(ArenaKeys.READY, ready);
-    }
-
-    public int getSetupProgress() {
-        return isReady() ? 100 : 0;
-    }
-
-    public String getMapName() {
-        return id;
-    }
-
-    public void setMapName(String mapName) {
     }
 
     public String getRecordHolderName() {
@@ -150,50 +121,6 @@ public class Arena {
         if (game != null) {
             game.setTimer(timer);
         }
-    }
-
-    public boolean isForceStart() {
-        return forceStart;
-    }
-
-    public void setForceStart(boolean forceStart) {
-        this.forceStart = forceStart;
-    }
-
-    public int getMaximumPlayers() {
-        return getOption(ArenaKeys.MAX_PLAYERS);
-    }
-
-    public void setMaximumPlayers(int maximumPlayers) {
-        setOption(ArenaKeys.MAX_PLAYERS, maximumPlayers);
-    }
-
-    public int getMinimumPlayers() {
-        return getOption(ArenaKeys.MIN_PLAYERS);
-    }
-
-    public void setMinimumPlayers(int minimumPlayers) {
-        setOption(ArenaKeys.MIN_PLAYERS, minimumPlayers);
-    }
-
-    public Location getLobbyLocation() {
-        return getOption(ArenaKeys.LOBBY_LOCATION);
-    }
-
-    public void setLobbyLocation(Location lobbyLocation) {
-        setOption(ArenaKeys.LOBBY_LOCATION, lobbyLocation);
-    }
-
-    public Location getEndLocation() {
-        return getOption(ArenaKeys.END_LOCATION);
-    }
-
-    public void setEndLocation(Location endLocation) {
-        setOption(ArenaKeys.END_LOCATION, endLocation);
-    }
-
-    public ScoreboardManager getScoreboardManager() {
-        return game.getScoreboardManager();
     }
 
     public Set<User> getPlayers() {
@@ -233,14 +160,6 @@ public class Arena {
         winners.add(user);
     }
 
-    public List<User> getWinners() {
-        return winners;
-    }
-
-    public User getWinner() {
-        return getPlayersLeft().stream().filter(Objects::nonNull).findFirst().orElse(null);
-    }
-
     public void addDestroyedBlock(BlockState blockState) {
         destroyedBlocks.add(blockState);
     }
@@ -254,19 +173,6 @@ public class Arena {
             iterator.next().update(true);
             iterator.remove();
         }
-    }
-
-    public void broadcastWaitingForPlayers() {
-        if (game == null) {
-            return;
-        }
-
-        int neededPlayers = getMinimumPlayers() - getPlayers().size();
-        game.broadcastMessage("waiting-for-players",
-            dev.despical.tntrun.utils.Var.of("%players_needed%", neededPlayers),
-            dev.despical.tntrun.utils.Var.of("%s%", neededPlayers > 1 ? "s" : ""),
-            dev.despical.tntrun.utils.Var.of("%to_be_form%", neededPlayers > 1 ? "are" : "is")
-        );
     }
 
     public void updateSigns() {

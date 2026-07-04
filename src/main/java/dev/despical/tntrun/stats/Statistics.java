@@ -21,6 +21,8 @@ package dev.despical.tntrun.stats;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
+import dev.despical.tntrun.Main;
+import org.bukkit.entity.Player;
 
 import java.util.HashMap;
 import java.util.List;
@@ -46,6 +48,7 @@ public final class Statistics {
     public static final StatisticType<Integer> SPECTATOR_SPEED = createIntStat("spectator_speed");
 
     public static final StatisticType<Integer> LOCAL_DOUBLE_JUMPS = createLocalIntStat();
+    public static final StatisticType<Integer> LOCAL_MAX_DOUBLE_JUMPS = createLocalIntStat();
     public static final StatisticType<Integer> LOCAL_SURVIVE_TIME = createLocalIntStat();
 
     public static final StatisticType<Map<String, Long>> ARENA_BEST_TIMES = new StatisticType<>("arena_best_times", new HashMap<>(), (Class<Map<String, Long>>) (Class<?>) Map.class) {
@@ -72,7 +75,7 @@ public final class Statistics {
     );
 
     private static final List<StatisticType<?>> TEMPORARY_STATS = List.of(
-        LOCAL_DOUBLE_JUMPS, LOCAL_SURVIVE_TIME
+        LOCAL_DOUBLE_JUMPS, LOCAL_MAX_DOUBLE_JUMPS, LOCAL_SURVIVE_TIME
     );
 
     private static StatisticType<Integer> createIntStat(String key) {
@@ -107,5 +110,22 @@ public final class Statistics {
 
     public static List<StatisticType<?>> getTemporaryStats() {
         return TEMPORARY_STATS;
+    }
+
+    public static int getDoubleJumps(Player player) {
+        Main plugin = Main.getInstance();
+        int defaultDoubleJumps = plugin.getConfig().getInt("Double-Jumps.Default", 5);
+
+        if (player == null) {
+            return defaultDoubleJumps;
+        }
+
+        for (String perm : plugin.getConfig().getStringList("Double-Jumps.Permissions")) {
+            if (perm.startsWith("tntrun") && player.hasPermission(perm)) {
+                return Integer.parseInt(perm.substring(perm.lastIndexOf('.') + 1));
+            }
+        }
+
+        return defaultDoubleJumps;
     }
 }

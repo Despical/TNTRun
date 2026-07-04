@@ -19,6 +19,8 @@
 package dev.despical.tntrun.event;
 
 import dev.despical.tntrun.arena.Arena;
+import dev.despical.tntrun.arena.options.ArenaKeys;
+import dev.despical.tntrun.game.Game;
 import dev.despical.tntrun.game.GameState;
 import dev.despical.tntrun.user.User;
 import org.bukkit.entity.Player;
@@ -34,35 +36,33 @@ import org.bukkit.event.entity.EntityDamageEvent;
 public class GameEvents extends ListenerAdapter {
 
     @EventHandler
-    public void onEntityDamage(EntityDamageEvent e) {
-        if (!(e.getEntity() instanceof Player victim)) return;
+    public void onEntityDamage(EntityDamageEvent event) {
+        if (!(event.getEntity() instanceof Player victim)) return;
 
-        var user = this.userManager.getUser(victim);
-        var arena = user.getArena();
+        User user = userManager.getUser(victim);
+        Arena arena = user.getArena();
 
         if (arena == null) {
             return;
         }
 
-        switch (e.getCause()) {
-            case DROWNING -> e.setCancelled(true);
-            case FALL -> {
-                e.setCancelled(true);
-            }
+        switch (event.getCause()) {
+            case DROWNING, FALL -> event.setCancelled(true);
             case VOID -> {
-                e.setCancelled(true);
+                event.setCancelled(true);
 
-                if (!arena.isArenaState(GameState.IN_GAME)) {
-                    victim.teleport(arena.getLobbyLocation());
+                Game game = arena.getGame();
+                if (!game.isState(GameState.IN_GAME)) {
+                    victim.teleport(arena.getOption(ArenaKeys.LOBBY_LOCATION));
                     return;
                 }
 
                 if (user.isSpectator()) {
-                    victim.teleport(arena.getGame().getStartLocation());
+                    victim.teleport(game.getStartLocation());
                     return;
                 }
 
-                arena.getGame().eliminate(user);
+                game.eliminate(user);
             }
         }
     }
@@ -72,7 +72,7 @@ public class GameEvents extends ListenerAdapter {
         if (!(event.getEntity() instanceof Player player)) return;
 
         arenaRegistry.findArena(player).ifPresent(arena -> {
-            if (arena.isArenaState(GameState.IN_GAME)) {
+            if (arena.isState(GameState.IN_GAME)) {
                 return;
             }
 
@@ -84,12 +84,12 @@ public class GameEvents extends ListenerAdapter {
     @EventHandler
     public void onPlayerDamage(EntityDamageByEntityEvent event) {
         if (!(event.getEntity() instanceof Player victim)) return;
-        if (!(event.getDamager() instanceof Player damager)) return;
+        if (!(event.getDamager() instanceof Player)) return;
 
         Arena arena = arenaRegistry.getArena(victim);
         if (arena == null) return;
 
-        if (!arena.isArenaState(GameState.IN_GAME)) {
+        if (!arena.isState(GameState.IN_GAME)) {
             event.setCancelled(true);
             return;
         }

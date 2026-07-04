@@ -138,7 +138,10 @@ public class WaitingState extends GameStateHandler {
         saveAndClearInventory(player);
         giveLobbyItems(player);
         User user = plugin.getUserManager().getUser(player);
-        user.setStatistic(Statistics.LOCAL_DOUBLE_JUMPS, plugin.getPermissionManager().getDoubleJumps(player));
+        int doubleJumps = Statistics.getDoubleJumps(player);
+        user.setStatistic(Statistics.LOCAL_DOUBLE_JUMPS, doubleJumps);
+        user.setStatistic(Statistics.LOCAL_MAX_DOUBLE_JUMPS, doubleJumps);
+        game.updatePlayerMetadata(user);
     }
 
     private void giveLobbyItems(Player player) {

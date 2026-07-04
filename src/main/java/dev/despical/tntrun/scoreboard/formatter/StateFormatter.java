@@ -1,6 +1,5 @@
 package dev.despical.tntrun.scoreboard.formatter;
 
-import dev.despical.tntrun.Main;
 import dev.despical.tntrun.arena.Arena;
 import dev.despical.tntrun.arena.options.ArenaKeys;
 import dev.despical.tntrun.game.Game;
@@ -40,7 +39,7 @@ public enum StateFormatter {
     IN_GAME(GameState.IN_GAME,
         (user, game, line) -> {
             int jumps = user.getStatistic(Statistics.LOCAL_DOUBLE_JUMPS);
-            int max = Main.getInstance().getPermissionManager().getDoubleJumps(user.getPlayer());
+            int max = user.getStatistic(Statistics.LOCAL_MAX_DOUBLE_JUMPS);
 
             Var[] vars = {
                 Var.of("%max_double_jumps%", max),

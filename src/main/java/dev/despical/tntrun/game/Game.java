@@ -36,6 +36,7 @@ import dev.despical.tntrun.scoreboard.ScoreboardManager;
 import dev.despical.tntrun.stats.Statistics;
 import dev.despical.tntrun.user.User;
 import dev.despical.tntrun.utils.ItemUtils;
+import dev.despical.tntrun.utils.Schedulers;
 import dev.despical.tntrun.utils.Var;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
@@ -83,6 +84,7 @@ public class Game extends BukkitRunnable {
     private final @Getter BossBarManager bossBarManager;
 
     private final @Getter List<User> users;
+    private final Map<UUID, PlayerMetadata> playerMetadata;
     private final Map<GameState, GameStateHandler> states;
 
     public Game(Arena arena, int tickPeriod) {
@@ -95,6 +97,7 @@ public class Game extends BukkitRunnable {
         this.placementMessenger = new PlacementMessenger(this);
         this.bossBarManager = new BossBarManager(this);
         this.users = new ArrayList<>();
+        this.playerMetadata = new HashMap<>();
         this.scores = new ScoreRegistry(this);
         this.states = Map.of(
             GameState.WAITING, new WaitingState(this),
@@ -212,6 +215,7 @@ public class Game extends BukkitRunnable {
 
         states.get(gameState).leave(user);
         user.setSpectator(false);
+
         scoreboardManager.updateAllScoreboards();
 
         plugin.getSignManager().updateSigns(arena);
@@ -271,6 +275,21 @@ public class Game extends BukkitRunnable {
         return gameState;
     }
 
+    public PlayerMetadata getPlayerMetadata(UUID uuid) {
+        return playerMetadata.get(uuid);
+    }
+
+    public void updatePlayerMetadata(User user) {
+        int doubleJumps = user.getStatistic(Statistics.LOCAL_DOUBLE_JUMPS);
+        int maxDoubleJumps = user.getStatistic(Statistics.LOCAL_MAX_DOUBLE_JUMPS);
+
+        playerMetadata.put(user.getUUID(), new PlayerMetadata(user.getName(), doubleJumps, maxDoubleJumps));
+    }
+
+    public void clearPlayerMetadata() {
+        playerMetadata.clear();
+    }
+
     public List<Player> getPlayers() {
         return users.stream().map(User::getPlayer).filter(Objects::nonNull).toList();
     }
@@ -304,7 +323,7 @@ public class Game extends BukkitRunnable {
                         }
 
                         arena.addDestroyedBlock(block.getState());
-                        plugin.getServer().getScheduler().runTaskLater(plugin, () -> block.setType(Material.AIR), blockRemoveDelay);
+                        Schedulers.runTaskLater(() -> block.setType(Material.AIR), blockRemoveDelay);
                     }
                 }
             }
@@ -326,11 +345,12 @@ public class Game extends BukkitRunnable {
 
         scores.addScore(user, user.getStatistic(Statistics.LOCAL_SURVIVE_TIME));
         user.setSpectator(true);
+
         arena.addDeathPlayer(user);
         prepareSpectator(user, true);
 
         int playersLeft = getPlayersLeft().size();
-        broadcastMessage(playersLeft == 0 ? "messages.in-game.last-one-fell-into-void" : "messages.in-game.fell-into-void",
+        broadcastMessage("you-eliminated",
             Var.ofPlayer(user),
             Var.of("%players_left%", playersLeft)
         );
@@ -352,6 +372,7 @@ public class Game extends BukkitRunnable {
         arena.addWinner(winner);
         scores.addScore(winner, winner.getStatistic(Statistics.LOCAL_SURVIVE_TIME));
         scores.setWinner(winner);
+
         setGameState(GameState.ENDING);
     }
 
@@ -384,7 +405,7 @@ public class Game extends BukkitRunnable {
         scoreboardManager.createScoreboard(player);
         bossBarManager.addPlayer(player);
 
-        user.sendMessage("messages.in-game.you-are-spectator-now");
+        user.sendMessage("you-are-spectator-now");
     }
 
     public void applySpectatorSettings(User user) {
@@ -477,5 +498,7 @@ public class Game extends BukkitRunnable {
             return world.getBlockAt(NumberConversions.floor(x + addx), y, NumberConversions.floor(z + addz));
         }
     }
-}
 
+    public record PlayerMetadata(String name, int doubleJumps, int maxDoubleJumps) {
+    }
+}

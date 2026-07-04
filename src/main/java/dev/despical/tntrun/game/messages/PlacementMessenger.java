@@ -3,7 +3,6 @@ package dev.despical.tntrun.game.messages;
 import dev.despical.tntrun.Main;
 import dev.despical.tntrun.chat.ChatManager;
 import dev.despical.tntrun.game.Game;
-import dev.despical.tntrun.stats.Statistics;
 import dev.despical.tntrun.user.User;
 import dev.despical.tntrun.utils.Schedulers;
 import dev.despical.tntrun.utils.StringUtils;
@@ -83,6 +82,11 @@ public final class PlacementMessenger {
         if (ranked.size() <= index) return fallback;
 
         UUID uuid = ranked.get(index);
+        Game.PlayerMetadata metadata = game.getPlayerMetadata(uuid);
+        if (metadata != null) {
+            return metadata.name();
+        }
+
         Player player = Bukkit.getPlayer(uuid);
 
         if (player != null) {
@@ -128,12 +132,14 @@ public final class PlacementMessenger {
     }
 
     private Component createHover(UUID uuid) {
-        User user = plugin.getUserManager().getUser(uuid);
-        Player player = Bukkit.getPlayer(uuid);
+        Game.PlayerMetadata metadata = game.getPlayerMetadata(uuid);
+        if (metadata == null) {
+            return Component.empty();
+        }
 
         Var[] vars = {
-            Var.of("%double_jumps%", user == null ? 0 : user.getStatistic(Statistics.LOCAL_DOUBLE_JUMPS)),
-            Var.of("%max_double_jumps%", player == null ? 0 : plugin.getPermissionManager().getDoubleJumps(player))
+            Var.of("%double_jumps%", metadata.doubleJumps()),
+            Var.of("%max_double_jumps%", metadata.maxDoubleJumps())
         };
 
         List<Component> lines = plugin.getChatManager().getStringList("summary-message.hover")

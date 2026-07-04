@@ -18,7 +18,6 @@
 
 package dev.despical.tntrun.utils;
 
-import dev.despical.commons.serializer.InventorySerializer;
 import dev.despical.tntrun.Main;
 import dev.despical.tntrun.game.GameState;
 import dev.despical.tntrun.stats.Statistics;
@@ -53,7 +52,7 @@ public class Utils {
             public void run() {
                 var arena = user.getArena();
 
-                if (arena == null || arena.isDeathPlayer(user) || !arena.isArenaState(GameState.IN_GAME)) {
+                if (arena == null || arena.isDeathPlayer(user) || !arena.isState(GameState.IN_GAME)) {
                     cancel();
                     return;
                 }
@@ -68,7 +67,7 @@ public class Utils {
 
                 var progress = getProgressBar(ticks, maxTicks);
                 double remaining = Math.max(0.1D, (maxTicks - ticks) / 20D);
-                user.sendRawActionBar(plugin.getChatManager().message("messages.in-game.cooldown-format", user)
+                user.sendRawActionBar(plugin.getChatManager().message("cooldown-format", user)
                     .replace("%progress%", progress)
                     .replace("%time%", String.format(java.util.Locale.US, "%.1f", remaining)));
 
@@ -78,7 +77,7 @@ public class Utils {
     }
 
     public static void restoreDoubleJumpFlightWhenReady(User user, int seconds) {
-        plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
+        Schedulers.runTaskLater(() -> {
             if (!user.hasCooldown("double_jump")) {
                 restoreDoubleJumpFlight(user);
             }
@@ -89,7 +88,7 @@ public class Utils {
         var arena = user.getArena();
         Player player = user.getPlayer();
 
-        if (player == null || arena == null || arena.isDeathPlayer(user) || !arena.isArenaState(GameState.IN_GAME)) {
+        if (player == null || arena == null || arena.isDeathPlayer(user) || !arena.isState(GameState.IN_GAME)) {
             return;
         }
 
@@ -101,7 +100,7 @@ public class Utils {
     private static String getProgressBar(int current, int max) {
         float percent = (float) current / max;
         int progressBars = (int) (10 * percent), leftOver = (10 - progressBars);
-        String[] colors = plugin.getChatManager().message("messages.in-game.cooldown-progress-format").split(":");
+        String[] colors = plugin.getChatManager().message("cooldown-progress-format").split(":");
 
         return "%s%s%s%s".formatted(colors[0], colors[2].repeat(Math.max(0, progressBars)), colors[1], colors[2].repeat(Math.max(0, leftOver)));
     }
@@ -152,14 +151,6 @@ public class Utils {
         return config.getStringList(string);
     }
 
-    public static String getMessage(FileConfiguration config, String path) {
-        String message = getString(config, path);
-
-        return message
-            .replace("%prefix%", getString("prefix"))
-            .replace("%prefix-2%", getString("prefix-2"));
-    }
-
     public static String getListAsString(String path) {
         return listToString(getStringList(path));
     }
@@ -174,11 +165,6 @@ public class Utils {
 
     public static String formatTime(long seconds) {
         return "%02d:%02d".formatted(seconds / 60, seconds % 60);
-    }
-
-    public static void restoreSavedPlayerState(Player player) {
-        player.getActivePotionEffects().forEach(effect -> player.removePotionEffect(effect.getType()));
-        InventorySerializer.loadInventory(plugin, player);
     }
 
     public static void resetPlayerAttributes(Player player) {
