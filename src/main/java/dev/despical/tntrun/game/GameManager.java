@@ -124,7 +124,11 @@ public class GameManager {
     }
 
     public void reload() {
-        getGames().forEach(game -> game.getScoreboardManager().loadContents());
         bossBarConfig.load();
+
+        getGames().forEach(game -> {
+            game.getScoreboardManager().loadContents();
+            game.getBossBarManager().update();
+        });
     }
 }
