@@ -101,7 +101,6 @@ public class EndingState extends GameStateHandler {
             user.addStat(isWinner ? Statistics.WIN : Statistics.LOSE);
 
             int score = scores.getScore(user.getUUID());
-//            user.setStatisticIfHigher(Statistics.SCORE_RECORD, score);
             user.setStatisticIfHigher(Statistics.LONGEST_SURVIVE, user.getStatistic(Statistics.LOCAL_SURVIVE_TIME));
 
             if (isWinner) {
