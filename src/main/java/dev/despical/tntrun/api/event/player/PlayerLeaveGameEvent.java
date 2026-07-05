@@ -27,13 +27,13 @@ import org.jetbrains.annotations.NotNull;
 /**
  * Called immediately before a player is removed from an active TNTRun game.
  * <p>
- * The player is still registered in {@link #getGame()} when the event is fired,
+ * The player is still registered in the game when the event is fired,
  * and leave cleanup has not run yet. This makes the event useful for reading
  * final in-game state before inventories, visibility, and membership are reset.
  * <ul>
  *   <li>The player is still part of the game</li>
  *   <li>Scores and game state are still available</li>
- *   <li>The leave reason is available through {@link #getReason()}</li>
+ *   <li>The leave reason is available through {@code getReason()}</li>
  * </ul>
  * <p>
  * This event is informational and is not cancellable.

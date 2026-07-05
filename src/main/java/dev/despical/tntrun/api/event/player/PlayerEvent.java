@@ -29,7 +29,7 @@ import org.jetbrains.annotations.NotNull;
 /**
  * Base class for TNTRun events associated with a single Bukkit player.
  * <p>
- * Use {@link #getPlayer()} for Bukkit operations and {@link #getUser()} for
+ * Use {@code getPlayer()} for Bukkit operations and {@link #getUser()} for
  * TNTRun-specific state such as statistics, spectator state, and arena data.
  *
  * @author Despical

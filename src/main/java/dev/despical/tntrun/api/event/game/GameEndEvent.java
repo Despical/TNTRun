@@ -43,7 +43,8 @@ import java.util.UUID;
  * This event is useful for rewards, external integrations, post-game logging,
  * or custom end-game effects.
  *
- * @apiNote Players may leave the game before the ending timer expires.
+ * <p>
+ * API note: players may leave the game before the ending timer expires.
  *
  * @author Despical
  * <p>

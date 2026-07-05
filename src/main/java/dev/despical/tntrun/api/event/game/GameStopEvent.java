@@ -39,7 +39,7 @@ import java.util.UUID;
  *     <li>The game's active user list has been cleared</li>
  * </ul>
  * <p>
- * Since the active user list is empty at this point, use {@link #getStoppedPlayers()}
+ * Since the active user list is empty at this point, use {@code getStoppedPlayers()}
  * to inspect the players that were part of the game before cleanup.
  * <p>
  * The game normally transitions into {@link GameState#RESTARTING} after this

@@ -29,9 +29,9 @@ import org.jetbrains.annotations.NotNull;
 /**
  * Called immediately before a TNTRun game changes state.
  * <p>
- * The game is still in {@link #getOldState()} when this event is fired.
- * Cancelling the event prevents the transition, so {@link #getNewState()} will
- * not be applied and the target state's first tick will not run.
+ * The game is still in the old state when this event is fired. Cancelling the
+ * event prevents the new state from being applied, so the target state's first
+ * tick will not run.
  * <p>
  * Typical use cases:
  * <ul>
