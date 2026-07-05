@@ -1,6 +1,6 @@
-# ==========================================================
+# ======================================================== #
 #             TNT Run - BossBar Configuration              #
-# ==========================================================
+# ======================================================== #
 #                                                          #
 #  BAR STYLES:                                             #
 #    - PROGRESS   : Solid, undivided bar                   #
@@ -12,7 +12,7 @@
 #  BAR COLORS:                                             #
 #    - PINK, BLUE, RED, GREEN, YELLOW, PURPLE, WHITE       #
 #                                                          #
-# ==========================================================
+# ======================================================== #
 
 # Determines whether the BossBar is enabled.
 # If set to 'false', the bar will not be displayed during any game stage.
