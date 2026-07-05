@@ -49,7 +49,6 @@ import org.jetbrains.annotations.NotNull;
  * @author Despical
  * <p>
  * Created at 18.06.2026
- * @since 29.01.2026
  */
 @AllArgsConstructor
 public abstract class GameEvent extends TNTRunEvent {
@@ -70,6 +69,11 @@ public abstract class GameEvent extends TNTRunEvent {
         return game.getArena();
     }
 
+    /**
+     * Returns a compact debug representation containing the related arena.
+     *
+     * @return a string containing the event arena
+     */
     @Override
     public String toString() {
         return "[arena=%s]".formatted(game.getArena());

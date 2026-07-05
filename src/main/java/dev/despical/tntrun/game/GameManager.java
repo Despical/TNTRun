@@ -38,6 +38,7 @@ import org.bukkit.inventory.PlayerInventory;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * @author Despical
@@ -82,6 +83,10 @@ public class GameManager {
 
 
         List<User> users = new ArrayList<>(game.getUsers());
+        List<UUID> stoppedPlayers = users.stream()
+            .map(User::getUUID)
+            .toList();
+
         users.forEach(user -> {
             Player player = user.getPlayer();
             if (player == null) {
@@ -117,7 +122,7 @@ public class GameManager {
         });
         game.getUsers().clear();
 
-        plugin.getEventManager().gameStop(game, reason);
+        plugin.getEventManager().gameStop(game, reason, stoppedPlayers);
 
         game.setGameState(GameState.RESTARTING);
     }

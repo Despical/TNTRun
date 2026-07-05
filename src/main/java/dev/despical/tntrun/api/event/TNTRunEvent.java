@@ -19,25 +19,16 @@
 package dev.despical.tntrun.api.event;
 
 import org.bukkit.event.Event;
-import org.bukkit.event.HandlerList;
-import org.jetbrains.annotations.NotNull;
 
 /**
+ * Base type for all Bukkit events fired by TNTRun.
+ * <p>
+ * Each concrete event class owns its own Bukkit {@code HandlerList}. This base
+ * class is only a shared marker and should not be listened to directly.
+ *
  * @author Despical
  * <p>
  * Created at 29.01.2026
  */
 public abstract class TNTRunEvent extends Event {
-
-    private static final HandlerList HANDLER_LIST = new HandlerList();
-
-    @NotNull
-    @Override
-    public HandlerList getHandlers() {
-        return HANDLER_LIST;
-    }
-
-    public static HandlerList getHandlerList() {
-        return HANDLER_LIST;
-    }
 }

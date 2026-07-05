@@ -20,6 +20,7 @@ package dev.despical.tntrun.api.event.game;
 
 import dev.despical.tntrun.game.Game;
 import dev.despical.tntrun.user.User;
+import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -27,23 +28,20 @@ import java.util.Map;
 import java.util.UUID;
 
 /**
- * Called when a TNTRun game has fully ended and entered its ending phase.
+ * Called after a TNTRun game finishes and enters the ending phase.
  * <p>
- * This event is fired after all rounds are completed, final scores are calculated,
- * and post-game summary logic has been executed. At this point:
+ * This event is fired after the winner and placements have been calculated,
+ * summary messages have been sent, players have been moved back to the start
+ * location, statistics have been applied, and arena records have been updated.
+ * At this point:
  * <ul>
  *   <li>Final scores and placements are finalized</li>
- *   <li>The winner and Top 3 rankings are available</li>
- *   <li>Summary and placement messages may have already been sent</li>
- *   <li>Players have been teleported to the start location</li>
+ *   <li>The winner and top-three rankings are available</li>
+ *   <li>Players are still part of the game while the ending timer counts down</li>
  * </ul>
  * <p>
- * The game may remain in an ending state for a short duration, during which
- * players are still allowed to leave before the server transitions to the
- * restarting phase.
- * <p>
- * This event is intended for rewarding players, persisting statistics,
- * triggering external integrations, or running custom end-game logic.
+ * This event is useful for rewards, external integrations, post-game logging,
+ * or custom end-game effects.
  *
  * @apiNote Players may leave the game before the ending timer expires.
  *
@@ -53,6 +51,13 @@ import java.util.UUID;
  */
 public class GameEndEvent extends GameEvent {
 
+    private static final HandlerList HANDLER_LIST = new HandlerList();
+
+    /**
+     * Constructs a new GameEndEvent.
+     *
+     * @param game the game that has finished
+     */
     public GameEndEvent(Game game) {
         super(game);
     }
@@ -75,5 +80,15 @@ public class GameEndEvent extends GameEvent {
     @NotNull
     public Map<UUID, Integer> getTop3() {
         return game.getScores().getTop3();
+    }
+
+    @NotNull
+    @Override
+    public HandlerList getHandlers() {
+        return HANDLER_LIST;
+    }
+
+    public static HandlerList getHandlerList() {
+        return HANDLER_LIST;
     }
 }

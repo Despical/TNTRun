@@ -23,34 +23,30 @@ import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
+import org.bukkit.event.HandlerList;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Fired when a player attempts to join a TNTRun game.
  * <p>
- * This event is triggered <b>before</b> the player is officially added to the game.
- * Listeners can cancel the join attempt by calling {@link #setCancelled(boolean)}.
- * <p>
- * Use {@link #getPlayer()} to access the Bukkit player, and {@link #getUser()}
- * for plugin-specific user data.
- * <p>
- * The game can be accessed via {@link #getGame()}.
+ * This event is called before the player is added to the target {@link Game}.
+ * Cancelling it prevents the join and leaves the player outside the game.
  * <p>
  * Typical use cases:
  * <ul>
- *     <li>Prevent a player from joining based on custom conditions</li>
- *     <li>Log join attempts or send custom messages</li>
+ *     <li>Checking permissions, parties, cooldowns, or queue state</li>
+ *     <li>Blocking joins for custom arena conditions</li>
+ *     <li>Logging or announcing join attempts</li>
  * </ul>
- * <p>
- * Lifecycle note: if the event is cancelled, the player will <b>not</b> be added
- * to the game.
  *
  * @author Despical
  * <p>
  * Created at 18.06.2026
- * @since 29.01.2026
  */
 @Getter
 public class PlayerJoinAttemptEvent extends PlayerEvent implements Cancellable {
+
+    private static final HandlerList HANDLER_LIST = new HandlerList();
 
     /**
      * Whether this join attempt is cancelled.
@@ -59,11 +55,29 @@ public class PlayerJoinAttemptEvent extends PlayerEvent implements Cancellable {
     @Setter
     private boolean cancelled;
 
-    /** The game that the player is attempting to join */
+    /**
+     * The game that the player is attempting to join.
+     */
     private final Game game;
 
+    /**
+     * Constructs a new PlayerJoinAttemptEvent.
+     *
+     * @param player the player attempting to join
+     * @param game the target game
+     */
     public PlayerJoinAttemptEvent(Player player, Game game) {
         super(player);
         this.game = game;
+    }
+
+    @NotNull
+    @Override
+    public HandlerList getHandlers() {
+        return HANDLER_LIST;
+    }
+
+    public static HandlerList getHandlerList() {
+        return HANDLER_LIST;
     }
 }

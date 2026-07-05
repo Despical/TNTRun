@@ -23,44 +23,47 @@ import dev.despical.tntrun.game.GameState;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.event.Cancellable;
+import org.bukkit.event.HandlerList;
+import org.jetbrains.annotations.NotNull;
 
 /**
- * Called immediately before a TNTRun game transitions from one state to another.
+ * Called immediately before a TNTRun game changes state.
  * <p>
- * This event is fired <b>before</b> the actual game state is changed, allowing
- * listeners to inspect the current state and, if needed, cancel the transition.
+ * The game is still in {@link #getOldState()} when this event is fired.
+ * Cancelling the event prevents the transition, so {@link #getNewState()} will
+ * not be applied and the target state's first tick will not run.
  * <p>
- * You can use {@link #getOldState()} to get the current state and
- * {@link #getNewState()} to see which state the game is about to enter.
- * <p>
- * Cancelling this event prevents the game from changing its state.
- * Typical use cases include:
+ * Typical use cases:
  * <ul>
- *     <li>Blocking transitions to certain states under custom conditions</li>
- *     <li>Updating UI or boss bars before a state change</li>
- *     <li>Logging state transitions for debugging or analytics</li>
+ *     <li>Blocking a transition under custom conditions</li>
+ *     <li>Logging state changes for analytics or debugging</li>
+ *     <li>Running custom logic before a state handler starts</li>
  * </ul>
- * <p>
- * Note that listeners should avoid performing heavy operations here,
- * as this event is fired synchronously within the state transition.
  *
  * @see Game#setGameState(GameState)
  * @author Despical
  * <p>
  * Created at 18.06.2026
- * @since 29.01.2026
  */
 @Getter
 public class GameStateChangeEvent extends GameEvent implements Cancellable {
 
-    /** Whether this state change has been cancelled */
+    private static final HandlerList HANDLER_LIST = new HandlerList();
+
+    /**
+     * Whether this state change has been cancelled.
+     */
     @Setter
     private boolean cancelled;
 
-    /** The previous game state before transition */
+    /**
+     * The game state before the transition.
+     */
     private final GameState oldState;
 
-    /** The game state that is about to be entered */
+    /**
+     * The game state that will be entered if the event is not cancelled.
+     */
     private final GameState newState;
 
     /**
@@ -74,5 +77,15 @@ public class GameStateChangeEvent extends GameEvent implements Cancellable {
         super(game);
         this.oldState = oldState;
         this.newState = newState;
+    }
+
+    @NotNull
+    @Override
+    public HandlerList getHandlers() {
+        return HANDLER_LIST;
+    }
+
+    public static HandlerList getHandlerList() {
+        return HANDLER_LIST;
     }
 }

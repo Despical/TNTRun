@@ -23,93 +23,80 @@ import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
+import org.bukkit.event.HandlerList;
+import org.jetbrains.annotations.NotNull;
 
 /**
- * Called when a player's statistic is about to change.
- *
- * <p>This event is fired before the new value is applied, allowing listeners to:</p>
- *
+ * Called before a player's statistic value is stored.
+ * <p>
+ * The event exposes the statistic key, the previous value, and a mutable new
+ * value. Listeners may cancel the update or replace the new value before it is
+ * written to the {@code User} statistic map.
+ * <p>
+ * Common use cases:
  * <ul>
- *   <li>Cancel the statistic change</li>
- *   <li>Modify the final value (boosters, perks, multipliers, caps)</li>
- *   <li>Detect suspicious or invalid stat changes (anti-cheat)</li>
+ *   <li>Applying boosters or multipliers</li>
+ *   <li>Clamping values to a maximum or minimum</li>
+ *   <li>Rejecting invalid statistic changes</li>
+ *   <li>Mirroring statistic updates to an external service</li>
  * </ul>
  *
- * <p>The {@code newValue} is mutable, meaning listeners can override the final value
- * using {@link #setNewValue(T)}.</p>
- *
- * <p>If the event is canceled, the statistic update will NOT be applied.</p>
- *
- * <h3>Example: Apply a 2x booster</h3>
- * <pre>{@code
- * @EventHandler
- * public void onStatChange(PlayerStatisticChangeEvent event) {
- *     if (event.getStat() == Statistics.WIN) {
- *         event.setNewValue(event.getNewValue() * 2);
- *     }
- * }
- * }</pre>
- *
- * <h3>Example: Cap a statistic value</h3>
- * <pre>{@code
- * @EventHandler
- * public void onStatChange(PlayerStatisticChangeEvent event) {
- *     int cap = 1000;
- *
- *     if (event.getNewValue() > cap) {
- *         event.setNewValue(cap);
- *     }
- * }
- * }</pre>
- *
- * <h3>Example: Block suspicious stat increases</h3>
- * <pre>{@code
- * @EventHandler
- * public void onStatChange(PlayerStatisticChangeEvent event) {
- *     int diff = event.getNewValue() - event.getOldValue();
- *
- *     if (diff > 50) {
- *         event.setCancelled(true);
- *     }
- * }
- * }</pre>
- *
- * <h3>Example: Reduce stat gain in specific conditions</h3>
- * <pre>{@code
- * @EventHandler
- * public void onStatChange(PlayerStatisticChangeEvent event) {
- *     Player player = event.getPlayer();
- *
- *     if (player.hasPermission("stats.half")) {
- *         int reduced = event.getOldValue()
- *             + ((event.getNewValue() - event.getOldValue()) / 2);
- *
- *         event.setNewValue(reduced);
- *     }
- * }
- * }</pre>
- *
+ * @param <T> the value type used by the statistic
  * @author Despical
  * <p>
  * Created at 18.06.2026
- * @since 29.01.2026
  */
 @Getter
 public class PlayerStatisticChangeEvent<T> extends PlayerEvent implements Cancellable {
 
+    private static final HandlerList HANDLER_LIST = new HandlerList();
+
+    /**
+     * The value that will be stored if the event is not cancelled.
+     * <p>
+     * Listeners may replace this value to modify the statistic update.
+     */
     @Setter
     private T newValue;
 
+    /**
+     * Whether this statistic update has been cancelled.
+     */
     @Setter
     private boolean cancelled;
 
+    /**
+     * The statistic key being updated.
+     */
     private final StatisticType<T> stat;
+
+    /**
+     * The value stored before this update was requested.
+     */
     private final T oldValue;
 
+    /**
+     * Constructs a new PlayerStatisticChangeEvent.
+     *
+     * @param player the player whose statistic is changing
+     * @param stat the statistic key being updated
+     * @param oldValue the value stored before the update
+     * @param newValue the value that will be stored unless modified or cancelled
+     */
     public PlayerStatisticChangeEvent(Player player, StatisticType<T> stat, T oldValue, T newValue) {
         super(player);
         this.stat = stat;
         this.oldValue = oldValue;
         this.newValue = newValue;
+    }
+
+    @NotNull
+    @Override
+    public HandlerList getHandlers() {
+        return HANDLER_LIST;
+    }
+
+    public static HandlerList getHandlerList() {
+        return HANDLER_LIST;
     }
 }

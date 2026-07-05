@@ -35,6 +35,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 
+import java.util.List;
+import java.util.UUID;
 import java.util.function.Supplier;
 
 /**
@@ -93,7 +95,11 @@ public final class EventManager {
     }
 
     public void gameStop(Game game, StopReason reason) {
-        callByType(EventType.GAME_STOP, () -> new GameStopEvent(game, reason));
+        gameStop(game, reason, List.of());
+    }
+
+    public void gameStop(Game game, StopReason reason, List<UUID> stoppedPlayers) {
+        callByType(EventType.GAME_STOP, () -> new GameStopEvent(game, reason, stoppedPlayers));
     }
 
     public PlayerJoinAttemptEvent playerJoinAttempt(Player player, Game game) {

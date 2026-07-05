@@ -45,7 +45,7 @@ public enum EventType {
 
     PLAYER_JOIN_ATTEMPT(PlayerJoinAttemptEvent.class),
     PLAYER_LEAVE(PlayerLeaveGameEvent.class),
-    PLAYER_STAT_CHANGE(PlayerStatisticChangeEvent.class),;
+    PLAYER_STAT_CHANGE(PlayerStatisticChangeEvent.class);
 
     private final Class<? extends Event> eventClass;
 }

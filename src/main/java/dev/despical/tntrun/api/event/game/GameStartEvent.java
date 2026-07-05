@@ -19,15 +19,17 @@
 package dev.despical.tntrun.api.event.game;
 
 import dev.despical.tntrun.game.Game;
+import org.bukkit.event.HandlerList;
+import org.jetbrains.annotations.NotNull;
 
 /**
- * Called when the game has finished initialization and is about to start.
+ * Called after a TNTRun game enters active play.
  * <p>
- * At the time this event is fired, all game setup logic has been completed
- * (players teleported, scores reset, tasks prepared, etc.).
+ * At this point players have been moved to the start location, per-game scores
+ * have been reset, the survival round has started, block removal has been
+ * scheduled, and the start message has been broadcast.
  * <p>
- * The actual game loop will become active on the <b>next server tick</b>,
- * meaning gameplay logic, timers, and round processing will begin immediately after.
+ * This event is informational and is not cancellable.
  *
  * @author Despical
  * <p>
@@ -36,7 +38,24 @@ import dev.despical.tntrun.game.Game;
  */
 public class GameStartEvent extends GameEvent {
 
+    private static final HandlerList HANDLER_LIST = new HandlerList();
+
+    /**
+     * Constructs a new GameStartEvent.
+     *
+     * @param game the game that has entered active play
+     */
     public GameStartEvent(Game game) {
         super(game);
+    }
+
+    @NotNull
+    @Override
+    public HandlerList getHandlers() {
+        return HANDLER_LIST;
+    }
+
+    public static HandlerList getHandlerList() {
+        return HANDLER_LIST;
     }
 }

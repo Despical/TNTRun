@@ -21,39 +21,31 @@ package dev.despical.tntrun.api.event.player;
 import dev.despical.tntrun.game.Game;
 import lombok.Getter;
 import org.bukkit.entity.Player;
+import org.bukkit.event.HandlerList;
+import org.jetbrains.annotations.NotNull;
 
 /**
- * Called right before a player is removed from an active TNTRun game.
+ * Called immediately before a player is removed from an active TNTRun game.
  * <p>
- * This event is fired exactly one step before the actual leave logic
- * is executed. At this point, the player is still fully registered
- * in the game and no cleanup or state changes have been applied yet.
- * <p>
- * The event is triggered regardless of how the player leaves:
- * command usage, leave item, or disconnect.
- * <p>
- * When this event is called:
+ * The player is still registered in {@link #getGame()} when the event is fired,
+ * and leave cleanup has not run yet. This makes the event useful for reading
+ * final in-game state before inventories, visibility, and membership are reset.
  * <ul>
  *   <li>The player is still part of the game</li>
- *   <li>Scores, round data, and game state are still intact</li>
- *   <li>No inventory restore or visibility cleanup has run yet</li>
- *   <li>The leave process has not been finalized</li>
+ *   <li>Scores and game state are still available</li>
+ *   <li>The leave reason is available through {@link #getReason()}</li>
  * </ul>
  * <p>
- * This event is intended for observing and reacting to a player leaving,
- * such as logging, statistics tracking, external integrations, or custom
- * side effects.
- * <p>
- * Note: This event is informational and is not cancellable.
+ * This event is informational and is not cancellable.
  *
  * @author Despical
  * <p>
  * Created at 18.06.2026
- * @since 29.01.2026
  */
-
 @Getter
 public class PlayerLeaveGameEvent extends PlayerEvent {
+
+    private static final HandlerList HANDLER_LIST = new HandlerList();
 
     /**
      * The game the player is leaving.
@@ -65,10 +57,27 @@ public class PlayerLeaveGameEvent extends PlayerEvent {
      */
     private final LeaveReason reason;
 
+    /**
+     * Constructs a new PlayerLeaveGameEvent.
+     *
+     * @param player the player leaving the game
+     * @param game the game the player is leaving
+     * @param reason the reason the player is leaving
+     */
     public PlayerLeaveGameEvent(Player player, Game game, LeaveReason reason) {
         super(player);
         this.game = game;
         this.reason = reason;
+    }
+
+    @NotNull
+    @Override
+    public HandlerList getHandlers() {
+        return HANDLER_LIST;
+    }
+
+    public static HandlerList getHandlerList() {
+        return HANDLER_LIST;
     }
 
     /**

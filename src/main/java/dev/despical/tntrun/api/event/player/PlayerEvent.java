@@ -27,25 +27,14 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Represents an event related to a specific player in TNTRun.
+ * Base class for TNTRun events associated with a single Bukkit player.
  * <p>
- * Provides convenient access to the {@link Player} object and the corresponding
- * {@link User} instance used internally by the plugin.
- * <p>
- * Example subclasses and their purposes:
- * <ul>
- *     <li>{@link PlayerJoinAttemptEvent} – fired when a player attempts to join a game (cancellable)</li>
- *     <li>{@link PlayerLeaveGameEvent} – fired when a player leaves a game</li>
- *     <li>{@link PlayerStatisticChangeEvent} – fired when a player's statistic changes</li>
- * </ul>
- * <p>
- * Use {@link #getPlayer()} for Bukkit-level operations, and
- * {@link #getUser()} for plugin-specific data.
+ * Use {@link #getPlayer()} for Bukkit operations and {@link #getUser()} for
+ * TNTRun-specific state such as statistics, spectator state, and arena data.
  *
  * @author Despical
  * <p>
  * Created at 18.06.2026
- * @since 29.01.2026
  */
 @Getter
 @AllArgsConstructor
@@ -65,6 +54,11 @@ public abstract class PlayerEvent extends TNTRunEvent {
         return Main.getInstance().getUserManager().getUser(player);
     }
 
+    /**
+     * Returns a compact debug representation containing the player name.
+     *
+     * @return a string containing the event player
+     */
     @Override
     public String toString() {
         return "[player=%s]".formatted(player.getName());
