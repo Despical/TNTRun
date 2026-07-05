@@ -18,7 +18,6 @@
 
 package dev.despical.tntrun.command;
 
-import dev.despical.commandframework.CommandArguments;
 import dev.despical.commandframework.annotations.Command;
 import dev.despical.commandframework.annotations.Option;
 import dev.despical.commandframework.debug.Debug;
@@ -51,7 +50,7 @@ public final class DebugCommands extends CommandCategory {
         max = 3,
         senderType = Command.SenderType.PLAYER
     )
-    public void debugJoinCommand(User user, CommandArguments arguments) {
+    public void debugJoinCommand(User user, Arguments arguments) {
         Arena arena = arenaRegistry.getArena(arguments.getFirst());
 
         if (arena == null) {
@@ -122,7 +121,7 @@ public final class DebugCommands extends CommandCategory {
         senderType = Command.SenderType.PLAYER
     )
     @Option("path")
-    public void debugComponentCommand(CommandArguments arguments) {
+    public void debugComponentCommand(Arguments arguments) {
         List<String> pathOption = arguments.getOption("path");
         String path = pathOption == null || pathOption.isEmpty() ? null : pathOption.getFirst();
 
@@ -135,12 +134,12 @@ public final class DebugCommands extends CommandCategory {
                 return;
             }
 
-            chatManager.sendMessage(arguments, path);
+            arguments.sendMessage(path);
             return;
         }
 
         if (arguments.isArgumentsEmpty()) {
-            arguments.sendMessage("<#FF5252>✖ <#BDBDBD>Provide a MiniMessage string or use <#FFCA28>--path=<message.path><#BDBDBD>.");
+            arguments.sendRawMessage("<#FF5252>✖ <#BDBDBD>Provide a MiniMessage string or use <#FFCA28>--path=<message.path><#BDBDBD>.");
             return;
         }
 
@@ -154,7 +153,7 @@ public final class DebugCommands extends CommandCategory {
         permission = "tntrun.debug.dump",
         usage = "/%label% debug dump"
     )
-    public void debugDumpTimingsCommand(CommandArguments arguments) {
+    public void debugDumpTimingsCommand(Arguments arguments) {
         plugin.getEventManager().sendTimingsReport(arguments.getSender());
     }
 }

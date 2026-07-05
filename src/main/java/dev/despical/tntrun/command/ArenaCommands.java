@@ -18,11 +18,11 @@
 
 package dev.despical.tntrun.command;
 
-import dev.despical.commandframework.CommandArguments;
 import dev.despical.commandframework.annotations.Command;
 import dev.despical.commandframework.annotations.Flag;
 import dev.despical.tntrun.arena.Arena;
 import dev.despical.tntrun.arena.options.ArenaKeys;
+import dev.despical.tntrun.command.arguments.Arguments;
 import dev.despical.tntrun.game.Game;
 import dev.despical.tntrun.game.StopReason;
 import dev.despical.tntrun.setup.SetupMenu;
@@ -49,22 +49,20 @@ public final class ArenaCommands extends CommandCategory {
         min = 1,
         max = 1
     )
-    public void createArenaCommand(CommandArguments arguments) {
-        Player player = arguments.getSender();
+    public void createArenaCommand(Arguments arguments) {
         String arenaId = arguments.getFirst();
         Var var = Var.of("%id%", arenaId);
 
         if (arenaRegistry.isArenaExists(arenaId)) {
-            chatManager.sendCenteredMessage(player, "arena-already-exists", var);
-
-            player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1f, 1f);
+            arguments.sendCenteredMessage("arena-already-exists", var);
+            arguments.playSound(Sound.ENTITY_VILLAGER_NO, 1f, 1f);
             return;
         }
 
         arenaRegistry.registerNewArena(arenaId);
-        chatManager.sendCenteredMessage(player, "created-arena", var);
 
-        player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1f, 2.0f);
+        arguments.sendCenteredMessage("created-arena", var);
+        arguments.playSound(Sound.ENTITY_PLAYER_LEVELUP, 1f, 2.0f);
     }
 
     @Flag({"confirm", "cancel"})
@@ -76,19 +74,18 @@ public final class ArenaCommands extends CommandCategory {
         min = 1,
         senderType = Command.SenderType.PLAYER
     )
-    public void deleteArenaCommand(Arena arena, CommandArguments arguments) {
-        Player player = arguments.getSender();
+    public void deleteArenaCommand(Arena arena, Arguments arguments) {
         Var var = Var.of("%id%", arguments.getFirst());
 
         if (arena == null) {
-            chatManager.sendCenteredMessage(player, "no-arena-found", var);
-            player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1f, 1f);
+            arguments.sendCenteredMessage("no-arena-found", var);
+            arguments.playSound(Sound.ENTITY_VILLAGER_NO, 1f, 1f);
             return;
         }
 
         if (arguments.isFlagPresent("cancel")) {
-            chatManager.sendCenteredMessage(player, "delete-cancelled", var);
-            player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 1f, 1f);
+            arguments.sendCenteredMessage("delete-cancelled", var);
+            arguments.playSound(Sound.UI_BUTTON_CLICK, 1f, 1f);
             return;
         }
 
@@ -97,14 +94,14 @@ public final class ArenaCommands extends CommandCategory {
             gameManager.stopGame(game, StopReason.ARENA_DELETED);
 
             arenaRegistry.unregisterArena(arena);
-            chatManager.sendCenteredMessage(player, "deleted-arena", var);
 
-            player.playSound(player.getLocation(), Sound.ENTITY_ITEM_BREAK, 1f, 0.5f);
+            arguments.sendCenteredMessage("deleted-arena", var);
+            arguments.playSound(Sound.ENTITY_ITEM_BREAK, 1f, 0.5f);
             return;
         }
 
-        chatManager.sendCenteredMessage(player, "delete-confirmation", var);
-        player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1f, 1.5f);
+        arguments.sendCenteredMessage("delete-confirmation", var);
+        arguments.playSound(Sound.BLOCK_NOTE_BLOCK_PLING, 1f, 1.5f);
     }
 
     @Command(
@@ -114,13 +111,12 @@ public final class ArenaCommands extends CommandCategory {
         usage = "/%label% list",
         senderType = Command.SenderType.PLAYER
     )
-    public void listArenaCommand(User user, CommandArguments arguments) {
-        Player player = arguments.getSender();
+    public void listArenaCommand(User user, Arguments arguments) {
         Set<Arena> arenas = arenaRegistry.getArenas();
 
         if (arenas.isEmpty()) {
-            chatManager.sendMessage(player, "no-arenas-registered");
-            player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1f, 1f);
+            arguments.sendMessage("no-arenas-registered");
+            arguments.playSound(Sound.ENTITY_VILLAGER_NO, 1f, 1f);
             return;
         }
 
@@ -140,8 +136,8 @@ public final class ArenaCommands extends CommandCategory {
             }
         }
 
-        chatManager.sendMessage(player, "created-arenas", Var.of("%arenas%", arenasJoiner.toString()));
-        player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 1f, 1f);
+        arguments.sendMessage("created-arenas", Var.of("%arenas%", arenasJoiner.toString()));
+        arguments.playSound(Sound.UI_BUTTON_CLICK, 1f, 1f);
     }
 
     @Command(
@@ -152,12 +148,13 @@ public final class ArenaCommands extends CommandCategory {
         min = 1,
         senderType = Command.SenderType.PLAYER
     )
-    public void editArenaCommand(Arena arena, User user, CommandArguments arguments) {
+    public void editArenaCommand(Arena arena, Arguments arguments) {
         if (arena == null) {
-            chatManager.sendMessage(arguments, "no-arena-found-with-that-name");
+            arguments.sendMessage("no-arena-found-with-that-name");
             return;
         }
 
+        User user = userManager.getUser(arguments.<Player>getSender());
         new SetupMenu(user, arena).open();
     }
 }

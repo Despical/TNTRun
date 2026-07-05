@@ -18,10 +18,10 @@
 
 package dev.despical.tntrun.command;
 
-import dev.despical.commandframework.CommandArguments;
 import dev.despical.commandframework.annotations.Command;
 import dev.despical.tntrun.api.event.player.PlayerLeaveGameEvent.LeaveReason;
 import dev.despical.tntrun.arena.Arena;
+import dev.despical.tntrun.command.arguments.Arguments;
 import dev.despical.tntrun.menu.stats.StatsMenu;
 import dev.despical.tntrun.user.User;
 import org.bukkit.Bukkit;
@@ -42,12 +42,11 @@ public final class PlayerCommands extends CommandCategory {
         min = 1,
         senderType = Command.SenderType.PLAYER
     )
-    public void joinCommand(User user, CommandArguments arguments) {
-        String arenaId = arguments.getArgument(0);
-        Arena arena = arenaRegistry.getArena(arenaId);
+    public void joinCommand(User user, Arguments arguments) {
+        Arena arena = arenaRegistry.getArena(arguments.getFirst());
 
         if (arena == null) {
-            chatManager.sendMessage(arguments, "no-arena-found-with-that-name");
+            arguments.sendMessage("no-arena-found-with-that-name");
             return;
         }
 
@@ -70,7 +69,7 @@ public final class PlayerCommands extends CommandCategory {
         usage = "/%label% stats [player]",
         senderType = Command.SenderType.PLAYER
     )
-    public void statsCommand(User user, CommandArguments arguments) {
+    public void statsCommand(User user, Arguments arguments) {
         if (arguments.isArgumentsEmpty()) {
             new StatsMenu(user).open();
             return;
@@ -84,7 +83,7 @@ public final class PlayerCommands extends CommandCategory {
 
         OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayerIfCached(arguments.getFirst());
         if (offlinePlayer == null) {
-            chatManager.sendMessage(arguments, "no-player-with-that-name");
+            arguments.sendMessage("no-player-with-that-name");
             return;
         }
 
