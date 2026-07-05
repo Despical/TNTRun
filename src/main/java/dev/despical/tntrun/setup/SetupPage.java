@@ -28,6 +28,11 @@ import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+/**
+ * @author Despical
+ * <p>
+ * Created at 18.06.2026
+ */
 public abstract class SetupPage implements Page {
 
     protected static final Main plugin = Main.getInstance();

@@ -90,6 +90,8 @@ import org.bukkit.event.Cancellable;
  * }</pre>
  *
  * @author Despical
+ * <p>
+ * Created at 18.06.2026
  * @since 29.01.2026
  */
 @Getter

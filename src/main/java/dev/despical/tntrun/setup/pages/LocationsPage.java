@@ -34,6 +34,11 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import java.util.List;
 import java.util.function.Consumer;
 
+/**
+ * @author Despical
+ * <p>
+ * Created at 18.06.2026
+ */
 public class LocationsPage extends SetupPage {
 
     public LocationsPage(SetupMenu menu) {

@@ -33,6 +33,11 @@ import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+/**
+ * @author Despical
+ * <p>
+ * Created at 18.06.2026
+ */
 public class PlayerAmountsPage extends SetupPage {
 
     public PlayerAmountsPage(SetupMenu menu) {

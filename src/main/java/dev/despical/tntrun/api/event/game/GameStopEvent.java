@@ -50,6 +50,8 @@ import lombok.Getter;
  * </ul>
  *
  * @author Despical
+ * <p>
+ * Created at 18.06.2026
  * @since 29.01.2026
  */
 public class GameStopEvent extends GameEvent {

@@ -51,6 +51,11 @@ import java.time.Duration;
 import java.util.List;
 import java.util.function.Consumer;
 
+/**
+ * @author Despical
+ * <p>
+ * Created at 18.06.2026
+ */
 public class SetupHomePage extends SetupPage {
 
     private static final String MAP_NAME_INPUT_KEY = "map_name";

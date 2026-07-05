@@ -36,6 +36,11 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.logging.Level;
 
+/**
+ * @author Despical
+ * <p>
+ * Created at 3.07.2026
+ */
 public class ResetArenaRecordsConfirmationPage extends SetupPage {
 
     public ResetArenaRecordsConfirmationPage(SetupMenu menu) {

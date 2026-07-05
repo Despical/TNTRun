@@ -43,6 +43,8 @@ import org.jetbrains.annotations.NotNull;
  * {@link #getUser()} for plugin-specific data.
  *
  * @author Despical
+ * <p>
+ * Created at 18.06.2026
  * @since 29.01.2026
  */
 @Getter

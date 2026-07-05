@@ -53,6 +53,11 @@ import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+/**
+ * @author Despical
+ * <p>
+ * Created at 18.06.2026
+ */
 public class StatsMenu implements Menu {
 
     private final Main plugin;

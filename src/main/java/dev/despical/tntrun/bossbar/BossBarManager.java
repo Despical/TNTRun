@@ -30,6 +30,11 @@ import org.bukkit.entity.Player;
  * <p>
  * Created at 28.01.2026
  */
+/**
+ * @author Despical
+ * <p>
+ * Created at 18.06.2026
+ */
 public class BossBarManager {
 
     private final Game game;

@@ -38,6 +38,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
 
+/**
+ * @author Despical
+ * <p>
+ * Created at 18.06.2026
+ */
 @Getter
 public class SetupMenu implements Menu {
 

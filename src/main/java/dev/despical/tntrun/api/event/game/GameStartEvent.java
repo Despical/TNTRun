@@ -30,6 +30,8 @@ import dev.despical.tntrun.game.Game;
  * meaning gameplay logic, timers, and round processing will begin immediately after.
  *
  * @author Despical
+ * <p>
+ * Created at 18.06.2026
  * @since 29.01.2026
  */
 public class GameStartEvent extends GameEvent {
