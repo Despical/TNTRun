@@ -220,13 +220,9 @@ created-arenas:
 
 can-not-unregister-now: "<#FFCA28>⚠ <#BDBDBD>Cannot unregister this arena while <#FFD54F>players are inside<#BDBDBD>."
 no-arena-found-with-that-name: "<#FF1744>✖ <#BDBDBD>No arena found with <#FF5252>that ID<#BDBDBD>."
-arena-not-ready-yet: "<#FFCA28>⚠ <#BDBDBD>This arena is <gradient:#FFA000:#FFCA28><bold>NOT READY</bold></gradient> <#BDBDBD>to be played yet."
 no-arenas-registered: "<#FFCA28>⚠ <#BDBDBD>There are <#FFD54F>no arenas <#BDBDBD>registered yet!"
-registered-arenas: "<#00E676>ℹ <#BDBDBD>Registered Arenas: <#00E676>%arenas%"
 already-playing: "<#FF1744>✖ <#BDBDBD>You are <#FF5252>already playing <#BDBDBD>TNT Run!"
 not-playing: "<#FF1744>✖ <#BDBDBD>You are not playing <#D50000><bold>TNT Run</bold> <#BDBDBD>right now."
-only-for-players: "<#FF1744>✖ <#BDBDBD>Only <#FF5252>players <#BDBDBD>can perform this command."
-player-not-found: "<#FF1744>✖ <#BDBDBD>That player was <#FF5252>not found<#BDBDBD>."
 cannot-join-now: "<#FF1744>✖ <#BDBDBD>You <#FF5252>cannot join <#BDBDBD>the game right now."
 chat-format: "<gray>%sender%<dark_gray>: <white>%message%"
 death-chat-format: "<#FF5252><bold>[DEAD CHAT]</bold> <#B0BEC5>%sender%<dark_gray>: <white>%message%"
