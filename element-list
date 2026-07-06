@@ -18,7 +18,6 @@ dev.despical.tntrun.game.scores
 dev.despical.tntrun.game.spectator
 dev.despical.tntrun.game.states
 dev.despical.tntrun.game.visibility
-dev.despical.tntrun.handlers
 dev.despical.tntrun.leaderboard
 dev.despical.tntrun.menu
 dev.despical.tntrun.menu.spectator
