@@ -69,4 +69,3 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_branch: javadoc
           publish_dir: build/docs/javadoc
-          force_orphan: true
