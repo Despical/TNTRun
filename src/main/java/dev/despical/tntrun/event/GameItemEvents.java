@@ -19,9 +19,11 @@
 package dev.despical.tntrun.event;
 
 import dev.despical.fileitems.SpecialItem;
+import dev.despical.tntrun.api.event.player.PlayerDoubleJumpEvent;
 import dev.despical.tntrun.api.event.player.PlayerLeaveGameEvent;
 import dev.despical.tntrun.arena.Arena;
 import dev.despical.tntrun.arena.options.ArenaKeys;
+import dev.despical.tntrun.game.Game;
 import dev.despical.tntrun.game.GameState;
 import dev.despical.tntrun.menu.spectator.SpectatorSettingsMenu;
 import dev.despical.tntrun.menu.spectator.SpectatorTeleportMenu;
@@ -65,7 +67,7 @@ public class GameItemEvents extends ListenerAdapter {
 			return;
 		}
 
-		User user = plugin.getUserManager().getUser(player);
+		User user = userManager.getUser(player);
 		Arena arena = user.getArena();
 
 		if (!canUseDoubleJump(user, player, arena)) {
@@ -83,7 +85,7 @@ public class GameItemEvents extends ListenerAdapter {
             return;
         }
 
-		User user = plugin.getUserManager().getUser(player);
+		User user = userManager.getUser(player);
 
 		if (!user.isInArena()) {
 			return;
@@ -93,7 +95,7 @@ public class GameItemEvents extends ListenerAdapter {
 			return;
 		}
 
-		var doubleJumpItem = plugin.getItemManager().getItem("double-jump");
+		var doubleJumpItem = itemManager.getItem("double-jump");
 
 		if (doubleJumpItem == null) {
 			return;
@@ -130,21 +132,38 @@ public class GameItemEvents extends ListenerAdapter {
             return true;
         }
 
-        user.setStatistic(Statistics.LOCAL_DOUBLE_JUMPS, jumps - 1);
-        arena.getGame().updatePlayerMetadata(user);
-        user.setCooldown("double_jump", plugin.getPermissionManager().getDoubleJumpDelay());
+        double cooldownSeconds = plugin.getPermissionManager().getDoubleJumpDelay();
+        var velocity = player.getLocation().getDirection().multiply(1.5D).setY(0.7D);
 
-        Utils.restoreDoubleJumpFlightWhenReady(user, plugin.getPermissionManager().getDoubleJumpDelay());
+
+        Game game = arena.getGame();
+        PlayerDoubleJumpEvent event = eventManager.playerDoubleJump(player, game, jumps - 1, cooldownSeconds, velocity);
+
+        if (event.isCancelled()) {
+            player.setFlying(false);
+            return true;
+        }
+
+        user.setStatistic(Statistics.LOCAL_DOUBLE_JUMPS, event.getJumpsLeft());
+
+        game.updatePlayerMetadata(user);
+
+        if (event.getCooldownSeconds() > 0D) {
+            user.setCooldown("double_jump", event.getCooldownSeconds());
+            Utils.restoreDoubleJumpFlightWhenReady(user, event.getCooldownSeconds());
+        } else {
+            user.removeCooldown("double_jump");
+        }
 
         player.setFlying(false);
         player.setAllowFlight(false);
-        player.setVelocity(player.getLocation().getDirection().multiply(1.5D).setY(0.7D));
+        player.setVelocity(event.getVelocity());
         plugin.getSoundManager().play(player, GameSound.DOUBLE_JUMP);
 
-        arena.getGame().getScoreboardManager().updateScoreboard(player);
+        game.getScoreboardManager().updateScoreboard(player);
 
-        if (options.isEnabled(BooleanOption.JUMP_BAR)) {
-            Utils.applyActionBarCooldown(user, plugin.getPermissionManager().getDoubleJumpDelay());
+        if (options.isEnabled(BooleanOption.JUMP_BAR) && event.getCooldownSeconds() > 0D) {
+            Utils.applyActionBarCooldown(user, event.getCooldownSeconds());
         }
 
         return true;

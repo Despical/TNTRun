@@ -43,10 +43,10 @@ public class Utils {
     private Utils() {
     }
 
-    public static void applyActionBarCooldown(final User user, int seconds) {
+    public static void applyActionBarCooldown(final User user, double seconds) {
         new BukkitRunnable() {
             int ticks = 0;
-            final int maxTicks = seconds * 20;
+            final int maxTicks = Math.max(1, (int) Math.ceil(seconds * 20D));
 
             @Override
             public void run() {
@@ -76,12 +76,12 @@ public class Utils {
         }.runTaskTimer(plugin, 0, 2);
     }
 
-    public static void restoreDoubleJumpFlightWhenReady(User user, int seconds) {
+    public static void restoreDoubleJumpFlightWhenReady(User user, double seconds) {
         Schedulers.runTaskLater(() -> {
             if (!user.hasCooldown("double_jump")) {
                 restoreDoubleJumpFlight(user);
             }
-        }, seconds * 20L);
+        }, Math.max(0L, (long) Math.ceil(seconds * 20D)));
     }
 
     private static void restoreDoubleJumpFlight(User user) {
