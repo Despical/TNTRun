@@ -34,7 +34,7 @@ import java.util.Objects;
 /**
  * @author Despical
  * <p>
- * Created at 18.06.2026
+ * Created at 4.02.2023
  */
 @RequiredArgsConstructor
 public class ArenaManager {
@@ -54,10 +54,11 @@ public class ArenaManager {
             return;
         }
 
-        PlayerJoinAttemptEvent event = plugin.getEventManager().playerJoinAttempt(user.getPlayer(), game);
+        boolean spectatorJoin = game.isState(GameState.IN_GAME);
+        PlayerJoinAttemptEvent event = plugin.getEventManager().playerJoinAttempt(user.getPlayer(), game, spectatorJoin);
         if (event.isCancelled()) return;
 
-        if (game.isState(GameState.IN_GAME)) {
+        if (spectatorJoin) {
             game.joinAsSpectator(user);
             return;
         }

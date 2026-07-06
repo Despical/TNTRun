@@ -29,7 +29,7 @@ import dev.despical.tntrun.api.EventManager;
 import dev.despical.tntrun.arena.Arena;
 import dev.despical.tntrun.arena.ArenaDataSaver;
 import dev.despical.tntrun.arena.ArenaRegistry;
-import dev.despical.tntrun.arena.managers.ArenaManager;
+import dev.despical.tntrun.arena.ArenaManager;
 import dev.despical.tntrun.arena.options.ArenaKeys;
 import dev.despical.tntrun.chat.ChatManager;
 import dev.despical.tntrun.command.PlayingCommandPolicy;

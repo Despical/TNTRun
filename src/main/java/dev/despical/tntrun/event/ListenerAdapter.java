@@ -20,8 +20,9 @@ package dev.despical.tntrun.event;
 
 import dev.despical.fileitems.ItemManager;
 import dev.despical.tntrun.Main;
+import dev.despical.tntrun.api.EventManager;
 import dev.despical.tntrun.arena.ArenaRegistry;
-import dev.despical.tntrun.arena.managers.ArenaManager;
+import dev.despical.tntrun.arena.ArenaManager;
 import dev.despical.tntrun.chat.ChatManager;
 import dev.despical.tntrun.game.GameManager;
 import dev.despical.tntrun.option.ConfigOptions;
@@ -45,6 +46,7 @@ public abstract class ListenerAdapter implements Listener {
     protected final ItemManager itemManager;
     protected final ChatManager chatManager;
     protected final GameManager gameManager;
+    protected final EventManager eventManager;
 
     public ListenerAdapter() {
         this.options = plugin.getOptions();
@@ -54,6 +56,7 @@ public abstract class ListenerAdapter implements Listener {
         this.itemManager = plugin.getItemManager();
         this.chatManager = plugin.getChatManager();
         this.gameManager = plugin.getGameManager();
+        this.eventManager = plugin.getEventManager();
 
         Bukkit.getPluginManager().registerEvents(this, plugin);
     }

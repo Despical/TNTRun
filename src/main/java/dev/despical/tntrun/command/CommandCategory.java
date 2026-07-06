@@ -20,7 +20,7 @@ package dev.despical.tntrun.command;
 
 import dev.despical.tntrun.Main;
 import dev.despical.tntrun.arena.ArenaRegistry;
-import dev.despical.tntrun.arena.managers.ArenaManager;
+import dev.despical.tntrun.arena.ArenaManager;
 import dev.despical.tntrun.chat.ChatManager;
 import dev.despical.tntrun.game.GameManager;
 import dev.despical.tntrun.user.UserManager;
