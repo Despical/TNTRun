@@ -22,6 +22,8 @@ import dev.despical.tntrun.api.event.game.GameEndEvent;
 import dev.despical.tntrun.api.event.game.GameStartEvent;
 import dev.despical.tntrun.api.event.game.GameStateChangeEvent;
 import dev.despical.tntrun.api.event.game.GameStopEvent;
+import dev.despical.tntrun.api.event.player.PlayerDoubleJumpEvent;
+import dev.despical.tntrun.api.event.player.PlayerEliminateEvent;
 import dev.despical.tntrun.api.event.player.PlayerJoinAttemptEvent;
 import dev.despical.tntrun.api.event.player.PlayerLeaveGameEvent;
 import dev.despical.tntrun.api.event.player.PlayerStatisticChangeEvent;
@@ -45,6 +47,8 @@ public enum EventType {
 
     PLAYER_JOIN_ATTEMPT(PlayerJoinAttemptEvent.class),
     PLAYER_LEAVE(PlayerLeaveGameEvent.class),
+    PLAYER_DOUBLE_JUMP(PlayerDoubleJumpEvent.class),
+    PLAYER_ELIMINATE(PlayerEliminateEvent.class),
     PLAYER_STAT_CHANGE(PlayerStatisticChangeEvent.class);
 
     private final Class<? extends Event> eventClass;

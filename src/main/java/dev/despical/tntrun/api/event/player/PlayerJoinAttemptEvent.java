@@ -30,7 +30,8 @@ import org.jetbrains.annotations.NotNull;
  * Fired when a player attempts to join a TNTRun game.
  * <p>
  * This event is called before the player is added to the target {@link Game}.
- * Cancelling it prevents the join and leaves the player outside the game.
+ * It is fired for both normal player joins and spectator joins. Cancelling it
+ * prevents the join and leaves the player outside the game.
  * <p>
  * Typical use cases:
  * <ul>
@@ -61,14 +62,31 @@ public class PlayerJoinAttemptEvent extends PlayerEvent implements Cancellable {
     private final Game game;
 
     /**
+     * Whether this join attempt will place the player into spectator mode.
+     */
+    private final boolean spectatorJoin;
+
+    /**
      * Constructs a new PlayerJoinAttemptEvent.
      *
      * @param player the player attempting to join
      * @param game the target game
      */
     public PlayerJoinAttemptEvent(Player player, Game game) {
+        this(player, game, false);
+    }
+
+    /**
+     * Constructs a new PlayerJoinAttemptEvent.
+     *
+     * @param player the player attempting to join
+     * @param game the target game
+     * @param spectatorJoin whether the player will join as a spectator
+     */
+    public PlayerJoinAttemptEvent(Player player, Game game, boolean spectatorJoin) {
         super(player);
         this.game = game;
+        this.spectatorJoin = spectatorJoin;
     }
 
     @NotNull

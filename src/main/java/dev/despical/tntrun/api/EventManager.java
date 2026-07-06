@@ -23,8 +23,10 @@ import dev.despical.tntrun.api.event.game.GameEndEvent;
 import dev.despical.tntrun.api.event.game.GameStartEvent;
 import dev.despical.tntrun.api.event.game.GameStateChangeEvent;
 import dev.despical.tntrun.api.event.game.GameStopEvent;
+import dev.despical.tntrun.api.event.player.PlayerDoubleJumpEvent;
 import dev.despical.tntrun.api.event.player.PlayerJoinAttemptEvent;
 import dev.despical.tntrun.api.event.player.PlayerLeaveGameEvent;
+import dev.despical.tntrun.api.event.player.PlayerEliminateEvent;
 import dev.despical.tntrun.api.event.player.PlayerStatisticChangeEvent;
 import dev.despical.tntrun.game.Game;
 import dev.despical.tntrun.game.GameState;
@@ -34,6 +36,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
+import org.bukkit.util.Vector;
 
 import java.util.List;
 import java.util.UUID;
@@ -103,11 +106,24 @@ public final class EventManager {
     }
 
     public PlayerJoinAttemptEvent playerJoinAttempt(Player player, Game game) {
-        return callByType(EventType.PLAYER_JOIN_ATTEMPT, () -> new PlayerJoinAttemptEvent(player, game));
+        return playerJoinAttempt(player, game, false);
+    }
+
+    public PlayerJoinAttemptEvent playerJoinAttempt(Player player, Game game, boolean spectatorJoin) {
+        return callByType(EventType.PLAYER_JOIN_ATTEMPT, () -> new PlayerJoinAttemptEvent(player, game, spectatorJoin));
     }
 
     public void playerLeave(Player player, Game game, PlayerLeaveGameEvent.LeaveReason reason) {
         callByType(EventType.PLAYER_LEAVE, () -> new PlayerLeaveGameEvent(player, game, reason));
+    }
+
+    public PlayerDoubleJumpEvent playerDoubleJump(Player player, Game game, int jumpsLeft, double cooldownSeconds, Vector velocity) {
+        return callByType(EventType.PLAYER_DOUBLE_JUMP,
+            () -> new PlayerDoubleJumpEvent(player, game, jumpsLeft, cooldownSeconds, velocity));
+    }
+
+    public void playerEliminate(Player player, Game game, int playersLeft) {
+        callByType(EventType.PLAYER_ELIMINATE, () -> new PlayerEliminateEvent(player, game, playersLeft));
     }
 
     public <T> PlayerStatisticChangeEvent<T> statChange(Player player, StatisticType<T> stat, T oldValue, T newValue) {

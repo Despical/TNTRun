@@ -315,6 +315,8 @@ public class Game extends BukkitRunnable {
         prepareSpectator(user, true);
 
         int playersLeft = getPlayersLeft().size();
+        plugin.getEventManager().playerEliminate(user.getPlayer(), this, playersLeft);
+
         broadcastMessage("you-eliminated",
             Var.ofPlayer(user),
             Var.of("%players_left%", playersLeft)
