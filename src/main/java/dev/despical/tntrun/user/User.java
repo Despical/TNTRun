@@ -140,9 +140,7 @@ public class User {
     }
 
     public void sendRawTitle(String rawTitle, String rawSubtitle, int fadeIn, int stay, int fadeOut) {
-        ifPlayerPresent(player -> {
-            plugin.getChatManager().sendRawTitle(player, rawTitle, rawSubtitle, fadeIn, stay, fadeOut);
-        });
+        ifPlayerPresent(player -> plugin.getChatManager().sendRawTitle(player, rawTitle, rawSubtitle, fadeIn, stay, fadeOut));
     }
 
     public Arena getArena() {
@@ -250,23 +248,10 @@ public class User {
         }
     }
 
-    public long getArenaBestTime(String arenaId) {
-        Map<String, Long> times = getStatistic(Statistics.ARENA_BEST_TIMES);
-        return times.getOrDefault(arenaId, -1L);
-    }
-
-    public void setArenaBestTime(String arenaId, long time) {
-        Map<String, Long> times = getStatistic(Statistics.ARENA_BEST_TIMES);
-        times.put(arenaId, time);
-
-        setStatistic(Statistics.ARENA_BEST_TIMES, times);
-    }
-
     public void resetArenaStats(String arenaId) {
         Map<String, Long> arenaTimes = new HashMap<>(getStatistic(Statistics.ARENA_BEST_TIMES));
 
         boolean changed = arenaTimes.remove(arenaId) != null;
-
         if (!changed) {
             return;
         }
