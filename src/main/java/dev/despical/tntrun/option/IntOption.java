@@ -26,6 +26,7 @@ package dev.despical.tntrun.option;
 public enum IntOption implements ConfigOption<Integer> {
 
     ARENA_TICK_PERIOD("arena-settings.tick-period", 5),
+    DOUBLE_JUMP_DELAY("double-jumps.delay", 4),
     LOBBY_WAITING_TIME("time-settings.waiting-time", 300),
     PRE_GAME_WAITING_TIME("time-settings.pre-game-waiting-time", 120),
     GAME_STARTING_TIME("time-settings.game-starting-time", 30),

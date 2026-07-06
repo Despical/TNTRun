@@ -28,6 +28,7 @@ import dev.despical.tntrun.game.GameState;
 import dev.despical.tntrun.menu.spectator.SpectatorSettingsMenu;
 import dev.despical.tntrun.menu.spectator.SpectatorTeleportMenu;
 import dev.despical.tntrun.option.BooleanOption;
+import dev.despical.tntrun.option.IntOption;
 import dev.despical.tntrun.sound.GameSound;
 import dev.despical.tntrun.sound.SoundResolver;
 import dev.despical.tntrun.stats.Statistics;
@@ -132,9 +133,8 @@ public class GameItemEvents extends ListenerAdapter {
             return true;
         }
 
-        double cooldownSeconds = plugin.getPermissionManager().getDoubleJumpDelay();
+        double cooldownSeconds = options.get(IntOption.DOUBLE_JUMP_DELAY);
         var velocity = player.getLocation().getDirection().multiply(1.5D).setY(0.7D);
-
 
         Game game = arena.getGame();
         PlayerDoubleJumpEvent event = eventManager.playerDoubleJump(player, game, jumps - 1, cooldownSeconds, velocity);
