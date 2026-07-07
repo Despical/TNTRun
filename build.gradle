@@ -21,7 +21,7 @@ repositories {
 
 dependencies {
     compileOnly 'io.papermc.paper:paper-api:1.21.11-R0.1-SNAPSHOT'
-    compileOnly 'me.clip:placeholderapi:2.12.2'
+    compileOnly 'me.clip:placeholderapi:2.12.3'
     compileOnly 'org.projectlombok:lombok:1.18.46'
 
     implementation('dev.despical:commons:2.1.2') {
