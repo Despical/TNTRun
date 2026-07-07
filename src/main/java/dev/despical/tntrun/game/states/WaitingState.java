@@ -48,7 +48,6 @@ public class WaitingState extends GameStateHandler {
     @Override
     public void tick() {
         List<User> players = game.getUsers();
-
         if (players.isEmpty()) {
             return;
         }
@@ -106,7 +105,7 @@ public class WaitingState extends GameStateHandler {
         };
 
         game.broadcastMessage("player-joined", vars);
-        plugin.getChatManager().sendCenteredMessage(player, "game-explanation");
+        chatManager.sendCenteredMessage(player, "game-explanation");
 
         handleInventory(player);
         resetPlayerAttributes(player);
@@ -146,6 +145,7 @@ public class WaitingState extends GameStateHandler {
     @Override
     public void resetPlayerAttributes(Player player) {
         Utils.resetPlayerAttributes(player);
+
         player.setLevel(BooleanOption.LEVEL_BAR_TIMER.value() ? game.getTimer() : 0);
         player.setInvulnerable(false);
         player.clearTitle();
@@ -155,15 +155,18 @@ public class WaitingState extends GameStateHandler {
     private void handleInventory(Player player) {
         saveAndClearInventory(player);
         giveLobbyItems(player);
+
         User user = plugin.getUserManager().getUser(player);
         int doubleJumps = Statistics.getDoubleJumps(player);
+
         user.setStatistic(Statistics.LOCAL_DOUBLE_JUMPS, doubleJumps);
         user.setStatistic(Statistics.LOCAL_MAX_DOUBLE_JUMPS, doubleJumps);
+
         game.updatePlayerMetadata(user);
     }
 
     private void giveLobbyItems(Player player) {
-        plugin.getItemManager().getItem("leave-item").giveTo(player, "slot");
+        itemManager.getItem("leave-item").giveTo(player, "slot");
     }
 
     private void broadcastWaitingMessageIfNeeded() {

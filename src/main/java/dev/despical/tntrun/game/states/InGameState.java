@@ -64,7 +64,7 @@ public class InGameState extends GameStateHandler {
     }
 
     private void giveDoubleJumpItem(Player player) {
-        var doubleJumpItem = plugin.getItemManager().getItem("double-jump");
+        var doubleJumpItem = itemManager.getItem("double-jump");
         if (doubleJumpItem != null) {
             doubleJumpItem.giveTo(player, "slot");
         }
@@ -117,6 +117,7 @@ public class InGameState extends GameStateHandler {
     public void leave(User user) {
         boolean wasSpectator = user.isSpectator();
         game.getScores().addScore(user, user.getStatistic(Statistics.LOCAL_SURVIVE_TIME));
+
         if (!wasSpectator) {
             game.broadcastMessage("disconnected-from-the-game", Var.ofPlayer(user));
         }

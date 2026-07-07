@@ -52,7 +52,7 @@ public class EndingState extends GameStateHandler {
         game.getPlacementMessenger().sendSummaryMessages();
 
         Location startLocation = getLocation(ArenaKeys.LOBBY_LOCATION);
-        SpecialItem leaveItem = plugin.getItemManager().getItem("leave-item");
+        SpecialItem leaveItem = itemManager.getItem("leave-item");
 
         game.getPlayers().forEach(player -> {
             leaveItem.giveTo(player, "slot");
