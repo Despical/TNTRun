@@ -46,6 +46,7 @@ import dev.despical.tntrun.game.GameManager;
 import dev.despical.tntrun.leaderboard.LeaderboardManager;
 import dev.despical.tntrun.option.BooleanOption;
 import dev.despical.tntrun.option.ConfigOptions;
+import dev.despical.tntrun.papi.PlaceholderManager;
 import dev.despical.tntrun.sign.SignManager;
 import dev.despical.tntrun.sound.SoundManager;
 import dev.despical.tntrun.stats.offline.StatsCacheManager;
@@ -204,12 +205,12 @@ public class Main extends JavaPlugin {
     }
 
     private void registerPlaceholderManager() {
-        if (!getServer().getPluginManager().isPluginEnabled("PlaceholderAPI")) {
+        if (!isPluginEnabled("PlaceholderAPI")) {
             return;
         }
 
-//        PlaceholderManager manager = new PlaceholderManager(this);
-//        manager.register();
+        PlaceholderManager manager = new PlaceholderManager(this);
+        manager.register();
     }
 
     private void initializeMetrics() {
