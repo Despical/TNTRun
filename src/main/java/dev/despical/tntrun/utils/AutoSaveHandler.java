@@ -19,6 +19,7 @@
 package dev.despical.tntrun.utils;
 
 import dev.despical.tntrun.TNTRun;
+import lombok.RequiredArgsConstructor;
 import org.bukkit.scheduler.BukkitRunnable;
 
 /**
@@ -26,13 +27,10 @@ import org.bukkit.scheduler.BukkitRunnable;
  * <p>
  * Created at 17.06.2026
  */
-public class AutoSaveHandler extends BukkitRunnable {
+@RequiredArgsConstructor
+public final class AutoSaveHandler extends BukkitRunnable {
 
     private final TNTRun plugin;
-
-    public AutoSaveHandler(TNTRun plugin) {
-        this.plugin = plugin;
-    }
 
     @Override
     public void run() {

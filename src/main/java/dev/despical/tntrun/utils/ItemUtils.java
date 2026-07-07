@@ -24,6 +24,7 @@ import dev.despical.commons.XMaterial;
 import dev.despical.commons.reflection.XReflection;
 import dev.despical.fileitems.SpecialItem;
 import dev.despical.tntrun.TNTRun;
+import lombok.experimental.UtilityClass;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -41,7 +42,8 @@ import java.util.UUID;
  * <p>
  * Created at 18.06.2026
  */
-public class ItemUtils {
+@UtilityClass
+public final class ItemUtils {
 
     public static final ItemStack[] EMPTY_ARMORS = new ItemStack[4];
 

@@ -19,14 +19,15 @@
 package dev.despical.tntrun.utils;
 
 import dev.despical.tntrun.TNTRun;
+import dev.despical.tntrun.arena.Arena;
 import dev.despical.tntrun.game.GameState;
 import dev.despical.tntrun.stats.Statistics;
 import dev.despical.tntrun.user.User;
+import lombok.experimental.UtilityClass;
 import net.kyori.adventure.text.Component;
 import org.bukkit.GameMode;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.List;
@@ -36,14 +37,12 @@ import java.util.List;
  * <p>
  * Created at 13.07.2023
  */
-public class Utils {
+@UtilityClass
+public final class Utils {
 
-    private static final TNTRun plugin = JavaPlugin.getPlugin(TNTRun.class);
+    private static final TNTRun plugin = TNTRun.getInstance();
 
-    private Utils() {
-    }
-
-    public static void applyActionBarCooldown(final User user, double seconds) {
+    public static void applyActionBarCooldown(User user, double seconds) {
         new BukkitRunnable() {
             int ticks = 0;
             final int maxTicks = Math.max(1, (int) Math.ceil(seconds * 20D));
@@ -60,6 +59,7 @@ public class Utils {
                 if (ticks >= maxTicks || !user.hasCooldown("double_jump")) {
                     user.removeCooldown("double_jump");
                     user.sendRawActionBarComponent(Component.empty());
+
                     restoreDoubleJumpFlight(user);
                     cancel();
                     return;
@@ -85,7 +85,7 @@ public class Utils {
     }
 
     private static void restoreDoubleJumpFlight(User user) {
-        var arena = user.getArena();
+        Arena arena = user.getArena();
         Player player = user.getPlayer();
 
         if (player == null || arena == null || arena.isDeathPlayer(user) || !arena.isState(GameState.IN_GAME)) {
