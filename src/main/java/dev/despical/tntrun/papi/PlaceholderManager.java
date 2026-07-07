@@ -18,7 +18,7 @@
 
 package dev.despical.tntrun.papi;
 
-import dev.despical.tntrun.Main;
+import dev.despical.tntrun.TNTRun;
 import dev.despical.tntrun.arena.Arena;
 import dev.despical.tntrun.arena.ArenaRegistry;
 import dev.despical.tntrun.arena.options.ArenaKeys;
@@ -49,11 +49,11 @@ public class PlaceholderManager extends PlaceholderExpansion {
     private static final String NO_ARENA = "none";
     private static final String NO_DATA = "--:--";
 
-    private final Main plugin;
+    private final TNTRun plugin;
     private final ArenaRegistry arenaRegistry;
     private final GameManager gameManager;
 
-    public PlaceholderManager(Main plugin) {
+    public PlaceholderManager(TNTRun plugin) {
         this.plugin = plugin;
         this.arenaRegistry = plugin.getArenaRegistry();
         this.gameManager = plugin.getGameManager();

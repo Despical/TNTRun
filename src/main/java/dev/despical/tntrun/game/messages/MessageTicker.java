@@ -19,7 +19,7 @@
 package dev.despical.tntrun.game.messages;
 
 import dev.despical.commons.number.NumberUtils;
-import dev.despical.tntrun.Main;
+import dev.despical.tntrun.TNTRun;
 import dev.despical.tntrun.game.Game;
 import dev.despical.tntrun.game.GameState;
 import net.kyori.adventure.text.Component;
@@ -36,7 +36,7 @@ import java.util.*;
  */
 public class MessageTicker {
 
-    private static final Main PLUGIN = Main.getInstance();
+    private static final TNTRun PLUGIN = TNTRun.getInstance();
     private static final MiniMessage MINI_MESSAGE = MiniMessage.miniMessage();
 
     private final Map<String, TickerMessage> gameOverMessages;

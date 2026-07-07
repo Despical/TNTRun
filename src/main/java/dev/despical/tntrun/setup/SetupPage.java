@@ -20,7 +20,7 @@ package dev.despical.tntrun.setup;
 
 import dev.despical.fileitems.ItemManager;
 import dev.despical.inventoryframework.GuiItem;
-import dev.despical.tntrun.Main;
+import dev.despical.tntrun.TNTRun;
 import dev.despical.tntrun.arena.Arena;
 import dev.despical.tntrun.chat.ChatManager;
 import dev.despical.tntrun.menu.Page;
@@ -35,7 +35,7 @@ import org.bukkit.inventory.ItemStack;
  */
 public abstract class SetupPage implements Page {
 
-    protected static final Main plugin = Main.getInstance();
+    protected static final TNTRun plugin = TNTRun.getInstance();
 
     protected final SetupMenu menu;
     protected final Arena arena;

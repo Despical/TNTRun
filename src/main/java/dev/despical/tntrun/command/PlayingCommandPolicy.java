@@ -18,7 +18,7 @@
 
 package dev.despical.tntrun.command;
 
-import dev.despical.tntrun.Main;
+import dev.despical.tntrun.TNTRun;
 
 import java.util.HashSet;
 import java.util.Locale;
@@ -35,12 +35,12 @@ public class PlayingCommandPolicy {
 
     private static final String ALLOWED_COMMANDS_PATH = "command-settings.allowed-commands";
 
-    private final Main plugin;
+    private final TNTRun plugin;
 
     private Set<String> allowedCommands;
     private Set<String> allowedRootCommands;
 
-    public PlayingCommandPolicy(Main plugin) {
+    public PlayingCommandPolicy(TNTRun plugin) {
         this.plugin = plugin;
         this.reload();
     }

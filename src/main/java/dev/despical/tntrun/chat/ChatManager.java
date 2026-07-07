@@ -20,7 +20,7 @@ package dev.despical.tntrun.chat;
 
 import dev.despical.commandframework.CommandArguments;
 import dev.despical.commons.configuration.ConfigUtils;
-import dev.despical.tntrun.Main;
+import dev.despical.tntrun.TNTRun;
 import dev.despical.tntrun.user.User;
 import dev.despical.tntrun.utils.StringUtils;
 import dev.despical.tntrun.utils.Utils;
@@ -46,13 +46,13 @@ public class ChatManager {
 
     private static final String NO_CENTER_PREFIX = "%no_center%";
 
-    private final Main plugin;
+    private final TNTRun plugin;
     private final MiniMessage miniMessage;
     private final Map<String, Component> messages;
 
     private FileConfiguration messagesFile;
 
-    public ChatManager(Main plugin) {
+    public ChatManager(TNTRun plugin) {
         this.plugin = plugin;
         this.miniMessage = MiniMessage.miniMessage();
         this.messages = new HashMap<>();

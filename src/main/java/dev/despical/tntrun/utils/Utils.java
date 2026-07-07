@@ -18,7 +18,7 @@
 
 package dev.despical.tntrun.utils;
 
-import dev.despical.tntrun.Main;
+import dev.despical.tntrun.TNTRun;
 import dev.despical.tntrun.game.GameState;
 import dev.despical.tntrun.stats.Statistics;
 import dev.despical.tntrun.user.User;
@@ -38,7 +38,7 @@ import java.util.List;
  */
 public class Utils {
 
-    private static final Main plugin = JavaPlugin.getPlugin(Main.class);
+    private static final TNTRun plugin = JavaPlugin.getPlugin(TNTRun.class);
 
     private Utils() {
     }

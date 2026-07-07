@@ -20,7 +20,7 @@ package dev.despical.tntrun.stats.offline;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
-import dev.despical.tntrun.Main;
+import dev.despical.tntrun.TNTRun;
 import org.bukkit.OfflinePlayer;
 
 import java.util.UUID;
@@ -33,10 +33,10 @@ import java.util.concurrent.TimeUnit;
  */
 public class StatsCacheManager {
 
-    private final Main plugin;
+    private final TNTRun plugin;
     private final Cache<UUID, OfflineStats> offlineCache;
 
-    public StatsCacheManager(Main plugin) {
+    public StatsCacheManager(TNTRun plugin) {
         this.plugin = plugin;
         this.offlineCache = CacheBuilder.newBuilder()
             .expireAfterWrite(10, TimeUnit.MINUTES)

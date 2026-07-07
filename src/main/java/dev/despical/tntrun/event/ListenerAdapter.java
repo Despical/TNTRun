@@ -19,7 +19,7 @@
 package dev.despical.tntrun.event;
 
 import dev.despical.fileitems.ItemManager;
-import dev.despical.tntrun.Main;
+import dev.despical.tntrun.TNTRun;
 import dev.despical.tntrun.api.EventManager;
 import dev.despical.tntrun.arena.ArenaRegistry;
 import dev.despical.tntrun.arena.ArenaManager;
@@ -37,7 +37,7 @@ import org.bukkit.event.Listener;
  */
 public abstract class ListenerAdapter implements Listener {
 
-    protected static final Main plugin = Main.getInstance();
+    protected static final TNTRun plugin = TNTRun.getInstance();
 
     protected final ConfigOptions options;
     protected final ArenaManager arenaManager;

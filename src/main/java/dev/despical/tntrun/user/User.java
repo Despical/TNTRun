@@ -18,7 +18,7 @@
 
 package dev.despical.tntrun.user;
 
-import dev.despical.tntrun.Main;
+import dev.despical.tntrun.TNTRun;
 import dev.despical.tntrun.api.event.player.PlayerStatisticChangeEvent;
 import dev.despical.tntrun.arena.Arena;
 import dev.despical.tntrun.stats.StatisticType;
@@ -43,7 +43,7 @@ import java.util.function.Consumer;
  */
 public class User {
 
-    private static final Main plugin = Main.getInstance();
+    private static final TNTRun plugin = TNTRun.getInstance();
 
     @Getter
     @Setter

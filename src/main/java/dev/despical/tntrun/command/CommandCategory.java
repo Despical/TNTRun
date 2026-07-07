@@ -18,7 +18,7 @@
 
 package dev.despical.tntrun.command;
 
-import dev.despical.tntrun.Main;
+import dev.despical.tntrun.TNTRun;
 import dev.despical.tntrun.arena.ArenaRegistry;
 import dev.despical.tntrun.arena.ArenaManager;
 import dev.despical.tntrun.chat.ChatManager;
@@ -32,7 +32,7 @@ import dev.despical.tntrun.user.UserManager;
  */
 public sealed abstract class CommandCategory permits ArenaCommands, AdminCommands, PlayerCommands, DebugCommands, TabCompleters {
 
-    protected static final Main plugin = Main.getInstance();
+    protected static final TNTRun plugin = TNTRun.getInstance();
     protected static final ArenaRegistry arenaRegistry = plugin.getArenaRegistry();
     protected static final ArenaManager arenaManager = plugin.getArenaManager();
     protected static final GameManager gameManager = plugin.getGameManager();

@@ -18,7 +18,7 @@
 
 package dev.despical.tntrun.api;
 
-import dev.despical.tntrun.Main;
+import dev.despical.tntrun.TNTRun;
 import dev.despical.tntrun.api.event.game.GameEndEvent;
 import dev.despical.tntrun.api.event.game.GameStartEvent;
 import dev.despical.tntrun.api.event.game.GameStateChangeEvent;
@@ -51,7 +51,7 @@ public final class EventManager {
 
     private final EventProfiler profiler;
 
-    public EventManager(Main plugin) {
+    public EventManager(TNTRun plugin) {
         this.profiler = new EventProfiler(plugin);
     }
 

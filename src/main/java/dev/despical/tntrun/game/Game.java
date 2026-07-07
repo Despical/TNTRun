@@ -19,7 +19,7 @@
 package dev.despical.tntrun.game;
 
 import dev.despical.commons.serializer.InventorySerializer;
-import dev.despical.tntrun.Main;
+import dev.despical.tntrun.TNTRun;
 import dev.despical.tntrun.api.event.game.GameStateChangeEvent;
 import dev.despical.tntrun.arena.Arena;
 import dev.despical.tntrun.arena.options.ArenaKeys;
@@ -55,7 +55,7 @@ import java.util.function.Consumer;
  */
 public class Game extends BukkitRunnable {
 
-    private static final Main plugin = Main.getInstance();
+    private static final TNTRun plugin = TNTRun.getInstance();
 
     @Getter
     private int timer;

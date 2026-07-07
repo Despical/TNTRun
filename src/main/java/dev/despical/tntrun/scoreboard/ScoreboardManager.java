@@ -24,7 +24,7 @@ import dev.despical.commons.scoreboard.ScoreboardHandler;
 import dev.despical.commons.scoreboard.ScoreboardLib;
 import dev.despical.commons.scoreboard.common.Entry;
 import dev.despical.commons.scoreboard.common.EntryBuilder;
-import dev.despical.tntrun.Main;
+import dev.despical.tntrun.TNTRun;
 import dev.despical.tntrun.arena.Arena;
 import dev.despical.tntrun.arena.options.ArenaKeys;
 import dev.despical.tntrun.game.Game;
@@ -52,7 +52,7 @@ import java.util.function.BiConsumer;
  */
 public class ScoreboardManager {
 
-    private static final Main plugin = Main.getInstance();
+    private static final TNTRun plugin = TNTRun.getInstance();
     private static final String HIDDEN_NAME_TAG_TEAM = "TRHide";
     private static final Map<GameState, List<StateFormatter>> STATE_FORMATTER_CACHE;
 

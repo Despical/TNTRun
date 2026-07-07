@@ -19,7 +19,7 @@
 package dev.despical.tntrun.blocks;
 
 import dev.despical.commons.configuration.ConfigUtils;
-import dev.despical.tntrun.Main;
+import dev.despical.tntrun.TNTRun;
 import lombok.Getter;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -37,7 +37,7 @@ import java.util.Set;
 @Getter
 public class BlockRemovalConfig {
 
-    private final Main plugin;
+    private final TNTRun plugin;
 
     private int startAfterSeconds;
     private int removeDelayTicks;
@@ -50,7 +50,7 @@ public class BlockRemovalConfig {
     private int flushIntervalTicks;
     private Set<Material> removableBlocks;
 
-    public BlockRemovalConfig(Main plugin) {
+    public BlockRemovalConfig(TNTRun plugin) {
         this.plugin = plugin;
         this.reload();
     }

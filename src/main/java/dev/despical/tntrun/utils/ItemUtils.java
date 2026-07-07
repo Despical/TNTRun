@@ -23,7 +23,7 @@ import com.destroystokyo.paper.profile.ProfileProperty;
 import dev.despical.commons.XMaterial;
 import dev.despical.commons.reflection.XReflection;
 import dev.despical.fileitems.SpecialItem;
-import dev.despical.tntrun.Main;
+import dev.despical.tntrun.TNTRun;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -45,7 +45,7 @@ public class ItemUtils {
 
     public static final ItemStack[] EMPTY_ARMORS = new ItemStack[4];
 
-    private static final Main PLUGIN = Main.getInstance();
+    private static final TNTRun PLUGIN = TNTRun.getInstance();
     private static final boolean SUPPORTS_1_21_5 = XReflection.of(ItemMeta.class).method("void setHideTooltip(boolean _)").exists();
     private static final UUID OFFLINE_MODE_RESET_HEAD_UUID = UUID.fromString("e57c4a3a-6ec5-4f6b-8bfa-fb287b2a6ed8");
     private static final String OFFLINE_MODE_RESET_HEAD_NAME = "mrdespi.1";

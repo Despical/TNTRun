@@ -20,7 +20,7 @@ package dev.despical.tntrun.sign;
 
 import dev.despical.commons.configuration.ConfigUtils;
 import dev.despical.commons.serializer.LocationSerializer;
-import dev.despical.tntrun.Main;
+import dev.despical.tntrun.TNTRun;
 import dev.despical.tntrun.arena.Arena;
 import dev.despical.tntrun.arena.options.ArenaKeys;
 import dev.despical.tntrun.chat.ChatManager;
@@ -52,14 +52,14 @@ public class SignManager {
     private List<Component> signLines;
     private List<Component> inactiveSignLines;
 
-    private final Main plugin;
+    private final TNTRun plugin;
     private final ChatManager chatManager;
     private final Map<BlockKey, ArenaSign> signsByBlock;
     private final Map<Arena, Set<ArenaSign>> signsByArena;
     private final Map<GameState, String> gameStateToString;
     private ArenaSignEvents arenaSignEvents;
 
-    public SignManager(Main plugin) {
+    public SignManager(TNTRun plugin) {
         this.plugin = plugin;
         this.chatManager = plugin.getChatManager();
         this.signsByBlock = new HashMap<>();

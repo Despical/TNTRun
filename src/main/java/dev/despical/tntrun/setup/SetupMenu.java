@@ -21,7 +21,7 @@ package dev.despical.tntrun.setup;
 import dev.despical.commons.configuration.ConfigUtils;
 import dev.despical.inventoryframework.Gui;
 import dev.despical.inventoryframework.pane.PaginatedPane;
-import dev.despical.tntrun.Main;
+import dev.despical.tntrun.TNTRun;
 import dev.despical.tntrun.arena.Arena;
 import dev.despical.tntrun.menu.Menu;
 import dev.despical.tntrun.setup.pages.*;
@@ -61,7 +61,7 @@ public class SetupMenu implements Menu {
     }
 
     private void initializeGui() {
-        Main plugin = Main.getInstance();
+        TNTRun plugin = TNTRun.getInstance();
         FileConfiguration config = ConfigUtils.getConfig(plugin, "menu/setup-menu");
 
         String rawTitle = config.getString("title", "Arena Editor");

@@ -18,7 +18,7 @@
 
 package dev.despical.tntrun.arena;
 
-import dev.despical.tntrun.Main;
+import dev.despical.tntrun.TNTRun;
 import dev.despical.tntrun.arena.options.ArenaKeys;
 import dev.despical.tntrun.arena.options.ArenaOption;
 import dev.despical.tntrun.game.Game;
@@ -46,7 +46,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class Arena {
 
-    private static final Main plugin = Main.getInstance();
+    private static final TNTRun plugin = TNTRun.getInstance();
 
     private Game game;
 

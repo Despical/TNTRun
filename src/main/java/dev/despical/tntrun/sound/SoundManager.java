@@ -19,7 +19,7 @@
 package dev.despical.tntrun.sound;
 
 import dev.despical.commons.configuration.ConfigUtils;
-import dev.despical.tntrun.Main;
+import dev.despical.tntrun.TNTRun;
 import org.bukkit.Sound;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
@@ -34,10 +34,10 @@ import java.util.Map;
  */
 public class SoundManager {
 
-    private final Main plugin;
+    private final TNTRun plugin;
     private final Map<GameSound, SoundData> sounds;
 
-    public SoundManager(Main plugin) {
+    public SoundManager(TNTRun plugin) {
         this.plugin = plugin;
         this.sounds = new EnumMap<>(GameSound.class);
         this.reload();

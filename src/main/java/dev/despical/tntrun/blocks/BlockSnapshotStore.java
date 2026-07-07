@@ -18,7 +18,7 @@
 
 package dev.despical.tntrun.blocks;
 
-import dev.despical.tntrun.Main;
+import dev.despical.tntrun.TNTRun;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -37,7 +37,7 @@ import java.util.logging.Level;
  */
 public class BlockSnapshotStore {
 
-    private final Main plugin;
+    private final TNTRun plugin;
     private final BlockRemovalConfig config;
     private final File file;
     private final Map<String, BlockSnapshot> snapshots;
@@ -45,7 +45,7 @@ public class BlockSnapshotStore {
     private BukkitTask flushTask;
     private boolean dirty;
 
-    public BlockSnapshotStore(Main plugin, BlockRemovalConfig config) {
+    public BlockSnapshotStore(TNTRun plugin, BlockRemovalConfig config) {
         this.plugin = plugin;
         this.config = config;
         this.file = new File(plugin.getDataFolder(), "data/removed-blocks.yml");

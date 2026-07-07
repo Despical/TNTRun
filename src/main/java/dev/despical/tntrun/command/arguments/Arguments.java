@@ -19,7 +19,7 @@
 package dev.despical.tntrun.command.arguments;
 
 import dev.despical.commandframework.CommandArguments;
-import dev.despical.tntrun.Main;
+import dev.despical.tntrun.TNTRun;
 import dev.despical.tntrun.user.User;
 import dev.despical.tntrun.utils.Var;
 import org.bukkit.Sound;
@@ -32,7 +32,7 @@ import org.bukkit.entity.Player;
  */
 public final class Arguments extends CommandArguments {
 
-    private static final Main plugin = Main.getInstance();
+    private static final TNTRun plugin = TNTRun.getInstance();
 
     private final CommandArguments arguments;
 

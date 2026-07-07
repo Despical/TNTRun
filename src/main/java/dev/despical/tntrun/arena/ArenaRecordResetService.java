@@ -18,7 +18,7 @@
 
 package dev.despical.tntrun.arena;
 
-import dev.despical.tntrun.Main;
+import dev.despical.tntrun.TNTRun;
 import dev.despical.tntrun.user.User;
 import dev.despical.tntrun.utils.Schedulers;
 
@@ -32,9 +32,9 @@ import java.util.concurrent.CompletableFuture;
  */
 public class ArenaRecordResetService {
 
-    private final Main plugin;
+    private final TNTRun plugin;
 
-    public ArenaRecordResetService(Main plugin) {
+    public ArenaRecordResetService(TNTRun plugin) {
         this.plugin = plugin;
     }
 

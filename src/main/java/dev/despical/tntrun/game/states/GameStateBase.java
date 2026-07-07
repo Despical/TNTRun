@@ -20,7 +20,7 @@ package dev.despical.tntrun.game.states;
 
 import dev.despical.commons.serializer.InventorySerializer;
 import dev.despical.fileitems.ItemManager;
-import dev.despical.tntrun.Main;
+import dev.despical.tntrun.TNTRun;
 import dev.despical.tntrun.arena.Arena;
 import dev.despical.tntrun.arena.options.ArenaOption;
 import dev.despical.tntrun.chat.ChatManager;
@@ -39,7 +39,7 @@ import org.bukkit.entity.Player;
  */
 abstract sealed class GameStateBase permits GameStateHandler {
 
-    protected static final Main plugin = Main.getInstance();
+    protected static final TNTRun plugin = TNTRun.getInstance();
     protected static final ItemManager itemManager = plugin.getItemManager();
     protected static final ChatManager chatManager = plugin.getChatManager();
 

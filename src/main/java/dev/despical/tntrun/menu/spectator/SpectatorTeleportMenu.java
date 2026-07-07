@@ -25,7 +25,7 @@ import dev.despical.inventoryframework.Gui;
 import dev.despical.inventoryframework.GuiItem;
 import dev.despical.inventoryframework.pane.PaginatedPane;
 import dev.despical.inventoryframework.pane.StaticPane;
-import dev.despical.tntrun.Main;
+import dev.despical.tntrun.TNTRun;
 import dev.despical.tntrun.arena.Arena;
 import dev.despical.tntrun.chat.ChatManager;
 import dev.despical.tntrun.game.Game;
@@ -48,7 +48,7 @@ import java.util.List;
  */
 public class SpectatorTeleportMenu implements Menu {
 
-    private static final Main plugin = Main.getInstance();
+    private static final TNTRun plugin = TNTRun.getInstance();
 
     private final ItemManager itemManager;
     private final ChatManager chatManager;

@@ -19,7 +19,7 @@
 package dev.despical.tntrun.game.spectator;
 
 import dev.despical.fileitems.SpecialItem;
-import dev.despical.tntrun.Main;
+import dev.despical.tntrun.TNTRun;
 import dev.despical.tntrun.game.Game;
 import dev.despical.tntrun.stats.Statistics;
 import dev.despical.tntrun.user.User;
@@ -36,7 +36,7 @@ import org.bukkit.potion.PotionEffectType;
 @RequiredArgsConstructor
 public class SpectatorManager {
 
-    private static final Main plugin = Main.getInstance();
+    private static final TNTRun plugin = TNTRun.getInstance();
 
     private final Game game;
 

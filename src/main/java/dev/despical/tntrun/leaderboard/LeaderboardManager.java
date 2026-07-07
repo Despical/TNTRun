@@ -18,7 +18,7 @@
 
 package dev.despical.tntrun.leaderboard;
 
-import dev.despical.tntrun.Main;
+import dev.despical.tntrun.TNTRun;
 import dev.despical.tntrun.arena.Arena;
 import dev.despical.tntrun.arena.options.ArenaKeys;
 import dev.despical.tntrun.stats.StatisticType;
@@ -36,10 +36,10 @@ import java.util.function.Function;
  */
 public class LeaderboardManager {
 
-    private final Main plugin;
+    private final TNTRun plugin;
     private final Map<String, Leaderboard<?>> leaderboards;
 
-    public LeaderboardManager(Main plugin) {
+    public LeaderboardManager(TNTRun plugin) {
         this.plugin = plugin;
         this.leaderboards = new HashMap<>();
     }

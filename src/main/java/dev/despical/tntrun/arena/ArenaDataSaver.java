@@ -20,7 +20,7 @@ package dev.despical.tntrun.arena;
 
 import dev.despical.commons.configuration.ConfigUtils;
 import dev.despical.commons.serializer.LocationSerializer;
-import dev.despical.tntrun.Main;
+import dev.despical.tntrun.TNTRun;
 import dev.despical.tntrun.arena.options.ArenaKeys;
 import dev.despical.tntrun.arena.options.ArenaOption;
 import dev.despical.tntrun.sign.ArenaSign;
@@ -37,9 +37,9 @@ import java.util.Set;
  */
 public class ArenaDataSaver {
 
-    private final Main plugin;
+    private final TNTRun plugin;
 
-    public ArenaDataSaver(Main plugin) {
+    public ArenaDataSaver(TNTRun plugin) {
         this.plugin = plugin;
     }
 

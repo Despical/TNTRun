@@ -19,7 +19,7 @@
 package dev.despical.tntrun.arena;
 
 import dev.despical.commons.configuration.ConfigUtils;
-import dev.despical.tntrun.Main;
+import dev.despical.tntrun.TNTRun;
 import dev.despical.tntrun.arena.options.ArenaKeys;
 import dev.despical.tntrun.arena.options.ArenaOption;
 import dev.despical.tntrun.user.User;
@@ -36,12 +36,12 @@ import java.util.*;
  */
 public class ArenaRegistry {
 
-    private final Main plugin;
+    private final TNTRun plugin;
     @Getter
     private final FileConfiguration config;
     private final Map<String, Arena> arenas;
 
-    public ArenaRegistry(Main plugin) {
+    public ArenaRegistry(TNTRun plugin) {
         this.plugin = plugin;
         this.config = ConfigUtils.getConfig(plugin, "arenas");
         this.arenas = new HashMap<>();

@@ -18,7 +18,7 @@
 
 package dev.despical.tntrun.arena;
 
-import dev.despical.tntrun.Main;
+import dev.despical.tntrun.TNTRun;
 import dev.despical.tntrun.api.event.player.PlayerJoinAttemptEvent;
 import dev.despical.tntrun.api.event.player.PlayerLeaveGameEvent.LeaveReason;
 import dev.despical.tntrun.game.Game;
@@ -39,7 +39,7 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class ArenaManager {
 
-    private final Main plugin;
+    private final TNTRun plugin;
 
     public void joinAttempt(User user, Arena arena) {
         Game game = arena.getGame();

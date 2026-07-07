@@ -18,7 +18,7 @@
 
 package dev.despical.tntrun.api;
 
-import dev.despical.tntrun.Main;
+import dev.despical.tntrun.TNTRun;
 import dev.despical.tntrun.option.BooleanOption;
 import lombok.Getter;
 import org.bukkit.command.CommandSender;
@@ -40,10 +40,10 @@ public final class EventProfiler {
     @Getter
     private boolean enabled, verbose;
 
-    private final Main plugin;
+    private final TNTRun plugin;
     private final Map<Class<? extends Event>, ProfileData> profiles;
 
-    public EventProfiler(Main plugin) {
+    public EventProfiler(TNTRun plugin) {
         this.plugin = plugin;
         this.profiles = new ConcurrentHashMap<>();
         this.reload();

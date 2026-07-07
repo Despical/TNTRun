@@ -18,7 +18,7 @@
 
 package dev.despical.tntrun.option;
 
-import dev.despical.tntrun.Main;
+import dev.despical.tntrun.TNTRun;
 
 /**
  * @author Despical
@@ -34,6 +34,6 @@ public interface ConfigOption<T> {
     T getDefaultValue();
 
     default T value() {
-        return Main.getInstance().getOptions().get(this);
+        return TNTRun.getInstance().getOptions().get(this);
     }
 }

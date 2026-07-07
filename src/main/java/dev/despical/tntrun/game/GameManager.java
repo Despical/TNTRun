@@ -19,7 +19,7 @@
 package dev.despical.tntrun.game;
 
 import dev.despical.commons.serializer.InventorySerializer;
-import dev.despical.tntrun.Main;
+import dev.despical.tntrun.TNTRun;
 import dev.despical.tntrun.arena.Arena;
 import dev.despical.tntrun.arena.options.ArenaKeys;
 import dev.despical.tntrun.blocks.BlockRemovalConfig;
@@ -49,13 +49,13 @@ import java.util.UUID;
 public class GameManager {
 
     @Getter(AccessLevel.NONE)
-    private final Main plugin;
+    private final TNTRun plugin;
     private final MessageTicker messageTicker;
     private final BossBarConfig bossBarConfig;
     private final BlockRemovalConfig blockRemovalConfig;
     private final BlockSnapshotStore blockSnapshotStore;
 
-    public GameManager(Main plugin) {
+    public GameManager(TNTRun plugin) {
         this.plugin = plugin;
         this.messageTicker = new MessageTicker();
         this.bossBarConfig = new BossBarConfig(plugin);

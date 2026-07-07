@@ -18,7 +18,7 @@
 
 package dev.despical.tntrun.bossbar;
 
-import dev.despical.tntrun.Main;
+import dev.despical.tntrun.TNTRun;
 import dev.despical.tntrun.arena.options.ArenaKeys;
 import dev.despical.tntrun.game.Game;
 import net.kyori.adventure.bossbar.BossBar;
@@ -44,7 +44,7 @@ public class BossBarManager {
     public BossBarManager(Game game) {
         this.game = game;
         this.bossBar = BossBar.bossBar(Component.empty(), 1F, BossBar.Color.PURPLE, BossBar.Overlay.PROGRESS);
-        this.configProvider = Main.getInstance().getGameManager().getBossBarConfig();
+        this.configProvider = TNTRun.getInstance().getGameManager().getBossBarConfig();
     }
 
     public void update() {

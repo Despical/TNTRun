@@ -18,7 +18,7 @@
 
 package dev.despical.tntrun.database;
 
-import dev.despical.tntrun.Main;
+import dev.despical.tntrun.TNTRun;
 import dev.despical.tntrun.stats.offline.OfflineStats;
 import dev.despical.tntrun.user.User;
 import org.bukkit.OfflinePlayer;
@@ -36,7 +36,7 @@ import java.util.concurrent.CompletableFuture;
  */
 public sealed abstract class Database permits FlatFileStorage, MySQLStorage {
 
-    protected static final Main plugin = Main.getInstance();
+    protected static final TNTRun plugin = TNTRun.getInstance();
 
     public abstract void loadData(User user);
 

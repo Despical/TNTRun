@@ -19,7 +19,7 @@
 package dev.despical.tntrun.bossbar;
 
 import dev.despical.commons.configuration.ConfigUtils;
-import dev.despical.tntrun.Main;
+import dev.despical.tntrun.TNTRun;
 import dev.despical.tntrun.chat.ChatManager;
 import dev.despical.tntrun.game.GameState;
 import lombok.Getter;
@@ -41,10 +41,10 @@ public class BossBarConfig {
     @Getter
     private boolean enabled;
 
-    private final Main plugin;
+    private final TNTRun plugin;
     private final Map<GameState, BossBarData> cache;
 
-    public BossBarConfig(Main plugin) {
+    public BossBarConfig(TNTRun plugin) {
         this.plugin = plugin;
         this.cache = new EnumMap<>(GameState.class);
         this.load();

@@ -18,7 +18,7 @@
 
 package dev.despical.tntrun.utils;
 
-import dev.despical.tntrun.Main;
+import dev.despical.tntrun.TNTRun;
 import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitScheduler;
 
@@ -29,7 +29,7 @@ import org.bukkit.scheduler.BukkitScheduler;
  */
 public final class Schedulers {
 
-    private static final Main plugin = Main.getInstance();
+    private static final TNTRun plugin = TNTRun.getInstance();
     private static final BukkitScheduler scheduler = Bukkit.getScheduler();
 
     private Schedulers() {

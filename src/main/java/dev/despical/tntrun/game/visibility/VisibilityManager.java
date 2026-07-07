@@ -18,7 +18,7 @@
 
 package dev.despical.tntrun.game.visibility;
 
-import dev.despical.tntrun.Main;
+import dev.despical.tntrun.TNTRun;
 import dev.despical.tntrun.game.Game;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -34,7 +34,7 @@ import java.util.function.Predicate;
  */
 public class VisibilityManager {
 
-    private static final Main plugin = Main.getInstance();
+    private static final TNTRun plugin = TNTRun.getInstance();
 
     private final Game game;
 

@@ -74,10 +74,10 @@ import java.util.stream.Stream;
  * Created at 10.07.2020
  */
 @Getter
-public class Main extends JavaPlugin {
+public class TNTRun extends JavaPlugin {
 
 	@Getter
-	private static Main instance;
+	private static TNTRun instance;
 
     private ConfigOptions options;
     private ItemManager itemManager;

@@ -24,7 +24,7 @@ import dev.despical.fileitems.SpecialItem;
 import dev.despical.inventoryframework.Gui;
 import dev.despical.inventoryframework.GuiItem;
 import dev.despical.inventoryframework.pane.StaticPane;
-import dev.despical.tntrun.Main;
+import dev.despical.tntrun.TNTRun;
 import dev.despical.tntrun.chat.ChatManager;
 import dev.despical.tntrun.game.Game;
 import dev.despical.tntrun.menu.Menu;
@@ -49,7 +49,7 @@ import java.util.List;
 public class SpectatorSettingsMenu implements Menu {
 
     private static final int MAX_SPEED_LEVEL = 3;
-    private static final Main plugin = Main.getInstance();
+    private static final TNTRun plugin = TNTRun.getInstance();
 
     private final ItemManager itemManager;
     private final ChatManager chatManager;

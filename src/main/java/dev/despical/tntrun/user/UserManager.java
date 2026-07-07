@@ -18,7 +18,7 @@
 
 package dev.despical.tntrun.user;
 
-import dev.despical.tntrun.Main;
+import dev.despical.tntrun.TNTRun;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -34,10 +34,10 @@ import java.util.UUID;
  */
 public class UserManager {
 
-    private final Main plugin;
+    private final TNTRun plugin;
     private final Map<UUID, User> users;
 
-    public UserManager(Main plugin) {
+    public UserManager(TNTRun plugin) {
         this.plugin = plugin;
         this.users = new HashMap<>();
         this.loadDataOfOnlinePlayers();

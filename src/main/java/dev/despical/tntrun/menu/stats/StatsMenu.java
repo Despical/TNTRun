@@ -25,7 +25,7 @@ import dev.despical.inventoryframework.Gui;
 import dev.despical.inventoryframework.GuiItem;
 import dev.despical.inventoryframework.pane.PaginatedPane;
 import dev.despical.inventoryframework.pane.StaticPane;
-import dev.despical.tntrun.Main;
+import dev.despical.tntrun.TNTRun;
 import dev.despical.tntrun.arena.Arena;
 import dev.despical.tntrun.chat.ChatManager;
 import dev.despical.tntrun.leaderboard.Leaderboard;
@@ -60,7 +60,7 @@ import java.util.function.Function;
  */
 public class StatsMenu implements Menu {
 
-    private final Main plugin;
+    private final TNTRun plugin;
     private final ItemManager itemManager;
     private final ChatManager chatManager;
     private final Gui gui;
@@ -75,7 +75,7 @@ public class StatsMenu implements Menu {
     }
 
     public StatsMenu(User viewer, User targetUser) {
-        this.plugin = Main.getInstance();
+        this.plugin = TNTRun.getInstance();
         this.itemManager = plugin.getItemManager();
         this.chatManager = plugin.getChatManager();
         this.viewer = viewer;
@@ -87,7 +87,7 @@ public class StatsMenu implements Menu {
     }
 
     public StatsMenu(User viewer, OfflinePlayer offlinePlayer) {
-        this.plugin = Main.getInstance();
+        this.plugin = TNTRun.getInstance();
         this.itemManager = plugin.getItemManager();
         this.chatManager = plugin.getChatManager();
 

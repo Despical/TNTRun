@@ -1,6 +1,6 @@
 name: TNTRun
 author: Despical
-main: dev.despical.tntrun.Main
+main: dev.despical.tntrun.TNTRun
 version: ${version}
 api-version: 1.13
 prefix: TNTRun

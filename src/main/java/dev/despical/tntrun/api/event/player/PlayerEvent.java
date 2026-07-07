@@ -18,7 +18,7 @@
 
 package dev.despical.tntrun.api.event.player;
 
-import dev.despical.tntrun.Main;
+import dev.despical.tntrun.TNTRun;
 import dev.despical.tntrun.api.event.TNTRunEvent;
 import dev.despical.tntrun.user.User;
 import lombok.AllArgsConstructor;
@@ -51,7 +51,7 @@ public abstract class PlayerEvent extends TNTRunEvent {
      */
     @NotNull
     public final User getUser() {
-        return Main.getInstance().getUserManager().getUser(player);
+        return TNTRun.getInstance().getUserManager().getUser(player);
     }
 
     /**

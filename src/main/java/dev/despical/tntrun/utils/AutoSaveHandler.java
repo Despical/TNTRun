@@ -18,7 +18,7 @@
 
 package dev.despical.tntrun.utils;
 
-import dev.despical.tntrun.Main;
+import dev.despical.tntrun.TNTRun;
 import org.bukkit.scheduler.BukkitRunnable;
 
 /**
@@ -28,9 +28,9 @@ import org.bukkit.scheduler.BukkitRunnable;
  */
 public class AutoSaveHandler extends BukkitRunnable {
 
-    private final Main plugin;
+    private final TNTRun plugin;
 
-    public AutoSaveHandler(Main plugin) {
+    public AutoSaveHandler(TNTRun plugin) {
         this.plugin = plugin;
     }
 

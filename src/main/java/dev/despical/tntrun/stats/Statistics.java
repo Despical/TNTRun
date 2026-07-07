@@ -21,7 +21,7 @@ package dev.despical.tntrun.stats;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
-import dev.despical.tntrun.Main;
+import dev.despical.tntrun.TNTRun;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
@@ -113,7 +113,7 @@ public final class Statistics {
     }
 
     public static int getDoubleJumps(Player player) {
-        Main plugin = Main.getInstance();
+        TNTRun plugin = TNTRun.getInstance();
         int defaultDoubleJumps = plugin.getConfig().getInt("double-jumps.default", 5);
 
         if (player == null) {

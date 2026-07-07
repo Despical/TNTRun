@@ -18,7 +18,7 @@
 
 package dev.despical.tntrun.option;
 
-import dev.despical.tntrun.Main;
+import dev.despical.tntrun.TNTRun;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import java.util.Arrays;
@@ -33,10 +33,10 @@ import java.util.stream.Stream;
  */
 public class ConfigOptions {
 
-    private final Main plugin;
+    private final TNTRun plugin;
     private final Map<ConfigOption<?>, Object> options;
 
-    public ConfigOptions(Main plugin) {
+    public ConfigOptions(TNTRun plugin) {
         this.plugin = plugin;
         this.options = new HashMap<>();
         this.loadOptions();

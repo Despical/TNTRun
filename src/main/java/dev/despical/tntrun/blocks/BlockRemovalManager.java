@@ -18,7 +18,7 @@
 
 package dev.despical.tntrun.blocks;
 
-import dev.despical.tntrun.Main;
+import dev.despical.tntrun.TNTRun;
 import dev.despical.tntrun.game.Game;
 import dev.despical.tntrun.game.GameState;
 import dev.despical.tntrun.user.User;
@@ -43,7 +43,7 @@ import java.util.Set;
  */
 public class BlockRemovalManager {
 
-    private static final Main plugin = Main.getInstance();
+    private static final TNTRun plugin = TNTRun.getInstance();
 
     private final Game game;
     private final BlockRemovalConfig config;
