@@ -14,7 +14,6 @@ softdepend:
   - MultiWorld
   - My_Worlds
   - WorldGuard
-  - NoteBlockAPI
 
 permissions:
   tntrun.*:

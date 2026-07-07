@@ -5,8 +5,6 @@
 ![Gradle](https://img.shields.io/badge/Gradle-9.6.1-079ec0?logo=gradle&logoColor=white)
 ![Minecraft](https://img.shields.io/badge/Minecraft-26.2-62b47a)
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](LICENSE)
-[![Docs](https://img.shields.io/badge/Docs-despical.dev-2ea44f.svg)](https://docs.despical.dev/tnt-run/)
-[![Javadocs](https://img.shields.io/badge/Javadocs-javadoc.despical.dev-2ea44f.svg)](https://javadoc.despical.dev/TNTRun/)
 
 TNT Run is a fast-paced jump 'n run TNT game where players survive as long as possible by parkouring across a floor of disappearing blocks.
 
@@ -29,6 +27,14 @@ Players (up to 12 or 24, mostly, depending on the map) are placed on sand/gravel
 
 - Java 25
 - A Paper-compatible Minecraft server
+
+---
+
+## Resources
+
+- [Documentation](https://docs.despical.dev/tnt-run/)
+- [Javadocs](https://javadoc.despical.dev/TNTRun/)
+- [SpigotMC](https://www.spigotmc.org/resources/tnt-run.83196/)
 
 ---
 
@@ -132,7 +138,6 @@ Optional integrations declared by the plugin include:
 - SlimeWorldPlugin
 - MultiWorld
 - My_Worlds
-- NoteBlockAPI
 
 ---
 
