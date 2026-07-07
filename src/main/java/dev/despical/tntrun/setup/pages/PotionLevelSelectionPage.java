@@ -149,7 +149,7 @@ public class PotionLevelSelectionPage extends SetupPage {
     private String toDisplayName(String value) {
         StringBuilder displayName = new StringBuilder();
 
-        for (String part : value.toLowerCase(Locale.ROOT).split("_")) {
+        for (String part : value.toLowerCase(Locale.ENGLISH).split("_")) {
             if (part.isEmpty()) {
                 continue;
             }

@@ -51,7 +51,7 @@ public class ArenaPotionEffect {
 
     public PotionEffectType getPotionEffectType() {
         try {
-            String normalized = effectType.toUpperCase(Locale.ROOT);
+            String normalized = effectType.toUpperCase(Locale.ENGLISH);
             PotionEffectType effect = PotionEffectType.getByName(normalized);
 
             if (effect != null) {

@@ -85,7 +85,7 @@ public class PlaceholderManager extends PlaceholderExpansion {
     @Nullable
     @Override
     public String onPlaceholderRequest(Player player, @NotNull String id) {
-        String normalized = id.toLowerCase(Locale.ROOT);
+        String normalized = id.toLowerCase(Locale.ENGLISH);
 
         switch (normalized) {
             case "arenas_total" -> {
@@ -182,7 +182,7 @@ public class PlaceholderManager extends PlaceholderExpansion {
             return "";
         }
 
-        String key = data[2].toLowerCase(Locale.ROOT);
+        String key = data[2].toLowerCase(Locale.ENGLISH);
         Game game = arena.getGame();
 
         return switch (key) {
@@ -227,7 +227,7 @@ public class PlaceholderManager extends PlaceholderExpansion {
         }
 
         LeaderboardEntry<?> entry = leaderboard.getEntryAtPosition(position);
-        String key = data[3].toLowerCase(Locale.ROOT);
+        String key = data[3].toLowerCase(Locale.ENGLISH);
 
         return switch (key) {
             case "name" -> entry.name();
@@ -254,7 +254,7 @@ public class PlaceholderManager extends PlaceholderExpansion {
             return "";
         }
 
-        return switch (data[1].toLowerCase(Locale.ROOT)) {
+        return switch (data[1].toLowerCase(Locale.ENGLISH)) {
             case "games_played" -> Integer.toString(user.getStatistic(Statistics.GAMES_PLAYED));
             case "wins" -> Integer.toString(user.getStatistic(Statistics.WIN));
             case "loses", "losses" -> Integer.toString(user.getStatistic(Statistics.LOSE));

@@ -112,7 +112,7 @@ public class PotionEffectSelectionPage extends SetupPage {
     }
 
     private GuiItem createEffectItem(String effectName) {
-        String itemKey = "potion-effect-" + effectName.toLowerCase(Locale.ROOT).replace('_', '-');
+        String itemKey = "potion-effect-" + effectName.toLowerCase(Locale.ENGLISH).replace('_', '-');
         SpecialItem specialItem = itemManager.getItem(itemKey);
         ItemStack item = specialItem != null
             ? specialItem.getItemStack()
