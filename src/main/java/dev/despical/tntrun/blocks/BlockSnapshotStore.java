@@ -19,7 +19,7 @@
 package dev.despical.tntrun.blocks;
 
 import dev.despical.tntrun.TNTRun;
-import org.bukkit.Bukkit;
+import dev.despical.tntrun.utils.Schedulers;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.scheduler.BukkitTask;
@@ -173,6 +173,6 @@ public class BlockSnapshotStore {
             flushTask.cancel();
         }
 
-        flushTask = Bukkit.getScheduler().runTaskTimer(plugin, () -> flushNow(), config.getFlushIntervalTicks(), config.getFlushIntervalTicks());
+        flushTask = Schedulers.runTaskTimer(this::flushNow, config.getFlushIntervalTicks(), config.getFlushIntervalTicks());
     }
 }

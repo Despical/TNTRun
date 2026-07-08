@@ -22,6 +22,7 @@ import dev.despical.tntrun.TNTRun;
 import lombok.experimental.UtilityClass;
 import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitScheduler;
+import org.bukkit.scheduler.BukkitTask;
 
 /**
  * @author Despical
@@ -38,8 +39,12 @@ public final class Schedulers {
         scheduler.runTask(plugin, runnable);
     }
 
-    public static void runTaskLater(Runnable runnable, long delay) {
-        scheduler.runTaskLater(plugin, runnable, delay);
+    public static BukkitTask runTaskLater(Runnable runnable, long delay) {
+        return scheduler.runTaskLater(plugin, runnable, delay);
+    }
+
+    public static BukkitTask runTaskTimer(Runnable task, long delay, long period) {
+        return scheduler.runTaskTimer(plugin, task, delay, period);
     }
 
     public static void runTaskAsynchronously(Runnable runnable) {

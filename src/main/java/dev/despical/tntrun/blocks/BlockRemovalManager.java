@@ -22,7 +22,7 @@ import dev.despical.tntrun.TNTRun;
 import dev.despical.tntrun.game.Game;
 import dev.despical.tntrun.game.GameState;
 import dev.despical.tntrun.user.User;
-import org.bukkit.Bukkit;
+import dev.despical.tntrun.utils.Schedulers;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -66,19 +66,22 @@ public class BlockRemovalManager {
     public void start() {
         stopScanning();
 
-        scanTask = Bukkit.getScheduler().runTaskTimer(plugin, this::scanPlayers, 0L, config.getScanIntervalTicks());
+        scanTask = Schedulers.runTaskTimer(this::scanPlayers, 0L, config.getScanIntervalTicks());
     }
 
     public void reset() {
         stopScanning();
+
         delayedTasks.forEach(BukkitTask::cancel);
         delayedTasks.clear();
         queuedBlocks.clear();
 
         snapshots.values().forEach(snapshot -> {
             snapshot.restore(false);
+
             store.remove(snapshot);
         });
+
         snapshots.clear();
     }
 
@@ -110,6 +113,7 @@ public class BlockRemovalManager {
 
     private void scanPlayer(Player player) {
         Location location = player.getLocation();
+
         int scanDepth = config.scanDepth(player.isOnGround());
         int y = location.getBlockY();
 
@@ -133,7 +137,7 @@ public class BlockRemovalManager {
         queuedBlocks.add(key);
         store.record(snapshot);
 
-        BukkitTask task = Bukkit.getScheduler().runTaskLater(plugin, () -> removeBlock(snapshot), config.getRemoveDelayTicks());
+        BukkitTask task = Schedulers.runTaskLater(() -> removeBlock(snapshot), config.getRemoveDelayTicks());
         delayedTasks.add(task);
     }
 
@@ -141,7 +145,7 @@ public class BlockRemovalManager {
         queuedBlocks.remove(snapshot.key());
 
         Block block = snapshot.getBlock();
-        if (block == null || !snapshot.matches(block) || !config.isRemovable(block.getType())) {
+        if (!snapshot.matches(block) || !config.isRemovable(block.getType())) {
             snapshots.remove(snapshot.key());
             store.remove(snapshot);
             return;
@@ -181,8 +185,8 @@ public class BlockRemovalManager {
 
     private record Position(double x, int y, double z) {
 
-        public Block getBlock(World world, double addx, double addz) {
-            return world.getBlockAt(NumberConversions.floor(x + addx), y, NumberConversions.floor(z + addz));
+        public Block getBlock(World world, double addX, double addz) {
+            return world.getBlockAt(NumberConversions.floor(x + addX), y, NumberConversions.floor(z + addz));
         }
     }
 }
