@@ -51,12 +51,14 @@ public class Arena {
     private Game game;
 
     private final String id;
+    private final List<User> deaths;
+    private final List<User> winners;
     private final Map<ArenaOption<?>, Object> options;
-    private final List<User> deaths = new ArrayList<>();
-    private final List<User> winners = new ArrayList<>();
 
     Arena(String id) {
         this.id = id;
+        this.deaths = new ArrayList<>();
+        this.winners = new ArrayList<>();
         this.options = new HashMap<>();
         this.registerDefaultOptions();
     }

@@ -44,10 +44,12 @@ public class BlockRemovalConfig {
     private int scanIntervalTicks;
     private int scanDepthOnGround;
     private int scanDepthInAir;
+
     private boolean persistSnapshots;
     private boolean restoreSnapshotsOnStartup;
     private boolean restoreOnlyAir;
     private int flushIntervalTicks;
+
     private Set<Material> removableBlocks;
 
     public BlockRemovalConfig(TNTRun plugin) {
@@ -67,7 +69,7 @@ public class BlockRemovalConfig {
         this.restoreSnapshotsOnStartup = config.getBoolean("safety.restore-snapshots-on-startup", true);
         this.restoreOnlyAir = config.getBoolean("safety.restore-only-air", true);
         int maxSafeFlushInterval = Math.max(1, removeDelayTicks - 1);
-        this.flushIntervalTicks = Math.min(maxSafeFlushInterval, Math.max(1, config.getInt("safety.flush-interval-ticks", 5)));
+        this.flushIntervalTicks = Math.clamp(config.getInt("safety.flush-interval-ticks", 5), 1, maxSafeFlushInterval);
         this.removableBlocks = Collections.unmodifiableSet(loadRemovableBlocks(config));
     }
 

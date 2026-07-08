@@ -59,7 +59,7 @@ public final class EventProfiler {
             return;
         }
 
-        profiles.computeIfAbsent(event.getClass(), k -> new ProfileData())
+        profiles.computeIfAbsent(event.getClass(), _ -> new ProfileData())
             .record(durationNanos);
 
         if (verbose) {

@@ -104,7 +104,7 @@ public class PotionEffectSelectionPage extends SetupPage {
         int visibleEffects = Math.min(effectCount, CONTENT_COLUMNS * (MAX_ROWS - 2));
         int contentRows = Math.max(1, (int) Math.ceil((double) visibleEffects / CONTENT_COLUMNS));
 
-        return Math.max(MIN_ROWS, Math.min(MAX_ROWS, contentRows + 2));
+        return Math.clamp(contentRows + 2, MIN_ROWS, MAX_ROWS);
     }
 
     private int getItemsPerPage(int totalRows) {

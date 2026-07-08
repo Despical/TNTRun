@@ -26,11 +26,6 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 
 /**
- * @author Berke Akçen
- * <p>
- * Created at 28.01.2026
- */
-/**
  * @author Despical
  * <p>
  * Created at 18.06.2026
@@ -53,7 +48,7 @@ public class BossBarManager {
             return;
         }
 
-        BossBarConfig.BossBarData data = configProvider.getData(game.getState());
+        var data = configProvider.getData(game.getState());
         if (data == null) return;
 
         if (!data.visible()) {

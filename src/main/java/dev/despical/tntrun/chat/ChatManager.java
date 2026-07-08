@@ -164,7 +164,7 @@ public class ChatManager {
 
     public Component getMessageComponent(String messageKey, Var... vars) {
         String configMessage = Utils.getString(messagesFile, messageKey);
-        Component component = messages.computeIfAbsent(messageKey, (k) -> parseMessage(configMessage));
+        Component component = messages.computeIfAbsent(messageKey, (_) -> parseMessage(configMessage));
 
         return replaceVarsInComponent(component, vars);
     }

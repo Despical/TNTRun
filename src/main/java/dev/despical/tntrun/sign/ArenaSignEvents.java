@@ -21,6 +21,7 @@ package dev.despical.tntrun.sign;
 import dev.despical.tntrun.arena.Arena;
 import dev.despical.tntrun.event.ListenerAdapter;
 import dev.despical.tntrun.user.User;
+import lombok.RequiredArgsConstructor;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -34,13 +35,10 @@ import org.bukkit.inventory.EquipmentSlot;
  * <p>
  * Created at 12.12.2025
  */
+@RequiredArgsConstructor
 public class ArenaSignEvents extends ListenerAdapter {
 
     private final SignManager signManager;
-
-    public ArenaSignEvents(SignManager signManager) {
-        this.signManager = signManager;
-    }
 
     @EventHandler
     public void onSignDestroy(BlockBreakEvent event) {

@@ -21,6 +21,7 @@ package dev.despical.tntrun.arena;
 import dev.despical.tntrun.TNTRun;
 import dev.despical.tntrun.user.User;
 import dev.despical.tntrun.utils.Schedulers;
+import lombok.RequiredArgsConstructor;
 
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
@@ -30,13 +31,10 @@ import java.util.concurrent.CompletableFuture;
  * <p>
  * Created at 11.05.2026
  */
+@RequiredArgsConstructor
 public class ArenaRecordResetService {
 
     private final TNTRun plugin;
-
-    public ArenaRecordResetService(TNTRun plugin) {
-        this.plugin = plugin;
-    }
 
     public CompletableFuture<Void> resetArenaRecords(Arena arena) {
         String arenaId = arena.getId();

@@ -157,9 +157,9 @@ public class StatsMenu implements Menu {
 
             Consumer<InventoryClickEvent> action = event -> event.setCancelled(true);
             if ("open_arenas".equals(specialItem.getCustomKey("action"))) {
-                action = event -> openArenasMenu();
+                action = _ -> openArenasMenu();
             } else if ("close_menu".equals(specialItem.getCustomKey("action"))) {
-                action = event -> player.closeInventory();
+                action = _ -> player.closeInventory();
             }
 
             GuiItem guiItem = new GuiItem(item, action);
@@ -285,7 +285,7 @@ public class StatsMenu implements Menu {
                     placeItemInPane(pane, specialItem, new GuiItem(item, event -> event.setCancelled(true)));
                 }
                 case "back_button" -> {
-                    Consumer<InventoryClickEvent> action = backAction.equals("openMainMenu") ? e -> openMainMenu() : e -> openArenasMenu();
+                    Consumer<InventoryClickEvent> action = backAction.equals("openMainMenu") ? _ -> openMainMenu() : _ -> openArenasMenu();
                     placeItemInPane(pane, specialItem, new GuiItem(ItemUtils.formatItemStack(specialItem), action));
                 }
             }
@@ -304,7 +304,7 @@ public class StatsMenu implements Menu {
 
         if (next != null) {
             if (pages.getPage() < pages.getPages() - 1) {
-                placeItemInPane(pane, next, new GuiItem(ItemUtils.formatItemStack(next), event -> {
+                placeItemInPane(pane, next, new GuiItem(ItemUtils.formatItemStack(next), _ -> {
                     pages.setPage(pages.getPage() + 1);
                     setupPaginationButtons(pane, pages);
 
@@ -319,7 +319,7 @@ public class StatsMenu implements Menu {
 
         if (prev != null) {
             if (pages.getPage() > 0) {
-                placeItemInPane(pane, prev, new GuiItem(ItemUtils.formatItemStack(prev), event -> {
+                placeItemInPane(pane, prev, new GuiItem(ItemUtils.formatItemStack(prev), _ -> {
                     pages.setPage(pages.getPage() - 1);
                     setupPaginationButtons(pane, pages);
 

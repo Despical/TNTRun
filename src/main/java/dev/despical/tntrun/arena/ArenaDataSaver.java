@@ -24,6 +24,7 @@ import dev.despical.tntrun.TNTRun;
 import dev.despical.tntrun.arena.options.ArenaKeys;
 import dev.despical.tntrun.arena.options.ArenaOption;
 import dev.despical.tntrun.sign.ArenaSign;
+import lombok.RequiredArgsConstructor;
 import org.bukkit.block.Sign;
 import org.bukkit.configuration.file.FileConfiguration;
 
@@ -35,13 +36,10 @@ import java.util.Set;
  * <p>
  * Created at 18.06.2026
  */
+@RequiredArgsConstructor
 public class ArenaDataSaver {
 
     private final TNTRun plugin;
-
-    public ArenaDataSaver(TNTRun plugin) {
-        this.plugin = plugin;
-    }
 
     public void saveAllArenas() {
         ArenaRegistry arenaRegistry = plugin.getArenaRegistry();

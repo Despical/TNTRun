@@ -49,6 +49,7 @@ public class SignManager {
 
     private String fullGameState;
     private FileConfiguration config;
+    private ArenaSignEvents arenaSignEvents;
     private List<Component> signLines;
     private List<Component> inactiveSignLines;
 
@@ -57,7 +58,6 @@ public class SignManager {
     private final Map<BlockKey, ArenaSign> signsByBlock;
     private final Map<Arena, Set<ArenaSign>> signsByArena;
     private final Map<GameState, String> gameStateToString;
-    private ArenaSignEvents arenaSignEvents;
 
     public SignManager(TNTRun plugin) {
         this.plugin = plugin;
@@ -72,6 +72,7 @@ public class SignManager {
 
     private void loadSigns() {
         loadConfig();
+
         signsByBlock.clear();
         signsByArena.clear();
 
@@ -80,7 +81,6 @@ public class SignManager {
         }
 
         fullGameState = getRawString("game-states.full-game");
-
         inactiveSignLines = signLines.stream()
             .map(this::formatInactiveArena)
             .toList();
@@ -266,7 +266,7 @@ public class SignManager {
 
     private void trackArenaSign(ArenaSign arenaSign) {
         signsByBlock.put(BlockKey.of(arenaSign.block()), arenaSign);
-        signsByArena.computeIfAbsent(arenaSign.arena(), key -> new HashSet<>()).add(arenaSign);
+        signsByArena.computeIfAbsent(arenaSign.arena(), _ -> new HashSet<>()).add(arenaSign);
     }
 
     private void untrackArenaSign(ArenaSign arenaSign) {
