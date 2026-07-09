@@ -64,6 +64,7 @@ loadScripts(document, 'script');</script>
 <ol class="toc-list">
 <li><a href="#runInTheNextTick(java.lang.Runnable)" tabindex="0">runInTheNextTick(Runnable)</a></li>
 <li><a href="#runTaskLater(java.lang.Runnable,long)" tabindex="0">runTaskLater(Runnable, long)</a></li>
+<li><a href="#runTaskTimer(java.lang.Runnable,long,long)" tabindex="0">runTaskTimer(Runnable, long, long)</a></li>
 <li><a href="#runTaskAsynchronously(java.lang.Runnable)" tabindex="0">runTaskAsynchronously(Runnable)</a></li>
 </ol>
 </li>
@@ -116,10 +117,15 @@ loadScripts(document, 'script');</script>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static void</code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#runTaskAsynchronously(java.lang.Runnable)" class="member-name-link">runTaskAsynchronously</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Runnable.html" title="class or interface in java.lang" class="external-link">Runnable</a>&nbsp;runnable)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static void</code></div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static org.bukkit.scheduler.BukkitTask</code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#runTaskLater(java.lang.Runnable,long)" class="member-name-link">runTaskLater</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Runnable.html" title="class or interface in java.lang" class="external-link">Runnable</a>&nbsp;runnable,
  long&nbsp;delay)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">&nbsp;</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static org.bukkit.scheduler.BukkitTask</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#runTaskTimer(java.lang.Runnable,long,long)" class="member-name-link">runTaskTimer</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Runnable.html" title="class or interface in java.lang" class="external-link">Runnable</a>&nbsp;task,
+ long&nbsp;delay,
+ long&nbsp;period)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">&nbsp;</div>
 </div>
 </div>
 </div>
@@ -165,8 +171,18 @@ loadScripts(document, 'script');</script>
 <section class="detail" id="runTaskLater(java.lang.Runnable,long)">
 <h3>runTaskLater</h3>
 <div class="horizontal-scroll">
-<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">runTaskLater</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Runnable.html" title="class or interface in java.lang" class="external-link">Runnable</a>&nbsp;runnable,
+<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type">org.bukkit.scheduler.BukkitTask</span>&nbsp;<span class="element-name">runTaskLater</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Runnable.html" title="class or interface in java.lang" class="external-link">Runnable</a>&nbsp;runnable,
  long&nbsp;delay)</span></div>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="runTaskTimer(java.lang.Runnable,long,long)">
+<h3>runTaskTimer</h3>
+<div class="horizontal-scroll">
+<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type">org.bukkit.scheduler.BukkitTask</span>&nbsp;<span class="element-name">runTaskTimer</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Runnable.html" title="class or interface in java.lang" class="external-link">Runnable</a>&nbsp;task,
+ long&nbsp;delay,
+ long&nbsp;period)</span></div>
 </div>
 </section>
 </li>
