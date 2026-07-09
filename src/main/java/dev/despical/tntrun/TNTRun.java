@@ -94,6 +94,7 @@ public class TNTRun extends JavaPlugin {
     private CommandFramework commandFramework;
     private PlayingCommandPolicy playingCommandPolicy;
     private SoundManager soundManager;
+    private Metrics metrics;
 
     @Override
     public void onEnable() {
@@ -112,6 +113,7 @@ public class TNTRun extends JavaPlugin {
         arenaManager.handleDisable();
         gameManager.shutdown();
         database.shutdown();
+        metrics.shutdown();
     }
 
     private void createConfigFiles() {
@@ -214,8 +216,7 @@ public class TNTRun extends JavaPlugin {
     }
 
     private void initializeMetrics() {
-        Metrics metrics = new Metrics(this, 30500);
-
+        metrics = new Metrics(this, 30500);
         metrics.addCustomChart(new SimplePie("database_type", this::resolveMetricsDatabaseType));
         metrics.addCustomChart(new SimplePie("placeholderapi_enabled", () -> isPluginEnabled("PlaceholderAPI") ? "yes" : "no"));
         metrics.addCustomChart(new SingleLineChart("arenas_total", () -> arenaRegistry.getArenas().size()));
