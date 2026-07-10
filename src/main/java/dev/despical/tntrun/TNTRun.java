@@ -216,7 +216,7 @@ public class TNTRun extends JavaPlugin {
     }
 
     private void initializeMetrics() {
-        metrics = new Metrics(this, 30500);
+        metrics = new Metrics(this, 8147);
         metrics.addCustomChart(new SimplePie("database_type", this::resolveMetricsDatabaseType));
         metrics.addCustomChart(new SimplePie("placeholderapi_enabled", () -> isPluginEnabled("PlaceholderAPI") ? "yes" : "no"));
         metrics.addCustomChart(new SingleLineChart("arenas_total", () -> arenaRegistry.getArenas().size()));
