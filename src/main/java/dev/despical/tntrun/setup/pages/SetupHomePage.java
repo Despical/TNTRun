@@ -64,13 +64,12 @@ public class SetupHomePage extends SetupPage {
 
     public SetupHomePage(SetupMenu menu) {
         super(menu);
-        this.pane = new StaticPane(9, 6);
+        this.pane = new StaticPane(9, 5);
     }
 
     @Override
     public void beforeOpening(Gui gui) {
-        int rows = arena.getOption(ArenaKeys.READY) ? 5 : 6;
-        gui.setRows(rows);
+        gui.setRows(5);
     }
 
     @Override
@@ -87,7 +86,7 @@ public class SetupHomePage extends SetupPage {
         }
 
         if (!arena.getOption(ArenaKeys.READY)) {
-            pane.addItem(createRegisterItem(), 8, 5);
+            pane.addItem(createRegisterItem(), 8, 4);
         }
 
         paginatedPane.addPane(0, pane);
