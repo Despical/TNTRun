@@ -47,7 +47,8 @@ public final class ArenaCommands extends CommandCategory {
         permission = "tntrun.arena.create",
         usage = "/%label% create <arena id>",
         min = 1,
-        max = 1
+        max = 1,
+        senderType = Command.SenderType.PLAYER
     )
     public void createArenaCommand(Arguments arguments) {
         String arenaId = arguments.getFirst();
