@@ -103,8 +103,9 @@ public class SpectatorTeleportMenu implements Menu {
         gui.removePanes();
 
         StaticPane background = new StaticPane(0, 0, 9, gui.getRows());
-        addDecorations(background);
         gui.addPane(background);
+
+        addDecorations(background);
 
         if (teleportItems.isEmpty()) {
             gui.update();
@@ -214,9 +215,9 @@ public class SpectatorTeleportMenu implements Menu {
 
     private void sendNoPlayersMessage(Player player) {
         SpecialItem teleporterItem = itemManager.getItemFromCategory("spectator-teleporter-menu-items", "spectator-teleporter");
-        String message = teleporterItem != null ? teleporterItem.getCustomKey("no-players-message") : null;
+        String message = teleporterItem.getCustomKey("no-players-message");
 
-        chatManager.sendRawMessage(player, message != null ? message : "<#FF5252>There are no alive players to spectate.");
+        chatManager.sendRawMessage(player, message);
     }
 
     private void playClickSound() {
