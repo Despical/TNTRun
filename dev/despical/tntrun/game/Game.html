@@ -90,6 +90,7 @@ loadScripts(document, 'script');</script>
 <li><a href="#eliminate(dev.despical.tntrun.user.User)" tabindex="0">eliminate(User)</a></li>
 <li><a href="#finishIfLastSurvivor()" tabindex="0">finishIfLastSurvivor()</a></li>
 <li><a href="#prepareSpectator(dev.despical.tntrun.user.User,boolean)" tabindex="0">prepareSpectator(User, boolean)</a></li>
+<li><a href="#prepareSpectator(dev.despical.tntrun.user.User,boolean,boolean)" tabindex="0">prepareSpectator(User, boolean, boolean)</a></li>
 <li><a href="#applySpectatorSettings(dev.despical.tntrun.user.User)" tabindex="0">applySpectatorSettings(User)</a></li>
 <li><a href="#updateSpectatorVisibility()" tabindex="0">updateSpectatorVisibility()</a></li>
 <li><a href="#getHandler(dev.despical.tntrun.game.GameState)" tabindex="0">getHandler(GameState)</a></li>
@@ -231,38 +232,43 @@ loadScripts(document, 'script');</script>
  boolean&nbsp;teleportToStart)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#quitUser(dev.despical.tntrun.user.User)" class="member-name-link">quitUser</a><wbr>(<a href="../user/User.html" title="class in dev.despical.tntrun.user">User</a>&nbsp;user)</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#prepareSpectator(dev.despical.tntrun.user.User,boolean,boolean)" class="member-name-link">prepareSpectator</a><wbr>(<a href="../user/User.html" title="class in dev.despical.tntrun.user">User</a>&nbsp;user,
+ boolean&nbsp;teleportToStart,
+ boolean&nbsp;saveInventory)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#resetTickProgress()" class="member-name-link">resetTickProgress</a>()</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#quitUser(dev.despical.tntrun.user.User)" class="member-name-link">quitUser</a><wbr>(<a href="../user/User.html" title="class in dev.despical.tntrun.user">User</a>&nbsp;user)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#run()" class="member-name-link">run</a>()</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#resetTickProgress()" class="member-name-link">resetTickProgress</a>()</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setGameState(dev.despical.tntrun.game.GameState)" class="member-name-link">setGameState</a><wbr>(<a href="GameState.html" title="enum class in dev.despical.tntrun.game">GameState</a>&nbsp;newState)</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#run()" class="member-name-link">run</a>()</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>final void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setTimer(int)" class="member-name-link">setTimer</a><wbr>(int&nbsp;timer)</code></div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setGameState(dev.despical.tntrun.game.GameState)" class="member-name-link">setGameState</a><wbr>(<a href="GameState.html" title="enum class in dev.despical.tntrun.game">GameState</a>&nbsp;newState)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>final void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setTimer(dev.despical.tntrun.option.IntOption)" class="member-name-link">setTimer</a><wbr>(<a href="../option/IntOption.html" title="enum class in dev.despical.tntrun.option">IntOption</a>&nbsp;option)</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setTimer(int)" class="member-name-link">setTimer</a><wbr>(int&nbsp;timer)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#startSurvivalRound()" class="member-name-link">startSurvivalRound</a>()</code></div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>final void</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setTimer(dev.despical.tntrun.option.IntOption)" class="member-name-link">setTimer</a><wbr>(<a href="../option/IntOption.html" title="enum class in dev.despical.tntrun.option">IntOption</a>&nbsp;option)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#tickImmediately()" class="member-name-link">tickImmediately</a>()</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#toString()" class="member-name-link">toString</a>()</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#updatePlayerMetadata(dev.despical.tntrun.user.User)" class="member-name-link">updatePlayerMetadata</a><wbr>(<a href="../user/User.html" title="class in dev.despical.tntrun.user">User</a>&nbsp;user)</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#startSurvivalRound()" class="member-name-link">startSurvivalRound</a>()</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#updateSpectatorVisibility()" class="member-name-link">updateSpectatorVisibility</a>()</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#tickImmediately()" class="member-name-link">tickImmediately</a>()</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#toString()" class="member-name-link">toString</a>()</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#updatePlayerMetadata(dev.despical.tntrun.user.User)" class="member-name-link">updatePlayerMetadata</a><wbr>(<a href="../user/User.html" title="class in dev.despical.tntrun.user">User</a>&nbsp;user)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#updateSpectatorVisibility()" class="member-name-link">updateSpectatorVisibility</a>()</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 </div>
 </div>
 </div>
@@ -517,6 +523,16 @@ loadScripts(document, 'script');</script>
 <div class="horizontal-scroll">
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">prepareSpectator</span><wbr><span class="parameters">(<a href="../user/User.html" title="class in dev.despical.tntrun.user">User</a>&nbsp;user,
  boolean&nbsp;teleportToStart)</span></div>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="prepareSpectator(dev.despical.tntrun.user.User,boolean,boolean)">
+<h3>prepareSpectator</h3>
+<div class="horizontal-scroll">
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">prepareSpectator</span><wbr><span class="parameters">(<a href="../user/User.html" title="class in dev.despical.tntrun.user">User</a>&nbsp;user,
+ boolean&nbsp;teleportToStart,
+ boolean&nbsp;saveInventory)</span></div>
 </div>
 </section>
 </li>
