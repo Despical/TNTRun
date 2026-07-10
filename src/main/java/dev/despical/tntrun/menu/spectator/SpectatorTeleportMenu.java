@@ -213,8 +213,10 @@ public class SpectatorTeleportMenu implements Menu {
     }
 
     private void sendNoPlayersMessage(Player player) {
-        FileConfiguration config = ConfigUtils.getConfig(plugin, "menu/spectator-teleporter-menu");
-        chatManager.sendRawMessage(player, config.getString("no-players-message", "<#FF5252>There are no alive players to spectate."));
+        SpecialItem teleporterItem = itemManager.getItemFromCategory("spectator-teleporter-menu-items", "spectator-teleporter");
+        String message = teleporterItem != null ? teleporterItem.getCustomKey("no-players-message") : null;
+
+        chatManager.sendRawMessage(player, message != null ? message : "<#FF5252>There are no alive players to spectate.");
     }
 
     private void playClickSound() {

@@ -4,7 +4,6 @@
 
 rows: 5
 title: "<#E67E22><bold>Teleporter</bold>"
-no-players-message: "<#FF5252>There are no alive players to spectate."
 
 items:
   spectator-teleporter:
@@ -14,6 +13,7 @@ items:
     lore:
       - "<#B0BEC5>Right-click to teleport to"
       - "<#B0BEC5>alive players."
+    no-players-message: "<#FF5252>There are no alive players to spectate."
 
   background-fill:
     slots: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 17, 18, 26, 27, 35, 36, 37, 38, 39, 41, 42, 43, 44]
