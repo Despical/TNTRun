@@ -213,16 +213,18 @@ public class Game extends BukkitRunnable {
         states.get(gameState).leave(user);
         user.setSpectator(false);
 
-        scoreboardManager.updateAllScoreboards();
-
         plugin.getSignManager().updateSigns(arena);
         plugin.getDatabase().saveData(user);
 
         Player player = user.getPlayer();
         if (player != null && player.isOnline()) {
+            scoreboardManager.removeScoreboard(player);
+            bossBarManager.removePlayer(player);
+
             player.teleport(arena.getOption(ArenaKeys.END_LOCATION));
             player.clearTitle();
             player.sendActionBar(Component.empty());
+            player.closeInventory();
             player.setInvulnerable(false);
             player.setAllowFlight(false);
             player.setFlying(false);
@@ -237,10 +239,9 @@ public class Game extends BukkitRunnable {
 
             visibilityManager.hidePlayerFromGame(player);
             visibilityManager.showPlayerOutsideTheGame(player);
-
-            scoreboardManager.removeScoreboard(player);
-            bossBarManager.removePlayer(player);
         }
+
+        scoreboardManager.updateAllScoreboards();
     }
 
     public boolean isPlaying(User user) {
@@ -312,7 +313,7 @@ public class Game extends BukkitRunnable {
         user.setSpectator(true);
 
         arena.addDeathPlayer(user);
-        prepareSpectator(user, true);
+        prepareSpectator(user, true, false);
 
         int playersLeft = getPlayersLeft().size();
         plugin.getEventManager().playerEliminate(user.getPlayer(), this, playersLeft);
@@ -326,30 +327,38 @@ public class Game extends BukkitRunnable {
     }
 
     public void finishIfLastSurvivor() {
-        if (!isState(GameState.IN_GAME) || peakActivePlayers <= 1) {
+        if (!isState(GameState.IN_GAME) || peakActivePlayers <= 0) {
             return;
         }
 
         Set<User> playersLeft = getPlayersLeft();
-        if (playersLeft.size() != 1) {
+        if (playersLeft.size() > 1) {
             return;
         }
 
-        User winner = playersLeft.iterator().next();
-        arena.addWinner(winner);
-        scores.addScore(winner, winner.getStatistic(Statistics.LOCAL_SURVIVE_TIME));
-        scores.setWinner(winner);
+        if (playersLeft.size() == 1) {
+            User winner = playersLeft.iterator().next();
+            arena.addWinner(winner);
+            scores.addScore(winner, winner.getStatistic(Statistics.LOCAL_SURVIVE_TIME));
+            scores.setWinner(winner);
+        }
 
         setGameState(GameState.ENDING);
     }
 
     public void prepareSpectator(User user, boolean teleportToStart) {
+        prepareSpectator(user, teleportToStart, true);
+    }
+
+    public void prepareSpectator(User user, boolean teleportToStart, boolean saveInventory) {
         Player player = user.getPlayer();
         if (player == null) {
             return;
         }
 
-        InventorySerializer.saveInventoryToFile(plugin, player);
+        if (saveInventory) {
+            InventorySerializer.saveInventoryToFile(plugin, player);
+        }
 
         PlayerInventory inventory = player.getInventory();
         inventory.clear();

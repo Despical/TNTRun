@@ -77,7 +77,14 @@ public class SpectatorTeleportMenu implements Menu {
             return;
         }
 
-        draw();
+        List<GuiItem> teleportItems = createTeleportItems();
+        if (teleportItems.isEmpty()) {
+            sendNoPlayersMessage(player);
+            player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BIT, 1f, .55f);
+            return;
+        }
+
+        draw(teleportItems);
         gui.show(player);
 
         player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 1f, 1f);
@@ -92,20 +99,25 @@ public class SpectatorTeleportMenu implements Menu {
         return baseGui;
     }
 
-    private void draw() {
+    private void draw(List<GuiItem> teleportItems) {
         gui.removePanes();
 
         StaticPane background = new StaticPane(0, 0, 9, gui.getRows());
         addDecorations(background);
+        gui.addPane(background);
+
+        if (teleportItems.isEmpty()) {
+            gui.update();
+            return;
+        }
 
         PaginatedPane players = new PaginatedPane(1, 1, 7, Math.max(1, gui.getRows() - 2));
-        players.populateWithGuiItems(createTeleportItems());
+        players.populateWithGuiItems(teleportItems);
         players.setPage(Math.clamp(players.getPages() - 1, 0, page));
 
         StaticPane navigation = new StaticPane(0, 0, 9, gui.getRows());
         addNavigationItems(navigation, players);
 
-        gui.addPane(background);
         gui.addPane(players);
         gui.addPane(navigation);
         gui.update();
@@ -136,7 +148,7 @@ public class SpectatorTeleportMenu implements Menu {
 
                     page = currentPage - 1;
 
-                    draw();
+                    draw(createTeleportItems());
                     playClickSound();
                 }));
             }
@@ -150,7 +162,7 @@ public class SpectatorTeleportMenu implements Menu {
 
                     page = currentPage + 1;
 
-                    draw();
+                    draw(createTeleportItems());
                     playClickSound();
                 }));
             }
@@ -181,7 +193,16 @@ public class SpectatorTeleportMenu implements Menu {
 
             Player player = viewer.getPlayer();
             if (player == null || targetPlayer == null || !targetPlayer.isOnline() || target.isSpectator()) {
-                draw();
+                List<GuiItem> teleportItems = createTeleportItems();
+                if (teleportItems.isEmpty()) {
+                    viewer.closeOpenedInventory();
+                    if (player != null) {
+                        sendNoPlayersMessage(player);
+                    }
+                    return;
+                }
+
+                draw(teleportItems);
                 return;
             }
 
@@ -189,6 +210,11 @@ public class SpectatorTeleportMenu implements Menu {
             player.closeInventory();
             player.playSound(player.getLocation(), Sound.ENTITY_ENDERMAN_TELEPORT, 1f, 1.4f);
         });
+    }
+
+    private void sendNoPlayersMessage(Player player) {
+        FileConfiguration config = ConfigUtils.getConfig(plugin, "menu/spectator-teleporter-menu");
+        chatManager.sendRawMessage(player, config.getString("no-players-message", "<#FF5252>There are no alive players to spectate."));
     }
 
     private void playClickSound() {

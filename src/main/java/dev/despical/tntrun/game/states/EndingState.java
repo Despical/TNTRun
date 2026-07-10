@@ -19,7 +19,6 @@
 package dev.despical.tntrun.game.states;
 
 import dev.despical.fileitems.SpecialItem;
-import dev.despical.tntrun.arena.ArenaDataSaver;
 import dev.despical.tntrun.arena.options.ArenaKeys;
 import dev.despical.tntrun.game.Game;
 import dev.despical.tntrun.game.GameState;
@@ -46,9 +45,12 @@ public class EndingState extends GameStateHandler {
     @Override
     public void firstTick() {
         game.setTimer(IntOption.ENDING_TIME);
-        if (game.getScores().getWinner() == null) {
-            game.getScores().calculateWinner();
+
+        var scores = game.getScores();
+        if (scores.getWinner() == null) {
+            scores.calculateWinner();
         }
+
         game.getPlacementMessenger().sendSummaryMessages();
 
         Location startLocation = getLocation(ArenaKeys.LOBBY_LOCATION);
@@ -99,21 +101,20 @@ public class EndingState extends GameStateHandler {
 
             user.addStat(Statistics.GAMES_PLAYED);
             user.addStat(isWinner ? Statistics.WIN : Statistics.LOSE);
-
-            int score = scores.getScore(user.getUUID());
             user.setStatisticIfHigher(Statistics.LONGEST_SURVIVE, user.getStatistic(Statistics.LOCAL_SURVIVE_TIME));
-
-            if (isWinner) {
-                user.addStat(Statistics.WIN_STREAK);
-
-                int currentStreak = user.getStatistic(Statistics.WIN_STREAK);
-                user.setStatisticIfHigher(Statistics.LONGEST_WIN_STREAK, currentStreak);
-            }
         }
+
+        if (winner == null) {
+            return;
+        }
+
+        winner.addStat(Statistics.WIN_STREAK);
+        int currentStreak = winner.getStatistic(Statistics.WIN_STREAK);
+        winner.setStatisticIfHigher(Statistics.LONGEST_WIN_STREAK, currentStreak);
     }
 
     private void updateArenaRecord() {
-        ScoreRegistry.RecordScore highestScore = game.getScores().getHighestScore().orElse(null);
+        var highestScore = game.getScores().getHighestScore().orElse(null);
 
         if (highestScore == null || highestScore.score() <= arena.getRecordTime()) {
             return;
@@ -121,7 +122,5 @@ public class EndingState extends GameStateHandler {
 
         arena.setRecordHolderName(highestScore.playerName());
         arena.setRecordTime(highestScore.score());
-
-        new ArenaDataSaver(plugin).saveAllArenas();
     }
 }

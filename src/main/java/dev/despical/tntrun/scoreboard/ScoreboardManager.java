@@ -80,6 +80,8 @@ public class ScoreboardManager {
     }
 
     public void createScoreboard(Player player) {
+        removeScoreboard(player);
+
         Scoreboard scoreboard = ScoreboardLib.createScoreboard(player);
         scoreboard.setHandler(new ScoreboardHandler() {
 
@@ -107,6 +109,8 @@ public class ScoreboardManager {
         if (scoreboard != null) {
             scoreboard.deactivate();
         }
+
+        player.setScoreboard(Bukkit.getScoreboardManager().getMainScoreboard());
     }
 
     public void removeAllScoreboards() {
@@ -116,6 +120,10 @@ public class ScoreboardManager {
 
     public void updateScoreboard(Player player) {
         Scoreboard scoreboard = scoreboards.get(player.getUniqueId());
+        if (scoreboard == null) {
+            return;
+        }
+
         scoreboard.update();
     }
 

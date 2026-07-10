@@ -4,6 +4,7 @@
 
 rows: 5
 title: "<#E67E22><bold>Teleporter</bold>"
+no-players-message: "<#FF5252>There are no alive players to spectate."
 
 items:
   spectator-teleporter:

@@ -219,7 +219,7 @@ public class GameItemEvents extends ListenerAdapter {
         User user = userManager.getUser(event.getPlayer());
         Arena arena = user.getArena();
 
-        if (arena == null || !arena.isState(GameState.IN_GAME) || !user.isSpectator()) {
+        if (arena == null || !arena.isState(GameState.IN_GAME, GameState.ENDING) || !user.isSpectator()) {
             return;
         }
 
