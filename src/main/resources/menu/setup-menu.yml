@@ -135,8 +135,8 @@ items:
     name: "<#00E676><bold>Confirm Reset"
     material: LIME_DYE
     lore:
-      - "<#2F2F2F>• <#00E676>CLICK <#BDBDBD>to permanently clear"
-      - "<#BDBDBD>  this arena's best survival records."
+      - "<#2F2F2F>• <#00E676>CLICK <#BDBDBD>to permanently clear this"
+      - "<#BDBDBD>  arena's best survival records."
 
   cancel-arena-record-reset:
     name: "<#FF5252><bold>Cancel"
@@ -213,7 +213,8 @@ items:
       - "<#2F2F2F>• <#FFCA28>CLICK <#BDBDBD>to view active effects"
       - ""
       - "<#2F2F2F>• <#B0BEC5>Open a separate page showing"
-      - "<#B0BEC5>  the potion effects currently added."
+      - "<#B0BEC5>  the potion effects currently"
+      - "<#B0BEC5>  added."
     item-flags:
       - HIDE_ATTRIBUTES
 

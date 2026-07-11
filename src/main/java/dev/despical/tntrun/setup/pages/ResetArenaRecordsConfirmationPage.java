@@ -49,17 +49,17 @@ public class ResetArenaRecordsConfirmationPage extends SetupPage {
 
     @Override
     public void beforeOpening(Gui gui) {
-        gui.setRows(3);
+        gui.setRows(4);
     }
 
     @Override
     public void injectItems(PaginatedPane paginatedPane) {
-        StaticPane pane = new StaticPane(9, 3);
+        StaticPane pane = new StaticPane(9, 4);
         paginatedPane.addPane(0, pane);
 
-        pane.addItem(createRecordPreviewItem(), 4, 0);
-        pane.addItem(createConfirmItem(), 2, 1);
-        pane.addItem(createCancelItem(), 6, 1);
+        pane.addItem(createRecordPreviewItem(), 4, 1);
+        pane.addItem(createConfirmItem(), 2, 2);
+        pane.addItem(createCancelItem(), 6, 2);
     }
 
     private GuiItem createRecordPreviewItem() {
