@@ -87,6 +87,9 @@ loadScripts(document, 'script');</script>
 <li><a href="#getStartLocation()" tabindex="0">getStartLocation()</a></li>
 <li><a href="#getPlayersLeft()" tabindex="0">getPlayersLeft()</a></li>
 <li><a href="#startSurvivalRound()" tabindex="0">startSurvivalRound()</a></li>
+<li><a href="#recordSurvivalTime(dev.despical.tntrun.user.User)" tabindex="0">recordSurvivalTime(User)</a></li>
+<li><a href="#captureSurvivalTimes()" tabindex="0">captureSurvivalTimes()</a></li>
+<li><a href="#getSurvivalTimeMillis(dev.despical.tntrun.user.User)" tabindex="0">getSurvivalTimeMillis(User)</a></li>
 <li><a href="#eliminate(dev.despical.tntrun.user.User)" tabindex="0">eliminate(User)</a></li>
 <li><a href="#finishIfLastSurvivor()" tabindex="0">finishIfLastSurvivor()</a></li>
 <li><a href="#prepareSpectator(dev.despical.tntrun.user.User,boolean)" tabindex="0">prepareSpectator(User, boolean)</a></li>
@@ -182,31 +185,37 @@ loadScripts(document, 'script');</script>
  <a href="../utils/Var.html" title="class in dev.despical.tntrun.utils">Var</a>...&nbsp;variables)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#clearPlayerMetadata()" class="member-name-link">clearPlayerMetadata</a>()</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#captureSurvivalTimes()" class="member-name-link">captureSurvivalTimes</a>()</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#eliminate(dev.despical.tntrun.user.User)" class="member-name-link">eliminate</a><wbr>(<a href="../user/User.html" title="class in dev.despical.tntrun.user">User</a>&nbsp;user)</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#clearPlayerMetadata()" class="member-name-link">clearPlayerMetadata</a>()</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#finishIfLastSurvivor()" class="member-name-link">finishIfLastSurvivor</a>()</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#eliminate(dev.despical.tntrun.user.User)" class="member-name-link">eliminate</a><wbr>(<a href="../user/User.html" title="class in dev.despical.tntrun.user">User</a>&nbsp;user)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>&lt;T extends <a href="states/GameStateHandler.html" title="class in dev.despical.tntrun.game.states">GameStateHandler</a>&gt;<br>T</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getHandler(dev.despical.tntrun.game.GameState)" class="member-name-link">getHandler</a><wbr>(<a href="GameState.html" title="enum class in dev.despical.tntrun.game">GameState</a>&nbsp;gameState)</code></div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#finishIfLastSurvivor()" class="member-name-link">finishIfLastSurvivor</a>()</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="Game.PlayerMetadata.html" title="class in dev.despical.tntrun.game">Game.PlayerMetadata</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getPlayerMetadata(java.util.UUID)" class="member-name-link">getPlayerMetadata</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/UUID.html" title="class or interface in java.util" class="external-link">UUID</a>&nbsp;uuid)</code></div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>&lt;T extends <a href="states/GameStateHandler.html" title="class in dev.despical.tntrun.game.states">GameStateHandler</a>&gt;<br>T</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getHandler(dev.despical.tntrun.game.GameState)" class="member-name-link">getHandler</a><wbr>(<a href="GameState.html" title="enum class in dev.despical.tntrun.game">GameState</a>&nbsp;gameState)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a><wbr>&lt;org.bukkit.entity.Player&gt;</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getPlayers()" class="member-name-link">getPlayers</a>()</code></div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="Game.PlayerMetadata.html" title="class in dev.despical.tntrun.game">Game.PlayerMetadata</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getPlayerMetadata(java.util.UUID)" class="member-name-link">getPlayerMetadata</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/UUID.html" title="class or interface in java.util" class="external-link">UUID</a>&nbsp;uuid)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Set.html" title="class or interface in java.util" class="external-link">Set</a><wbr>&lt;<a href="../user/User.html" title="class in dev.despical.tntrun.user">User</a>&gt;</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getPlayersLeft()" class="member-name-link">getPlayersLeft</a>()</code></div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a><wbr>&lt;org.bukkit.entity.Player&gt;</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getPlayers()" class="member-name-link">getPlayers</a>()</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>org.bukkit.Location</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getStartLocation()" class="member-name-link">getStartLocation</a>()</code></div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Set.html" title="class or interface in java.util" class="external-link">Set</a><wbr>&lt;<a href="../user/User.html" title="class in dev.despical.tntrun.user">User</a>&gt;</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getPlayersLeft()" class="member-name-link">getPlayersLeft</a>()</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="GameState.html" title="enum class in dev.despical.tntrun.game">GameState</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getState()" class="member-name-link">getState</a>()</code></div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>org.bukkit.Location</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getStartLocation()" class="member-name-link">getStartLocation</a>()</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="GameState.html" title="enum class in dev.despical.tntrun.game">GameState</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getState()" class="member-name-link">getState</a>()</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>long</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getSurvivalTimeMillis(dev.despical.tntrun.user.User)" class="member-name-link">getSurvivalTimeMillis</a><wbr>(<a href="../user/User.html" title="class in dev.despical.tntrun.user">User</a>&nbsp;user)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>boolean</code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#isPlaying(dev.despical.tntrun.user.User)" class="member-name-link">isPlaying</a><wbr>(<a href="../user/User.html" title="class in dev.despical.tntrun.user">User</a>&nbsp;user)</code></div>
@@ -240,35 +249,38 @@ loadScripts(document, 'script');</script>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#quitUser(dev.despical.tntrun.user.User)" class="member-name-link">quitUser</a><wbr>(<a href="../user/User.html" title="class in dev.despical.tntrun.user">User</a>&nbsp;user)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#resetTickProgress()" class="member-name-link">resetTickProgress</a>()</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#recordSurvivalTime(dev.despical.tntrun.user.User)" class="member-name-link">recordSurvivalTime</a><wbr>(<a href="../user/User.html" title="class in dev.despical.tntrun.user">User</a>&nbsp;user)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#run()" class="member-name-link">run</a>()</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#resetTickProgress()" class="member-name-link">resetTickProgress</a>()</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setGameState(dev.despical.tntrun.game.GameState)" class="member-name-link">setGameState</a><wbr>(<a href="GameState.html" title="enum class in dev.despical.tntrun.game">GameState</a>&nbsp;newState)</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#run()" class="member-name-link">run</a>()</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>final void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setTimer(int)" class="member-name-link">setTimer</a><wbr>(int&nbsp;timer)</code></div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setGameState(dev.despical.tntrun.game.GameState)" class="member-name-link">setGameState</a><wbr>(<a href="GameState.html" title="enum class in dev.despical.tntrun.game">GameState</a>&nbsp;newState)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>final void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setTimer(dev.despical.tntrun.option.IntOption)" class="member-name-link">setTimer</a><wbr>(<a href="../option/IntOption.html" title="enum class in dev.despical.tntrun.option">IntOption</a>&nbsp;option)</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setTimer(int)" class="member-name-link">setTimer</a><wbr>(int&nbsp;timer)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#startSurvivalRound()" class="member-name-link">startSurvivalRound</a>()</code></div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>final void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setTimer(dev.despical.tntrun.option.IntOption)" class="member-name-link">setTimer</a><wbr>(<a href="../option/IntOption.html" title="enum class in dev.despical.tntrun.option">IntOption</a>&nbsp;option)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#tickImmediately()" class="member-name-link">tickImmediately</a>()</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#toString()" class="member-name-link">toString</a>()</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#updatePlayerMetadata(dev.despical.tntrun.user.User)" class="member-name-link">updatePlayerMetadata</a><wbr>(<a href="../user/User.html" title="class in dev.despical.tntrun.user">User</a>&nbsp;user)</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#startSurvivalRound()" class="member-name-link">startSurvivalRound</a>()</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#updateSpectatorVisibility()" class="member-name-link">updateSpectatorVisibility</a>()</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#tickImmediately()" class="member-name-link">tickImmediately</a>()</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#toString()" class="member-name-link">toString</a>()</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#updatePlayerMetadata(dev.despical.tntrun.user.User)" class="member-name-link">updatePlayerMetadata</a><wbr>(<a href="../user/User.html" title="class in dev.despical.tntrun.user">User</a>&nbsp;user)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#updateSpectatorVisibility()" class="member-name-link">updateSpectatorVisibility</a>()</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 </div>
 </div>
 </div>
@@ -498,6 +510,30 @@ loadScripts(document, 'script');</script>
 <h3>startSurvivalRound</h3>
 <div class="horizontal-scroll">
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">startSurvivalRound</span>()</div>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="recordSurvivalTime(dev.despical.tntrun.user.User)">
+<h3>recordSurvivalTime</h3>
+<div class="horizontal-scroll">
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">recordSurvivalTime</span><wbr><span class="parameters">(<a href="../user/User.html" title="class in dev.despical.tntrun.user">User</a>&nbsp;user)</span></div>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="captureSurvivalTimes()">
+<h3>captureSurvivalTimes</h3>
+<div class="horizontal-scroll">
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">captureSurvivalTimes</span>()</div>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="getSurvivalTimeMillis(dev.despical.tntrun.user.User)">
+<h3>getSurvivalTimeMillis</h3>
+<div class="horizontal-scroll">
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">long</span>&nbsp;<span class="element-name">getSurvivalTimeMillis</span><wbr><span class="parameters">(<a href="../user/User.html" title="class in dev.despical.tntrun.user">User</a>&nbsp;user)</span></div>
 </div>
 </section>
 </li>
