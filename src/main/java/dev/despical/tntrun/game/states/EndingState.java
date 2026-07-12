@@ -29,7 +29,9 @@ import dev.despical.tntrun.user.User;
 import org.bukkit.Location;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Despical
@@ -44,6 +46,7 @@ public class EndingState extends GameStateHandler {
 
     @Override
     public void firstTick() {
+        game.captureSurvivalTimes();
         game.setTimer(IntOption.ENDING_TIME);
 
         var scores = game.getScores();
@@ -64,6 +67,7 @@ public class EndingState extends GameStateHandler {
 
         this.applyStatistics();
         this.updateArenaRecord();
+        plugin.getLeaderboardManager().refreshAllLeaderboards(game.getUsers());
 
         plugin.getEventManager().gameEnd(game);
     }
@@ -102,6 +106,15 @@ public class EndingState extends GameStateHandler {
             user.addStat(Statistics.GAMES_PLAYED);
             user.addStat(isWinner ? Statistics.WIN : Statistics.LOSE);
             user.setStatisticIfHigher(Statistics.LONGEST_SURVIVE, user.getStatistic(Statistics.LOCAL_SURVIVE_TIME));
+
+            Map<String, Long> arenaTimes = new HashMap<>(user.getStatistic(Statistics.ARENA_BEST_TIMES));
+            long surviveTime = user.getStatistic(Statistics.LOCAL_SURVIVE_TIME);
+            long previousBest = arenaTimes.getOrDefault(arena.getId(), 0L);
+
+            if (surviveTime > previousBest) {
+                arenaTimes.put(arena.getId(), surviveTime);
+                user.setStatistic(Statistics.ARENA_BEST_TIMES, arenaTimes);
+            }
         }
 
         if (winner == null) {

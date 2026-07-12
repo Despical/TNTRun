@@ -61,6 +61,7 @@ public class Game extends BukkitRunnable {
     private int timer;
     private int tick;
     private int peakActivePlayers;
+    private long survivalStartTimeMillis;
 
     private boolean tickImmediately;
 
@@ -80,6 +81,7 @@ public class Game extends BukkitRunnable {
     private final @Getter BlockRemovalManager blockRemovalManager;
 
     private final @Getter List<User> users;
+    private final Map<UUID, Long> survivalTimesMillis;
     private final Map<UUID, PlayerMetadata> playerMetadata;
     private final Map<GameState, GameStateHandler> states;
 
@@ -94,6 +96,7 @@ public class Game extends BukkitRunnable {
         this.bossBarManager = new BossBarManager(this);
         this.blockRemovalManager = new BlockRemovalManager(this);
         this.users = new ArrayList<>();
+        this.survivalTimesMillis = new HashMap<>();
         this.playerMetadata = new HashMap<>();
         this.scores = new ScoreRegistry(this);
         this.states = Map.of(
@@ -302,6 +305,28 @@ public class Game extends BukkitRunnable {
 
     public void startSurvivalRound() {
         peakActivePlayers = getPlayersLeft().size();
+        survivalStartTimeMillis = System.currentTimeMillis();
+        survivalTimesMillis.clear();
+    }
+
+    public void recordSurvivalTime(User user) {
+        survivalTimesMillis.putIfAbsent(user.getUUID(), getCurrentSurvivalTimeMillis());
+    }
+
+    public void captureSurvivalTimes() {
+        users.forEach(this::recordSurvivalTime);
+    }
+
+    public long getSurvivalTimeMillis(User user) {
+        return survivalTimesMillis.getOrDefault(user.getUUID(), getCurrentSurvivalTimeMillis());
+    }
+
+    private long getCurrentSurvivalTimeMillis() {
+        if (survivalStartTimeMillis == 0L) {
+            return 0L;
+        }
+
+        return Math.max(0L, System.currentTimeMillis() - survivalStartTimeMillis);
     }
 
     public void eliminate(User user) {
@@ -309,6 +334,7 @@ public class Game extends BukkitRunnable {
             return;
         }
 
+        recordSurvivalTime(user);
         scores.addScore(user, user.getStatistic(Statistics.LOCAL_SURVIVE_TIME));
         user.setSpectator(true);
 

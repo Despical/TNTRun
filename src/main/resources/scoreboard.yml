@@ -106,7 +106,7 @@ ending:
   lines:
     - "<#B0C4DE>%date%"
     - ""
-    - "<#E6E6E6>Survived For: <#00FF95>%formatted_timer%"
+    - "<#E6E6E6>Survived For: <#00FF95>%formatted_survive_time%"
     - ""
     - "<#E6E6E6>Double Jump: <#00FF95>%double_jumps%<#B0C4DE>/<#00FF95>%max_double_jumps%"
     - ""

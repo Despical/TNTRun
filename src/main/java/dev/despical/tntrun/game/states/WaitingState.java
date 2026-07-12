@@ -122,6 +122,13 @@ public class WaitingState extends GameStateHandler {
             }
 
             game.setGameState(GameState.STARTING);
+
+            int maxPlayerAmount = arena.getOption(ArenaKeys.MAX_PLAYERS);
+            int fullGameStartingTime = IntOption.FULL_GAME_STARTING_TIME.value();
+
+            if (playerAmount >= maxPlayerAmount && game.getTimer() > fullGameStartingTime) {
+                game.setTimer(fullGameStartingTime);
+            }
         }
     }
 

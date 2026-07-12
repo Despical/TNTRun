@@ -116,6 +116,7 @@ public class InGameState extends GameStateHandler {
     @Override
     public void leave(User user) {
         boolean wasSpectator = user.isSpectator();
+        game.recordSurvivalTime(user);
         game.getScores().addScore(user, user.getStatistic(Statistics.LOCAL_SURVIVE_TIME));
 
         if (!wasSpectator) {

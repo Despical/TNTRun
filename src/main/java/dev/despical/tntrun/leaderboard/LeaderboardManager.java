@@ -24,6 +24,7 @@ import dev.despical.tntrun.arena.options.ArenaKeys;
 import dev.despical.tntrun.stats.StatisticType;
 import dev.despical.tntrun.stats.Statistics;
 import dev.despical.tntrun.stats.offline.OfflineStats;
+import dev.despical.tntrun.user.User;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -45,7 +46,19 @@ public class LeaderboardManager {
     }
 
     public void refreshAllLeaderboards() {
-        Set<OfflineStats> allPlayersCache = plugin.getDatabase().getAllPlayers();
+        refreshAllLeaderboards(Collections.emptyList());
+    }
+
+    public void refreshAllLeaderboards(Collection<User> activeUsers) {
+        Map<UUID, OfflineStats> allPlayers = new HashMap<>();
+        plugin.getDatabase().getAllPlayers().forEach(stats -> allPlayers.put(stats.getUuid(), stats));
+
+        activeUsers.forEach(user -> {
+            OfflineStats stats = allPlayers.computeIfAbsent(user.getUUID(), uuid -> new OfflineStats(uuid, user.getName()));
+            Statistics.getPersistentStats().forEach(type -> copyStatistic(user, stats, type));
+        });
+
+        Set<OfflineStats> allPlayersCache = new HashSet<>(allPlayers.values());
 
         for (StatisticType<?> type : Statistics.getPersistentStats()) {
             if (type.getType() == Integer.class) {

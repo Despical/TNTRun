@@ -82,7 +82,18 @@ public enum StateFormatter {
     }
 
     public String apply(User user, Game game, String line) {
-        return formatter.format(user, game, line);
+        String formatted = formatter.format(user, game, line);
+
+        if (state == GameState.ENDING) {
+            long millis = game.getSurvivalTimeMillis(user);
+            long minutes = millis / 60_000L;
+            long seconds = (millis / 1_000L) % 60L;
+            long centiseconds = (millis / 10L) % 100L;
+
+            formatted = Utils.format(formatted, Var.of("%formatted_survive_time%", "%02d:%02d.%02d".formatted(minutes, seconds, centiseconds)));
+        }
+
+        return formatted;
     }
 
     public static String getDoubleJumpColor(int amount, int max) {
