@@ -89,10 +89,14 @@ public class LeaderboardManager {
                     Map<String, Long> timesMap = stats.getStat(Statistics.ARENA_BEST_TIMES);
                     return timesMap != null ? timesMap.getOrDefault(arenaId, -1L) : -1L;
                 },
-                Comparator.naturalOrder(),
+                Comparator.<Long>naturalOrder().reversed(),
                 0L
             );
         }
+    }
+
+    private <T> void copyStatistic(User user, OfflineStats stats, StatisticType<T> type) {
+        stats.setStat(type, user.getStatistic(type));
     }
 
     private <T extends Comparable<T>> void createLeaderboard(String id, Set<OfflineStats> allPlayers, Function<OfflineStats, T> valueExtractor, Comparator<T> comparator, T fallbackValue) {
