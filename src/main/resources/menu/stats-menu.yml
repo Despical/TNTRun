@@ -132,7 +132,7 @@ items:
       - "<dark_gray><st>---------------"
     no-record: "<#FF5252>No record"
     empty-leaderboard: "<#B0BEC5>No leaderboard entries yet."
-    leaderboard-entry: "%color%#%rank% <white>%player% <gray>- <#FFCA28>%time%"
+    leaderboard-entry: "<!i>%color%#%rank% <white>%player% <gray>- <#FFCA28>%time%"
     leaderboard-separator: "<dark_gray><st>-----------------"
     leaderboard-player-entry: "<#00E676>#%rank% <white>%player% <gray>- <#FFCA28>%time%"
     color-1: "<#FFD700>"
