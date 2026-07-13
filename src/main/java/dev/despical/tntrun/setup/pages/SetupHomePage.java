@@ -59,6 +59,7 @@ import java.util.function.Consumer;
 public class SetupHomePage extends SetupPage {
 
     private static final String MAP_NAME_INPUT_KEY = "map_name";
+    private static final String MAP_AUTHOR_INPUT_KEY = "map_author";
 
     private final StaticPane pane;
 
@@ -155,7 +156,8 @@ public class SetupHomePage extends SetupPage {
 
     private GuiItem createMapNameItem() {
         SpecialItem specialItem = itemManager.getItem("map-name");
-        ItemStack item = ItemUtils.formatItemStack(specialItem, Var.of("%map_name%", arena.getOption(ArenaKeys.MAP_NAME)));
+        ItemStack item = ItemUtils.formatItemStack(specialItem, Var.of("%map_name%", arena.getOption(ArenaKeys.MAP_NAME)),
+            Var.of("%map_author%", arena.getOption(ArenaKeys.MAP_AUTHOR)));
 
         return GuiItem.of(item, event -> {
             Player player = (Player) event.getWhoClicked();
@@ -169,22 +171,29 @@ public class SetupHomePage extends SetupPage {
 
     private Dialog createMapNameDialog() {
         String currentMapName = arena.getOption(ArenaKeys.MAP_NAME);
+        String currentMapAuthor = arena.getOption(ArenaKeys.MAP_AUTHOR);
 
         return Dialog.create(factory -> factory.empty()
-            .base(DialogBase.builder(chatManager.parseMessage("<#00E676><bold>Map Name"))
-                .externalTitle(chatManager.parseMessage("<#00E676>Map Name"))
+            .base(DialogBase.builder(chatManager.parseMessage("<#00E676><bold>Map Details"))
+                .externalTitle(chatManager.parseMessage("<#00E676>Map Details"))
                 .canCloseWithEscape(true)
                 .pause(false)
                 .afterAction(DialogBase.DialogAfterAction.CLOSE)
-                .inputs(List.of(DialogInput.text(MAP_NAME_INPUT_KEY, chatManager.parseMessage("<#B0BEC5>Map name"))
-                    .labelVisible(false)
-                    .initial(currentMapName)
-                    .maxLength(48)
-                    .width(220)
-                    .build()))
+                .inputs(List.of(
+                    DialogInput.text(MAP_NAME_INPUT_KEY, chatManager.parseMessage("<#B0BEC5>Map name"))
+                        .initial(currentMapName)
+                        .maxLength(48)
+                        .width(220)
+                        .build(),
+                    DialogInput.text(MAP_AUTHOR_INPUT_KEY, chatManager.parseMessage("<#B0BEC5>Map author"))
+                        .initial(currentMapAuthor)
+                        .maxLength(48)
+                        .width(220)
+                        .build()
+                ))
                 .build())
             .type(DialogType.notice(ActionButton.builder(chatManager.parseMessage("<#00E676><bold>Save"))
-                .tooltip(chatManager.parseMessage("<#B0BEC5>Save this arena's map name."))
+                .tooltip(chatManager.parseMessage("<#B0BEC5>Save this arena's map details."))
                 .width(150)
                 .action(DialogAction.customClick(this::handleMapNameSubmit, ClickCallback.Options.builder()
                     .uses(1)
@@ -206,11 +215,25 @@ public class SetupHomePage extends SetupPage {
             return;
         }
 
-        String trimmedName = mapName.trim();
-        arena.setOption(ArenaKeys.MAP_NAME, trimmedName);
+        String mapAuthor = response.getText(MAP_AUTHOR_INPUT_KEY);
+        if (mapAuthor == null || mapAuthor.isBlank()) {
+            chatManager.sendRawMessage(player, "<#FF5252>✖ <#BDBDBD>Map author cannot be empty.");
+            player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1f, 1f);
+            return;
+        }
 
-        chatManager.sendRawMessage(player, "<#00E676>✔ <#BDBDBD>Map name set to <#29B6F6>%map_name%<#BDBDBD>.",
-            Var.of("%map_name%", trimmedName));
+        mapName = mapName.trim();
+        mapAuthor = mapAuthor.trim();
+
+        arena.setOption(ArenaKeys.MAP_NAME, mapName);
+        arena.setOption(ArenaKeys.MAP_AUTHOR, mapAuthor);
+
+        Var[] vars = {
+            Var.of("%map_name%", mapName),
+            Var.of("%map_author%", mapAuthor)
+        };
+        chatManager.sendRawMessage(player, "<#00E676>✔ <#BDBDBD>Map details set to <#29B6F6>%map_name% <#BDBDBD>by <#29B6F6>%map_author%<#BDBDBD>.", vars);
+
         player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1f, 1.7f);
     }
 
