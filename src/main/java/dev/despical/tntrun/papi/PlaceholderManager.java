@@ -191,10 +191,10 @@ public class PlaceholderManager extends PlaceholderExpansion {
             case "min_players", "min-players" -> Integer.toString(arena.getOption(ArenaKeys.MIN_PLAYERS));
             case "max_players", "max-players" -> Integer.toString(arena.getOption(ArenaKeys.MAX_PLAYERS));
             case "ready" -> Boolean.toString(arena.getOption(ArenaKeys.READY));
-            case "map", "map_name", "map-name" -> nullableString(arena.getOption(ArenaKeys.MAP_NAME));
-            case "map_author", "map-author" -> nullableString(arena.getOption(ArenaKeys.MAP_AUTHOR));
+            case "map", "map_name", "map-name" -> arena.getOption(ArenaKeys.MAP_NAME);
+            case "map_author", "map-author" -> arena.getOption(ArenaKeys.MAP_AUTHOR);
             case "state" -> game != null ? game.getState().getPath() : "inactive";
-            case "record_holder" -> nullableString(arena.getRecordHolderName());
+            case "record_holder" -> arena.getRecordHolderName();
             case "record_time" -> formatTimeValue(arena.getRecordTime());
             case "record_time_raw" -> Long.toString(arena.getRecordTime());
             case "scoreboard_enabled" -> Boolean.toString(arena.getOption(ArenaKeys.ARENA_SCOREBOARD_ENABLED));
@@ -296,7 +296,7 @@ public class PlaceholderManager extends PlaceholderExpansion {
 
     private String getCurrentArenaRecordHolder(User user) {
         Arena arena = user.getArena();
-        return arena != null ? nullableString(arena.getRecordHolderName()) : NO_ARENA;
+        return arena != null ? arena.getRecordHolderName() : NO_ARENA;
     }
 
     private String formatCurrentArenaRecordTime(User user) {
@@ -344,9 +344,5 @@ public class PlaceholderManager extends PlaceholderExpansion {
 
     private String formatTimeValue(long seconds) {
         return seconds >= 0 ? Utils.formatTime(seconds) : NO_DATA;
-    }
-
-    private String nullableString(String value) {
-        return value == null || value.isBlank() ? "none" : value;
     }
 }
