@@ -192,6 +192,7 @@ public class PlaceholderManager extends PlaceholderExpansion {
             case "max_players", "max-players" -> Integer.toString(arena.getOption(ArenaKeys.MAX_PLAYERS));
             case "ready" -> Boolean.toString(arena.getOption(ArenaKeys.READY));
             case "map", "map_name", "map-name" -> nullableString(arena.getOption(ArenaKeys.MAP_NAME));
+            case "map_author", "map-author" -> nullableString(arena.getOption(ArenaKeys.MAP_AUTHOR));
             case "state" -> game != null ? game.getState().getPath() : "inactive";
             case "record_holder" -> nullableString(arena.getRecordHolderName());
             case "record_time" -> formatTimeValue(arena.getRecordTime());

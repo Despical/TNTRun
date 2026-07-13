@@ -56,6 +56,14 @@ public final class ArenaKeys {
         }
     };
 
+    public static final ArenaOption<String> MAP_AUTHOR = new ArenaOption<>("map-author", "Unknown Author", String.class) {
+
+        @Override
+        protected String parse(String value) {
+            return value == null || value.isBlank() ? getDefaultValue() : value;
+        }
+    };
+
     public static final ArenaOption<String> RECORD_HOLDER_NAME = new ArenaOption<>("record-holder", "None", String.class) {
 
         @Override
@@ -211,6 +219,7 @@ public final class ArenaKeys {
         return List.of(
             READY,
             MAP_NAME,
+            MAP_AUTHOR,
             RECORD_HOLDER_NAME,
             RECORD_TIME,
             LOBBY_LOCATION,

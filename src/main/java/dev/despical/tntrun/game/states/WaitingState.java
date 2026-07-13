@@ -105,7 +105,10 @@ public class WaitingState extends GameStateHandler {
         };
 
         game.broadcastMessage("player-joined", vars);
-        chatManager.sendCenteredMessage(player, "game-explanation");
+        chatManager.sendCenteredMessage(player, "game-explanation",
+            Var.of("%map_name%", arena.getOption(ArenaKeys.MAP_NAME)),
+            Var.of("%map_author%", arena.getOption(ArenaKeys.MAP_AUTHOR))
+        );
 
         handleInventory(player);
         resetPlayerAttributes(player);
