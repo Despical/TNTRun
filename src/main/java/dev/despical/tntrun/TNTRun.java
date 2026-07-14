@@ -94,6 +94,7 @@ public class TNTRun extends JavaPlugin {
     private CommandFramework commandFramework;
     private PlayingCommandPolicy playingCommandPolicy;
     private SoundManager soundManager;
+    private ArenaDataSaver arenaDataSaver;
     private Metrics metrics;
 
     @Override
@@ -108,8 +109,7 @@ public class TNTRun extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        new ArenaDataSaver(this).saveAllArenas();
-
+        arenaDataSaver.saveAllArenas();
         arenaManager.handleDisable();
         gameManager.shutdown();
         database.shutdown();
@@ -139,6 +139,7 @@ public class TNTRun extends JavaPlugin {
         leaderboardManager = new LeaderboardManager(this);
         playingCommandPolicy = new PlayingCommandPolicy(this);
         soundManager = new SoundManager(this);
+        arenaDataSaver = new ArenaDataSaver(this);
 
         registerCommands();
         registerEvents();

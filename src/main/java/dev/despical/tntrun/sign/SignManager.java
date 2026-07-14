@@ -22,10 +22,12 @@ import dev.despical.commons.configuration.ConfigUtils;
 import dev.despical.commons.serializer.LocationSerializer;
 import dev.despical.tntrun.TNTRun;
 import dev.despical.tntrun.arena.Arena;
+import dev.despical.tntrun.arena.ArenaRegistry;
 import dev.despical.tntrun.arena.options.ArenaKeys;
 import dev.despical.tntrun.chat.ChatManager;
 import dev.despical.tntrun.game.Game;
 import dev.despical.tntrun.game.GameState;
+import dev.despical.tntrun.utils.Utils;
 import dev.despical.tntrun.utils.Var;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Location;
@@ -50,8 +52,7 @@ public class SignManager {
     private String fullGameState;
     private FileConfiguration config;
     private ArenaSignEvents arenaSignEvents;
-    private List<Component> signLines;
-    private List<Component> inactiveSignLines;
+    private List<String> signLines;
 
     private final TNTRun plugin;
     private final ChatManager chatManager;
@@ -65,44 +66,32 @@ public class SignManager {
         this.signsByBlock = new HashMap<>();
         this.signsByArena = new HashMap<>();
         this.signLines = List.of();
-        this.inactiveSignLines = List.of();
         this.gameStateToString = new EnumMap<>(GameState.class);
         this.loadSigns();
     }
 
     private void loadSigns() {
-        loadConfig();
+        this.loadConfig();
 
-        signsByBlock.clear();
-        signsByArena.clear();
+        ArenaRegistry arenaRegistry = plugin.getArenaRegistry();
+        FileConfiguration config = arenaRegistry.getConfig();
 
-        for (GameState state : GameState.values()) {
-            gameStateToString.put(state, getRawString("game-states." + state.getPath()));
-        }
-
-        fullGameState = getRawString("game-states.full-game");
-        inactiveSignLines = signLines.stream()
-            .map(this::formatInactiveArena)
-            .toList();
-
-        FileConfiguration config = plugin.getArenaRegistry().getConfig();
         boolean updateConfig = false;
 
-        for (String arenaId : config.getKeys(false)) {
-            Arena arena = plugin.getArenaRegistry().getArena(arenaId);
-            List<String> locations = config.getStringList(arenaId + ".signs");
+        for (Arena arena : arenaRegistry.getArenas()) {
+            String path = arena.getId() + ".signs";
+
+            List<String> locations = config.getStringList(path);
             Iterator<String> iterator = locations.iterator();
 
             while (iterator.hasNext()) {
                 Block block = LocationSerializer.fromString(iterator.next()).getBlock();
 
                 if (block.getState() instanceof Sign) {
-                    if (arena != null) {
-                        ArenaSign arenaSign = new ArenaSign(arena, block);
-                        trackArenaSign(arenaSign);
-                        updateSign(arenaSign);
-                    }
+                    ArenaSign arenaSign = new ArenaSign(arena, block);
 
+                    trackArenaSign(arenaSign);
+                    updateSign(arenaSign);
                     continue;
                 }
 
@@ -111,7 +100,7 @@ public class SignManager {
             }
 
             if (updateConfig) {
-                config.set(arenaId + ".signs", locations);
+                config.set(path, locations);
                 updateConfig = false;
             }
         }
@@ -120,7 +109,8 @@ public class SignManager {
     }
 
     public void reload() {
-        this.loadSigns();
+        this.loadConfig();
+        this.signsByArena.keySet().forEach(this::updateSigns);
     }
 
     public void sendMessage(CommandSender recipient, String path, Var... vars) {
@@ -133,11 +123,13 @@ public class SignManager {
 
     private void updateSign(ArenaSign arenaSign) {
         Sign sign = arenaSign.sign();
+
         Arena arena = arenaSign.arena();
         Game game = arena.getGame();
+
         int onlineCount = game == null ? 0 : game.getUsers().size();
         int maxPlayers = arena.getOption(ArenaKeys.MAX_PLAYERS);
-        int minPlayers = arena.getOption(ArenaKeys.MIN_PLAYERS);
+
         String state = game == null
             ? gameStateToString.get(GameState.INACTIVE)
             : onlineCount >= maxPlayers ? fullGameState : gameStateToString.get(game.getState());
@@ -146,9 +138,8 @@ public class SignManager {
         boolean changed = false;
 
         for (int i = 0; i < signLines.size(); i++) {
-            Component line = game == null
-                ? inactiveSignLines.get(i)
-                : formatSign(signLines.get(i), state, onlineCount, maxPlayers, minPlayers);
+            Component line = formatSign(signLines.get(i), state, onlineCount, arena);
+
             if (Objects.equals(side.line(i), line)) {
                 continue;
             }
@@ -170,6 +161,7 @@ public class SignManager {
     public void addArenaSign(Arena arena, Block block) {
         ArenaSign arenaSign = new ArenaSign(arena, block);
         ArenaSign existing = getArenaSignByBlock(block);
+
         if (existing != null) {
             untrackArenaSign(existing);
         }
@@ -224,24 +216,18 @@ public class SignManager {
         return getArenaSignByBlock(block) != null;
     }
 
-    private Component formatSign(Component component, String state, int onlineCount, int maxPlayers, int minPlayers) {
-        return chatManager.replaceVarsInComponent(component,
+    private Component formatSign(String line, String state, int onlineCount, Arena arena) {
+        Var[] vars = {
             Var.of("%state%", state),
             Var.of("%players%", onlineCount),
-            Var.of("%max_players%", maxPlayers),
-            Var.of("%min_players%", minPlayers)
-        );
-    }
-
-    private Component formatInactiveArena(Component component) {
-        Var[] vars = {
-            Var.of("%min_players%", "0"),
-            Var.of("%max_players%", "0"),
-            Var.of("%players%", "0"),
-            Var.of("%state%", gameStateToString.get(GameState.INACTIVE))
+            Var.of("%min_players%", arena.getOption(ArenaKeys.MIN_PLAYERS)),
+            Var.of("%max_players%", arena.getOption(ArenaKeys.MAX_PLAYERS)),
+            Var.of("%map_name%", arena.getOption(ArenaKeys.MAP_NAME)),
+            Var.of("%map_author%", arena.getOption(ArenaKeys.MAP_AUTHOR)),
+            Var.of("%map_difficulty%", arena.getOption(ArenaKeys.MAP_DIFFICULTY))
         };
 
-        return chatManager.replaceVarsInComponent(component, vars);
+        return chatManager.parseMessage(Utils.format(line, vars));
     }
 
     ArenaSign getArenaSignByBlock(Block block) {
@@ -278,6 +264,7 @@ public class SignManager {
         }
 
         arenaSigns.remove(arenaSign);
+
         if (arenaSigns.isEmpty()) {
             signsByArena.remove(arenaSign.arena());
         }
@@ -311,10 +298,13 @@ public class SignManager {
 
     private void loadConfig() {
         config = ConfigUtils.getConfig(plugin, "signs");
-        signLines = config.getStringList("lines")
-            .stream()
-            .map(chatManager::parseMessage)
-            .toList();
+        signLines = config.getStringList("lines");
+
+        for (GameState state : GameState.values()) {
+            gameStateToString.put(state, getRawString("game-states." + state.getPath()));
+        }
+
+        fullGameState = getRawString("game-states.full-game");
     }
 
     private Component getMessageComponent(String path, Var... vars) {
