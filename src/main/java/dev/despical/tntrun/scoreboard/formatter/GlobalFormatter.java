@@ -47,6 +47,7 @@ public final class GlobalFormatter {
             Var.of("%players%", game.getUsers().size()),
             Var.of("%map_name%", arena.getOption(ArenaKeys.MAP_NAME)),
             Var.of("%map_author%", arena.getOption(ArenaKeys.MAP_AUTHOR)),
+            Var.of("%map_difficulty%", arena.getOption(ArenaKeys.MAP_DIFFICULTY)),
             Var.of("%min_players%", arena.getOption(ArenaKeys.MIN_PLAYERS)),
             Var.of("%max_players%", arena.getOption(ArenaKeys.MAX_PLAYERS)),
         };

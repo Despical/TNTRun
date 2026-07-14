@@ -60,6 +60,7 @@ public class SetupHomePage extends SetupPage {
 
     private static final String MAP_NAME_INPUT_KEY = "map_name";
     private static final String MAP_AUTHOR_INPUT_KEY = "map_author";
+    private static final String MAP_DIFFICULTY_INPUT_KEY = "map_difficulty";
 
     private final StaticPane pane;
 
@@ -156,8 +157,11 @@ public class SetupHomePage extends SetupPage {
 
     private GuiItem createMapNameItem() {
         SpecialItem specialItem = itemManager.getItem("map-name");
-        ItemStack item = ItemUtils.formatItemStack(specialItem, Var.of("%map_name%", arena.getOption(ArenaKeys.MAP_NAME)),
-            Var.of("%map_author%", arena.getOption(ArenaKeys.MAP_AUTHOR)));
+        ItemStack item = ItemUtils.formatItemStack(specialItem,
+            Var.of("%map_name%", arena.getOption(ArenaKeys.MAP_NAME)),
+            Var.of("%map_author%", arena.getOption(ArenaKeys.MAP_AUTHOR)),
+            Var.of("%map_difficulty%", arena.getOption(ArenaKeys.MAP_DIFFICULTY))
+        );
 
         return GuiItem.of(item, event -> {
             Player player = (Player) event.getWhoClicked();
@@ -172,6 +176,7 @@ public class SetupHomePage extends SetupPage {
     private Dialog createMapNameDialog() {
         String currentMapName = arena.getOption(ArenaKeys.MAP_NAME);
         String currentMapAuthor = arena.getOption(ArenaKeys.MAP_AUTHOR);
+        String currentMapDifficulty = arena.getOption(ArenaKeys.MAP_DIFFICULTY);
 
         return Dialog.create(factory -> factory.empty()
             .base(DialogBase.builder(chatManager.parseMessage("<#00E676><bold>Map Details"))
@@ -187,6 +192,11 @@ public class SetupHomePage extends SetupPage {
                         .build(),
                     DialogInput.text(MAP_AUTHOR_INPUT_KEY, chatManager.parseMessage("<#B0BEC5>Map author"))
                         .initial(currentMapAuthor)
+                        .maxLength(48)
+                        .width(220)
+                        .build(),
+                    DialogInput.text(MAP_DIFFICULTY_INPUT_KEY, chatManager.parseMessage("<#B0BEC5>Map difficulty"))
+                        .initial(currentMapDifficulty)
                         .maxLength(48)
                         .width(220)
                         .build()
@@ -222,17 +232,27 @@ public class SetupHomePage extends SetupPage {
             return;
         }
 
+        String mapDifficulty = response.getText(MAP_DIFFICULTY_INPUT_KEY);
+        if (mapDifficulty == null || mapDifficulty.isBlank()) {
+            chatManager.sendRawMessage(player, "<#FF5252>✖ <#BDBDBD>Map difficulty cannot be empty.");
+            player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1f, 1f);
+            return;
+        }
+
         mapName = mapName.trim();
         mapAuthor = mapAuthor.trim();
+        mapDifficulty = mapDifficulty.trim();
 
         arena.setOption(ArenaKeys.MAP_NAME, mapName);
         arena.setOption(ArenaKeys.MAP_AUTHOR, mapAuthor);
+        arena.setOption(ArenaKeys.MAP_DIFFICULTY, mapDifficulty);
 
         Var[] vars = {
             Var.of("%map_name%", mapName),
-            Var.of("%map_author%", mapAuthor)
+            Var.of("%map_author%", mapAuthor),
+            Var.of("%map_difficulty%", mapDifficulty)
         };
-        chatManager.sendRawMessage(player, "<#00E676>✔ <#BDBDBD>Map details set to <#29B6F6>%map_name% <#BDBDBD>by <#29B6F6>%map_author%<#BDBDBD>.", vars);
+        chatManager.sendRawMessage(player, "<#00E676>✔ <#BDBDBD>Map details set to <#29B6F6>%map_name% <#BDBDBD>by <#29B6F6>%map_author% <#BDBDBD>(<green>%map_difficulty%<#BDBDBD>).", vars);
 
         player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1f, 1.7f);
     }

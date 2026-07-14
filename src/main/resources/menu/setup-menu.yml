@@ -82,6 +82,7 @@ items:
       - ""
       - "<#2F2F2F>• <#B0BEC5>Current Name: <#29B6F6>%map_name%"
       - "<#2F2F2F>• <#B0BEC5>Map Author: <#29B6F6>%map_author%"
+      - "<#2F2F2F>• <#B0BEC5>Map Difficulty: <#29B6F6>%map_difficulty%"
       - ""
       - "<#2F2F2F>• <#B0BEC5>This name can be used in scoreboards"
       - "<#B0BEC5>  and other arena displays."
