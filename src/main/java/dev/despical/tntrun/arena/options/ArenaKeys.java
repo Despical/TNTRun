@@ -64,6 +64,14 @@ public final class ArenaKeys {
         }
     };
 
+    public static final ArenaOption<String> MAP_DIFFICULTY = new ArenaOption<>("map-difficulty", "NORMAL", String.class) {
+
+        @Override
+        protected String parse(String value) {
+            return value == null || value.isBlank() ? getDefaultValue() : value;
+        }
+    };
+
     public static final ArenaOption<String> RECORD_HOLDER_NAME = new ArenaOption<>("record-holder", "None", String.class) {
 
         @Override
@@ -220,6 +228,7 @@ public final class ArenaKeys {
             READY,
             MAP_NAME,
             MAP_AUTHOR,
+            MAP_DIFFICULTY,
             RECORD_HOLDER_NAME,
             RECORD_TIME,
             LOBBY_LOCATION,

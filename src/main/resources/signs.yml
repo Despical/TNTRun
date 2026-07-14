@@ -22,5 +22,5 @@ game-states:
 lines:
   - "<gradient:#FF1744:#D50000><bold>TNT Run</gradient>"
   - "%state%"
-  - ""
+  - "<gradient:#00E676:#29B6F6><bold>%map_name%</bold></gradient>"
   - "<#455A64>[ <#CFD8DC>%players% <#455A64>/ <#CFD8DC>%max_players% <#455A64>]"

@@ -8,6 +8,7 @@
 #   %players%           : Current number of players in the arena  #
 #   %map_name%          : Display name of the arena map           #
 #   %map_author%        : Author of the arena map                 #
+#   %map_difficulty%    : Difficulty of the arena map             #
 #   %max_players%       : Maximum player capacity                 #
 #   %min_players%       : Minimum players required to start       #
 #   %timer%             : Time remaining in seconds (e.g., 30)    #

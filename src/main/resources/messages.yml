@@ -17,6 +17,7 @@
 #   %players_left%     : Players still alive in the arena          #
 #   %map_name%         : Display name of the arena map             #
 #   %map_author%       : Author of the arena map                   #
+#   %map_difficulty%   : Difficulty of the arena map               #
 #                                                                  #
 # Some messages use additional placeholders documented nearby.     #
 #                                                                  #
@@ -31,7 +32,6 @@ cooldown-progress-format: "<#00E676>:<#FF5252>:■"
 game-explanation:
   - "%no_center%<#00E676><bold>▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬"
   - "<white><bold>TNT RUN"
-  - "<gray>%map_name% <dark_gray>by <gray>%map_author%"
   - ""
   - "<yellow><bold>Avoid the falling blocks and try to"
   - "<yellow><bold>survive longer than everyone else!"

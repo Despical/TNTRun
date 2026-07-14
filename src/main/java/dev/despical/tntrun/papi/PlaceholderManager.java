@@ -188,11 +188,12 @@ public class PlaceholderManager extends PlaceholderExpansion {
         return switch (key) {
             case "players" -> Integer.toString(game != null ? game.getUsers().size() : 0);
             case "players_left" -> Integer.toString(game != null ? game.getPlayersLeft().size() : 0);
-            case "min_players", "min-players" -> Integer.toString(arena.getOption(ArenaKeys.MIN_PLAYERS));
-            case "max_players", "max-players" -> Integer.toString(arena.getOption(ArenaKeys.MAX_PLAYERS));
+            case "min_players" -> Integer.toString(arena.getOption(ArenaKeys.MIN_PLAYERS));
+            case "max_players" -> Integer.toString(arena.getOption(ArenaKeys.MAX_PLAYERS));
             case "ready" -> Boolean.toString(arena.getOption(ArenaKeys.READY));
-            case "map", "map_name", "map-name" -> arena.getOption(ArenaKeys.MAP_NAME);
-            case "map_author", "map-author" -> arena.getOption(ArenaKeys.MAP_AUTHOR);
+            case "map", "map_name" -> arena.getOption(ArenaKeys.MAP_NAME);
+            case "map_author" -> arena.getOption(ArenaKeys.MAP_AUTHOR);
+            case "map_difficulty" -> arena.getOption(ArenaKeys.MAP_DIFFICULTY);
             case "state" -> game != null ? game.getState().getPath() : "inactive";
             case "record_holder" -> arena.getRecordHolderName();
             case "record_time" -> formatTimeValue(arena.getRecordTime());
