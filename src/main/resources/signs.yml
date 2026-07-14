@@ -1,6 +1,23 @@
 # =============================================================== #
 #                  TNT Run - Sign Configuration                   #
 # =============================================================== #
+#                                                                 #
+# LINE PLACEHOLDERS:                                              #
+#   %state%             : Current state of the arena              #
+#   %players%           : Current number of players               #
+#   %min_players%       : Minimum players required to start       #
+#   %max_players%       : Maximum player capacity                 #
+#   %map_name%          : Display name of the arena map           #
+#   %map_author%        : Author of the arena map                 #
+#   %map_difficulty%    : Difficulty of the arena map             #
+#                                                                 #
+# SYSTEM MESSAGE PLACEHOLDERS:                                    #
+#   %x%                 : Sign block X coordinate                 #
+#   %y%                 : Sign block Y coordinate                 #
+#   %z%                 : Sign block Z coordinate                 #
+#   %direction%         : Direction the sign is facing            #
+#                                                                 #
+# =============================================================== #
 
 # System messages about the signs.
 created: "<#00E676>✔ <#BDBDBD>Arena sign created. <dark_gray>[ <#81D4FA>X: %x%, Y: %y%, Z: %z% <dark_gray>] <#BDBDBD>facing <#29B6F6><bold>%direction%<#BDBDBD>."
