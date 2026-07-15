@@ -21,7 +21,6 @@ package dev.despical.tntrun.utils;
 import com.destroystokyo.paper.profile.PlayerProfile;
 import com.destroystokyo.paper.profile.ProfileProperty;
 import dev.despical.commons.XMaterial;
-import dev.despical.commons.reflection.XReflection;
 import dev.despical.fileitems.SpecialItem;
 import dev.despical.tntrun.TNTRun;
 import lombok.experimental.UtilityClass;
@@ -48,7 +47,6 @@ public final class ItemUtils {
     public static final ItemStack[] EMPTY_ARMORS = new ItemStack[4];
 
     private static final TNTRun PLUGIN = TNTRun.getInstance();
-    private static final boolean SUPPORTS_1_21_5 = XReflection.of(ItemMeta.class).method("void setHideTooltip(boolean _)").exists();
     private static final UUID OFFLINE_MODE_RESET_HEAD_UUID = UUID.fromString("e57c4a3a-6ec5-4f6b-8bfa-fb287b2a6ed8");
     private static final String OFFLINE_MODE_RESET_HEAD_NAME = "mrdespi.1";
     private static final String OFFLINE_MODE_RESET_HEAD_TEXTURE_VALUE = "ewogICJ0aW1lc3RhbXAiIDogMTc3ODQ5MjA0NDk1NSwKICAicHJvZmlsZUlkIiA6ICJlNTdjNGEzYTZlYzU0ZjZiOGJmYWZiMjg3YjJhNmVkOCIsCiAgInByb2ZpbGVOYW1lIiA6ICJtcmRlc3BpIiwKICAic2lnbmF0dXJlUmVxdWlyZWQiIDogdHJ1ZSwKICAidGV4dHVyZXMiIDogewogICAgIlNLSU4iIDogewogICAgICAidXJsIiA6ICJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlLzdjYTg1YzE1NjNiZjU2OWQ4OGJmN2JjMzc1Y2JjODIwZDdkNGE3M2M5MmFhZjdkOTQ3OWFmNWVmNTI1NWQwNDAiCiAgICB9CiAgfQp9";
@@ -109,7 +107,7 @@ public final class ItemUtils {
             meta.lore(lore.stream().map(line -> PLUGIN.getChatManager().parseMessage("<!i>" + line, vars)).toList());
         }
 
-        boolean decorationOnly = SUPPORTS_1_21_5 && specialItem.getCustomKey("decoration-only") != null;
+        boolean decorationOnly = specialItem.getCustomKey("decoration-only") != null;
         if (decorationOnly) {
             meta.setHideTooltip(true);
         }
