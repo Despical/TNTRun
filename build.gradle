@@ -4,19 +4,12 @@ plugins {
 }
 
 group = 'dev.despical'
-version = '2.8.1'
+version = '2.8.2'
 
 java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(25)
     }
-}
-
-repositories {
-    mavenCentral()
-    maven { url = 'https://repo.papermc.io/repository/maven-public' }
-    maven { url = 'https://repo.extendedclip.com/content/repositories/placeholderapi/' }
-    maven { url = 'https://jitpack.io' }
 }
 
 dependencies {
