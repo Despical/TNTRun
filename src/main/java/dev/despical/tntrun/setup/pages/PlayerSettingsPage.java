@@ -57,9 +57,10 @@ public class PlayerSettingsPage extends SetupPage {
         StaticPane staticPane = new StaticPane(9, 4);
         paginatedPane.addPane(0, staticPane);
 
-        staticPane.addItem(createScoreboardToggleItem(), 2, 1);
-        staticPane.addItem(createPotionEffectsSelectorItem(), 4, 1);
-        staticPane.addItem(createBossBarToggleItem(), 6, 1);
+        staticPane.addItem(createScoreboardToggleItem(), 1, 1);
+        staticPane.addItem(createPotionEffectsSelectorItem(), 3, 1);
+        staticPane.addItem(createBossBarToggleItem(), 5, 1);
+        staticPane.addItem(createPvpToggleItem(), 7, 1);
 
         staticPane.addItem(createGoBackItem(), 8, 3);
     }
@@ -150,6 +151,36 @@ public class PlayerSettingsPage extends SetupPage {
         });
     }
 
+    private GuiItem createPvpToggleItem() {
+        SpecialItem specialItem = itemManager.getItem("pvp-toggle");
+        ItemStack item = specialItem.getItemStack().clone();
+        ItemMeta meta = item.getItemMeta();
+
+        if (meta != null && meta.hasLore()) {
+            boolean pvpEnabled = arena.getOption(ArenaKeys.ARENA_PVP_ENABLED);
+            String status = pvpEnabled ? "<#00E676>ENABLED" : "<#FF5252>DISABLED";
+
+            Var statusVar = Var.of("%pvp_toggle_status%", status);
+
+            List<Component> lore = meta.lore();
+            if (lore != null) {
+                lore = lore.stream()
+                    .map(line -> chatManager.replaceVarsInComponent(line, statusVar))
+                    .toList();
+                meta.lore(lore);
+                item.setItemMeta(meta);
+            }
+        }
+
+        return GuiItem.of(item, event -> {
+            Player player = (Player) event.getWhoClicked();
+            player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1f, 1.5f);
+
+            togglePvpOption();
+            menu.openPlayerSettings();
+        });
+    }
+
     private void openPotionEffectsMenu(Player player) {
         player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 1f, 1.5f);
         menu.openPotionEffects();
@@ -171,5 +202,10 @@ public class PlayerSettingsPage extends SetupPage {
         if (arena.isGameNonnull()) {
             arena.getGame().getBossBarManager().update();
         }
+    }
+
+    private void togglePvpOption() {
+        boolean newValue = !arena.getOption(ArenaKeys.ARENA_PVP_ENABLED);
+        arena.setOption(ArenaKeys.ARENA_PVP_ENABLED, newValue);
     }
 }

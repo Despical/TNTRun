@@ -53,6 +53,7 @@ public class BlockRemovalManager {
     private final Set<BukkitTask> delayedTasks;
 
     private BukkitTask scanTask;
+    private boolean removalStarted;
 
     public BlockRemovalManager(Game game) {
         this.game = game;
@@ -65,6 +66,7 @@ public class BlockRemovalManager {
 
     public void start() {
         stopScanning();
+        removalStarted = false;
 
         scanTask = Schedulers.runTaskTimer(this::scanPlayers, 0L, config.getScanIntervalTicks());
     }
@@ -75,6 +77,7 @@ public class BlockRemovalManager {
         delayedTasks.forEach(BukkitTask::cancel);
         delayedTasks.clear();
         queuedBlocks.clear();
+        removalStarted = false;
 
         snapshots.values().forEach(snapshot -> {
             snapshot.restore(false);
@@ -90,6 +93,10 @@ public class BlockRemovalManager {
             scanTask.cancel();
             scanTask = null;
         }
+    }
+
+    public boolean hasRemovalStarted() {
+        return removalStarted;
     }
 
     private void scanPlayers() {
@@ -152,6 +159,7 @@ public class BlockRemovalManager {
         }
 
         block.setType(Material.AIR, false);
+        removalStarted = true;
     }
 
     private Block getBlockUnderPlayer(int y, Location location) {

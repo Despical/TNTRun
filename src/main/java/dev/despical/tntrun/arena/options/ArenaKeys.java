@@ -159,6 +159,14 @@ public final class ArenaKeys {
         }
     };
 
+    public static final ArenaOption<Boolean> ARENA_PVP_ENABLED = new ArenaOption<>("arena-pvp-enabled", false, Boolean.class) {
+
+        @Override
+        protected Boolean parse(String value) {
+            return Boolean.parseBoolean(value);
+        }
+    };
+
     public static final ArenaOption<List<ArenaPotionEffect>> ARENA_POTION_EFFECTS = new ArenaOption<>("arena-potion-effects", new ArrayList<>(), (Class<List<ArenaPotionEffect>>) (Class<?>) List.class) {
 
         @Override
@@ -238,6 +246,7 @@ public final class ArenaKeys {
             MAX_PLAYERS,
             ARENA_SCOREBOARD_ENABLED,
             ARENA_BOSSBAR_ENABLED,
+            ARENA_PVP_ENABLED,
             ARENA_POTION_EFFECTS
         );
     }
