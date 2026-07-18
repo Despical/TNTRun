@@ -168,7 +168,7 @@ items:
       - ""
       - "<#2F2F2F>• <#B0BEC5>Status: %scoreboard_toggle_status%"
       - ""
-      - "<#B0BEC5>• <#B0BEC5>Show the parkour scoreboard"
+      - "<#2F2F2F>• <#B0BEC5>Show the parkour scoreboard"
       - "<#B0BEC5>  automatically when a run starts."
 
   bossbar-toggle:
@@ -179,8 +179,9 @@ items:
       - ""
       - "<#2F2F2F>• <#B0BEC5>Status: %bossbar_toggle_status%"
       - ""
-      - "<#B0BEC5>• <#B0BEC5>Show the BossBar for waiting,"
-      - "<#B0BEC5>  starting, and active parkour states."
+      - "<#2F2F2F>• <#B0BEC5>Show the BossBar for waiting,"
+      - "<#B0BEC5>  starting, in-game and ending."
+      - "<#B0BEC5>  states."
 
   pvp-toggle:
     name: "<#EF5350><bold>PvP Combat"
@@ -190,9 +191,10 @@ items:
       - ""
       - "<#2F2F2F>• <#B0BEC5>Status: %pvp_toggle_status%"
       - ""
-      - "<#B0BEC5>• <#B0BEC5>Allow active players to fight after"
+      - "<#2F2F2F>• <#B0BEC5>Allow active players to fight after"
       - "<#B0BEC5>  the arena floor starts disappearing."
-      - "<#B0BEC5>  Spectators can never deal or take damage."
+      - "<#B0BEC5>  Spectators can never deal or take"
+      - "<#B0BEC5>  damage."
     item-flags:
       - HIDE_ATTRIBUTES
 
