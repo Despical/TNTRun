@@ -23,7 +23,9 @@ import dev.despical.tntrun.arena.options.ArenaKeys;
 import dev.despical.tntrun.game.Game;
 import dev.despical.tntrun.game.GameState;
 import dev.despical.tntrun.user.User;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
@@ -84,18 +86,17 @@ public class GameEvents extends ListenerAdapter {
     @EventHandler
     public void onPlayerDamage(EntityDamageByEntityEvent event) {
         if (!(event.getEntity() instanceof Player victim)) return;
-        if (!(event.getDamager() instanceof Player)) return;
+        Player attacker = getAttackingPlayer(event.getDamager());
+        if (attacker == null) return;
 
-        Arena arena = arenaRegistry.getArena(victim);
-        if (arena == null) return;
+        Arena victimArena = arenaRegistry.getArena(victim);
+        Arena attackerArena = arenaRegistry.getArena(attacker);
+        if (victimArena == null && attackerArena == null) return;
 
-        if (!arena.isState(GameState.IN_GAME)) {
+        if (!canDamagePlayer(attacker, attackerArena, victim, victimArena)) {
             event.setCancelled(true);
-            return;
+            victim.setFireTicks(0);
         }
-
-        event.setCancelled(true);
-        victim.setFireTicks(0);
     }
 
     @EventHandler
@@ -107,5 +108,37 @@ public class GameEvents extends ListenerAdapter {
         if (arena == null) return;
 
         event.setCancelled(true);
+    }
+
+    private boolean canDamagePlayer(Player attacker, Arena attackerArena, Player victim, Arena victimArena) {
+        if (attackerArena == null || attackerArena != victimArena) {
+            return false;
+        }
+
+        if (!attackerArena.getOption(ArenaKeys.ARENA_PVP_ENABLED)
+            || !attackerArena.isState(GameState.IN_GAME)
+            || !attackerArena.getGame().getBlockRemovalManager().hasRemovalStarted()) {
+            return false;
+        }
+
+        User attackerUser = userManager.getUser(attacker);
+        User victimUser = userManager.getUser(victim);
+
+        return !attackerUser.isSpectator()
+            && !victimUser.isSpectator()
+            && !attackerArena.isDeathPlayer(attackerUser)
+            && !victimArena.isDeathPlayer(victimUser);
+    }
+
+    private Player getAttackingPlayer(Entity damager) {
+        if (damager instanceof Player player) {
+            return player;
+        }
+
+        if (damager instanceof Projectile projectile && projectile.getShooter() instanceof Player player) {
+            return player;
+        }
+
+        return null;
     }
 }
