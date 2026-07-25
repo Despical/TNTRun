@@ -37,7 +37,7 @@ waiting:
     - ""
     - "<#E6E6E6>Game: <#00FF95>TNT Run"
     - ""
-    - "<#FFC800>www.despical.dev"
+    - "<#FFC800>docs.despical.dev"
 
 # Minimum player count reached. Countdown is active, but slots are still available.
 starting-half:
@@ -54,7 +54,7 @@ starting-half:
     - ""
     - "<#E6E6E6>Game: <#00FF95>TNT Run"
     - ""
-    - "<#FFC800>www.despical.dev"
+    - "<#FFC800>docs.despical.dev"
 
 # Waiting for additional players and the game is about to start.
 starting:
@@ -71,7 +71,7 @@ starting:
     - ""
     - "<#E6E6E6>Game: <#00FF95>TNT Run"
     - ""
-    - "<#FFC800>www.despical.dev"
+    - "<#FFC800>docs.despical.dev"
 
 # Arena is completely full and the game is about to start.
 starting-full:
@@ -86,7 +86,7 @@ starting-full:
     - ""
     - "<#E6E6E6>Game: <#00FF95>TNT Run"
     - ""
-    - "<#FFC800>www.despical.dev"
+    - "<#FFC800>docs.despical.dev"
 
 # During the active gameplay.
 in-game:
@@ -100,7 +100,7 @@ in-game:
     - ""
     - "<#E6E6E6>Players Alive: <#00FF95>%players_left%"
     - ""
-    - "<#FFC800>www.despical.dev"
+    - "<#FFC800>docs.despical.dev"
 
 # Game has been finished and players are about to be teleported to the lobby.
 ending:
@@ -114,4 +114,4 @@ ending:
     - ""
     - "<#E6E6E6>Players Alive: <#00FF95>%players_left%"
     - ""
-    - "<#FFC800>www.despical.dev"
+    - "<#FFC800>docs.despical.dev"
