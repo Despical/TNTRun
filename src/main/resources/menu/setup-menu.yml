@@ -198,6 +198,17 @@ items:
     item-flags:
       - HIDE_ATTRIBUTES
 
+  spectator-join-toggle:
+    name: "<#7E57C2><bold>Spectator Joining"
+    material: ENDER_EYE
+    lore:
+      - "<#2F2F2F>• <#2196F3>CLICK <#BDBDBD>to toggle setting"
+      - ""
+      - "<#2F2F2F>• <#B0BEC5>Status: %spectator_join_toggle_status%"
+      - ""
+      - "<#2F2F2F>• <#B0BEC5>Allow players to join as spectators"
+      - "<#B0BEC5>  after the game has already started."
+
   potion-effect-item:
     name: "<#9C27B0>♦ <#76FF03>%effect_name% <#FFFFFF>Lv. <#FFD54F>%effect_level%"
     material: DRAGON_BREATH

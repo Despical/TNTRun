@@ -21,6 +21,7 @@ package dev.despical.tntrun.arena;
 import dev.despical.tntrun.TNTRun;
 import dev.despical.tntrun.api.event.player.PlayerJoinAttemptEvent;
 import dev.despical.tntrun.api.event.player.PlayerLeaveGameEvent.LeaveReason;
+import dev.despical.tntrun.arena.options.ArenaKeys;
 import dev.despical.tntrun.game.Game;
 import dev.despical.tntrun.game.GameManager;
 import dev.despical.tntrun.game.GameState;
@@ -55,6 +56,12 @@ public class ArenaManager {
         }
 
         boolean spectatorJoin = game.isState(GameState.IN_GAME);
+
+        if (spectatorJoin && !arena.getOption(ArenaKeys.ARENA_SPECTATOR_JOIN_ENABLED)) {
+            user.sendMessage("spectator-joining-disabled");
+            return;
+        }
+
         PlayerJoinAttemptEvent event = plugin.getEventManager().playerJoinAttempt(user.getPlayer(), game, spectatorJoin);
         if (event.isCancelled()) return;
 
