@@ -33,7 +33,7 @@ import dev.despical.tntrun.arena.ArenaManager;
 import dev.despical.tntrun.arena.options.ArenaKeys;
 import dev.despical.tntrun.chat.ChatManager;
 import dev.despical.tntrun.command.PlayingCommandPolicy;
-import dev.despical.tntrun.command.arguments.Arguments;
+import dev.despical.tntrun.command.Arguments;
 import dev.despical.tntrun.database.Database;
 import dev.despical.tntrun.database.DatabaseType;
 import dev.despical.tntrun.database.FlatFileStorage;

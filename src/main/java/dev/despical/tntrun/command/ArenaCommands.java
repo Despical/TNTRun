@@ -22,7 +22,6 @@ import dev.despical.commandframework.annotations.Command;
 import dev.despical.commandframework.annotations.Flag;
 import dev.despical.tntrun.arena.Arena;
 import dev.despical.tntrun.arena.options.ArenaKeys;
-import dev.despical.tntrun.command.arguments.Arguments;
 import dev.despical.tntrun.game.Game;
 import dev.despical.tntrun.game.StopReason;
 import dev.despical.tntrun.setup.SetupMenu;
@@ -116,7 +115,7 @@ public final class ArenaCommands extends CommandCategory {
         Set<Arena> arenas = arenaRegistry.getArenas();
 
         if (arenas.isEmpty()) {
-            arguments.sendMessage("no-arenas-registered");
+            arguments.sendConfiguredMessage("no-arenas-registered");
             arguments.playSound(Sound.ENTITY_VILLAGER_NO, 1f, 1f);
             return;
         }
@@ -137,7 +136,7 @@ public final class ArenaCommands extends CommandCategory {
             }
         }
 
-        arguments.sendMessage("created-arenas", Var.of("%arenas%", arenasJoiner.toString()));
+        arguments.sendConfiguredMessage("created-arenas", Var.of("%arenas%", arenasJoiner.toString()));
         arguments.playSound(Sound.UI_BUTTON_CLICK, 1f, 1f);
     }
 
@@ -151,7 +150,7 @@ public final class ArenaCommands extends CommandCategory {
     )
     public void editArenaCommand(Arena arena, Arguments arguments) {
         if (arena == null) {
-            arguments.sendMessage("no-arena-found-with-that-name");
+            arguments.sendConfiguredMessage("no-arena-found-with-that-name");
             return;
         }
 

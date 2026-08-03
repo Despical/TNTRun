@@ -22,7 +22,6 @@ import dev.despical.commandframework.annotations.Command;
 import dev.despical.commandframework.annotations.Option;
 import dev.despical.commandframework.debug.Debug;
 import dev.despical.tntrun.arena.Arena;
-import dev.despical.tntrun.command.arguments.Arguments;
 import dev.despical.tntrun.game.Game;
 import dev.despical.tntrun.user.User;
 import dev.despical.tntrun.utils.Var;
@@ -54,7 +53,8 @@ public final class DebugCommands extends CommandCategory {
         Arena arena = arenaRegistry.getArena(arguments.getFirst());
 
         if (arena == null) {
-            arguments.sendMessage("<#FF5252>✖ <#BDBDBD>Arena <#FFCA28>{0} <#BDBDBD>does not exist.", arguments.getFirst());
+            arguments.sendRawMessage("<#FF5252>✖ <#BDBDBD>Arena <#FFCA28>%arena% <#BDBDBD>does not exist.",
+                Var.of("%arena%", arguments.getFirst()));
             return;
         }
 
@@ -134,7 +134,7 @@ public final class DebugCommands extends CommandCategory {
                 return;
             }
 
-            arguments.sendMessage(path);
+            arguments.sendConfiguredMessage(path);
             return;
         }
 

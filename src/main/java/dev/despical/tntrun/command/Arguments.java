@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package dev.despical.tntrun.command.arguments;
+package dev.despical.tntrun.command;
 
 import dev.despical.commandframework.CommandArguments;
 import dev.despical.tntrun.TNTRun;
@@ -45,13 +45,8 @@ public final class Arguments extends CommandArguments {
         return plugin.getUserManager().getUser(arguments.<Player>getSender());
     }
 
-    public void sendMessage(String messageKey, Var... vars) {
+    public void sendConfiguredMessage(String messageKey, Var... vars) {
         plugin.getChatManager().sendMessage(this, messageKey, vars);
-    }
-
-    @Override
-    public void sendMessage(String messageKey) {
-        plugin.getChatManager().sendMessage(this, messageKey);
     }
 
     public void sendBlankMessage() {

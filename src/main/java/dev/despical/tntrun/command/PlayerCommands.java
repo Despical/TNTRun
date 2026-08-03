@@ -21,7 +21,6 @@ package dev.despical.tntrun.command;
 import dev.despical.commandframework.annotations.Command;
 import dev.despical.tntrun.api.event.player.PlayerLeaveGameEvent.LeaveReason;
 import dev.despical.tntrun.arena.Arena;
-import dev.despical.tntrun.command.arguments.Arguments;
 import dev.despical.tntrun.menu.stats.StatsMenu;
 import dev.despical.tntrun.user.User;
 import org.bukkit.Bukkit;
@@ -46,7 +45,7 @@ public final class PlayerCommands extends CommandCategory {
         Arena arena = arenaRegistry.getArena(arguments.getFirst());
 
         if (arena == null) {
-            arguments.sendMessage("no-arena-found-with-that-name");
+            arguments.sendConfiguredMessage("no-arena-found-with-that-name");
             return;
         }
 
@@ -83,7 +82,7 @@ public final class PlayerCommands extends CommandCategory {
 
         OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayerIfCached(arguments.getFirst());
         if (offlinePlayer == null) {
-            arguments.sendMessage("no-player-with-that-name");
+            arguments.sendConfiguredMessage("no-player-with-that-name");
             return;
         }
 

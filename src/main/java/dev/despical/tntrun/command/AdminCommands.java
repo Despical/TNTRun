@@ -22,7 +22,6 @@ import dev.despical.commandframework.annotations.Command;
 import dev.despical.tntrun.api.event.player.PlayerLeaveGameEvent.LeaveReason;
 import dev.despical.tntrun.arena.Arena;
 import dev.despical.tntrun.arena.options.ArenaKeys;
-import dev.despical.tntrun.command.arguments.Arguments;
 import dev.despical.tntrun.game.Game;
 import dev.despical.tntrun.game.StopReason;
 import dev.despical.tntrun.option.BooleanOption;
@@ -42,22 +41,23 @@ public final class AdminCommands extends CommandCategory {
         name = "tntrun",
         aliases = "tr",
         fallbackPrefix = "thetntrun",
-        permission = "tntrun.command.help",
         usage = "/tntrun help",
         desc = "Main command of the TNT Run."
     )
     public void mainCommand(Arguments arguments) {
         if (arguments.isArgumentsEmpty()) {
-            arguments.sendMessage("<#00aaaa>This server is running <#55ffff>TNT Run v{0} <#00aaaa>by <#55ffff>Despical<#00aaaa>.", plugin.getDescription().getVersion());
+            arguments.sendRawMessage("<#00aaaa>This server is running <#55ffff>TNT Run v%version% <#00aaaa>by <#55ffff>Despical<#00aaaa>.",
+                Var.of("%version%", plugin.getDescription().getVersion()));
 
             if (arguments.hasPermission("tntrun.admin.help")) {
-                arguments.sendMessage("<#00aaaa>Commands: <#55ffff>/{0} help", arguments.getLabel());
+                arguments.sendRawMessage("<#00aaaa>Commands: <#55ffff>/%label% help",
+                    Var.of("%label%", arguments.getLabel()));
             }
 
             return;
         }
 
-        arguments.sendMessage("unrecognized-arguments", Var.of("%label%", arguments.getLabel()), Var.of("%arguments%", arguments.concatArguments()));
+        arguments.sendConfiguredMessage("unrecognized-arguments", Var.of("%label%", arguments.getLabel()), Var.of("%arguments%", arguments.concatArguments()));
     }
 
     @Command(
@@ -77,7 +77,7 @@ public final class AdminCommands extends CommandCategory {
         plugin.getSignManager().reload();
         gameManager.reload();
 
-        arguments.sendMessage("reloaded-configuration");
+        arguments.sendConfiguredMessage("reloaded-configuration");
     }
 
     @Command(
@@ -93,7 +93,7 @@ public final class AdminCommands extends CommandCategory {
 
         if (arguments.isArgumentsEmpty()) {
             if (isConsoleSender) {
-                arguments.sendMessage("stop-command.correct-usage", Var.of("%label%", arguments.getLabel()));
+                arguments.sendConfiguredMessage("stop-command.correct-usage", Var.of("%label%", arguments.getLabel()));
                 return;
             }
 
@@ -101,7 +101,7 @@ public final class AdminCommands extends CommandCategory {
             Arena arena = arenaRegistry.getArena(player);
 
             if (arena == null) {
-                arguments.sendMessage("not-playing");
+                arguments.sendConfiguredMessage("not-playing");
                 return;
             }
 
@@ -112,14 +112,14 @@ public final class AdminCommands extends CommandCategory {
         Arena arena = arenaRegistry.getArena(arguments.getFirst());
 
         if (arena == null) {
-            arguments.sendMessage("no-arena-found-with-that-name");
+            arguments.sendConfiguredMessage("no-arena-found-with-that-name");
             return;
         }
 
         Game game = arena.getGame();
 
         if (game == null) {
-            arguments.sendMessage("stop-command.not-playing");
+            arguments.sendConfiguredMessage("stop-command.not-playing");
             return;
         }
 
@@ -129,7 +129,7 @@ public final class AdminCommands extends CommandCategory {
             return;
         }
 
-        arguments.sendMessage("stop-command.stopped");
+        arguments.sendConfiguredMessage("stop-command.stopped");
     }
 
     @Command(
@@ -145,7 +145,7 @@ public final class AdminCommands extends CommandCategory {
 
         if (arguments.isArgumentsEmpty()) {
             if (isConsoleSender) {
-                arguments.sendMessage("start-command.correct-usage", Var.of("%label%", arguments.getLabel()));
+                arguments.sendConfiguredMessage("start-command.correct-usage", Var.of("%label%", arguments.getLabel()));
                 return;
             }
 
@@ -153,13 +153,13 @@ public final class AdminCommands extends CommandCategory {
             Arena arena = arenaRegistry.getArena(player);
 
             if (arena == null) {
-                arguments.sendMessage("start-command.you-are-not-playing");
+                arguments.sendConfiguredMessage("start-command.you-are-not-playing");
                 return;
             }
 
             Game game = arena.getGame();
             if (game.getUsers().isEmpty()) {
-                arguments.sendMessage("start-command.no-players");
+                arguments.sendConfiguredMessage("start-command.no-players");
                 return;
             }
 
@@ -169,18 +169,18 @@ public final class AdminCommands extends CommandCategory {
 
         Arena arena = arenaRegistry.getArena(arguments.getFirst());
         if (arena == null) {
-            arguments.sendMessage("no-arena-found-with-that-name");
+            arguments.sendConfiguredMessage("no-arena-found-with-that-name");
             return;
         }
 
         Game game = arena.getGame();
         if (game == null) {
-            arguments.sendMessage("game-instance-not-present");
+            arguments.sendConfiguredMessage("game-instance-not-present");
             return;
         }
 
         if (game.getUsers().isEmpty()) {
-            arguments.sendMessage("start-command.no-players");
+            arguments.sendConfiguredMessage("start-command.no-players");
             return;
         }
 
@@ -190,7 +190,7 @@ public final class AdminCommands extends CommandCategory {
             return;
         }
 
-        arguments.sendMessage("start-command.started");
+        arguments.sendConfiguredMessage("start-command.started");
     }
 
     @Command(
@@ -201,15 +201,15 @@ public final class AdminCommands extends CommandCategory {
     )
     public void helpCommand(Arguments arguments) {
         Var var = Var.of("%label%", arguments.getLabel());
-        arguments.sendMessage("help-message", var);
+        arguments.sendConfiguredMessage("help-message", var);
 
         if (arguments.hasPermission("tntrun.admin.help")) {
             arguments.sendBlankMessage();
-            arguments.sendMessage("admin-help-message", var);
+            arguments.sendConfiguredMessage("admin-help-message", var);
             arguments.sendBlankMessage();
 
             if (BooleanOption.DEBUG.value()) {
-                arguments.sendMessage("debug-help-message", var);
+                arguments.sendConfiguredMessage("debug-help-message", var);
             }
         }
     }
@@ -227,7 +227,7 @@ public final class AdminCommands extends CommandCategory {
     public void kickCommand(Arguments arguments) {
         Player targetPlayer = arguments.getPlayer(0)
             .orElseGet(() -> {
-                arguments.sendMessage("no-player-with-that-name");
+                arguments.sendConfiguredMessage("no-player-with-that-name");
                 return null;
             });
 
@@ -239,7 +239,7 @@ public final class AdminCommands extends CommandCategory {
         Arena playerArena = targetUser.getArena();
 
         if (playerArena == null) {
-            arguments.sendMessage("kick-command.not-playing", Var.ofPlayer(targetPlayer));
+            arguments.sendConfiguredMessage("kick-command.not-playing", Var.ofPlayer(targetPlayer));
             return;
         }
 
@@ -250,7 +250,7 @@ public final class AdminCommands extends CommandCategory {
             targetPlayer.teleport(endLocation);
         }
 
-        arguments.sendMessage("kick-command.kicked",
+        arguments.sendConfiguredMessage("kick-command.kicked",
             Var.ofPlayer(targetPlayer),
             Var.of("%arena%", playerArena.getId())
         );
