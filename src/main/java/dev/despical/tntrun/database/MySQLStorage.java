@@ -256,7 +256,6 @@ public final class MySQLStorage extends Database {
     @Override
     public void saveAllData() {
         List<User> activeUsers = List.copyOf(plugin.getUserManager().getUsers());
-
         if (activeUsers.isEmpty()) return;
 
         executor.submit(() -> {
