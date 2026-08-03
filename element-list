@@ -9,7 +9,6 @@ dev.despical.tntrun.blocks
 dev.despical.tntrun.bossbar
 dev.despical.tntrun.chat
 dev.despical.tntrun.command
-dev.despical.tntrun.command.arguments
 dev.despical.tntrun.database
 dev.despical.tntrun.event
 dev.despical.tntrun.game
