@@ -31,7 +31,8 @@ public enum IntOption implements ConfigOption<Integer> {
     PRE_GAME_WAITING_TIME("time-settings.pre-game-waiting-time", 120),
     GAME_STARTING_TIME("time-settings.game-starting-time", 30),
     FULL_GAME_STARTING_TIME("time-settings.full-game-starting-time", 15),
-    ENDING_TIME("time-settings.ending-time", 10);
+    ENDING_TIME("time-settings.ending-time", 10),
+    LEADERBOARD_SIZE("leaderboard-size", 10);
 
     private final String path;
     private final int defaultValue;

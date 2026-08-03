@@ -12,6 +12,10 @@
 # Please note that data migration is not supported, and changes will only take effect after a server restart or plugin reload.
 database: flat
 
+# Maximum number of positions stored for leaderboard placeholders.
+# Increase this value to use positions beyond the default top 10.
+leaderboard-size: 10
+
 arena-settings:
   # How often arena game logic should tick, in server ticks.
   # Lower values make games update more often; higher values reduce update frequency.

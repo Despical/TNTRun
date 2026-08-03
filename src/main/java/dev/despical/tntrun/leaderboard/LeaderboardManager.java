@@ -21,6 +21,7 @@ package dev.despical.tntrun.leaderboard;
 import dev.despical.tntrun.TNTRun;
 import dev.despical.tntrun.arena.Arena;
 import dev.despical.tntrun.arena.options.ArenaKeys;
+import dev.despical.tntrun.option.IntOption;
 import dev.despical.tntrun.stats.StatisticType;
 import dev.despical.tntrun.stats.Statistics;
 import dev.despical.tntrun.stats.offline.OfflineStats;
@@ -110,6 +111,7 @@ public class LeaderboardManager {
                 return true;
             })
             .sorted((e1, e2) -> comparator.compare(e1.value(), e2.value()))
+            .limit(IntOption.LEADERBOARD_SIZE.value())
             .toList();
 
         Leaderboard<T> leaderboard = new Leaderboard<>(id, entries, fallbackValue);
