@@ -290,7 +290,7 @@ public final class MySQLStorage extends Database {
         CompletableFuture<Void> future = new CompletableFuture<>();
 
         executor.submit(() -> {
-            String selectAllQuery = "SELECT `uuid`, `arena_best_times`, `checkpoint_best_times` FROM `%s`;".formatted(statsTable);
+            String selectAllQuery = "SELECT `uuid`, `arena_best_times` FROM `%s`;".formatted(statsTable);
             String updateRecordsQuery = "UPDATE `%s` SET `arena_best_times` = ? WHERE `uuid` = ?;".formatted(statsTable);
 
             try (Connection connection = database.getConnection()) {
