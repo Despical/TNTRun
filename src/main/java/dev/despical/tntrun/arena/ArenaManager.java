@@ -57,6 +57,16 @@ public class ArenaManager {
 
         boolean spectatorJoin = game.isState(GameState.IN_GAME);
 
+        if (!spectatorJoin && !game.isState(GameState.WAITING, GameState.STARTING)) {
+            user.sendMessage("cannot-join-now");
+            return;
+        }
+
+        if (!spectatorJoin && game.isPlayerLimitReached()) {
+            user.sendMessage("arena-full");
+            return;
+        }
+
         if (spectatorJoin && !arena.getOption(ArenaKeys.ARENA_SPECTATOR_JOIN_ENABLED)) {
             user.sendMessage("spectator-joining-disabled");
             return;

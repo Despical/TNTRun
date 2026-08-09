@@ -140,6 +140,8 @@ not-playing: "<#FF1744>✖ <#BDBDBD>You are not playing <#D50000><bold>TNT Run</
 
 cannot-join-now: "<#FF1744>✖ <#BDBDBD>You <#FF5252>cannot join <#BDBDBD>the game right now."
 
+arena-full: "<#FF1744>✖ <#BDBDBD>This arena is currently <#FF5252>full<#BDBDBD>."
+
 spectator-joining-disabled: "<#FF1744>✖ <#BDBDBD>Spectator joining is <#FF5252>disabled <#BDBDBD>for this arena."
 
 chat-format: "<gray>%sender%<dark_gray>: <white>%message%"

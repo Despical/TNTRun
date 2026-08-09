@@ -164,7 +164,16 @@ public class Game extends BukkitRunnable {
     }
 
     public void joinAsPlayer(User user) {
+        if (isPlayerLimitReached()) {
+            user.sendMessage("arena-full");
+            return;
+        }
+
         join(user, users);
+    }
+
+    public boolean isPlayerLimitReached() {
+        return users.size() >= arena.getOption(ArenaKeys.MAX_PLAYERS);
     }
 
     public void joinAsSpectator(User user) {
