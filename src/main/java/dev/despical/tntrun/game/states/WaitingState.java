@@ -18,6 +18,7 @@
 
 package dev.despical.tntrun.game.states;
 
+import dev.despical.fileitems.SpecialItem;
 import dev.despical.tntrun.arena.options.ArenaKeys;
 import dev.despical.tntrun.game.Game;
 import dev.despical.tntrun.game.GameState;
@@ -177,7 +178,10 @@ public class WaitingState extends GameStateHandler {
     }
 
     private void giveLobbyItems(Player player) {
-        itemManager.getItem("leave-item").giveTo(player, "slot");
+        SpecialItem leaveItem = itemManager.getItem("leave-item");
+        if (leaveItem != null) {
+            leaveItem.giveTo(player, "slot");
+        }
     }
 
     private void broadcastWaitingMessageIfNeeded() {

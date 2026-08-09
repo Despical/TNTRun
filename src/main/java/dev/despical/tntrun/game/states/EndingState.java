@@ -59,7 +59,9 @@ public class EndingState extends GameStateHandler {
         SpecialItem leaveItem = itemManager.getItem("leave-item");
 
         game.getPlayers().forEach(player -> {
-            leaveItem.giveTo(player, "slot");
+            if (leaveItem != null) {
+                leaveItem.giveTo(player, "slot");
+            }
 
             player.teleport(startLocation);
         });
