@@ -23,6 +23,7 @@ import dev.despical.tntrun.game.ArenaPotionEffect;
 import dev.despical.tntrun.game.Game;
 import dev.despical.tntrun.game.GameState;
 import dev.despical.tntrun.stats.Statistics;
+import dev.despical.tntrun.stats.RoundStatistics;
 import dev.despical.tntrun.user.User;
 import dev.despical.tntrun.utils.PotionUtils;
 import dev.despical.tntrun.utils.Var;
@@ -118,6 +119,10 @@ public class InGameState extends GameStateHandler {
         boolean wasSpectator = user.isSpectator();
         game.recordSurvivalTime(user);
         game.getScores().addScore(user, user.getStatistic(Statistics.LOCAL_SURVIVE_TIME));
+
+        if (game.removeRoundParticipant(user)) {
+            RoundStatistics.record(arena, user, false);
+        }
 
         if (!wasSpectator) {
             game.broadcastMessage("disconnected-from-the-game", Var.ofPlayer(user));

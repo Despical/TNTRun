@@ -25,13 +25,12 @@ import dev.despical.tntrun.game.GameState;
 import dev.despical.tntrun.game.scores.ScoreRegistry;
 import dev.despical.tntrun.option.IntOption;
 import dev.despical.tntrun.stats.Statistics;
+import dev.despical.tntrun.stats.RoundStatistics;
 import dev.despical.tntrun.user.User;
 import org.bukkit.Location;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author Despical
@@ -101,29 +100,13 @@ public class EndingState extends GameStateHandler {
         User winner = scores.getWinner();
 
         for (User user : game.getUsers()) {
-            boolean isWinner = user.equals(winner);
-
-            user.addStat(Statistics.GAMES_PLAYED);
-            user.addStat(isWinner ? Statistics.WIN : Statistics.LOSE);
-            user.setStatisticIfHigher(Statistics.LONGEST_SURVIVE, user.getStatistic(Statistics.LOCAL_SURVIVE_TIME));
-
-            Map<String, Long> arenaTimes = new HashMap<>(user.getStatistic(Statistics.ARENA_BEST_TIMES));
-            long surviveTime = user.getStatistic(Statistics.LOCAL_SURVIVE_TIME);
-            long previousBest = arenaTimes.getOrDefault(arena.getId(), 0L);
-
-            if (surviveTime > previousBest) {
-                arenaTimes.put(arena.getId(), surviveTime);
-                user.setStatistic(Statistics.ARENA_BEST_TIMES, arenaTimes);
+            if (!game.isRoundParticipant(user)) {
+                continue;
             }
-        }
 
-        if (winner == null) {
-            return;
+            boolean isWinner = user.equals(winner);
+            RoundStatistics.record(arena, user, isWinner);
         }
-
-        winner.addStat(Statistics.WIN_STREAK);
-        int currentStreak = winner.getStatistic(Statistics.WIN_STREAK);
-        winner.setStatisticIfHigher(Statistics.LONGEST_WIN_STREAK, currentStreak);
     }
 
     private void updateArenaRecord() {

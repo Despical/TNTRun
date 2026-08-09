@@ -81,6 +81,7 @@ public class Game extends BukkitRunnable {
     private final @Getter BlockRemovalManager blockRemovalManager;
 
     private final @Getter List<User> users;
+    private final Set<UUID> roundParticipants;
     private final Map<UUID, Long> survivalTimesMillis;
     private final Map<UUID, PlayerMetadata> playerMetadata;
     private final Map<GameState, GameStateHandler> states;
@@ -96,6 +97,7 @@ public class Game extends BukkitRunnable {
         this.bossBarManager = new BossBarManager(this);
         this.blockRemovalManager = new BlockRemovalManager(this);
         this.users = new ArrayList<>();
+        this.roundParticipants = new HashSet<>();
         this.survivalTimesMillis = new HashMap<>();
         this.playerMetadata = new HashMap<>();
         this.scores = new ScoreRegistry(this);
@@ -316,6 +318,16 @@ public class Game extends BukkitRunnable {
         peakActivePlayers = getPlayersLeft().size();
         survivalStartTimeMillis = System.currentTimeMillis();
         survivalTimesMillis.clear();
+        roundParticipants.clear();
+        getPlayersLeft().stream().map(User::getUUID).forEach(roundParticipants::add);
+    }
+
+    public boolean isRoundParticipant(User user) {
+        return roundParticipants.contains(user.getUUID());
+    }
+
+    public boolean removeRoundParticipant(User user) {
+        return roundParticipants.remove(user.getUUID());
     }
 
     public void recordSurvivalTime(User user) {
