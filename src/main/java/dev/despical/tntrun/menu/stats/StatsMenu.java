@@ -38,7 +38,6 @@ import dev.despical.tntrun.user.User;
 import dev.despical.tntrun.utils.ItemUtils;
 import dev.despical.tntrun.utils.Var;
 import net.kyori.adventure.text.Component;
-import org.bukkit.GameMode;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.Sound;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -126,7 +125,6 @@ public class StatsMenu implements Menu {
     @Override
     public void open() {
         Player player = viewer.getPlayer();
-        player.setGameMode(GameMode.CREATIVE);
         player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1.0f, 1.5f);
 
         openMainMenu();
