@@ -4,7 +4,7 @@ build/
 !**/src/main/**/build/
 !**/src/test/**/build/
 .kotlin
-
+.test
 ### IntelliJ IDEA ###
 /.idea/*
 !/.idea/icon.svg
