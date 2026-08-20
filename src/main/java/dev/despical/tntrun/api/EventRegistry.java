@@ -20,6 +20,7 @@ package dev.despical.tntrun.api;
 
 import org.bukkit.event.Event;
 
+import java.util.Collections;
 import java.util.EnumSet;
 import java.util.Set;
 
@@ -29,6 +30,8 @@ import java.util.Set;
  * Created at 29.01.2026
  */
 public final class EventRegistry {
+
+    private static final Set<EventType> REGISTERED_TYPES = Collections.unmodifiableSet(EnumSet.allOf(EventType.class));
 
     private EventRegistry() {
     }
@@ -42,7 +45,6 @@ public final class EventRegistry {
     }
 
     public static Set<EventType> getRegisteredTypes() {
-        return EnumSet.allOf(EventType.class);
+        return REGISTERED_TYPES;
     }
 }
-
