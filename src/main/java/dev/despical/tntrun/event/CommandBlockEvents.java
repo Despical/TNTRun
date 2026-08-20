@@ -30,7 +30,7 @@ import org.bukkit.event.player.PlayerCommandPreprocessEvent;
  * <p>
  * Created at 17.06.2026
  */
-public class CommandBlockEvents extends ListenerAdapter {
+public final class CommandBlockEvents extends ListenerAdapter {
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onCommand(PlayerCommandPreprocessEvent event) {
