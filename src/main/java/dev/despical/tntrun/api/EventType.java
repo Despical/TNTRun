@@ -27,8 +27,8 @@ import dev.despical.tntrun.api.event.player.PlayerEliminateEvent;
 import dev.despical.tntrun.api.event.player.PlayerJoinAttemptEvent;
 import dev.despical.tntrun.api.event.player.PlayerLeaveGameEvent;
 import dev.despical.tntrun.api.event.player.PlayerStatisticChangeEvent;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import org.bukkit.event.Event;
 
 /**
@@ -37,7 +37,7 @@ import org.bukkit.event.Event;
  * Created at 29.01.2026
  */
 @Getter
-@AllArgsConstructor
+@RequiredArgsConstructor
 public enum EventType {
 
     GAME_START(GameStartEvent.class),
