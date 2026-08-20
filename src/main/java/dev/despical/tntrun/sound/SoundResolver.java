@@ -80,7 +80,7 @@ public final class SoundResolver {
             Field field = Sound.class.getField(fieldName);
             Object value = field.get(null);
             return value instanceof Sound sound ? sound : null;
-        } catch (NoSuchFieldException | IllegalAccessException ignored) {
+        } catch (NoSuchFieldException | IllegalAccessException _) {
             return null;
         }
     }

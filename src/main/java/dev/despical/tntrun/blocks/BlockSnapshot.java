@@ -89,7 +89,7 @@ public record BlockSnapshot(String key, String world, int x, int y, int z, Strin
             BlockData data = Bukkit.createBlockData(blockData);
             block.setBlockData(data, false);
             return true;
-        } catch (IllegalArgumentException ignored) {
+        } catch (IllegalArgumentException _) {
             return false;
         }
     }

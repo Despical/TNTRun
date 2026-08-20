@@ -59,7 +59,7 @@ public class ArenaPotionEffect {
             }
 
             return PotionEffectType.getByName(EFFECT_ALIASES.getOrDefault(normalized, normalized));
-        } catch (Exception ignored) {
+        } catch (Exception _) {
             return null;
         }
     }
