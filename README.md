@@ -36,6 +36,7 @@ Players (up to 12 or 24, mostly, depending on the map) are placed on sand/gravel
 - [Javadocs](https://javadoc.despical.dev/tnt-run/)
 - [SpigotMC](https://spigotmc.org/resources/tnt-run.83196/)
 - [BuiltByBit](https://builtbybit.com/resources/tnt-run.116706/)
+- [Modrinth](https://modrinth.com/plugin/tnt-run-minigame)
 
 ---
 
