@@ -307,7 +307,7 @@ public class GameItemEvents extends ListenerAdapter {
                 float volume = parts.length > 1 ? Float.parseFloat(parts[1].trim()) : 1f;
                 float pitch = parts.length > 2 ? Float.parseFloat(parts[2].trim()) : 1f;
                 player.playSound(player.getLocation(), sound, volume, pitch);
-            } catch (NumberFormatException ignored) {
+            } catch (NumberFormatException _) {
             }
         }
     }
