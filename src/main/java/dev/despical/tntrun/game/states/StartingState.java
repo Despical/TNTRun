@@ -77,7 +77,7 @@ public class StartingState extends GameStateHandler {
 
         int startingTime = IntOption.GAME_STARTING_TIME.value();
 
-        if (playerAmount == (int) (maxPlayerAmount * 0.8) && timer > startingTime) {
+        if (playerAmount >= (int) (maxPlayerAmount * 0.8) && timer > startingTime) {
             game.setTimer(startingTime);
         }
     }
