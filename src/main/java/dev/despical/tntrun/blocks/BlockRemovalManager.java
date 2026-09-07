@@ -28,6 +28,7 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.NumberConversions;
 
@@ -50,7 +51,7 @@ public class BlockRemovalManager {
     private final BlockSnapshotStore store;
     private final Map<String, BlockSnapshot> snapshots;
     private final Set<String> queuedBlocks;
-    private final Set<BukkitTask> delayedTasks;
+    private final Set<BukkitRunnable> delayedTasks;
 
     private BukkitTask scanTask;
     private boolean removalStarted;
@@ -74,7 +75,7 @@ public class BlockRemovalManager {
     public void reset() {
         stopScanning();
 
-        delayedTasks.forEach(BukkitTask::cancel);
+        delayedTasks.forEach(BukkitRunnable::cancel);
         delayedTasks.clear();
         queuedBlocks.clear();
         removalStarted = false;
@@ -144,8 +145,17 @@ public class BlockRemovalManager {
         queuedBlocks.add(key);
         store.record(snapshot);
 
-        BukkitTask task = Schedulers.runTaskLater(() -> removeBlock(snapshot), config.getRemoveDelayTicks());
-        delayedTasks.add(task);
+        BukkitRunnable delayedRemoval = new BukkitRunnable() {
+
+            @Override
+            public void run() {
+                delayedTasks.remove(this);
+                removeBlock(snapshot);
+            }
+        };
+
+        delayedTasks.add(delayedRemoval);
+        delayedRemoval.runTaskLater(plugin, config.getRemoveDelayTicks());
     }
 
     private void removeBlock(BlockSnapshot snapshot) {
