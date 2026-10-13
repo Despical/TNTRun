@@ -22,14 +22,17 @@ import dev.despical.tntrun.api.EventManager;
 import dev.despical.tntrun.api.event.player.PlayerJoinAttemptEvent;
 import dev.despical.tntrun.arena.Arena;
 import dev.despical.tntrun.arena.ArenaManager;
+import dev.despical.tntrun.arena.ArenaRegistry;
 import dev.despical.tntrun.arena.options.ArenaKeys;
 import dev.despical.tntrun.game.Game;
 import dev.despical.tntrun.game.GameState;
+import dev.despical.tntrun.event.GeneralEvents;
 import dev.despical.tntrun.option.ConfigOptions;
 import dev.despical.tntrun.user.User;
 import dev.despical.tntrun.user.UserManager;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.plugin.PluginManager;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -49,6 +52,7 @@ class TNTRunRegressionTest {
     private static final TNTRun plugin = mock(TNTRun.class);
     private static final EventManager eventManager = mock(EventManager.class);
     private static final UserManager userManager = mock(UserManager.class);
+    private static final ArenaRegistry arenaRegistry = mock(ArenaRegistry.class);
     private static final ConfigOptions options = mock(ConfigOptions.class);
 
     private static MockedStatic<TNTRun> pluginAccess;
@@ -76,9 +80,10 @@ class TNTRunRegressionTest {
 
     @BeforeEach
     void initializeGame() {
-        reset(plugin, eventManager, userManager, options);
+        reset(plugin, eventManager, userManager, arenaRegistry, options);
         when(plugin.getEventManager()).thenReturn(eventManager);
         when(plugin.getUserManager()).thenReturn(userManager);
+        when(plugin.getArenaRegistry()).thenReturn(arenaRegistry);
         when(plugin.getOptions()).thenReturn(options);
 
         arena = mock(Arena.class);
@@ -123,5 +128,26 @@ class TNTRunRegressionTest {
         new ArenaManager(plugin).joinAttempt(user, arena);
 
         verify(game).joinAsSpectator(user);
+    }
+
+    @Test
+    void preventsInventoryDraggingInsideAnArena() {
+        InventoryDragEvent event = mock(InventoryDragEvent.class);
+        when(event.getWhoClicked()).thenReturn(player);
+        when(arenaRegistry.isInArena(player)).thenReturn(true);
+
+        new GeneralEvents().onInventoryDrag(event);
+
+        verify(event).setCancelled(true);
+    }
+
+    @Test
+    void preservesInventoryDraggingOutsideAnArena() {
+        InventoryDragEvent event = mock(InventoryDragEvent.class);
+        when(event.getWhoClicked()).thenReturn(player);
+
+        new GeneralEvents().onInventoryDrag(event);
+
+        verify(event, never()).setCancelled(anyBoolean());
     }
 }
