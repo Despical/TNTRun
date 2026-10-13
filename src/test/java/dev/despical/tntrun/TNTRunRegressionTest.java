@@ -24,14 +24,18 @@ import dev.despical.tntrun.arena.Arena;
 import dev.despical.tntrun.arena.ArenaManager;
 import dev.despical.tntrun.arena.ArenaRegistry;
 import dev.despical.tntrun.arena.options.ArenaKeys;
+import dev.despical.tntrun.blocks.BlockRemovalManager;
+import dev.despical.tntrun.event.GameEvents;
+import dev.despical.tntrun.event.GeneralEvents;
 import dev.despical.tntrun.game.Game;
 import dev.despical.tntrun.game.GameState;
-import dev.despical.tntrun.event.GeneralEvents;
 import dev.despical.tntrun.option.ConfigOptions;
 import dev.despical.tntrun.user.User;
 import dev.despical.tntrun.user.UserManager;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Projectile;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.plugin.PluginManager;
 import org.junit.jupiter.api.AfterAll;
@@ -149,5 +153,82 @@ class TNTRunRegressionTest {
         new GeneralEvents().onInventoryDrag(event);
 
         verify(event, never()).setCancelled(anyBoolean());
+    }
+
+    @Test
+    void convertsLethalPvpDamageToArenaElimination() {
+        EntityDamageByEntityEvent event = createPvpDamage(20D);
+
+        new GameEvents().onPlayerDamage(event);
+
+        verify(event).setCancelled(true);
+        verify(game).eliminate(user);
+    }
+
+    @Test
+    void preservesNonLethalPvpDamage() {
+        EntityDamageByEntityEvent event = createPvpDamage(19D);
+
+        new GameEvents().onPlayerDamage(event);
+
+        verify(event, never()).setCancelled(anyBoolean());
+        verify(game, never()).eliminate(any());
+    }
+
+    @Test
+    void preventsDamageWithoutEliminatingWhenPvpIsDisabled() {
+        EntityDamageByEntityEvent event = createPvpDamage(20D);
+        when(arena.getOption(ArenaKeys.ARENA_PVP_ENABLED)).thenReturn(false);
+
+        new GameEvents().onPlayerDamage(event);
+
+        verify(event).setCancelled(true);
+        verify(game, never()).eliminate(any());
+    }
+
+    @Test
+    void convertsLethalProjectileDamageToArenaElimination() {
+        EntityDamageByEntityEvent event = createPvpDamage(20D);
+        Projectile projectile = mock(Projectile.class);
+        Player attacker = (Player) event.getDamager();
+        when(projectile.getShooter()).thenReturn(attacker);
+        when(event.getDamager()).thenReturn(projectile);
+
+        new GameEvents().onPlayerDamage(event);
+
+        verify(event).setCancelled(true);
+        verify(game).eliminate(user);
+    }
+
+    @Test
+    void preventsSpectatorsFromEliminatingPlayers() {
+        EntityDamageByEntityEvent event = createPvpDamage(20D);
+        User attacker = userManager.getUser((Player) event.getDamager());
+        when(attacker.isSpectator()).thenReturn(true);
+
+        new GameEvents().onPlayerDamage(event);
+
+        verify(event).setCancelled(true);
+        verify(game, never()).eliminate(any());
+    }
+
+    private EntityDamageByEntityEvent createPvpDamage(double damage) {
+        Player attacker = mock(Player.class);
+        when(userManager.getUser(attacker)).thenReturn(mock(User.class));
+        when(arenaRegistry.getArena(attacker)).thenReturn(arena);
+        when(arenaRegistry.getArena(player)).thenReturn(arena);
+        when(arena.getOption(ArenaKeys.ARENA_PVP_ENABLED)).thenReturn(true);
+        when(arena.isState(GameState.IN_GAME)).thenReturn(true);
+
+        BlockRemovalManager blockRemovalManager = mock(BlockRemovalManager.class);
+        when(game.getBlockRemovalManager()).thenReturn(blockRemovalManager);
+        when(blockRemovalManager.hasRemovalStarted()).thenReturn(true);
+
+        EntityDamageByEntityEvent event = mock(EntityDamageByEntityEvent.class);
+        when(event.getEntity()).thenReturn(player);
+        when(event.getDamager()).thenReturn(attacker);
+        when(event.getFinalDamage()).thenReturn(damage);
+        when(player.getHealth()).thenReturn(20D);
+        return event;
     }
 }

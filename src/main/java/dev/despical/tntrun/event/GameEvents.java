@@ -27,6 +27,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 
@@ -83,7 +84,7 @@ public class GameEvents extends ListenerAdapter {
         });
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onPlayerDamage(EntityDamageByEntityEvent event) {
         if (!(event.getEntity() instanceof Player victim)) return;
         Player attacker = getAttackingPlayer(event.getDamager());
@@ -96,6 +97,13 @@ public class GameEvents extends ListenerAdapter {
         if (!canDamagePlayer(attacker, attackerArena, victim, victimArena)) {
             event.setCancelled(true);
             victim.setFireTicks(0);
+            return;
+        }
+
+        if (event.getFinalDamage() >= victim.getHealth()) {
+            event.setCancelled(true);
+
+            victimArena.getGame().eliminate(userManager.getUser(victim));
         }
     }
 
