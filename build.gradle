@@ -27,6 +27,15 @@ dependencies {
     implementation 'org.bstats:bstats-bukkit:3.2.1'
 
     annotationProcessor 'org.projectlombok:lombok:1.18.48'
+
+    testImplementation 'io.papermc.paper:paper-api:1.21.11-R0.1-SNAPSHOT'
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.13.4'
+    testImplementation 'org.mockito:mockito-core:5.20.0'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+tasks.test {
+    useJUnitPlatform()
 }
 
 tasks.processResources {

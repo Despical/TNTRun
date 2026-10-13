@@ -50,7 +50,7 @@ public class ArenaManager {
             return;
         }
 
-        if (game.isPlaying(user)) {
+        if (user.isInArena()) {
             user.sendMessage("already-playing");
             return;
         }
