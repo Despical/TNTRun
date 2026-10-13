@@ -1,5 +1,7 @@
 <div align="center">
 
+![TNT Run cover](https://hub.despical.dev/plugin-icons/tnt-run-topic-cover.png)
+
 # TNT Run
 ### One more jump. One less block. One last survivor.
 
@@ -14,9 +16,9 @@ Give your hub a quick competitive game. Build a towering course with several flo
 
 Run across sand, gravel or your configured floor materials as blocks disappear behind you. Each missed jump takes you closer to the void. Save a double jump for the right moment, find the next safe route, and be the final runner standing.
 
----
-
 <div align="center">
+
+![TNT Run section divider](https://hub.despical.dev/plugin-icons/tnt-run-divider.png)
 
 ### 01  /  KEEP MOVING
 
@@ -28,7 +30,7 @@ A clear objective makes every round easy to understand: **outlast everyone else.
 
 <div align="center">
 
-![TNT Run gameplay and arena setup](https://i.imgur.com/vI8GTmS.png)
+![TNT Run gameplay and arena setup](https://hub.despical.dev/plugin-icons/tnt-run-vI8GTmS.png)
 An active TNT Run arena. Every disappearing block changes the next move.
 
 </div>
@@ -40,9 +42,9 @@ An active TNT Run arena. Every disappearing block changes the next move.
 **Add another kind of competition.** Per-arena PvP can let active runners fight once floor removal begins. A lethal player hit eliminates its target into spectator mode; the usual survivor and winner checks still apply.
 [**Read the gameplay guide**](https://docs.despical.dev/tnt-run/gameplay/)
 
----
-
 <div align="center">
+
+![TNT Run section divider](https://hub.despical.dev/plugin-icons/tnt-run-divider.png)
 
 ### 02  /  MAKE THE SAVE
 
@@ -57,9 +59,9 @@ Set the default jump count and cooldown. Assign different counts through permiss
 The jump item, sound and action bar cooldown feedback are configurable. Remaining jumps can also be shown in your scoreboard or through PlaceholderAPI.
 [**Configure double jumps**](https://docs.despical.dev/tnt-run/features/double-jumps/)
 
----
-
 <div align="center">
+
+![TNT Run section divider](https://hub.despical.dev/plugin-icons/tnt-run-divider.png)
 
 ### 03  /  STAY FOR THE FINISH
 
@@ -74,9 +76,9 @@ Allow or disable late spectator joins per arena. A player arriving during an act
 Separate arena chat from the rest of your server, choose whether alive players can see spectator chat, and customize the spectator items and menus.
 [**Explore spectator tools**](https://docs.despical.dev/tnt-run/features/spectator-mode/)
 
----
-
 <div align="center">
+
+![TNT Run section divider](https://hub.despical.dev/plugin-icons/tnt-run-divider.png)
 
 ### 04  /  BUILD YOUR ARENA
 
@@ -88,7 +90,7 @@ Build the floors, then use `/tr create <arena_id>` and `/tr edit <arena_id>` to 
 
 <div align="center">
 
-![TNT Run gameplay and arena setup](https://i.imgur.com/QGqC6Eg.gif)
+![TNT Run gameplay and arena setup](https://hub.despical.dev/plugin-icons/tnt-run-QGqC6Eg.gif)
 The setup menu keeps arena settings together in game.
 
 </div>
@@ -104,7 +106,7 @@ The setup menu keeps arena settings together in game.
 `/tr create <arena_id>`
 <div align="center">
 
-![TNT Run gameplay and arena setup](https://i.imgur.com/ZbwodjY.png)
+![TNT Run gameplay and arena setup](https://hub.despical.dev/plugin-icons/tnt-run-ZbwodjY.png)
 
 </div>
 
@@ -120,7 +122,7 @@ Use the editor shown above to configure the arena.
 
 <div align="center">
 
-![TNT Run gameplay and arena setup](https://i.imgur.com/9pUElKZ.gif)
+![TNT Run gameplay and arena setup](https://hub.despical.dev/plugin-icons/tnt-run-9pUElKZ.gif)
 
 </div>
 
@@ -128,7 +130,7 @@ Use the editor shown above to configure the arena.
 Set the minimum count needed to start and the maximum arena capacity.
 <div align="center">
 
-![TNT Run gameplay and arena setup](https://i.imgur.com/A4hw09B.gif)
+![TNT Run gameplay and arena setup](https://hub.despical.dev/plugin-icons/tnt-run-A4hw09B.gif)
 
 </div>
 
@@ -136,7 +138,7 @@ Set the minimum count needed to start and the maximum arena capacity.
 Configure the map name, game displays, potion effects and arena records.
 <div align="center">
 
-![TNT Run gameplay and arena setup](https://i.imgur.com/QWv1fEY.gif)
+![TNT Run gameplay and arena setup](https://hub.despical.dev/plugin-icons/tnt-run-QWv1fEY.gif)
 
 </div>
 
@@ -144,7 +146,7 @@ Configure the map name, game displays, potion effects and arena records.
 Place a sign, look at it, then use the Sign item in the setup menu.
 <div align="center">
 
-![TNT Run gameplay and arena setup](https://i.imgur.com/15zNEay.gif)
+![TNT Run gameplay and arena setup](https://hub.despical.dev/plugin-icons/tnt-run-15zNEay.gif)
 
 </div>
 
@@ -152,7 +154,7 @@ Place a sign, look at it, then use the Sign item in the setup menu.
 Click the Firework item to save and activate the arena. Join with the command or the linked sign.
 <div align="center">
 
-![TNT Run gameplay and arena setup](https://i.imgur.com/U2wvlis.gif)
+![TNT Run gameplay and arena setup](https://hub.despical.dev/plugin-icons/tnt-run-U2wvlis.gif)
 
 </div>
 
@@ -160,9 +162,9 @@ Click the Firework item to save and activate the arena. Join with the command or
 
 </details>
 
----
-
 <div align="center">
+
+![TNT Run section divider](https://hub.despical.dev/plugin-icons/tnt-run-divider.png)
 
 ### 05  /  MAKE EVERY ROUND COUNT
 
@@ -174,10 +176,10 @@ Give returning players something to chase. Track **games played, wins, losses, c
 
 <div align="center">
 
-![TNT Run gameplay and arena setup](https://i.imgur.com/Gc13maz.png)
+![TNT Run gameplay and arena setup](https://hub.despical.dev/plugin-icons/tnt-run-Gc13maz.png)
 Keep the match's player, timer and record information in view.
 
-![TNT Run gameplay and arena setup](https://i.imgur.com/2Po8ELa.png)
+![TNT Run gameplay and arena setup](https://hub.despical.dev/plugin-icons/tnt-run-2Po8ELa.png)
 The statistics menu gives players a reason to come back for another round.
 
 </div>
@@ -187,9 +189,9 @@ Players can open `/tr stats` for their own results or `/tr stats <player>` for a
 Use flat-file storage for a local setup, or configure MySQL for player data. Changing storage types requires a restart or plugin reload; automatic data migration is not provided.
 [**Build a leaderboard display**](https://docs.despical.dev/tnt-run/placeholders/leaderboard/)
 
----
-
 <div align="center">
+
+![TNT Run section divider](https://hub.despical.dev/plugin-icons/tnt-run-divider.png)
 
 ### 06  /  MAKE IT YOURS
 
@@ -207,9 +209,9 @@ Use flat-file storage for a local setup, or configure MySQL for player data. Cha
 
 [**Main configuration**](https://docs.despical.dev/tnt-run/configuration/config/)  ·  [**Block removal and recovery**](https://docs.despical.dev/tnt-run/features/block-safety/)
 
----
-
 <div align="center">
+
+![TNT Run section divider](https://hub.despical.dev/plugin-icons/tnt-run-divider.png)
 
 ### 07  /  CONNECT YOUR SERVER
 
@@ -277,9 +279,9 @@ Test an expression with `/papi parse me %tntrun_wins%`.
 **Build your own integration.** The public event API covers game start, end, stop and state changes, player join and leave flow, double jumps, eliminations and statistic changes. React to a match result, customize a jump or connect your own plugin to the arena lifecycle.
 [**Developer API guide**](https://docs.despical.dev/tnt-run/api/tnt-run-api/)  ·  [**Javadocs**](https://javadoc.despical.dev/tnt-run/)
 
----
-
 <div align="center">
+
+![TNT Run section divider](https://hub.despical.dev/plugin-icons/tnt-run-divider.png)
 
 ### 08  /  GET YOUR FIRST GAME RUNNING
 
@@ -318,7 +320,7 @@ All commands work through `/tntrun` or `/tr`. Use permissions to decide who can 
 Join, leave and stats do not require administrative permissions by default.
 <div align="center">
 
-![TNT Run gameplay and arena setup](https://i.imgur.com/bLvzJaB.png)
+![TNT Run gameplay and arena setup](https://hub.despical.dev/plugin-icons/tnt-run-bLvzJaB.png)
 
 </div>
 
@@ -348,7 +350,7 @@ Join, leave and stats do not require administrative permissions by default.
 `tntrun.admin` grants administrative access. Force-starting still requires players to be present.
 <div align="center">
 
-![TNT Run gameplay and arena setup](https://i.imgur.com/8WQkOqi.png)
+![TNT Run gameplay and arena setup](https://hub.despical.dev/plugin-icons/tnt-run-8WQkOqi.png)
 
 </div>
 
@@ -366,16 +368,16 @@ Enable **debug: true** to use the troubleshooting commands. Keep debug mode disa
 
 <div align="center">
 
-![TNT Run gameplay and arena setup](https://i.imgur.com/S376IoQ.png)
+![TNT Run gameplay and arena setup](https://hub.despical.dev/plugin-icons/tnt-run-S376IoQ.png)
 
 </div>
 [**Read the troubleshooting command guide**](https://docs.despical.dev/tnt-run/commands/debug/)
 
 </details>
 
----
-
 <div align="center">
+
+![TNT Run section divider](https://hub.despical.dev/plugin-icons/tnt-run-divider.png)
 
 ### 09  /  BSTATS METRICS
 
@@ -391,9 +393,9 @@ TNT Run collects **anonymous usage statistics** through **bStats**. These aggreg
 
 </div>
 
----
-
 <div align="center">
+
+![TNT Run section divider](https://hub.despical.dev/plugin-icons/tnt-run-divider.png)
 
 ### Give your players a reason to run one more round.
 Free and open source under GPL v3. Created by **Despical**.

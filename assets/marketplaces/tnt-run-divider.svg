@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="16" viewBox="0 0 800 16">
+    <defs>
+        <linearGradient id="divider">
+            <stop offset="0" stop-color="#ecbb99" stop-opacity="0" />
+            <stop offset="0.12" stop-color="#ecbb99" stop-opacity="0.8" />
+            <stop offset="0.88" stop-color="#ecbb99" stop-opacity="0.8" />
+            <stop offset="1" stop-color="#ecbb99" stop-opacity="0" />
+        </linearGradient>
+    </defs>
+    <path d="M0 8H800" stroke="url(#divider)" stroke-width="2" />
+</svg>
