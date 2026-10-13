@@ -43,19 +43,25 @@ public class StartingState extends GameStateHandler {
         if (timer > 0) {
             game.setTimer(--timer);
             handleLevelBarTimer(timer);
+        }
 
-            if (timer == 0) {
-                game.setGameState(GameState.IN_GAME);
-            }
+        if (timer == 0) {
+            game.setGameState(GameState.IN_GAME);
         }
     }
 
     @Override
     public void firstTick() {
-        int preGameWaitingTime = IntOption.PRE_GAME_WAITING_TIME.value();
+        shortenTimer(IntOption.PRE_GAME_WAITING_TIME.value());
+    }
 
-        if (game.getTimer() > preGameWaitingTime) {
-            game.setTimer(preGameWaitingTime);
+    public void shortenTimer(int startingTime) {
+        if (game.getTimer() > startingTime) {
+            game.setTimer(startingTime);
+        }
+
+        if (game.getTimer() == 0) {
+            game.tickImmediately();
         }
     }
 
@@ -66,19 +72,18 @@ public class StartingState extends GameStateHandler {
         WaitingState waitingState = game.getHandler(GameState.WAITING);
         waitingState.handlePlayerJoin(user);
 
-        int timer = game.getTimer();
         int playerAmount = game.getPlayers().size();
         int maxPlayerAmount = arena.getOption(ArenaKeys.MAX_PLAYERS);
         int fullGameStartingTime = IntOption.FULL_GAME_STARTING_TIME.value();
 
-        if (playerAmount >= maxPlayerAmount && timer > fullGameStartingTime) {
-            game.setTimer(fullGameStartingTime);
+        if (playerAmount >= maxPlayerAmount) {
+            shortenTimer(fullGameStartingTime);
         }
 
         int startingTime = IntOption.GAME_STARTING_TIME.value();
 
-        if (playerAmount >= (int) (maxPlayerAmount * 0.8) && timer > startingTime) {
-            game.setTimer(startingTime);
+        if (playerAmount >= (int) (maxPlayerAmount * 0.8)) {
+            shortenTimer(startingTime);
         }
     }
 

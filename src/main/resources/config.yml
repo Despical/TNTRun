@@ -26,12 +26,15 @@ time-settings:
   waiting-time: 300
 
   # How long, in seconds, the pre-game waiting phase can last.
+  # Set to 0 to start as soon as the minimum player count is reached.
   pre-game-waiting-time: 120
 
   # Countdown length, in seconds, after enough players are available to start.
+  # Set to 0 to skip the countdown when the accelerated start threshold is reached.
   game-starting-time: 30
 
   # Countdown length, in seconds, when the arena reaches its maximum player count.
+  # Set to 0 to start as soon as the arena is full.
   full-game-starting-time: 15
 
   # Duration, in seconds, of the ending phase before players are returned/reset.

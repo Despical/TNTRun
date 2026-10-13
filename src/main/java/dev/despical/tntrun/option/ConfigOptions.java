@@ -22,6 +22,7 @@ import dev.despical.tntrun.TNTRun;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import java.util.Arrays;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Stream;
@@ -32,6 +33,14 @@ import java.util.stream.Stream;
  * Created at 12.12.2025
  */
 public class ConfigOptions {
+
+    private static final EnumSet<IntOption> TIMER_OPTIONS = EnumSet.of(
+        IntOption.LOBBY_WAITING_TIME,
+        IntOption.PRE_GAME_WAITING_TIME,
+        IntOption.GAME_STARTING_TIME,
+        IntOption.FULL_GAME_STARTING_TIME,
+        IntOption.ENDING_TIME
+    );
 
     private final TNTRun plugin;
     private final Map<ConfigOption<?>, Object> options;
@@ -61,6 +70,25 @@ public class ConfigOptions {
 
         Stream.of(IntOption.values(), BooleanOption.values())
             .flatMap(Arrays::stream)
-            .forEach(option -> options.put(option, config.get(option.getPath(), option.getDefaultValue())));
+            .forEach(option -> loadOption(option, config));
+    }
+
+    private void loadOption(ConfigOption<?> option, FileConfiguration config) {
+        Object value = config.get(option.getPath(), option.getDefaultValue());
+
+        if (option instanceof IntOption intOption && TIMER_OPTIONS.contains(intOption)) {
+            int timer = config.getInt(intOption.getPath(), intOption.getDefaultValue());
+
+            if (timer < 0) {
+                plugin.getLogger().warning("Invalid negative value for '%s': %d. Using default: %d."
+                    .formatted(intOption.getPath(), timer, intOption.getDefaultValue()));
+
+                timer = intOption.getDefaultValue();
+            }
+
+            value = timer;
+        }
+
+        options.put(option, value);
     }
 }

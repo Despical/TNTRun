@@ -112,7 +112,7 @@ public class Game extends BukkitRunnable {
 
     @Override
     public void run() {
-        boolean shouldRun = (tick += period) >= 20 || shouldTickImmediately();
+        boolean shouldRun = shouldTickImmediately() || (tick += period) >= 20;
 
         if (shouldRun) {
             tick = 0;

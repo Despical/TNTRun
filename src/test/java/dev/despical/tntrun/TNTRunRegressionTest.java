@@ -29,10 +29,17 @@ import dev.despical.tntrun.event.GameEvents;
 import dev.despical.tntrun.event.GeneralEvents;
 import dev.despical.tntrun.game.Game;
 import dev.despical.tntrun.game.GameState;
+import dev.despical.tntrun.game.messages.MessageTicker;
+import dev.despical.tntrun.game.states.GameStateHandler;
+import dev.despical.tntrun.game.states.StartingState;
+import dev.despical.tntrun.game.states.WaitingState;
+import dev.despical.tntrun.option.BooleanOption;
 import dev.despical.tntrun.option.ConfigOptions;
+import dev.despical.tntrun.option.IntOption;
 import dev.despical.tntrun.user.User;
 import dev.despical.tntrun.user.UserManager;
 import org.bukkit.Bukkit;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -42,8 +49,16 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 import org.mockito.MockedStatic;
 
+import java.lang.reflect.Field;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.logging.Logger;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
 /**
@@ -89,6 +104,7 @@ class TNTRunRegressionTest {
         when(plugin.getUserManager()).thenReturn(userManager);
         when(plugin.getArenaRegistry()).thenReturn(arenaRegistry);
         when(plugin.getOptions()).thenReturn(options);
+        when(options.get(BooleanOption.LEVEL_BAR_TIMER)).thenReturn(false);
 
         arena = mock(Arena.class);
         game = mock(Game.class);
@@ -210,6 +226,172 @@ class TNTRunRegressionTest {
 
         verify(event).setCancelled(true);
         verify(game, never()).eliminate(any());
+    }
+
+    @Test
+    void startsWhenCountdownIsAlreadyZero() {
+        new StartingState(game).tick();
+
+        verify(game).setGameState(GameState.IN_GAME);
+    }
+
+    @Test
+    void startsWhenTheLastCountdownSecondExpires() {
+        when(game.getTimer()).thenReturn(1);
+
+        new StartingState(game).tick();
+
+        verify(game).setTimer(0);
+        verify(game).setGameState(GameState.IN_GAME);
+    }
+
+    @Test
+    void continuesCountingDownWhileTimeRemains() {
+        when(game.getTimer()).thenReturn(2);
+
+        new StartingState(game).tick();
+
+        verify(game).setTimer(1);
+        verify(game, never()).setGameState(any());
+    }
+
+    @Test
+    void requestsAnImmediateTickForZeroPreGameWaitingTime() {
+        initializeTimer(120);
+        when(options.get(IntOption.PRE_GAME_WAITING_TIME)).thenReturn(0);
+
+        new StartingState(game).firstTick();
+
+        verify(game).setTimer(0);
+        verify(game).tickImmediately();
+    }
+
+    @Test
+    void preservesZeroFullArenaCountdownAtTheAcceleratedThreshold() {
+        initializeTimer(120);
+        when(game.getPlayers()).thenReturn(List.of(player));
+        when(game.getHandler(GameState.WAITING)).thenReturn(mock(WaitingState.class));
+        when(arena.getOption(ArenaKeys.MAX_PLAYERS)).thenReturn(1);
+        when(options.get(IntOption.FULL_GAME_STARTING_TIME)).thenReturn(0);
+        when(options.get(IntOption.GAME_STARTING_TIME)).thenReturn(30);
+
+        new StartingState(game).join(user);
+
+        assertEquals(0, game.getTimer());
+        verify(game, atLeastOnce()).tickImmediately();
+        verify(game, never()).setTimer(30);
+    }
+
+    @Test
+    void neverExtendsAnAlreadyShortenedCountdown() {
+        initializeTimer(5);
+
+        new StartingState(game).shortenTimer(30);
+
+        assertEquals(5, game.getTimer());
+        verify(game, never()).setTimer(anyInt());
+        verify(game, never()).tickImmediately();
+    }
+
+    @ParameterizedTest
+    @EnumSource(value = IntOption.class, names = {
+        "LOBBY_WAITING_TIME", "PRE_GAME_WAITING_TIME", "GAME_STARTING_TIME", "FULL_GAME_STARTING_TIME", "ENDING_TIME"
+    })
+    void replacesNegativeTimersWithDefaults(IntOption option) {
+        YamlConfiguration config = new YamlConfiguration();
+        config.set(option.getPath(), -1);
+        when(plugin.getConfig()).thenReturn(config);
+
+        Logger logger = mock(Logger.class);
+        when(plugin.getLogger()).thenReturn(logger);
+
+        ConfigOptions loadedOptions = new ConfigOptions(plugin);
+
+        assertEquals(option.getDefaultValue(), loadedOptions.get(option));
+        verify(logger).warning(contains(option.getPath()));
+    }
+
+    @ParameterizedTest
+    @EnumSource(value = IntOption.class, names = {
+        "LOBBY_WAITING_TIME", "PRE_GAME_WAITING_TIME", "GAME_STARTING_TIME", "FULL_GAME_STARTING_TIME", "ENDING_TIME"
+    })
+    void acceptsZeroTimers(IntOption option) {
+        YamlConfiguration config = new YamlConfiguration();
+        config.set(option.getPath(), 0);
+        when(plugin.getConfig()).thenReturn(config);
+
+        ConfigOptions loadedOptions = new ConfigOptions(plugin);
+
+        assertEquals(0, loadedOptions.get(option));
+    }
+
+    @Test
+    void validatesNegativeTimersAfterReload() {
+        YamlConfiguration config = new YamlConfiguration();
+        when(plugin.getConfig()).thenReturn(config);
+        when(plugin.getLogger()).thenReturn(mock(Logger.class));
+        ConfigOptions loadedOptions = new ConfigOptions(plugin);
+
+        config.set(IntOption.PRE_GAME_WAITING_TIME.getPath(), -1);
+        loadedOptions.reloadOptions();
+
+        assertEquals(IntOption.PRE_GAME_WAITING_TIME.getDefaultValue(), loadedOptions.get(IntOption.PRE_GAME_WAITING_TIME));
+        verify(plugin).reloadConfig();
+    }
+
+    @Test
+    void consumesImmediateTickRequestsAtTheRegularTickBoundary() throws ReflectiveOperationException {
+        Game tickingGame = initializeTickingGame(20);
+        GameStateHandler handler = tickingGame.getHandler(GameState.STARTING);
+
+        tickingGame.tickImmediately();
+        tickingGame.run();
+        setGameField(tickingGame, "period", 5);
+        tickingGame.run();
+
+        verify(handler).tick();
+    }
+
+    @Test
+    void waitsForAFullIntervalAfterAnImmediateTick() throws ReflectiveOperationException {
+        Game tickingGame = initializeTickingGame(5);
+        GameStateHandler handler = tickingGame.getHandler(GameState.STARTING);
+
+        tickingGame.tickImmediately();
+        tickingGame.run();
+        tickingGame.run();
+        tickingGame.run();
+        tickingGame.run();
+        verify(handler).tick();
+
+        tickingGame.run();
+        verify(handler, times(2)).tick();
+    }
+
+    private Game initializeTickingGame(int period) throws ReflectiveOperationException {
+        Game tickingGame = mock(Game.class, CALLS_REAL_METHODS);
+        GameStateHandler handler = mock(StartingState.class);
+
+        setGameField(tickingGame, "period", period);
+        setGameField(tickingGame, "stateHandler", handler);
+        setGameField(tickingGame, "messageTicker", mock(MessageTicker.class));
+        doReturn(handler).when(tickingGame).getHandler(GameState.STARTING);
+        return tickingGame;
+    }
+
+    private void setGameField(Game target, String name, Object value) throws ReflectiveOperationException {
+        Field field = Game.class.getDeclaredField(name);
+        field.setAccessible(true);
+        field.set(target, value);
+    }
+
+    private void initializeTimer(int timer) {
+        AtomicInteger currentTimer = new AtomicInteger(timer);
+        when(game.getTimer()).thenAnswer(_ -> currentTimer.get());
+        doAnswer(invocation -> {
+            currentTimer.set(invocation.getArgument(0));
+            return null;
+        }).when(game).setTimer(anyInt());
     }
 
     private EntityDamageByEntityEvent createPvpDamage(double damage) {
