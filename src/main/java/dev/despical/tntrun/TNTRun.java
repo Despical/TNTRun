@@ -47,6 +47,7 @@ import dev.despical.tntrun.leaderboard.LeaderboardManager;
 import dev.despical.tntrun.option.BooleanOption;
 import dev.despical.tntrun.option.ConfigOptions;
 import dev.despical.tntrun.papi.PlaceholderManager;
+import dev.despical.tntrun.rewards.RewardManager;
 import dev.despical.tntrun.sign.SignManager;
 import dev.despical.tntrun.sound.SoundManager;
 import dev.despical.tntrun.stats.offline.StatsCacheManager;
@@ -94,6 +95,7 @@ public class TNTRun extends JavaPlugin {
     private CommandFramework commandFramework;
     private PlayingCommandPolicy playingCommandPolicy;
     private SoundManager soundManager;
+    private RewardManager rewardManager;
     private ArenaDataSaver arenaDataSaver;
     private Metrics metrics;
 
@@ -121,6 +123,7 @@ public class TNTRun extends JavaPlugin {
         saveResourceIfMissing("mysql.yml");
         saveResourceIfMissing("block-removal.yml");
         saveResourceIfMissing("signs.yml");
+        saveResourceIfMissing("rewards.yml");
     }
 
     private void initializeClasses() {
@@ -130,6 +133,7 @@ public class TNTRun extends JavaPlugin {
         chatManager = new ChatManager(this);
         gameManager = new GameManager(this);
         eventManager = new EventManager(this);
+        rewardManager = new RewardManager(this);
         arenaRegistry = new ArenaRegistry(this);
         database = createDatabase();
         statsCacheManager = new StatsCacheManager(this);
