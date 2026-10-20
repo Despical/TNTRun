@@ -103,7 +103,7 @@ public class GameEvents extends ListenerAdapter {
         if (event.getFinalDamage() >= victim.getHealth()) {
             event.setCancelled(true);
 
-            victimArena.getGame().eliminate(userManager.getUser(victim));
+            victimArena.getGame().eliminate(userManager.getUser(victim), userManager.getUser(attacker));
         }
     }
 

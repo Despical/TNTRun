@@ -158,8 +158,10 @@ public class GameItemEvents extends ListenerAdapter {
         player.setFlying(false);
         player.setAllowFlight(false);
         player.setVelocity(event.getVelocity());
+
         plugin.getSoundManager().play(player, GameSound.DOUBLE_JUMP);
 
+        game.getRoundRewards().doubleJump(user);
         game.getScoreboardManager().updateScoreboard(player);
 
         if (options.isEnabled(BooleanOption.JUMP_BAR) && event.getCooldownSeconds() > 0D) {
