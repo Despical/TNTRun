@@ -1,0 +1,12 @@
+## What's Changed
+
+* Added configurable command rewards in `rewards.yml` for game joins, starts, early exits, completed rounds, eliminations, PvP kills, and successful double jumps.
+* Added separate first-, second-, and third-place rewards, participation rewards, and payments based on survival time.
+* Added survival milestones, personal and arena records, no-double-jump wins, win streaks, total-win milestones, and games-played milestones.
+* Added console and player command execution, reward placeholders, and `/tr reload` support while preserving current round progress.
+* Prevented completion rewards for late spectators, early departures, and stopped games, with protection against duplicate payouts within a round.
+* Made tied survival standings and arena record holders deterministic.
+* Added a complete [reward configuration guide](https://docs.despical.dev/tnt-run/configuration/rewards/) with examples for all 20 reward types.
+* Updated the Gradle wrapper, JUnit, and Mockito dependencies.
+
+**Full Changelog**: [2.8.8...2.8.9](https://github.com/Despical/TNTRun/compare/2.8.8...2.8.9)
