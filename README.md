@@ -17,6 +17,7 @@ Players (up to 12 or 24, mostly, depending on the map) are placed on sand/gravel
 - Configurable arenas with setup, editing, signs, and runtime state handling.
 - Customizable messages, scoreboards, boss bars, sounds, items, and menus.
 - Player statistics, records, spectator tools, and leaderboard support.
+- Configurable command rewards for podium placements, survival time, PvP kills, records, and milestones.
 - Flat-file storage by default, with optional MySQL persistence.
 - Public API for game lifecycle, player flow, and statistic changes.
 - Optional hooks for common server plugins such as PlaceholderAPI and world-management plugins.
@@ -87,6 +88,7 @@ Common files:
 - `arenas.yml` stores arena data.
 - `messages.yml`, `scoreboard.yml`, `bossbar.yml`, `sounds.yml`, and `items.yml` control presentation.
 - `mysql.yml` configures MySQL when database storage is enabled.
+- `rewards.yml` configures reward commands, survival payments, and milestone thresholds. Examples are disabled by default; reload changes with `/tr reload`.
 - `menu/` contains menu layouts used by setup, statistics, and spectator screens.
 
 ---
