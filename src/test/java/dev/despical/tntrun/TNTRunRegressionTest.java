@@ -20,30 +20,42 @@ package dev.despical.tntrun;
 
 import dev.despical.tntrun.api.EventManager;
 import dev.despical.tntrun.api.event.player.PlayerJoinAttemptEvent;
+import dev.despical.tntrun.api.event.player.PlayerDoubleJumpEvent;
 import dev.despical.tntrun.arena.Arena;
 import dev.despical.tntrun.arena.ArenaManager;
 import dev.despical.tntrun.arena.ArenaRegistry;
 import dev.despical.tntrun.arena.options.ArenaKeys;
 import dev.despical.tntrun.blocks.BlockRemovalManager;
 import dev.despical.tntrun.event.GameEvents;
+import dev.despical.tntrun.event.GameItemEvents;
 import dev.despical.tntrun.event.GeneralEvents;
 import dev.despical.tntrun.game.Game;
 import dev.despical.tntrun.game.GameState;
 import dev.despical.tntrun.game.messages.MessageTicker;
+import dev.despical.tntrun.game.scores.ScoreRegistry;
+import dev.despical.tntrun.game.states.InGameState;
 import dev.despical.tntrun.game.states.GameStateHandler;
 import dev.despical.tntrun.game.states.StartingState;
 import dev.despical.tntrun.game.states.WaitingState;
 import dev.despical.tntrun.option.BooleanOption;
 import dev.despical.tntrun.option.ConfigOptions;
 import dev.despical.tntrun.option.IntOption;
+import dev.despical.tntrun.rewards.RoundRewards;
+import dev.despical.tntrun.scoreboard.ScoreboardManager;
+import dev.despical.tntrun.sound.SoundManager;
+import dev.despical.tntrun.stats.Statistics;
 import dev.despical.tntrun.user.User;
 import dev.despical.tntrun.user.UserManager;
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
+import org.bukkit.Location;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
+import org.bukkit.event.player.PlayerToggleFlightEvent;
+import org.bukkit.util.Vector;
 import org.bukkit.plugin.PluginManager;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -81,6 +93,7 @@ class TNTRunRegressionTest {
     private Game game;
     private User user;
     private Player player;
+    private RoundRewards roundRewards;
 
     @BeforeAll
     static void initializePluginAccess() {
@@ -110,11 +123,13 @@ class TNTRunRegressionTest {
         game = mock(Game.class);
         user = mock(User.class);
         player = mock(Player.class);
+        roundRewards = mock(RoundRewards.class);
 
         when(arena.getGame()).thenReturn(game);
         when(game.getArena()).thenReturn(arena);
         when(user.getPlayer()).thenReturn(player);
         when(userManager.getUser(player)).thenReturn(user);
+        when(game.getRoundRewards()).thenReturn(roundRewards);
     }
 
     @Test
@@ -178,7 +193,7 @@ class TNTRunRegressionTest {
         new GameEvents().onPlayerDamage(event);
 
         verify(event).setCancelled(true);
-        verify(game).eliminate(user);
+        verify(game).eliminate(user, userManager.getUser((Player) event.getDamager()));
     }
 
     @Test
@@ -189,6 +204,7 @@ class TNTRunRegressionTest {
 
         verify(event, never()).setCancelled(anyBoolean());
         verify(game, never()).eliminate(any());
+        verify(game, never()).eliminate(any(), any());
     }
 
     @Test
@@ -200,6 +216,7 @@ class TNTRunRegressionTest {
 
         verify(event).setCancelled(true);
         verify(game, never()).eliminate(any());
+        verify(game, never()).eliminate(any(), any());
     }
 
     @Test
@@ -213,7 +230,7 @@ class TNTRunRegressionTest {
         new GameEvents().onPlayerDamage(event);
 
         verify(event).setCancelled(true);
-        verify(game).eliminate(user);
+        verify(game).eliminate(user, userManager.getUser((Player) projectile.getShooter()));
     }
 
     @Test
@@ -226,6 +243,7 @@ class TNTRunRegressionTest {
 
         verify(event).setCancelled(true);
         verify(game, never()).eliminate(any());
+        verify(game, never()).eliminate(any(), any());
     }
 
     @Test
@@ -366,6 +384,118 @@ class TNTRunRegressionTest {
 
         tickingGame.run();
         verify(handler, times(2)).tick();
+    }
+
+    @Test
+    void startsRewardTrackingAfterTheSurvivalRoundIsPrepared() {
+        ScoreboardManager scoreboardManager = mock(ScoreboardManager.class);
+        ScoreRegistry scores = mock(ScoreRegistry.class);
+        BlockRemovalManager blockRemovalManager = mock(BlockRemovalManager.class);
+        when(game.getScoreboardManager()).thenReturn(scoreboardManager);
+        when(game.getScores()).thenReturn(scores);
+        when(game.getBlockRemovalManager()).thenReturn(blockRemovalManager);
+
+        new InGameState(game).firstTick();
+
+        var order = inOrder(game, roundRewards, eventManager);
+        order.verify(game).startSurvivalRound();
+        order.verify(roundRewards).start();
+        order.verify(eventManager).gameStart(game);
+    }
+
+    @Test
+    void liveTickEvaluatesRewardsAfterUpdatingSurvivalStatistics() {
+        when(game.getUsers()).thenReturn(List.of(user));
+        when(game.getScores()).thenReturn(mock(ScoreRegistry.class));
+        when(user.getStatistic(Statistics.LOCAL_DOUBLE_JUMPS)).thenReturn(0);
+        when(user.getStatistic(Statistics.LOCAL_SURVIVE_TIME)).thenReturn(30);
+
+        new InGameState(game).tick();
+
+        var order = inOrder(user, roundRewards);
+        order.verify(user).addStat(Statistics.LOCAL_SURVIVE_TIME, 1);
+        order.verify(roundRewards).tick(user);
+    }
+
+    @Test
+    void earlyParticipantLeaveDiscardsRewardEligibilityBeforeWinnerDetection() {
+        when(game.removeRoundParticipant(user)).thenReturn(true);
+        when(game.getUsers()).thenReturn(List.of(mock(User.class)));
+        when(user.getStatistic(Statistics.WIN_STREAK)).thenReturn(0);
+        when(user.getStatistic(Statistics.LOCAL_SURVIVE_TIME)).thenReturn(30);
+        when(user.getStatistic(Statistics.ARENA_BEST_TIMES)).thenReturn(java.util.Map.of());
+
+        new InGameState(game).leave(user);
+
+        var order = inOrder(roundRewards, game);
+        order.verify(roundRewards).quit(user);
+        order.verify(game).finishIfLastSurvivor();
+    }
+
+    @Test
+    void spectatorLeaveDoesNotTriggerParticipantRewards() {
+        when(user.isSpectator()).thenReturn(true);
+        when(game.getUsers()).thenReturn(List.of(mock(User.class)));
+
+        new InGameState(game).leave(user);
+
+        verifyNoInteractions(roundRewards);
+        verify(user, never()).addStat(Statistics.GAMES_PLAYED);
+    }
+
+    @Test
+    void cancelledDoubleJumpNeverEarnsAReward() {
+        PlayerDoubleJumpEvent jump = mock(PlayerDoubleJumpEvent.class);
+        when(jump.isCancelled()).thenReturn(true);
+        PlayerToggleFlightEvent flight = prepareDoubleJump(jump);
+
+        new GameItemEvents().onDoubleJump(flight);
+
+        verifyNoInteractions(roundRewards);
+        verify(user, never()).setStatistic(eq(Statistics.LOCAL_DOUBLE_JUMPS), anyInt());
+    }
+
+    @Test
+    void successfulDoubleJumpUpdatesRemainingJumpsBeforeRewarding() {
+        SoundManager soundManager = mock(SoundManager.class);
+        ScoreboardManager scoreboardManager = mock(ScoreboardManager.class);
+        when(plugin.getSoundManager()).thenReturn(soundManager);
+        when(game.getScoreboardManager()).thenReturn(scoreboardManager);
+        PlayerDoubleJumpEvent jump = mock(PlayerDoubleJumpEvent.class);
+        when(jump.getJumpsLeft()).thenReturn(4);
+        when(jump.getVelocity()).thenReturn(new Vector(0, 0.7, 1.5));
+        PlayerToggleFlightEvent flight = prepareDoubleJump(jump);
+
+        new GameItemEvents().onDoubleJump(flight);
+
+        var order = inOrder(user, roundRewards);
+        order.verify(user).setStatistic(Statistics.LOCAL_DOUBLE_JUMPS, 4);
+        order.verify(roundRewards).doubleJump(user);
+    }
+
+    @Test
+    void exhaustedDoubleJumpsCannotEarnRewards() {
+        PlayerToggleFlightEvent flight = prepareDoubleJump(mock(PlayerDoubleJumpEvent.class));
+        when(user.getStatistic(Statistics.LOCAL_DOUBLE_JUMPS)).thenReturn(0);
+
+        new GameItemEvents().onDoubleJump(flight);
+
+        verifyNoInteractions(roundRewards);
+        verify(eventManager, never()).playerDoubleJump(any(), any(), anyInt(), anyDouble(), any());
+    }
+
+    private PlayerToggleFlightEvent prepareDoubleJump(PlayerDoubleJumpEvent jump) {
+        PlayerToggleFlightEvent flight = mock(PlayerToggleFlightEvent.class);
+        when(flight.getPlayer()).thenReturn(player);
+        when(flight.isFlying()).thenReturn(true);
+        when(player.getGameMode()).thenReturn(GameMode.ADVENTURE);
+        when(player.getLocation()).thenReturn(new Location(null, 0, 64, 0));
+        when(user.getArena()).thenReturn(arena);
+        when(arena.isState(GameState.IN_GAME)).thenReturn(true);
+        when(user.getStatistic(Statistics.LOCAL_DOUBLE_JUMPS)).thenReturn(5);
+        when(options.get(IntOption.DOUBLE_JUMP_DELAY)).thenReturn(0);
+        when(eventManager.playerDoubleJump(eq(player), eq(game), eq(4), eq(0D), any())).thenReturn(jump);
+        return flight;
     }
 
     private Game initializeTickingGame(int period) throws ReflectiveOperationException {
