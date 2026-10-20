@@ -61,9 +61,10 @@ public class ScoreRegistry {
 
     public void calculateWinner() {
         this.winner = scores.entrySet().stream()
-            .max(Map.Entry.comparingByValue())
+            .min(scoreOrder())
             .map(Map.Entry::getKey)
             .orElse(null);
+        this.dirtyCache = true;
     }
 
     public void setWinner(User winner) {
@@ -113,30 +114,11 @@ public class ScoreRegistry {
     }
 
     private void refreshTop3Cache() {
-        List<Map.Entry<UUID, Integer>> topEntries = new ArrayList<>(3);
-
-        for (Map.Entry<UUID, Integer> entry : scores.entrySet()) {
-            if (entry.getKey().equals(winner)) {
-                continue;
-            }
-
-            int insertIndex = topEntries.size();
-            for (int i = 0; i < topEntries.size(); i++) {
-                if (entry.getValue() > topEntries.get(i).getValue()) {
-                    insertIndex = i;
-                    break;
-                }
-            }
-
-            if (insertIndex == 3) {
-                continue;
-            }
-
-            topEntries.add(insertIndex, Map.entry(entry.getKey(), entry.getValue()));
-            if (topEntries.size() > 3) {
-                topEntries.remove(3);
-            }
-        }
+        List<Map.Entry<UUID, Integer>> topEntries = scores.entrySet().stream()
+            .filter(entry -> !entry.getKey().equals(winner))
+            .sorted(scoreOrder())
+            .limit(3)
+            .toList();
 
         LinkedHashMap<UUID, Integer> refreshedCache = new LinkedHashMap<>(topEntries.size());
         if (winner != null && scores.containsKey(winner)) {
@@ -153,6 +135,11 @@ public class ScoreRegistry {
 
         top3Cache = refreshedCache;
         dirtyCache = false;
+    }
+
+    // UUID ordering gives equal survival times a stable placement across refreshes.
+    private Comparator<Map.Entry<UUID, Integer>> scoreOrder() {
+        return Map.Entry.<UUID, Integer>comparingByValue().reversed().thenComparing(Map.Entry.comparingByKey());
     }
 
     public int getScore(UUID uuid) {
@@ -177,7 +164,7 @@ public class ScoreRegistry {
 
     public Optional<RecordScore> getHighestScore() {
         return scores.entrySet().stream()
-            .max(Map.Entry.comparingByValue())
+            .min(scoreOrder())
             .map(entry -> new RecordScore(
                 entry.getKey(),
                 scorerNames.getOrDefault(entry.getKey(), "None"),
