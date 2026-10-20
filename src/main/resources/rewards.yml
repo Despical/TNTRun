@@ -1,0 +1,184 @@
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+#                                                                             #
+#                                   TNT Run                                   #
+#                                 by Despical                                 #
+#                                                                             #
+#                  Command rewards, placements and milestones                 #
+#                                                                             #
+#    Configure a separate command list for each event below. Commands run     #
+#    as console; prefix a command with "p:" to run it as the player.          #
+#    A leading slash is optional. Hex colors use <#RRGGBB>.                   #
+#                                                                             #
+#    Reload with /tr reload. Reload keeps current round progress and does     #
+#    not repeat claimed milestones. Changes apply to future reward triggers.  #
+#    Commands already queued keep their captured configuration and values.    #
+#                                                                             #
+#    Every list is empty by default. Uncomment examples to enable rewards.    #
+#    Economy examples require a plugin providing the eco command.             #
+#                                                                             #
+#    Reward guide:                                                            #
+#    https://docs.despical.dev/tnt-run/configuration/rewards/                 #
+#                                                                             #
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+
+# Set to false to disable all reward command dispatches.
+enabled: true
+
+# PLACEHOLDERS
+# %player%              Player name.
+# %uuid%                Player UUID.
+# %arena%               Arena ID.
+# %timer%               Current game timer; ending events use the ending countdown.
+# %survival-time%       Seconds survived, matching the round's survival statistics.
+# %placement%           Final podium position (1, 2 or 3); 0 outside the podium
+#                       or before final standings have been calculated.
+# %players%             Starting participant count; current lobby size for game-join.
+# %players-left%        Players still alive when this event was captured.
+# %kills%               Direct PvP eliminations credited to this player this round.
+# %double-jumps-used%   Successful double jumps used this round.
+# %double-jumps-left%   Remaining double jumps.
+# %wins%                Total recorded wins.
+# %games-played%        Total recorded games, including early departures counted
+#                       by the plugin's existing statistics system.
+# %win-streak%          Current consecutive wins.
+# %personal-best%       Personal survival record across all arenas, in seconds.
+# %personal-arena-best% Personal survival record in this arena, in seconds.
+# %arena-record%        Arena survival record, in seconds.
+# %threshold%           Triggering milestone number; 0 for other reward types.
+# %reward-amount%       Calculated survival payment; 0 for other reward types.
+# %victim%              Eliminated player's name for player-kill; empty otherwise.
+#
+# Values are captured at the event; later resets cannot change queued commands.
+# Commands execute on the next server tick so they can safely change game state.
+# Console commands can run after disconnect; p: commands require an online player.
+# For permanent item/XP rewards, account for the game's inventory/XP restoration.
+# Currency and permission commands are suitable for persistent rewards.
+#
+# COMPLETION AND STACKING
+# game-end, podium, participation, survival-time, records and career milestones
+# run only after normal completion, once per player per round. Late spectator
+# joins and early departures are excluded. Eliminated players remain eligible
+# if they stay until completion. Stopped games have no completion rewards.
+# Already earned live rewards (kills, jumps, survival milestones) are retained.
+# Multiple types stack: a winner can receive first-place, survival-time and records.
+# Equal survival scores use stable UUID ordering; the actual winner stays first.
+# Early departures are removed from final standings and arena record eligibility.
+
+# Successful lobby join as a participant. Spectator joins do not trigger this.
+game-join:
+  # - 'say <#55FFFF>%player% joined TNT Run arena %arena%!'
+  # - 'p:me joined TNT Run.'
+
+# Actual game start, once for each starting participant.
+game-start:
+  # - 'say <#55FF55>%player% started a %players%-player game!'
+
+# Early command exit, kick or disconnect during active play, including eliminated
+# participants leaving before completion. Lobby exits and normal cleanup do not count.
+game-quit:
+  # - 'say <#FFCA28>%player% left %arena% after %survival-time% seconds.'
+
+# All remaining round participants, after persistent stats and records are updated.
+game-end:
+  # - 'say <#55FFFF>%player% survived %survival-time% seconds in %arena%!'
+
+# Separate commands for each podium position. Only occupied positions are rewarded.
+first-place:
+  # - 'eco give %player% 100'
+second-place:
+  # - 'eco give %player% 50'
+third-place:
+  # - 'eco give %player% 25'
+
+# Consolation reward for remaining participants outside the top three.
+participation:
+  # - 'eco give %player% 10'
+
+# Final survival payment: floor(seconds survived / interval-seconds) * amount.
+# Example: 65 seconds, a 10-second interval and amount 5 pay 30, in ONE command.
+# Partial intervals are discarded. Decimal amounts are supported; zero pays nothing.
+# The interval must be a positive integer; amount must be non-negative.
+# Invalid values disable this payment and log a warning without disabling other types.
+survival-time:
+  interval-seconds: 10
+  amount-per-interval: 5
+  commands:
+    # - 'eco give %player% %reward-amount%'
+
+# Live survival thresholds, each awarded once per round while the player is alive.
+# Keys are positive whole seconds. Add/remove thresholds freely; newly added lower
+# thresholds trigger on the next live tick if already reached and not claimed.
+survival-milestone:
+  thresholds:
+    30:
+      # - 'eco give %player% 5'
+    60:
+      # - 'eco give %player% 10'
+    120:
+      # - 'say <#55FF55>%player% survived %threshold% seconds!'
+
+# Fires once when a participant is successfully eliminated, before winner detection.
+player-eliminated:
+  # - 'say <#FFCA28>%player% was eliminated after %survival-time% seconds.'
+
+# Direct lethal melee/projectile damage in PvP-enabled arenas. Void falls are not
+# attributed to a previous attacker. Cancelled or non-lethal hits never count.
+player-kill:
+  # - 'eco give %player% 5'
+  # - 'say <#55FF55>%player% eliminated %victim%; round kills: %kills%.'
+
+# Each successful double jump, after the cancellable API event and state updates.
+double-jump:
+  # - 'say %player% used a double jump; %double-jumps-left% remaining.'
+
+# Winner used no successful double jumps this round. Unavailable/cancelled jumps
+# do not count as uses; changing the number of remaining jumps does not erase uses.
+no-double-jump-win:
+  # - 'eco give %player% 50'
+
+# Strictly improve the player's previous all-arena survival record.
+# The first positive survival time establishes a record and can earn this reward.
+personal-best:
+  # - 'say <#55FF55>%player% set a personal best of %survival-time% seconds!'
+
+# Strictly improve the player's previous record for this arena. Stacks with above.
+personal-arena-best:
+  # - 'eco give %player% 10'
+
+# One record holder per completed round, only when the previous arena record is
+# strictly beaten. Equal new high scores use the same stable tie order as standings.
+arena-record:
+  # - 'say <#FFCC00>%player% broke the %arena% record: %survival-time% seconds!'
+
+# Exact consecutive-win thresholds. The same threshold can be earned again after
+# a loss resets the streak. Keys below are example streak lengths.
+win-streak:
+  thresholds:
+    3:
+      # - 'eco give %player% 30'
+    5:
+      # - 'eco give %player% 50'
+    10:
+      # - 'eco give %player% 100'
+
+# Exact total-win thresholds, evaluated only after a win is recorded.
+# No retroactive payouts for old thresholds when enabling rewards or reloading.
+total-wins-milestone:
+  thresholds:
+    10:
+      # - 'eco give %player% 100'
+    50:
+      # - 'eco give %player% 500'
+    100:
+      # - 'eco give %player% 1000'
+
+# Exact games-played thresholds, evaluated only on normal completion. Early exits
+# can increase the existing games-played statistic but never trigger these commands.
+games-played-milestone:
+  thresholds:
+    10:
+      # - 'eco give %player% 20'
+    50:
+      # - 'eco give %player% 100'
+    100:
+      # - 'eco give %player% 200'
