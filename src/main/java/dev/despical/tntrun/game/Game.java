@@ -32,6 +32,7 @@ import dev.despical.tntrun.game.spectator.SpectatorManager;
 import dev.despical.tntrun.game.states.*;
 import dev.despical.tntrun.game.visibility.VisibilityManager;
 import dev.despical.tntrun.option.IntOption;
+import dev.despical.tntrun.rewards.RoundRewards;
 import dev.despical.tntrun.scoreboard.ScoreboardManager;
 import dev.despical.tntrun.stats.Statistics;
 import dev.despical.tntrun.user.User;
@@ -79,6 +80,7 @@ public class Game extends BukkitRunnable {
     private final @Getter PlacementMessenger placementMessenger;
     private final @Getter BossBarManager bossBarManager;
     private final @Getter BlockRemovalManager blockRemovalManager;
+    private final @Getter RoundRewards roundRewards;
 
     private final @Getter List<User> users;
     private final Set<UUID> roundParticipants;
@@ -101,6 +103,7 @@ public class Game extends BukkitRunnable {
         this.survivalTimesMillis = new HashMap<>();
         this.playerMetadata = new HashMap<>();
         this.scores = new ScoreRegistry(this);
+        this.roundRewards = new RoundRewards(this, plugin.getRewardManager());
         this.states = Map.of(
             GameState.WAITING, new WaitingState(this),
             GameState.STARTING, new StartingState(this),
@@ -211,6 +214,7 @@ public class Game extends BukkitRunnable {
         scoreboardManager.updateAllScoreboards();
 
         plugin.getSignManager().updateSigns(arena);
+        plugin.getRewardManager().joined(this, user);
     }
 
     public void leaveUser(User user) {
@@ -351,6 +355,10 @@ public class Game extends BukkitRunnable {
     }
 
     public void eliminate(User user) {
+        eliminate(user, null);
+    }
+
+    public void eliminate(User user, User attacker) {
         if (!isState(GameState.IN_GAME) || user.isSpectator() || arena.isDeathPlayer(user)) {
             return;
         }
@@ -361,6 +369,8 @@ public class Game extends BukkitRunnable {
 
         arena.addDeathPlayer(user);
         prepareSpectator(user, true, false);
+
+        roundRewards.eliminated(user, attacker);
 
         int playersLeft = getPlayersLeft().size();
         plugin.getEventManager().playerEliminate(user.getPlayer(), this, playersLeft);

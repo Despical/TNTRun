@@ -68,8 +68,10 @@ public class EndingState extends GameStateHandler {
 
         this.applyStatistics();
         this.updateArenaRecord();
-        plugin.getLeaderboardManager().refreshAllLeaderboards(game.getUsers());
 
+        game.getRoundRewards().finish();
+
+        plugin.getLeaderboardManager().refreshAllLeaderboards(game.getUsers());
         plugin.getEventManager().gameEnd(game);
     }
 

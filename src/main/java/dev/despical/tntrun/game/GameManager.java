@@ -71,6 +71,7 @@ public class GameManager {
     public void stopGame(Game game, StopReason reason) {
         if (game == null) return;
 
+        game.getRoundRewards().clear();
         game.getScoreboardManager().removeAllScoreboards();
         game.getBossBarManager().removeAll();
         game.broadcastMessage(reason.getMessagePath());

@@ -35,6 +35,7 @@ public class RestartingState extends GameStateHandler {
 
     @Override
     public void firstTick() {
+        game.getRoundRewards().clear();
         game.getBlockRemovalManager().reset();
         arena.cleanUpArena();
         game.getUsers().clear();

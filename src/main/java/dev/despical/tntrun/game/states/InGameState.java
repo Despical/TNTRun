@@ -60,6 +60,7 @@ public class InGameState extends GameStateHandler {
         game.setTimer(0);
         game.getBlockRemovalManager().start();
         game.broadcastMessage("game-started");
+        game.getRoundRewards().start();
 
         plugin.getEventManager().gameStart(game);
     }
@@ -94,6 +95,7 @@ public class InGameState extends GameStateHandler {
 
             user.addStat(Statistics.LOCAL_SURVIVE_TIME, 1);
             game.getScores().addScore(user, user.getStatistic(Statistics.LOCAL_SURVIVE_TIME));
+            game.getRoundRewards().tick(user);
         }
     }
 
@@ -117,11 +119,10 @@ public class InGameState extends GameStateHandler {
     @Override
     public void leave(User user) {
         boolean wasSpectator = user.isSpectator();
-        game.recordSurvivalTime(user);
-        game.getScores().addScore(user, user.getStatistic(Statistics.LOCAL_SURVIVE_TIME));
-
         if (game.removeRoundParticipant(user)) {
+            game.recordSurvivalTime(user);
             RoundStatistics.record(arena, user, false);
+            game.getRoundRewards().quit(user);
         }
 
         if (!wasSpectator) {
