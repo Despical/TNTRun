@@ -289,6 +289,8 @@ public class Game extends BukkitRunnable {
         Optional.ofNullable(plugin.getSignManager())
             .ifPresent(manager -> manager.updateSigns(arena));
 
+        plugin.getRadio().gameStateChanged(arena, newState);
+
         stateHandler = states.get(newState);
         stateHandler.firstTick();
     }
