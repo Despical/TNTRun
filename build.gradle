@@ -15,6 +15,7 @@ java {
 dependencies {
     compileOnly 'io.papermc.paper:paper-api:1.21.11-R0.1-SNAPSHOT'
     compileOnly 'me.clip:placeholderapi:2.12.3'
+    compileOnly 'com.github.koca2000:NoteBlockAPI:1.7.0'
     compileOnly 'org.projectlombok:lombok:1.18.48'
 
     implementation('dev.despical:commons:2.1.2') {
