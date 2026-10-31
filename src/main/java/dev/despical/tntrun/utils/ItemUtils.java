@@ -107,7 +107,7 @@ public final class ItemUtils {
             meta.lore(lore.stream().map(line -> PLUGIN.getChatManager().parseMessage("<!i>" + line, vars)).toList());
         }
 
-        boolean decorationOnly = specialItem.getCustomKey("decoration-only") != null;
+        boolean decorationOnly = Boolean.TRUE.equals(specialItem.getCustomKey("decoration-only"));
         if (decorationOnly) {
             meta.setHideTooltip(true);
         }
