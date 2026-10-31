@@ -237,6 +237,10 @@ public class Game extends BukkitRunnable {
         plugin.getDatabase().saveData(user);
 
         Player player = user.getPlayer();
+        if (player != null) {
+            plugin.getRadio().removePlayer(arena, player);
+        }
+
         if (player != null && player.isOnline()) {
             scoreboardManager.removeScoreboard(player);
             bossBarManager.removePlayer(player);
