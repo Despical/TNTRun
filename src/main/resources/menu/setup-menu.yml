@@ -324,6 +324,17 @@ items:
     item-flags:
       - HIDE_ATTRIBUTES
 
+  music-settings:
+    name: "<#9C27B0><bold>Configure Arena Music"
+    material: MUSIC_DISC_BLOCKS
+    lore:
+      - "<#2F2F2F>• <#AB47BC>CLICK <#BDBDBD>to open music settings"
+      - ""
+      - "<#2F2F2F>• <#B0BEC5>Choose separate songs for the lobby,"
+      - "<#B0BEC5>  the round and the end of the game."
+    item-flags:
+      - HIDE_ADDITIONAL_TOOLTIP
+
   go-back:
     name: "<#FF5252><bold>Return to Main Menu"
     material: ARROW
