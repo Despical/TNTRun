@@ -44,6 +44,11 @@ import dev.despical.tntrun.event.GameItemEvents;
 import dev.despical.tntrun.event.GeneralEvents;
 import dev.despical.tntrun.game.GameManager;
 import dev.despical.tntrun.leaderboard.LeaderboardManager;
+import dev.despical.tntrun.music.ArenaSongValidator;
+import dev.despical.tntrun.music.DefaultSongSeeder;
+import dev.despical.tntrun.music.Radio;
+import dev.despical.tntrun.music.impl.EmptyRadio;
+import dev.despical.tntrun.music.impl.NBAPIRadio;
 import dev.despical.tntrun.option.BooleanOption;
 import dev.despical.tntrun.option.ConfigOptions;
 import dev.despical.tntrun.papi.PlaceholderManager;
@@ -95,6 +100,7 @@ public class TNTRun extends JavaPlugin {
     private CommandFramework commandFramework;
     private PlayingCommandPolicy playingCommandPolicy;
     private SoundManager soundManager;
+    private Radio radio;
     private RewardManager rewardManager;
     private ArenaDataSaver arenaDataSaver;
     private Metrics metrics;
@@ -130,6 +136,7 @@ public class TNTRun extends JavaPlugin {
         this.loadItemManager();
 
         options = new ConfigOptions(this);
+        radio = createRadio();
         chatManager = new ChatManager(this);
         gameManager = new GameManager(this);
         eventManager = new EventManager(this);
@@ -182,6 +189,14 @@ public class TNTRun extends JavaPlugin {
                 yield new FlatFileStorage();
             }
         };
+    }
+
+    private Radio createRadio() {
+        if (!isPluginEnabled("NoteBlockAPI")) {
+            return new EmptyRadio();
+        }
+
+        return new NBAPIRadio(this);
     }
 
     private void registerCommands() {
