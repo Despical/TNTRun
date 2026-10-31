@@ -80,7 +80,22 @@ Separate arena chat from the rest of your server, choose whether alive players c
 
 ![TNT Run section divider](https://hub.despical.dev/plugin-icons/tnt-run-divider.png)
 
-### 04  /  BUILD YOUR ARENA
+### 04  /  SET THE MOOD
+
+## Give every part of the round its own soundtrack.
+
+</div>
+
+Pick a different song for each arena's lobby, running round and end of the game, or leave any of them silent. **Music is powered by the optional NoteBlockAPI plugin** and plays only to the people inside the arena.
+
+Choose songs from the setup menu and preview them with a right click. When neighboring phases use the same song, decide whether it **keeps playing or restarts** from the beginning. Music stops automatically when players leave or the game ends, and five songs are bundled to get you started.
+[**Set up arena music**](https://docs.despical.dev/tnt-run/features/music/)
+
+<div align="center">
+
+![TNT Run section divider](https://hub.despical.dev/plugin-icons/tnt-run-divider.png)
+
+### 05  /  BUILD YOUR ARENA
 
 ## Your map. A setup menu that brings it to life.
 
@@ -166,7 +181,7 @@ Click the Firework item to save and activate the arena. Join with the command or
 
 ![TNT Run section divider](https://hub.despical.dev/plugin-icons/tnt-run-divider.png)
 
-### 05  /  MAKE EVERY ROUND COUNT
+### 06  /  MAKE EVERY ROUND COUNT
 
 ## A win today. A record to beat tomorrow.
 
@@ -193,7 +208,7 @@ Use flat-file storage for a local setup, or configure MySQL for player data. Cha
 
 ![TNT Run section divider](https://hub.despical.dev/plugin-icons/tnt-run-divider.png)
 
-### 06  /  MAKE IT YOURS
+### 07  /  MAKE IT YOURS
 
 ## A complete game, with room for your server's style.
 
@@ -213,7 +228,7 @@ Use flat-file storage for a local setup, or configure MySQL for player data. Cha
 
 ![TNT Run section divider](https://hub.despical.dev/plugin-icons/tnt-run-divider.png)
 
-### 07  /  CONNECT YOUR SERVER
+### 08  /  CONNECT YOUR SERVER
 
 ## Bring the action to your displays and integrations.
 
@@ -283,7 +298,7 @@ Test an expression with `/papi parse me %tntrun_wins%`.
 
 ![TNT Run section divider](https://hub.despical.dev/plugin-icons/tnt-run-divider.png)
 
-### 08  /  GET YOUR FIRST GAME RUNNING
+### 09  /  GET YOUR FIRST GAME RUNNING
 
 ## Build the floor. Gather the players. Let it disappear.
 
@@ -379,7 +394,7 @@ Enable **debug: true** to use the troubleshooting commands. Keep debug mode disa
 
 ![TNT Run section divider](https://hub.despical.dev/plugin-icons/tnt-run-divider.png)
 
-### 09  /  BSTATS METRICS
+### 10  /  BSTATS METRICS
 
 ## bStats Metrics
 
