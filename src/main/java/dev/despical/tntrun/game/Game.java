@@ -193,6 +193,7 @@ public class Game extends BukkitRunnable {
         users.add(user);
 
         states.get(gameState).join(user);
+        plugin.getRadio().addPlayer(arena, user.getPlayer());
 
         scoreboardManager.updateAllScoreboards();
 
