@@ -473,6 +473,18 @@ items:
     material: GRAY_STAINED_GLASS_PANE
     decoration-only: true
 
+  music-previous-page:
+    name: "<#FFAB00>Previous Page"
+    material: ARROW
+
+  music-next-page:
+    name: "<#FFAB00>Next Page"
+    material: ARROW
+
+  music-go-back:
+    name: "<#FF5252><bold>Return to Music Settings"
+    material: ARROW
+
   go-back:
     name: "<#FF5252><bold>Return to Main Menu"
     material: ARROW
