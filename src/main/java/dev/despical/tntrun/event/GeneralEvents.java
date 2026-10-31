@@ -87,6 +87,8 @@ public class GeneralEvents extends ListenerAdapter {
         User user = userManager.getUser(player);
         UUID uuid = user.getUUID();
 
+        plugin.getRadio().getPreviewer().stop(player);
+
         Arena arena = user.getArena();
         if (arena != null) {
             quitPlayers.put(uuid, arena);
