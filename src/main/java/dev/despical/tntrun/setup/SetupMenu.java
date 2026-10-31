@@ -23,6 +23,7 @@ import dev.despical.inventoryframework.Gui;
 import dev.despical.inventoryframework.pane.PaginatedPane;
 import dev.despical.tntrun.TNTRun;
 import dev.despical.tntrun.arena.Arena;
+import dev.despical.tntrun.music.MusicPhase;
 import dev.despical.tntrun.menu.Menu;
 import dev.despical.tntrun.setup.pages.*;
 import dev.despical.tntrun.user.User;
@@ -169,6 +170,28 @@ public class SetupMenu implements Menu {
         SetupPage confirmationPage = new ResetArenaRecordsConfirmationPage(this);
         confirmationPage.beforeOpening(gui);
         confirmationPage.injectItems(basePane);
+
+        basePane.setPage(0);
+
+        gui.update();
+    }
+
+    public void openMusicSettings() {
+        openPage(new MusicSettingsPage(this));
+    }
+
+    public void openSongSelection(MusicPhase phase) {
+        openPage(new SongSelectionPage(this, phase));
+    }
+
+    private void openPage(SetupPage page) {
+        gui.removePanes();
+
+        basePane = new PaginatedPane(9, 6);
+        gui.addPane(basePane);
+
+        page.beforeOpening(gui);
+        page.injectItems(basePane);
 
         basePane.setPage(0);
 
