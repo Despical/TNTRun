@@ -468,6 +468,11 @@ items:
     item-flags:
       - HIDE_ADDITIONAL_TOOLTIP
 
+  music-border:
+    name: " "
+    material: GRAY_STAINED_GLASS_PANE
+    decoration-only: true
+
   go-back:
     name: "<#FF5252><bold>Return to Main Menu"
     material: ARROW
