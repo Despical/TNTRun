@@ -175,6 +175,26 @@ public final class ArenaKeys {
         }
     };
 
+    public static final ArenaOption<String> MUSIC_LOBBY_SONG = songOption("music-lobby-song");
+    public static final ArenaOption<String> MUSIC_GAME_SONG = songOption("music-game-song");
+    public static final ArenaOption<String> MUSIC_END_SONG = songOption("music-end-song");
+
+    public static final ArenaOption<Boolean> MUSIC_GAME_CONTINUE = new ArenaOption<>("music-game-continue", true, Boolean.class) {
+
+        @Override
+        protected Boolean parse(String value) {
+            return Boolean.parseBoolean(value);
+        }
+    };
+
+    public static final ArenaOption<Boolean> MUSIC_END_CONTINUE = new ArenaOption<>("music-end-continue", true, Boolean.class) {
+
+        @Override
+        protected Boolean parse(String value) {
+            return Boolean.parseBoolean(value);
+        }
+    };
+
     public static final ArenaOption<List<ArenaPotionEffect>> ARENA_POTION_EFFECTS = new ArenaOption<>("arena-potion-effects", new ArrayList<>(), (Class<List<ArenaPotionEffect>>) (Class<?>) List.class) {
 
         @Override
@@ -258,6 +278,16 @@ public final class ArenaKeys {
             ARENA_SPECTATOR_JOIN_ENABLED,
             ARENA_POTION_EFFECTS
         );
+    }
+
+    private static ArenaOption<String> songOption(String key) {
+        return new ArenaOption<>(key, null, String.class) {
+
+            @Override
+            protected String parse(String value) {
+                return value == null || value.isBlank() || value.equals("null") ? null : value;
+            }
+        };
     }
 
     public static List<ArenaOption<?>> getPersistentKeys() {
