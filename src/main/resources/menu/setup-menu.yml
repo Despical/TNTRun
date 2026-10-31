@@ -373,6 +373,62 @@ items:
     item-flags:
       - HIDE_ADDITIONAL_TOOLTIP
 
+  music-game-continue-enabled:
+    name: "<#FFA726><bold>Lobby → In-Game"
+    material: LIME_DYE
+    lore:
+      - "<#2F2F2F>• <#2196F3>CLICK <#BDBDBD>to toggle setting"
+      - ""
+      - "<#2F2F2F>• <#B0BEC5>If the same song: <#00E676>CONTINUES"
+      - ""
+      - "<#2F2F2F>• <#B0BEC5>When both phases use the same song,"
+      - "<#B0BEC5>  it keeps playing without interruption"
+      - "<#B0BEC5>  when the round begins."
+    item-flags:
+      - HIDE_ADDITIONAL_TOOLTIP
+
+  music-game-continue-disabled:
+    name: "<#FFA726><bold>Lobby → In-Game"
+    material: RED_DYE
+    lore:
+      - "<#2F2F2F>• <#2196F3>CLICK <#BDBDBD>to toggle setting"
+      - ""
+      - "<#2F2F2F>• <#B0BEC5>If the same song: <#FF5252>RESTARTS"
+      - ""
+      - "<#2F2F2F>• <#B0BEC5>When both phases use the same song,"
+      - "<#B0BEC5>  it starts again from the beginning"
+      - "<#B0BEC5>  when the round begins."
+    item-flags:
+      - HIDE_ADDITIONAL_TOOLTIP
+
+  music-end-continue-enabled:
+    name: "<#66BB6A><bold>In-Game → End-Game"
+    material: LIME_DYE
+    lore:
+      - "<#2F2F2F>• <#2196F3>CLICK <#BDBDBD>to toggle setting"
+      - ""
+      - "<#2F2F2F>• <#B0BEC5>If the same song: <#00E676>CONTINUES"
+      - ""
+      - "<#2F2F2F>• <#B0BEC5>When both phases use the same song,"
+      - "<#B0BEC5>  it keeps playing without interruption"
+      - "<#B0BEC5>  when the round ends."
+    item-flags:
+      - HIDE_ADDITIONAL_TOOLTIP
+
+  music-end-continue-disabled:
+    name: "<#66BB6A><bold>In-Game → End-Game"
+    material: RED_DYE
+    lore:
+      - "<#2F2F2F>• <#2196F3>CLICK <#BDBDBD>to toggle setting"
+      - ""
+      - "<#2F2F2F>• <#B0BEC5>If the same song: <#FF5252>RESTARTS"
+      - ""
+      - "<#2F2F2F>• <#B0BEC5>When both phases use the same song,"
+      - "<#B0BEC5>  it starts again from the beginning"
+      - "<#B0BEC5>  when the round ends."
+    item-flags:
+      - HIDE_ADDITIONAL_TOOLTIP
+
   go-back:
     name: "<#FF5252><bold>Return to Main Menu"
     material: ARROW
