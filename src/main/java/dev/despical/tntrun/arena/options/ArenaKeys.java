@@ -276,7 +276,12 @@ public final class ArenaKeys {
             ARENA_BOSSBAR_ENABLED,
             ARENA_PVP_ENABLED,
             ARENA_SPECTATOR_JOIN_ENABLED,
-            ARENA_POTION_EFFECTS
+            ARENA_POTION_EFFECTS,
+            MUSIC_LOBBY_SONG,
+            MUSIC_GAME_SONG,
+            MUSIC_END_SONG,
+            MUSIC_GAME_CONTINUE,
+            MUSIC_END_CONTINUE
         );
     }
 
