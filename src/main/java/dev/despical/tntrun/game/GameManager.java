@@ -80,7 +80,7 @@ public class GameManager {
         visibilityManager.showPlayersToEachOther();
 
         Arena arena = game.getArena();
-        Location endLocation = arena.getOption(ArenaKeys.END_LOCATION);
+        plugin.getRadio().removeArena(arena);
 
 
         List<User> users = new ArrayList<>(game.getUsers());
@@ -116,15 +116,16 @@ public class GameManager {
             player.getActivePotionEffects().forEach(effect -> player.removePotionEffect(effect.getType()));
 
             InventorySerializer.loadInventory(plugin, player);
-            player.teleport(endLocation);
-            user.setSpectator(false);
 
+            Location endLocation = arena.getOption(ArenaKeys.END_LOCATION);
+            player.teleport(endLocation);
+
+            user.setSpectator(false);
             visibilityManager.showPlayerOutsideTheGame(player);
         });
         game.getUsers().clear();
 
         plugin.getEventManager().gameStop(game, reason, stoppedPlayers);
-
         game.setGameState(GameState.RESTARTING);
     }
 
