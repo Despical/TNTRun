@@ -124,6 +124,7 @@ Common files:
 - `messages.yml`, `scoreboard.yml`, `bossbar.yml`, `sounds.yml`, and `items.yml` control presentation.
 - `mysql.yml` configures MySQL when database storage is enabled.
 - `rewards.yml` configures reward commands, survival payments, and milestone thresholds. Examples are disabled by default; reload changes with `/tr reload`.
+- `musics/` holds the `.nbs` songs used by the arena music system. It requires the optional NoteBlockAPI plugin; pick lobby, in-game and end-game songs (and whether an identical song continues or restarts between phases) in the arena editor.
 - `menu/` contains menu layouts used by setup, statistics, and spectator screens.
 
 ---
@@ -171,6 +172,7 @@ dependencies {
 Optional integrations declared by the plugin include:
 
 - PlaceholderAPI
+- NoteBlockAPI
 - WorldGuard
 - Multiverse-Core
 - SlimeWorldManager
