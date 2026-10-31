@@ -36,10 +36,33 @@ Players (up to 12 or 24, mostly, depending on the map) are placed on sand/gravel
 
 ---
 
+## Installation
+
+TNT Run supports [Paper](https://papermc.io/downloads/paper) and compatible forks for Minecraft **1.21.11 through 26.3**. Use **Java 25** to run your server and build the project.
+
+1. Download the plugin JAR from [Hub](https://hub.despical.dev/plugins/tnt-run), [SpigotMC](https://www.spigotmc.org/resources/tnt-run.83196/) or [Modrinth](https://modrinth.com/plugin/tnt-run-minigame).
+2. Stop the server and place `tnt-run-<version>.jar` in its `plugins/` directory.
+3. Install any optional integrations you want to use, such as PlaceholderAPI or NoteBlockAPI.
+4. Start the server and check the console for a successful TNT Run startup.
+
+Missing settings and bundled songs are installed under `plugins/TNTRun/`; existing files are preserved.
+
+## Getting started
+
+```text
+/tntrun create <arena_id>
+/tntrun edit <arena_id>
+/tntrun join <arena_id>
+```
+
+Create an arena, set its lobby, start and end locations in the editor, then register it. The editor also configures player amounts, signs, potion effects and the arena music. See the [arena setup guide](https://docs.despical.dev/tnt-run/arena-setup) for a step-by-step walkthrough.
+
+---
+
 ## Requirements
 
 - Java 25
-- A Paper-compatible Minecraft server
+- A Paper-compatible Minecraft server (1.21.11 - 26.3)
 
 ---
 
