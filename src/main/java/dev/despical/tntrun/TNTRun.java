@@ -152,6 +152,8 @@ public class TNTRun extends JavaPlugin {
         soundManager = new SoundManager(this);
         arenaDataSaver = new ArenaDataSaver(this);
 
+        new ArenaSongValidator(this).validate();
+
         registerCommands();
         registerEvents();
         registerPlaceholderManager();
