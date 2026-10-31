@@ -24,7 +24,9 @@ Players (up to 12 or 24, mostly, depending on the map) are placed on sand/gravel
 
 ## Features
 
-- Configurable arenas with setup, editing, signs, and runtime state handling.
+- Configurable arenas with an in-game setup menu, signs, and runtime state handling.
+- Double jumps, spectator tools, potion effects, and crash-safe block recovery.
+- Arena music with separate lobby, in-game, and end-game songs through NoteBlockAPI.
 - Customizable messages, scoreboards, boss bars, sounds, items, and menus.
 - Player statistics, records, spectator tools, and leaderboard support.
 - Configurable command rewards for podium placements, survival time, PvP kills, records, and milestones.
