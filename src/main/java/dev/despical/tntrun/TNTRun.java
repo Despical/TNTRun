@@ -130,6 +130,8 @@ public class TNTRun extends JavaPlugin {
         saveResourceIfMissing("block-removal.yml");
         saveResourceIfMissing("signs.yml");
         saveResourceIfMissing("rewards.yml");
+
+        new DefaultSongSeeder(this).seed();
     }
 
     private void initializeClasses() {
