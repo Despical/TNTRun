@@ -429,6 +429,45 @@ items:
     item-flags:
       - HIDE_ADDITIONAL_TOOLTIP
 
+  song-no-selection:
+    name: "<#FF5252>No Song"
+    material: BARRIER
+    lore:
+      - "<#B0BEC5>• <#00E676>LEFT <white>click to select"
+      - ""
+      - "<#B0BEC5>• <#B0BEC5>No music will play during the"
+      - "<#B0BEC5>  %phase% phase."
+    item-flags:
+      - HIDE_ADDITIONAL_TOOLTIP
+
+  song-item:
+    name: "<bold><#FFB300>♪ <#76FF03>%song_name%</bold>"
+    material: MUSIC_DISC_BLOCKS
+    lore:
+      - "<#81C784>• <#64B5F6>LEFT <#FFFFFF>click to select"
+      - "<#81C784>• <#FFB300>RIGHT <#FFFFFF>click to preview"
+      - ""
+      - "<#90CAF9>• <#90CAF9>This song will play during the"
+      - "<#90CAF9>  %phase% phase."
+    item-flags:
+      - HIDE_ADDITIONAL_TOOLTIP
+
+  song-nbs-not-installed:
+    name: "<#FF5252><bold>NoteBlockAPI Not Installed"
+    material: BARRIER
+    lore:
+      - ""
+      - "<#FF9800>⚠ <bold><#FFFFFF>NoteBlockAPI not found!"
+      - ""
+      - "<#90CAF9><bold>To enable music selection:"
+      - "<#81C784>    1. <#B0BEC5>Install <#76FF03>NoteBlockAPI <#B0BEC5>plugin"
+      - "<#81C784>    2. <#B0BEC5>Place <#FFD54F>.nbs <#B0BEC5>files in <#FFD54F>musics/ <#B0BEC5>folder"
+      - "<#81C784>    3. <#B0BEC5>Restart the server"
+      - ""
+      - "<#FFC107><underlined>github.com/xxmicloxx/NoteBlockAPI</underlined>"
+    item-flags:
+      - HIDE_ADDITIONAL_TOOLTIP
+
   go-back:
     name: "<#FF5252><bold>Return to Main Menu"
     material: ARROW
