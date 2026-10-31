@@ -81,10 +81,11 @@ public class SetupHomePage extends SetupPage {
         pane.addItem(createArenaSignItem(), 5, 1);
         pane.addItem(createPlayerSettingsItem(), 7, 1);
         pane.addItem(createMapNameItem(), 1, 3);
+        pane.addItem(createMusicSettingsItem(), 3, 3);
 
         GuiItem resetArenaRecordsItem = createArenaRecordResetItem();
         if (resetArenaRecordsItem != null) {
-            pane.addItem(resetArenaRecordsItem, 3, 3);
+            pane.addItem(resetArenaRecordsItem, 5, 3);
         }
 
         if (!arena.getOption(ArenaKeys.READY)) {
@@ -153,6 +154,17 @@ public class SetupHomePage extends SetupPage {
         };
 
         return GuiItem.of(item, consumer);
+    }
+
+    private GuiItem createMusicSettingsItem() {
+        ItemStack item = itemManager.getItem("music-settings").getItemStack();
+
+        return GuiItem.of(item, event -> {
+            Player player = (Player) event.getWhoClicked();
+            player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 1f, 1f);
+
+            menu.openMusicSettings();
+        });
     }
 
     private GuiItem createMapNameItem() {
