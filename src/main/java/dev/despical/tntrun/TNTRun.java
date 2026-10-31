@@ -120,6 +120,7 @@ public class TNTRun extends JavaPlugin {
         arenaDataSaver.saveAllArenas();
         arenaManager.handleDisable();
         gameManager.shutdown();
+        radio.shutdown();
         database.shutdown();
         metrics.shutdown();
     }
