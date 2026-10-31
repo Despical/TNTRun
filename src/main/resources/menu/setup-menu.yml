@@ -335,6 +335,44 @@ items:
     item-flags:
       - HIDE_ADDITIONAL_TOOLTIP
 
+  music-lobby-selector:
+    name: "<#42A5F5><bold>Lobby Music"
+    material: MUSIC_DISC_CAT
+    lore:
+      - "<#2F2F2F>• <#AB47BC>CLICK <#BDBDBD>to select a song"
+      - ""
+      - "<#2F2F2F>• <#B0BEC5>Plays while players wait for the"
+      - "<#B0BEC5>  game to start."
+      - ""
+      - "<#2F2F2F>• <#B0BEC5>Currently Selected: <#CE93D8>%selected_song%"
+    item-flags:
+      - HIDE_ADDITIONAL_TOOLTIP
+
+  music-game-selector:
+    name: "<#FFA726><bold>In-Game Music"
+    material: MUSIC_DISC_PIGSTEP
+    lore:
+      - "<#2F2F2F>• <#AB47BC>CLICK <#BDBDBD>to select a song"
+      - ""
+      - "<#2F2F2F>• <#B0BEC5>Plays while the round is running."
+      - ""
+      - "<#2F2F2F>• <#B0BEC5>Currently Selected: <#CE93D8>%selected_song%"
+    item-flags:
+      - HIDE_ADDITIONAL_TOOLTIP
+
+  music-end-selector:
+    name: "<#66BB6A><bold>End-Game Music"
+    material: MUSIC_DISC_13
+    lore:
+      - "<#2F2F2F>• <#AB47BC>CLICK <#BDBDBD>to select a song"
+      - ""
+      - "<#2F2F2F>• <#B0BEC5>Plays after the round is over while"
+      - "<#B0BEC5>  the placements are shown."
+      - ""
+      - "<#2F2F2F>• <#B0BEC5>Currently Selected: <#CE93D8>%selected_song%"
+    item-flags:
+      - HIDE_ADDITIONAL_TOOLTIP
+
   go-back:
     name: "<#FF5252><bold>Return to Main Menu"
     material: ARROW
