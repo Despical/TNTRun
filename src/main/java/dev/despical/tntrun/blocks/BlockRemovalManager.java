@@ -23,19 +23,18 @@ import dev.despical.tntrun.game.Game;
 import dev.despical.tntrun.game.GameState;
 import dev.despical.tntrun.user.User;
 import dev.despical.tntrun.utils.Schedulers;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.NumberConversions;
 
+import java.util.ArrayDeque;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * @author Despical
@@ -49,11 +48,11 @@ public class BlockRemovalManager {
     private final Game game;
     private final BlockRemovalConfig config;
     private final BlockSnapshotStore store;
-    private final Map<String, BlockSnapshot> snapshots;
-    private final Set<String> queuedBlocks;
-    private final Set<BukkitRunnable> delayedTasks;
+    private final Map<Long, BlockSnapshot> snapshots;
+    private final ArrayDeque<PendingRemoval> pending;
 
     private BukkitTask scanTask;
+    private BukkitTask drainTask;
     private boolean removalStarted;
 
     public BlockRemovalManager(Game game) {
@@ -61,8 +60,7 @@ public class BlockRemovalManager {
         this.config = plugin.getGameManager().getBlockRemovalConfig();
         this.store = plugin.getGameManager().getBlockSnapshotStore();
         this.snapshots = new HashMap<>();
-        this.queuedBlocks = new HashSet<>();
-        this.delayedTasks = new HashSet<>();
+        this.pending = new ArrayDeque<>();
     }
 
     public void start() {
@@ -74,10 +72,9 @@ public class BlockRemovalManager {
 
     public void reset() {
         stopScanning();
+        stopDraining();
 
-        delayedTasks.forEach(BukkitRunnable::cancel);
-        delayedTasks.clear();
-        queuedBlocks.clear();
+        pending.clear();
         removalStarted = false;
 
         snapshots.values().forEach(snapshot -> {
@@ -121,49 +118,97 @@ public class BlockRemovalManager {
 
     private void scanPlayer(Player player) {
         Location location = player.getLocation();
+        World world = location.getWorld();
 
         int scanDepth = config.scanDepth(player.isOnGround());
         int y = location.getBlockY();
 
+        int xHigh = NumberConversions.floor(location.getX() + 0.3);
+        int xLow = NumberConversions.floor(location.getX() - 0.3);
+        int zHigh = NumberConversions.floor(location.getZ() + 0.3);
+        int zLow = NumberConversions.floor(location.getZ() - 0.3);
+
         for (int i = 0; i <= scanDepth; i++) {
-            scheduleRemoval(getBlockUnderPlayer(y--, location));
+            scheduleBlockUnder(world, xHigh, xLow, zHigh, zLow, y--);
         }
     }
 
-    private void scheduleRemoval(Block block) {
-        if (block == null || !config.isRemovable(block.getType())) {
+    private void scheduleBlockUnder(World world, int xHigh, int xLow, int zHigh, int zLow, int y) {
+        if (solid(world, xHigh, y, zLow)) {
+            scheduleRemoval(world.getBlockAt(xHigh, y, zLow));
             return;
         }
 
-        String key = BlockSnapshot.key(block);
-        if (queuedBlocks.contains(key) || snapshots.containsKey(key)) {
+        if (solid(world, xLow, y, zHigh)) {
+            scheduleRemoval(world.getBlockAt(xLow, y, zHigh));
+            return;
+        }
+
+        if (solid(world, xHigh, y, zHigh)) {
+            scheduleRemoval(world.getBlockAt(xHigh, y, zHigh));
+            return;
+        }
+
+        if (solid(world, xLow, y, zLow)) {
+            scheduleRemoval(world.getBlockAt(xLow, y, zLow));
+        }
+    }
+
+    private boolean solid(World world, int x, int y, int z) {
+        return world.getType(x, y, z) != Material.AIR;
+    }
+
+    private void scheduleRemoval(Block block) {
+        if (!config.isRemovable(block.getType())) {
+            return;
+        }
+
+        long key = block.getBlockKey();
+        if (snapshots.containsKey(key)) {
             return;
         }
 
         BlockSnapshot snapshot = BlockSnapshot.from(block);
         snapshots.put(key, snapshot);
-        queuedBlocks.add(key);
         store.record(snapshot);
 
-        BukkitRunnable delayedRemoval = new BukkitRunnable() {
-
-            @Override
-            public void run() {
-                delayedTasks.remove(this);
-                removeBlock(snapshot);
-            }
-        };
-
-        delayedTasks.add(delayedRemoval);
-        delayedRemoval.runTaskLater(plugin, config.getRemoveDelayTicks());
+        pending.add(new PendingRemoval(snapshot, key, Bukkit.getCurrentTick() + config.getRemoveDelayTicks()));
+        startDraining();
     }
 
-    private void removeBlock(BlockSnapshot snapshot) {
-        queuedBlocks.remove(snapshot.key());
+    private void startDraining() {
+        if (drainTask == null) {
+            drainTask = Schedulers.runTaskTimer(this::drain, 1L, 1L);
+        }
+    }
+
+    private void stopDraining() {
+        if (drainTask != null) {
+            drainTask.cancel();
+            drainTask = null;
+        }
+    }
+
+    private void drain() {
+        int now = Bukkit.getCurrentTick();
+
+        PendingRemoval next;
+        while ((next = pending.peek()) != null && next.dueTick() <= now) {
+            pending.poll();
+            removeBlock(next);
+        }
+
+        if (pending.isEmpty()) {
+            stopDraining();
+        }
+    }
+
+    private void removeBlock(PendingRemoval removal) {
+        BlockSnapshot snapshot = removal.snapshot();
 
         Block block = snapshot.getBlock();
         if (!snapshot.matches(block) || !config.isRemovable(block.getType())) {
-            snapshots.remove(snapshot.key());
+            snapshots.remove(removal.key());
             store.remove(snapshot);
             return;
         }
@@ -172,39 +217,6 @@ public class BlockRemovalManager {
         removalStarted = true;
     }
 
-    private Block getBlockUnderPlayer(int y, Location location) {
-        Position loc = new Position(location.getX(), y, location.getZ());
-        Block b1 = loc.getBlock(location.getWorld(), 0.3, -0.3);
-
-        if (b1.getType() != Material.AIR) {
-            return b1;
-        }
-
-        Block b2 = loc.getBlock(location.getWorld(), -0.3, 0.3);
-
-        if (b2.getType() != Material.AIR) {
-            return b2;
-        }
-
-        Block b3 = loc.getBlock(location.getWorld(), 0.3, 0.3);
-
-        if (b3.getType() != Material.AIR) {
-            return b3;
-        }
-
-        Block b4 = loc.getBlock(location.getWorld(), -0.3, -0.3);
-
-        if (b4.getType() != Material.AIR) {
-            return b4;
-        }
-
-        return null;
-    }
-
-    private record Position(double x, int y, double z) {
-
-        public Block getBlock(World world, double addX, double addz) {
-            return world.getBlockAt(NumberConversions.floor(x + addX), y, NumberConversions.floor(z + addz));
-        }
+    private record PendingRemoval(BlockSnapshot snapshot, long key, int dueTick) {
     }
 }

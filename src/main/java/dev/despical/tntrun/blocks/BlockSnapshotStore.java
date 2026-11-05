@@ -26,8 +26,13 @@ import org.bukkit.scheduler.BukkitTask;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
+import java.nio.file.Path;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.logging.Level;
 
 /**
@@ -42,8 +47,12 @@ public class BlockSnapshotStore {
     private final File file;
     private final Map<String, BlockSnapshot> snapshots;
 
+    private final Object writeLock = new Object();
+    private final AtomicLong flushVersion = new AtomicLong();
+
     private BukkitTask flushTask;
-    private boolean dirty;
+    private volatile boolean dirty;
+    private long writtenVersion;
 
     public BlockSnapshotStore(TNTRun plugin, BlockRemovalConfig config) {
         this.plugin = plugin;
@@ -117,11 +126,6 @@ public class BlockSnapshotStore {
             return;
         }
 
-        File parent = file.getParentFile();
-        if (parent != null) {
-            parent.mkdirs();
-        }
-
         YamlConfiguration yaml = new YamlConfiguration();
         ConfigurationSection section = yaml.createSection("blocks");
 
@@ -129,12 +133,43 @@ public class BlockSnapshotStore {
             snapshot.write(section.createSection(snapshot.key()));
         }
 
-        try {
-            yaml.save(file);
+        String content = yaml.saveToString();
+        long version = flushVersion.incrementAndGet();
 
-            dirty = false;
-        } catch (IOException ex) {
-            plugin.getLogger().log(Level.WARNING, "Could not save block removal recovery file.", ex);
+        dirty = false;
+
+        if (force || !plugin.isEnabled()) {
+            write(content, version);
+            return;
+        }
+
+        Schedulers.runTaskAsynchronously(() -> write(content, version));
+    }
+
+    private void write(String content, long version) {
+        synchronized (writeLock) {
+            if (version <= writtenVersion) {
+                return;
+            }
+
+            try {
+                Path target = file.toPath();
+                Path parent = target.getParent();
+
+                if (parent != null) {
+                    Files.createDirectories(parent);
+                }
+
+                Path temp = target.resolveSibling(file.getName() + ".tmp");
+                Files.writeString(temp, content, StandardCharsets.UTF_8);
+                Files.move(temp, target, StandardCopyOption.REPLACE_EXISTING);
+
+                writtenVersion = version;
+            } catch (IOException ex) {
+                plugin.getLogger().log(Level.WARNING, "Could not save block removal recovery file.", ex);
+
+                dirty = true;
+            }
         }
     }
 
