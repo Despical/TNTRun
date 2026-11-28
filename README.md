@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="assets/tnt-run-icon.svg" width="128" height="128" alt="TNT Run icon">
+  <img src="https://docs.despical.dev/images/tnt-run/icon.png" width="128" height="128" alt="TNT Run icon">
 </p>
 
 <h1 align="center">TNT Run</h1>
