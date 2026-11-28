@@ -21,6 +21,12 @@ arena-settings:
   # Lower values make games update more often; higher values reduce update frequency.
   tick-period: 5
 
+  # Players who fall this many blocks below the arena's start location are eliminated
+  # instantly instead of falling until they reach the void.
+  # Set to 0 to disable and only eliminate players when they reach the void.
+  # Each arena can override this with "fall-elimination-depth" in arenas.yml (-1 uses this value).
+  fall-elimination-depth: 0
+
 time-settings:
   # How long, in seconds, a waiting arena can stay idle before sending waiting reminders.
   waiting-time: 300

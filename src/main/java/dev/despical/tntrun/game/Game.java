@@ -63,6 +63,7 @@ public class Game extends BukkitRunnable {
     private int tick;
     private int peakActivePlayers;
     private long survivalStartTimeMillis;
+    private double fallEliminationY = Double.NaN;
 
     private boolean tickImmediately;
 
@@ -115,6 +116,8 @@ public class Game extends BukkitRunnable {
 
     @Override
     public void run() {
+        checkFallElimination();
+
         boolean shouldRun = shouldTickImmediately() || (tick += period) >= 20;
 
         if (shouldRun) {
@@ -327,11 +330,46 @@ public class Game extends BukkitRunnable {
     }
 
     public void startSurvivalRound() {
+        fallEliminationY = resolveFallEliminationY();
         peakActivePlayers = getPlayersLeft().size();
         survivalStartTimeMillis = System.currentTimeMillis();
         survivalTimesMillis.clear();
         roundParticipants.clear();
         getPlayersLeft().stream().map(User::getUUID).forEach(roundParticipants::add);
+    }
+
+    private double resolveFallEliminationY() {
+        int depth = arena.getOption(ArenaKeys.FALL_ELIMINATION_DEPTH);
+
+        if (depth < 0) {
+            depth = plugin.getOptions().get(IntOption.FALL_ELIMINATION_DEPTH);
+        }
+
+        Location start = arena.getOption(ArenaKeys.START_LOCATION);
+        return depth > 0 && start != null ? start.getY() - depth : Double.NaN;
+    }
+
+    private void checkFallElimination() {
+        if (Double.isNaN(fallEliminationY) || gameState != GameState.IN_GAME) {
+            return;
+        }
+
+        for (User user : users.toArray(User[]::new)) {
+            if (user.isSpectator()) {
+                continue;
+            }
+
+            Player player = user.getPlayer();
+            if (player == null || player.getY() >= fallEliminationY) {
+                continue;
+            }
+
+            eliminate(user);
+
+            if (gameState != GameState.IN_GAME) {
+                return;
+            }
+        }
     }
 
     public boolean isRoundParticipant(User user) {

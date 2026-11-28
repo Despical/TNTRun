@@ -175,6 +175,14 @@ public final class ArenaKeys {
         }
     };
 
+    public static final ArenaOption<Integer> FALL_ELIMINATION_DEPTH = new ArenaOption<>("fall-elimination-depth", -1, Integer.class) {
+
+        @Override
+        protected Integer parse(String value) {
+            return Integer.parseInt(value.trim());
+        }
+    };
+
     public static final ArenaOption<String> MUSIC_LOBBY_SONG = songOption("music-lobby-song");
     public static final ArenaOption<String> MUSIC_GAME_SONG = songOption("music-game-song");
     public static final ArenaOption<String> MUSIC_END_SONG = songOption("music-end-song");
@@ -277,6 +285,7 @@ public final class ArenaKeys {
             ARENA_PVP_ENABLED,
             ARENA_SPECTATOR_JOIN_ENABLED,
             ARENA_POTION_EFFECTS,
+            FALL_ELIMINATION_DEPTH,
             MUSIC_LOBBY_SONG,
             MUSIC_GAME_SONG,
             MUSIC_END_SONG,
